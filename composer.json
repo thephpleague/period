@@ -1,0 +1,32 @@
+{
+    "name": "bakame/tools",
+    "type": "library",
+    "description" : "Bakame/Tools is Toolkit of single claases for many purpose",
+    "keywords": ["date", "datetime", "dateinterval"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name" : "Ignace Nyamagana Butera",
+            "email" : "nyamsprod@gmail.com",
+            "homepage" : "https://github.com/nyamsprod/",
+            "role" : "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "~4.0",
+        "squizlabs/php_codesniffer": "2.0.*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bakame\\Tools\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bakame\\Tools\\test\\": "test"
+        }
+    }
+}
