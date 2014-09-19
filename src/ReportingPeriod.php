@@ -1,5 +1,15 @@
 <?php
-
+/**
+* This file is part of the Bakame.tools library
+*
+* @license http://opensource.org/licenses/MIT
+* @link https://github.com/thephpleague/csv/
+* @version 0.1.0
+* @package League.csv
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 namespace Bakame\Tools;
 
 use DateTime;
@@ -9,17 +19,46 @@ use InvalidArgumentException;
 use LogicException;
 use OutOfRangeException;
 
+/**
+* A value object class to manipulate Date period
+*
+* @package Bakame.Tools
+* @since 0.1.0
+*
+*/
 final class ReportingPeriod
 {
+    /**
+     * The Reporting period start date
+     *
+     * @var DateTime
+     */
     private $startDate;
 
+    /**
+     * The Reporting period end date
+     *
+     * @var DateTime
+     */
     private $endDate;
 
+    /**
+     * The constructor
+     */
     private function __construct()
     {
 
     }
 
+    /**
+     * Named Constructor to create a Reporting object
+     * from a startdate and an interver
+     *
+     * @param DateTime            $start start date
+     * @param DateInterval|string $ttl   interval or a string understood by DateInterval::createFromDateString
+     *
+     * @return static
+     */
     public static function createFromDuration(DateTime $start, $ttl)
     {
         $res = new static;
@@ -38,6 +77,14 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * Validate a year
+     *
+     * @param  int $year
+     * @return int
+     *
+     * @throws InvalidArgumentException If year is not a valid integer
+     */
     private static function validateYear($year)
     {
         $year = filter_var($year, FILTER_VALIDATE_INT);
@@ -48,6 +95,17 @@ final class ReportingPeriod
         return $year;
     }
 
+    /**
+     * Validate a integer according to a range
+     *
+     * @param integer $value the value to validate
+     * @param integer $min   the minimun value
+     * @param integer $max   the maximal value
+     *
+     * @return integer the validated value
+     *
+     * @throws OutOfRangeException If the value is not in the range
+     */
     private static function validateRange($value, $min, $max)
     {
         $res = filter_var(
@@ -62,6 +120,14 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * Create a reportingPeriod object from a Year and a Month
+     *
+     * @param integer $year
+     * @param integer $month
+     *
+     * @return static
+     */
     public static function createFromMonth($year, $month)
     {
         $year  = static::validateYear($year);
@@ -75,6 +141,14 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * Create a reportingPeriod object from a Year and a Quarter
+     *
+     * @param integer $year
+     * @param integer $quarter
+     *
+     * @return static
+     */
     public static function createFromQuarter($year, $quarter)
     {
         $year = static::validateYear($year);
@@ -89,6 +163,14 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * Create a reportingPeriod object from a Year and a Week
+     *
+     * @param integer $year
+     * @param integer $week
+     *
+     * @return static
+     */
     public static function createFromWeek($year, $week)
     {
         $year = static::validateYear($year);
@@ -106,11 +188,28 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * return the Datetime included in the ReportingPeriod
+     * according to a given interval
+     *
+     * @param DateInterval $interval
+     *
+     * @return DatePeriod
+     */
     public function getPeriod(DateInterval $interval)
     {
         return new DatePeriod($this->startDate, $interval, $this->endDate);
     }
 
+    /**
+     * start date setter
+     *
+     * @param DateTime $date
+     *
+     * @return static
+     *
+     * @throws LogicException If the new date is greater than the current end date
+     */
     public function setStartDate(DateTime $date)
     {
         if ($this->endDate < $date) {
@@ -124,11 +223,25 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * start date getter
+     *
+     * @return DateTime
+     */
     public function getStartDate()
     {
         return clone $this->startDate;
     }
 
+    /**
+     * start end setter
+     *
+     * @param DateTime $date
+     *
+     * @return static
+     *
+     * @throws LogicException If the new date is lesser than the current start date
+     */
     public function setEndDate(DateTime $date)
     {
         if ($date < $this->startDate) {
@@ -142,6 +255,11 @@ final class ReportingPeriod
         return $res;
     }
 
+    /**
+     * end date getter
+     *
+     * @return DateTime
+     */
     public function getEndDate()
     {
         return clone $this->endDate;
