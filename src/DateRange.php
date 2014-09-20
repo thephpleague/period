@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/nyamsprod/Bakame.Tools/
-* @version 0.1.0
+* @version 0.2.0
 * @package Bakame.Tools
 *
 * For the full copyright and license information, please view the LICENSE
