@@ -160,6 +160,7 @@ class DateRangeTest extends PHPUnit_Framework_TestCase
     public function testDuration()
     {
         $obj = DateRange::createFromWeek(2014, 3);
-        $this->assertSame((new DateInterval('P7D'))->d, $obj->getDuration()->d);
+        $ttl = new DateInterval('P7D');
+        $this->assertSame($ttl->d, $obj->getDuration()->d);
     }
 }
