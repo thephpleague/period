@@ -1,7 +1,7 @@
-Bakame.Tools
+Period
 ============
 
-Tools to perform simple tasks
+This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Matthias Verraes and helps resolve many recurrent issues around Date range selection and usage.
 
 [![Latest Version](https://img.shields.io/github/release/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://github.com/nyamsprod/Bakame.Tools/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
@@ -24,7 +24,7 @@ You need **PHP >= 5.3.0** to use `Bakame\Period` but the latest stable version o
 Install
 -------
 
-Install the `Bakame.Tools` package with Composer.
+Install `Period` using Composer.
 
 ```json
 {
@@ -57,23 +57,30 @@ spl_autoload_register(function ($class) {
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
 
-## Period
-
-This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Matthias Verraes and helped me resolve many recurrent issues around Date Range selection and usage.
+### Instantiation
 
 The `Period` class is a Immutable Value Object so any change to its property returns a new `Period` class.
 
-**Of Note:** The Period::end represent the first DateTime object which is **not** part of the Period.
+**Of Note:** The `Period::end` represents the first `DateTime` object which is **not** part of the period.
 
-### Instantiation
 
 This class comes with many named constructors to ease its instantiation:
 
-- `Period::createFromWeek($year, $week)` : `$year` the selected year, `$week` the selected week (from 1 to 53);
-- `Period::createFromMonth($year, $month)` : `$year` the selected year, `$month` the selected month (from 1 to 12);
-- `Period::createFromQuarter($year, $quarter)` : `$year` the selected year, `$quarter` the selected quarter (from 1 to 4);
-- `Period::createFromSemester($year, $semester)` : `$year` the selected year, `$semester` the selected semester (from 1 to 2);
-- `Period::createFromDuration($datetime, $ttl)` : `$datetime` a `DateTime` object or a string parsable by the `DateTime` constructor, $ttl a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+- `Period::createFromWeek($year, $week)` : returns a Period object with a duration of 1 week
+- `Period::createFromMonth($year, $month)` : returns a Period object with a duration of 1 month
+- `Period::createFromQuarter($year, $quarter)` : returns a Period object with a duration of 3 months
+- `Period::createFromSemester($year, $semester)` : returns a Period object with a duration of 6 months
+- `Period::createFromDuration($datetime, $interval)` : returns a Period object which start at `$datetime` with a duration equals to `$interval`
+
+Where:
+
+ - `$year` is a selected year;
+ - `$week` is a selected week (between 1 to 53);
+ - `$month` is a selected month (between 1 to 12);
+ - `$quarter` is a selected quarter (between 1 to 4);
+ - `$semester` is a selected semester (between 1 and 2);
+ - `$datetime` is a `DateTime` object or a string parsable by the `DateTime` constructor;
+ - `$interval` is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 
 ### Usage
@@ -91,7 +98,7 @@ You can change:
 * the starting `DateTime` using the `setStart` method;
 * the ending `DateTime` using the `setEnd` method or the `setDuration` method;
 
-But those methods return a new `Period` object as the object is immutable.
+Any setter method returns a new `Period` object as the object is immutable.
 
 ```php
 
@@ -108,8 +115,8 @@ $range->contains('2012-06-30'); // returns true;
 $newRange     = $range->setEnd('2012-02-01');
 $altRange     = $range->setEnd(new DateTime('2012-02-01'));
 $anotherRange = $range->setDuration('1 MONTH');
-//$anotherRange and $altRange are equals
 
+//$anotherRange->getDuration() is equal to $altRange->getDuration();
 ```
 
 Testing
