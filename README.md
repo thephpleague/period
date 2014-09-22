@@ -50,26 +50,28 @@ spl_autoload_register(function ($class) {
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
 
-## DateRange
+## Period
 
 This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Matthias Verraes and helped me resolve many recurrent issues around Date Range selection and usage.
 
-The `DateRange` class is a Immutable Value Object so any change to its property returns a new `DateRange` class.
+The `Period` class is a Immutable Value Object so any change to its property returns a new `Period` class.
+
+**Of Note:** The Period::end represent the first DateTime object which is **not** part of the Period.
 
 ### Instantiation
 
 This class comes with many named constructors to ease its instantiation:
 
-- `DateRange::createFromWeek($year, $week)` : `$year` the selected year, `$week` the selected week (from 1 to 53);
-- `DateRange::createFromMonth($year, $month)` : `$year` the selected year, `$month` the selected month (from 1 to 12);
-- `DateRange::createFromQuarter($year, $quarter)` : `$year` the selected year, `$quarter` the selected quarter (from 1 to 4);
-- `DateRange::createFromSemester($year, $semester)` : `$year` the selected year, `$semester` the selected semester (from 1 to 2);
-- `DateRange::createFromDuration($datetime, $ttl)` : $datetime a `DateTime` object or a string parsable by the `DateTime` constructor, $ttl a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+- `Period::createFromWeek($year, $week)` : `$year` the selected year, `$week` the selected week (from 1 to 53);
+- `Period::createFromMonth($year, $month)` : `$year` the selected year, `$month` the selected month (from 1 to 12);
+- `Period::createFromQuarter($year, $quarter)` : `$year` the selected year, `$quarter` the selected quarter (from 1 to 4);
+- `Period::createFromSemester($year, $semester)` : `$year` the selected year, `$semester` the selected semester (from 1 to 2);
+- `Period::createFromDuration($datetime, $ttl)` : `$datetime` a `DateTime` object or a string parsable by the `DateTime` constructor, $ttl a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 
 ### Usage
 
-Once instantiated the `DateRange` object :
+Once instantiated the `Period` object :
 
 - gives you the starting `DateTime` using the `getStart` method;
 - gives you the ending `DateTime` using the `getEnd` method;
@@ -82,13 +84,13 @@ You can change:
 * the starting `DateTime` using the `setStart` method;
 * the ending `DateTime` using the `setEnd` method or the `setDuration` method;
 
-But those methods return a new `DateRange` object as the object is immutable.
+But those methods return a new `Period` object as the object is immutable.
 
 ```php
 
-use Bakame\Tools\DateRange;
+use Bakame\Tools\Period;
 
-$range = DateRange::createFromSemester(2012, 1);
+$range = Period::createFromSemester(2012, 1);
 $range->getStart(); //2012-01-01
 $range->getEnd(); //2012-07-01
 $range->getDuration(); //returns a DateInterval object

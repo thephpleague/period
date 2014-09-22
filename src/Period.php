@@ -26,7 +26,7 @@ use OutOfRangeException;
 * @since 0.1.0
 *
 */
-final class DateRange
+final class Period
 {
     /**
      * The Range start date
@@ -56,10 +56,10 @@ final class DateRange
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromDuration('2012-01-01', '3 MONTH');
-     * $range = DateRange::createFromDuration(new DateTime('2012-01-01'), new DateInterval('P3M'));
-     * $range = DateRange::createFromDuration(new DateTime('2012-01-01'), '3 MONTH');
-     * $range = DateRange::createFromDuration('2012-01-01', new DateInterval('P3M'));
+     * $range = Period::createFromDuration('2012-01-01', '3 MONTH');
+     * $range = Period::createFromDuration(new DateTime('2012-01-01'), new DateInterval('P3M'));
+     * $range = Period::createFromDuration(new DateTime('2012-01-01'), '3 MONTH');
+     * $range = Period::createFromDuration('2012-01-01', new DateInterval('P3M'));
      *
      * ?>
      * </code>
@@ -85,11 +85,11 @@ final class DateRange
     }
 
     /**
-     * Create a DateRange object from a Year and a Week
+     * Create a Period object from a Year and a Week
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromWeek(2012, 3);
+     * $range = Period::createFromWeek(2012, 3);
      *
      * ?>
      * </code>
@@ -115,11 +115,11 @@ final class DateRange
     }
 
     /**
-     * Create a DateRange object from a Year and a Month
+     * Create a Period object from a Year and a Month
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromMonth(2012, 11);
+     * $range = Period::createFromMonth(2012, 11);
      *
      * ?>
      * </code>
@@ -141,11 +141,11 @@ final class DateRange
     }
 
     /**
-     * Create a DateRange object from a Year and a Quarter
+     * Create a Period object from a Year and a Quarter
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromQuarter(2012, 2);
+     * $range = Period::createFromQuarter(2012, 2);
      *
      * ?>
      * </code>
@@ -168,11 +168,11 @@ final class DateRange
     }
 
     /**
-     * Create a DateRange object from a Year and a Quarter
+     * Create a Period object from a Year and a Quarter
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromSemester(2012, 1);
+     * $range = Period::createFromSemester(2012, 1);
      *
      * ?>
      * </code>
@@ -199,7 +199,7 @@ final class DateRange
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromSemester(2012, 1);
+     * $range = Period::createFromSemester(2012, 1);
      * $newRange = $range->setStart('2012-02-01');
      * $altRange = $range->setStart(new DateTime('2012-02-01'));
      *
@@ -241,7 +241,7 @@ final class DateRange
      *
      * <code>
      *<?php
-     * $range = DateRange::createFromSemester(2012, 1);
+     * $range = Period::createFromSemester(2012, 1);
      * $newRange = $range->setEnd('2012-02-01');
      * $altRange = $range->setEnd(new DateTime('2012-02-01'));
      *
@@ -279,7 +279,7 @@ final class DateRange
     }
 
     /**
-     * return a new DateRange with the same start
+     * return a new Period with the same start
      * but with a different duration
      *
      * @param DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
@@ -292,7 +292,7 @@ final class DateRange
     }
 
     /**
-     * return the DateRange duration as a DateInterval object
+     * return the Period duration as a DateInterval object
      *
      * @return DateInterval
      */
@@ -302,11 +302,11 @@ final class DateRange
     }
 
     /**
-     * Tells whether a DateTime is contained within the DateRange object
+     * Tells whether a DateTime is contained within the Period object
      *
      * <code>
      *<?php
-     *   $obj = DateRange::createFromMonth(2014, 3);
+     *   $obj = Period::createFromMonth(2014, 3);
      *   $obj->contains('2014-03-30'); //return true
      *   $obj->contains('2014-04-01'); //return false
      *
@@ -325,7 +325,7 @@ final class DateRange
     }
 
     /**
-     * return the Datetime included in the DateRange
+     * return the Datetime included in the Period
      * according to a given interval
      *
      * @param DateInterval|string $ttl
