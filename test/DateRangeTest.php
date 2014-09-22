@@ -148,19 +148,22 @@ class DateRangeTest extends PHPUnit_Framework_TestCase
         $obj = DateRange::createFromMonth(2014, 3);
         $this->assertTrue($obj->contains(new DateTime('2014-03-12')));
         $this->assertFalse($obj->contains('2012-03-12'));
-    }
-
-    public function testContainsStrict()
-    {
-        $obj = DateRange::createFromMonth(2014, 3);
-        $this->assertTrue($obj->contains('2014-04-01'));
-        $this->assertFalse($obj->contains('2014-04-01', true));
+        $this->assertFalse($obj->contains('2014-04-01'));
     }
 
     public function testDuration()
     {
-        $obj = DateRange::createFromWeek(2014, 3);
-        $ttl = new DateInterval('P7D');
-        $this->assertSame($ttl->d, $obj->getDuration()->d);
+        $obj   = DateRange::createFromMonth(2014, 3);
+        $start = new DateTime('2014-03-01');
+        $end   = new DateTime('2014-04-01');
+        $this->assertEquals($start->diff($end), $obj->getDuration());
+    }
+
+    public function testSetDuration()
+    {
+        $expected = DateRange::createFromMonth(2014, 3);
+        $obj = DateRange::createFromDuration('2014-03-01', '2 Weeks');
+        $res = $obj->setDuration('1 MONTH');
+        $this->assertEquals($expected, $res);
     }
 }

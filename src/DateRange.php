@@ -65,14 +65,14 @@ final class DateRange
      * </code>
      *
      * @param DateTime|string     $datetime start date
-     * @param DateInterval|string $ttl      interval or a string understood by DateInterval::createFromDateString
+     * @param DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
      *
      * @return static
      */
-    public static function createFromDuration($datetime, $ttl)
+    public static function createFromDuration($datetime, $interval)
     {
         $date     = static::validateDateTime($datetime);
-        $interval = static::validateDateInterval($ttl);
+        $interval = static::validateDateInterval($interval);
         $range    = new static;
         $range->start = clone $date;
         $range->end   = clone $date;
@@ -135,7 +135,7 @@ final class DateRange
         $month = static::validateRange($month, 1, 12);
 
         return static::createFromDuration(
-            new DateTime($year.'-'.sprintf('%02s', $month).'-01'),
+            $year.'-'.sprintf('%02s', $month).'-01',
             new DateInterval('P1M')
         );
     }
@@ -162,7 +162,7 @@ final class DateRange
         $month   = (($quarter - 1) * 3) + 1;
 
         return static::createFromDuration(
-            new DateTime($year.'-'.sprintf('%02s', $month).'-01'),
+            $year.'-'.sprintf('%02s', $month).'-01',
             new DateInterval('P3M')
         );
     }
@@ -189,7 +189,7 @@ final class DateRange
         $month    = (($semester - 1) * 6) + 1;
 
         return static::createFromDuration(
-            new DateTime($year.'-'.sprintf('%02s', $month).'-01'),
+            $year.'-'.sprintf('%02s', $month).'-01',
             new DateInterval('P6M')
         );
     }
@@ -215,12 +215,12 @@ final class DateRange
     public function setStart($datetime)
     {
         $datetime = static::validateDateTime($datetime);
-        if ($this->end < $datetime) {
+        if ($datetime > $this->end) {
             throw new LogicException(
                 'The start date should be lesser than the current End date'
             );
         }
-        $range = clone $this;
+        $range        = clone $this;
         $range->start = $datetime;
 
         return $range;
@@ -262,7 +262,7 @@ final class DateRange
                 'End Date should be greater than the current Start date'
             );
         }
-        $range = clone $this;
+        $range      = clone $this;
         $range->end = $datetime;
 
         return $range;
@@ -279,13 +279,26 @@ final class DateRange
     }
 
     /**
+     * return a new DateRange with the same start
+     * but with a different duration
+     *
+     * @param DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
+     *
+     * @return static
+     */
+    public function setDuration($interval)
+    {
+        return static::createFromDuration($this->start, $interval);
+    }
+
+    /**
      * return the DateRange duration as a DateInterval object
      *
      * @return DateInterval
      */
     public function getDuration()
     {
-        return $this->end->diff($this->start);
+        return $this->start->diff($this->end);
     }
 
     /**
@@ -294,8 +307,8 @@ final class DateRange
      * <code>
      *<?php
      *   $obj = DateRange::createFromMonth(2014, 3);
-     *   $obj->contains('2014-04-01'); //return true
-     *   $obj->contains('2014-04-01', true); //return false
+     *   $obj->contains('2014-03-30'); //return true
+     *   $obj->contains('2014-04-01'); //return false
      *
      * ?>
      * </code>
@@ -304,14 +317,11 @@ final class DateRange
      *
      * @return boolean
      */
-    public function contains($datetime, $strict = false)
+    public function contains($datetime)
     {
         $date = static::validateDateTime($datetime);
-        if ($strict) {
-            return $date > $this->start && $date < $this->end;
-        }
 
-        return $date >= $this->start && $date <= $this->end;
+        return $date >= $this->start && $date < $this->end;
     }
 
     /**
@@ -337,6 +347,8 @@ final class DateRange
      * @param mixed $str
      *
      * @return DateTime
+     *
+     * @throws RuntimException If The Data can not be converted into a proper DateTime object
      */
     private static function validateDateTime($str)
     {
@@ -353,6 +365,8 @@ final class DateRange
      * @param DateInterval|String $ttl
      *
      * @return DateInterval
+     *
+     * @throws RuntimException If The Data can not be converted into a proper DateInterval object
      */
     private static function validateDateInterval($ttl)
     {
