@@ -71,9 +71,9 @@ final class Period
      */
     public static function createFromDuration($datetime, $interval)
     {
-        $date     = static::validateDateTime($datetime);
-        $interval = static::validateDateInterval($interval);
-        $range    = new static;
+        $date     = self::validateDateTime($datetime);
+        $interval = self::validateDateInterval($interval);
+        $range    = new self;
         $range->start = clone $date;
         $range->end   = clone $date;
         $range->end->add($interval);
@@ -101,14 +101,14 @@ final class Period
      */
     public static function createFromWeek($year, $week)
     {
-        $year = static::validateYear($year);
-        $week = static::validateRange($week, 1, 53);
+        $year = self::validateYear($year);
+        $week = self::validateRange($week, 1, 53);
 
         $start = new DateTime;
         $start->setISODate($year, $week);
         $start->setTime(0, 0, 0);
 
-        return static::createFromDuration(
+        return self::createFromDuration(
             $start,
             new DateInterval('P7D')
         );
@@ -131,10 +131,10 @@ final class Period
      */
     public static function createFromMonth($year, $month)
     {
-        $year  = static::validateYear($year);
-        $month = static::validateRange($month, 1, 12);
+        $year  = self::validateYear($year);
+        $month = self::validateRange($month, 1, 12);
 
-        return static::createFromDuration(
+        return self::createFromDuration(
             $year.'-'.sprintf('%02s', $month).'-01',
             new DateInterval('P1M')
         );
@@ -157,11 +157,11 @@ final class Period
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $year    = static::validateYear($year);
-        $quarter = static::validateRange($quarter, 1, 4);
+        $year    = self::validateYear($year);
+        $quarter = self::validateRange($quarter, 1, 4);
         $month   = (($quarter - 1) * 3) + 1;
 
-        return static::createFromDuration(
+        return self::createFromDuration(
             $year.'-'.sprintf('%02s', $month).'-01',
             new DateInterval('P3M')
         );
@@ -184,11 +184,11 @@ final class Period
      */
     public static function createFromSemester($year, $semester)
     {
-        $year     = static::validateYear($year);
-        $semester = static::validateRange($semester, 1, 2);
+        $year     = self::validateYear($year);
+        $semester = self::validateRange($semester, 1, 2);
         $month    = (($semester - 1) * 6) + 1;
 
-        return static::createFromDuration(
+        return self::createFromDuration(
             $year.'-'.sprintf('%02s', $month).'-01',
             new DateInterval('P6M')
         );
@@ -214,7 +214,7 @@ final class Period
      */
     public function setStart($datetime)
     {
-        $datetime = static::validateDateTime($datetime);
+        $datetime = self::validateDateTime($datetime);
         if ($datetime > $this->end) {
             throw new LogicException(
                 'The start date should be lesser than the current End date'
@@ -256,7 +256,7 @@ final class Period
      */
     public function setEnd($datetime)
     {
-        $datetime = static::validateDateTime($datetime);
+        $datetime = self::validateDateTime($datetime);
         if ($datetime < $this->start) {
             throw new LogicException(
                 'End Date should be greater than the current Start date'
@@ -288,7 +288,7 @@ final class Period
      */
     public function setDuration($interval)
     {
-        return static::createFromDuration($this->start, $interval);
+        return self::createFromDuration($this->start, $interval);
     }
 
     /**
@@ -319,7 +319,7 @@ final class Period
      */
     public function contains($datetime)
     {
-        $date = static::validateDateTime($datetime);
+        $date = self::validateDateTime($datetime);
 
         return $date >= $this->start && $date < $this->end;
     }
@@ -336,7 +336,7 @@ final class Period
     {
         return new DatePeriod(
             $this->start,
-            static::validateDateInterval($ttl),
+            self::validateDateInterval($ttl),
             $this->end
         );
     }
