@@ -44,22 +44,14 @@ final class Period
 
     /**
      * The constructor
-     */
-    private function __construct()
-    {
-
-    }
-
-    /**
-     * Named Constructor to create a Reporting object
-     * from a start and an interver
+     *
      *
      * <code>
      *<?php
-     * $range = Period::createFromDuration('2012-01-01', '3 MONTH');
-     * $range = Period::createFromDuration(new DateTime('2012-01-01'), new DateInterval('P3M'));
-     * $range = Period::createFromDuration(new DateTime('2012-01-01'), '3 MONTH');
-     * $range = Period::createFromDuration('2012-01-01', new DateInterval('P3M'));
+     * $period = new Period('2012-01-01', '3 MONTH');
+     * $period = new Period(new DateTime('2012-01-01'), new DateInterval('P3M'));
+     * $period = new Period(new DateTime('2012-01-01'), '3 MONTH');
+     * $period = new Period('2012-01-01', new DateInterval('P3M'));
      *
      * ?>
      * </code>
@@ -69,19 +61,17 @@ final class Period
      *
      * @return static
      */
-    public static function createFromDuration($datetime, $interval)
+    public function __construct($datetime, $interval)
     {
-        $date     = self::validateDateTime($datetime);
         $interval = self::validateDateInterval($interval);
-        $range    = new self;
-        $range->start = clone $date;
-        $range->end   = clone $date;
-        $range->end->add($interval);
-        if ($range->start > $range->end) {
+        $start    = clone self::validateDateTime($datetime);
+        $end      = clone $start;
+        $end->add($interval);
+        if ($start > $end) {
             throw new LogicException('you must use a positive interval');
         }
-
-        return $range;
+        $this->start = $start;
+        $this->end   = $end;
     }
 
     /**
@@ -89,7 +79,7 @@ final class Period
      *
      * <code>
      *<?php
-     * $range = Period::createFromWeek(2012, 3);
+     * $period = Period::createFromWeek(2012, 3);
      *
      * ?>
      * </code>
@@ -108,10 +98,7 @@ final class Period
         $start->setISODate($year, $week);
         $start->setTime(0, 0, 0);
 
-        return self::createFromDuration(
-            $start,
-            new DateInterval('P7D')
-        );
+        return new self($start, '1 WEEK');
     }
 
     /**
@@ -119,7 +106,7 @@ final class Period
      *
      * <code>
      *<?php
-     * $range = Period::createFromMonth(2012, 11);
+     * $period = Period::createFromMonth(2012, 11);
      *
      * ?>
      * </code>
@@ -134,10 +121,7 @@ final class Period
         $year  = self::validateYear($year);
         $month = self::validateRange($month, 1, 12);
 
-        return self::createFromDuration(
-            $year.'-'.sprintf('%02s', $month).'-01',
-            new DateInterval('P1M')
-        );
+        return new self($year.'-'.sprintf('%02s', $month).'-01', '1 MONTH');
     }
 
     /**
@@ -145,7 +129,7 @@ final class Period
      *
      * <code>
      *<?php
-     * $range = Period::createFromQuarter(2012, 2);
+     * $period = Period::createFromQuarter(2012, 2);
      *
      * ?>
      * </code>
@@ -161,10 +145,7 @@ final class Period
         $quarter = self::validateRange($quarter, 1, 4);
         $month   = (($quarter - 1) * 3) + 1;
 
-        return self::createFromDuration(
-            $year.'-'.sprintf('%02s', $month).'-01',
-            new DateInterval('P3M')
-        );
+        return new self($year.'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
     }
 
     /**
@@ -172,7 +153,7 @@ final class Period
      *
      * <code>
      *<?php
-     * $range = Period::createFromSemester(2012, 1);
+     * $period = Period::createFromSemester(2012, 1);
      *
      * ?>
      * </code>
@@ -188,10 +169,26 @@ final class Period
         $semester = self::validateRange($semester, 1, 2);
         $month    = (($semester - 1) * 6) + 1;
 
-        return self::createFromDuration(
-            $year.'-'.sprintf('%02s', $month).'-01',
-            new DateInterval('P6M')
-        );
+        return new self($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
+    }
+
+    /**
+     * Create a Period object from a Year and a Quarter
+     *
+     * <code>
+     *<?php
+     * $period = Period::createFromYear(2012);
+     *
+     * ?>
+     * </code>
+     *
+     * @param integer $year
+     *
+     * @return static
+     */
+    public static function createFromYear($year)
+    {
+        return new self(self::validateYear($year).'-01-01', '1 YEAR');
     }
 
     /**
@@ -199,9 +196,9 @@ final class Period
      *
      * <code>
      *<?php
-     * $range = Period::createFromSemester(2012, 1);
-     * $newRange = $range->setStart('2012-02-01');
-     * $altRange = $range->setStart(new DateTime('2012-02-01'));
+     * $period = Period::createFromSemester(2012, 1);
+     * $newRange = $period->setStart('2012-02-01');
+     * $altRange = $period->setStart(new DateTime('2012-02-01'));
      *
      * ?>
      * </code>
@@ -216,14 +213,12 @@ final class Period
     {
         $datetime = self::validateDateTime($datetime);
         if ($datetime > $this->end) {
-            throw new LogicException(
-                'The start date should be lesser than the current End date'
-            );
+            throw new LogicException('The start date should be lesser than the current End date');
         }
-        $range        = clone $this;
-        $range->start = $datetime;
+        $period        = clone $this;
+        $period->start = $datetime;
 
-        return $range;
+        return $period;
     }
 
     /**
@@ -241,9 +236,9 @@ final class Period
      *
      * <code>
      *<?php
-     * $range = Period::createFromSemester(2012, 1);
-     * $newRange = $range->setEnd('2012-02-01');
-     * $altRange = $range->setEnd(new DateTime('2012-02-01'));
+     * $period = Period::createFromSemester(2012, 1);
+     * $newRange = $period->setEnd('2012-02-01');
+     * $altRange = $period->setEnd(new DateTime('2012-02-01'));
      *
      * ?>
      * </code>
@@ -258,14 +253,12 @@ final class Period
     {
         $datetime = self::validateDateTime($datetime);
         if ($datetime < $this->start) {
-            throw new LogicException(
-                'End Date should be greater than the current Start date'
-            );
+            throw new LogicException('End Date should be greater than the current Start date');
         }
-        $range      = clone $this;
-        $range->end = $datetime;
+        $period      = clone $this;
+        $period->end = $datetime;
 
-        return $range;
+        return $period;
     }
 
     /**
@@ -288,7 +281,7 @@ final class Period
      */
     public function setDuration($interval)
     {
-        return self::createFromDuration($this->start, $interval);
+        return new self($this->start, $interval);
     }
 
     /**
@@ -299,6 +292,23 @@ final class Period
     public function getDuration()
     {
         return $this->start->diff($this->end);
+    }
+
+    /**
+     * return the Datetime included in the Period
+     * according to a given interval
+     *
+     * @param \DateInterval|string $interval
+     *
+     * @return \DatePeriod
+     */
+    public function getRange($interval)
+    {
+        return new DatePeriod(
+            $this->start,
+            self::validateDateInterval($interval),
+            $this->end
+        );
     }
 
     /**
@@ -322,23 +332,6 @@ final class Period
         $date = self::validateDateTime($datetime);
 
         return $date >= $this->start && $date < $this->end;
-    }
-
-    /**
-     * return the Datetime included in the Period
-     * according to a given interval
-     *
-     * @param \DateInterval|string $interval
-     *
-     * @return \DatePeriod
-     */
-    public function getRange($interval)
-    {
-        return new DatePeriod(
-            $this->start,
-            self::validateDateInterval($interval),
-            $this->end
-        );
     }
 
     /**
@@ -371,11 +364,12 @@ final class Period
         if ($end < $period->end) {
             $end = $period->end;
         }
-        $range        = new static;
-        $range->start = clone $start;
-        $range->end   = clone $end;
 
-        return $range;
+        $period        = clone $this;
+        $period->start = clone $start;
+        $period->end   = clone $end;
+
+        return $period;
     }
 
     /**

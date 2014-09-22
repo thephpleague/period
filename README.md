@@ -56,12 +56,17 @@ spl_autoload_register(function ($class) {
 
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
-Usage
+Instantiation
 -------
 
-### Instantiation
+#### Period::__construct($datetime, $interval)
 
-This class comes with many named constructors to ease its instantiation:
+You can instantiate a period which starts at `$datetime` with a duration equals to `$interval`
+
+- The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
+- The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+
+But this class comes with many named constructors to ease its instantiation:
 
 #### Period::createFromWeek($year, $week)
 
@@ -83,13 +88,12 @@ The `$quarter` parameter is a selected quarter (between 1 to 4);
 returns a `Period` object with a duration of 6 months for a given year and semester. 
 The `$semester` parameter is a selected semester (between 1 and 2);
 
-#### Period::createFromDuration($datetime, $interval)
-For any other DateTime Range you can use this named constructor which start at `$datetime` with a duration equals to `$interval`
+#### Period::createFromYear($year)
 
-- The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
-- The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+returns a `Period` object with a duration of 1 year for a given year. 
 
-### Manipulation
+Usage
+-------
 
 The `Period` class is a Immutable Value Object so any change to its property returns a new `Period` class.
 
