@@ -59,14 +59,18 @@ Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoload
 Instantiation
 -------
 
-#### Period::__construct($datetime, $interval)
+#### Period::__construct($start, $end)
 
-You can instantiate a period which starts at `$datetime` with a duration equals to `$interval`
+Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor; `$end` MUST BE greater or equals to `$start` or the instantiation will failed.
+
+But this class comes with many named constructors to ease its instantiation:
+
+#### Period::createFromDuration($datetime, $interval)
+
+returns a `Period` object which starts at `$datetime` with a duration equals to `$interval`
 
 - The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
 - The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
-
-But this class comes with many named constructors to ease its instantiation:
 
 #### Period::createFromWeek($year, $week)
 
@@ -95,7 +99,9 @@ returns a `Period` object with a duration of 1 year for a given year.
 Usage
 -------
 
-The `Period` class is a Immutable Value Object so any change to its property returns a new `Period` class.
+The `Period` object is an Immutable Value Object so any change to its property returns a new `Period` class. 
+
+This object has a property `$end` which represents the first `DateTime` object greater than the last included `DateTime` object in the given period. Please refer to the examples to understand its concrete meaning.
 
 #### getStart()
 
@@ -107,11 +113,11 @@ set the starting `DateTime` and returns a new `Period` object
 
 #### getEnd();
 
-return the ending `DateTime`. **This object represents the first `DateTime` which is not part of the `Period`**.
+return the ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
 
 #### setEnd($datetime)
 
-set the ending `DateTime` and returns a new `Period` object;
+set the ending `DateTime` and returns a new `Period` object. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
 
 #### getDuration()
 

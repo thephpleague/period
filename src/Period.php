@@ -37,41 +37,61 @@ final class Period
 
     /**
      * The Range end date
+     * This date is not included in the Period
+     * It is the first DateTime object greater than
+     * the last DateTime object included in the given
+     * Period
      *
      * @var \DateTime
      */
     private $end;
 
     /**
-     * The constructor
+     * The Constructor
      *
+     * $period = new Period('2012-01-01', '2012-02-17');
+     *
+     * @param \DateTime|string $start start datetime
+     * @param \DateTime|string $end   end datetime
+     *
+     * @throws \LogicException If $start is greater than $end
+     */
+    public function __construct($start, $end)
+    {
+        $start = self::validateDateTime($start);
+        $end   = self::validateDateTime($end);
+        if ($start > $end) {
+            throw new LogicException('the end must be greater or equals to the start');
+        }
+        $this->start = clone $start;
+        $this->end   = clone $end;
+    }
+
+    /**
+     * Create a Period object from a starting point and an interval
      *
      * <code>
      *<?php
-     * $period = new Period('2012-01-01', '3 MONTH');
-     * $period = new Period(new DateTime('2012-01-01'), new DateInterval('P3M'));
-     * $period = new Period(new DateTime('2012-01-01'), '3 MONTH');
-     * $period = new Period('2012-01-01', new DateInterval('P3M'));
+     * $period = Period::createFromDuration('2012-01-01', '3 MONTH');
+     * $period = Period::createFromDuration(new DateTime('2012-01-01'), new DateInterval('P3M'));
+     * $period = Period::createFromDuration(new DateTime('2012-01-01'), '3 MONTH');
+     * $period = Period::createFromDuration('2012-01-01', new DateInterval('P3M'));
      *
      * ?>
      * </code>
      *
-     * @param \DateTime|string     $datetime start date
+     * @param \DateTime|string     $start    start date
      * @param \DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
      *
      * @return static
      */
-    public function __construct($datetime, $interval)
+    public static function createFromDuration($start, $interval)
     {
-        $interval = self::validateDateInterval($interval);
-        $start    = clone self::validateDateTime($datetime);
-        $end      = clone $start;
-        $end->add($interval);
-        if ($start > $end) {
-            throw new LogicException('you must use a positive interval');
-        }
-        $this->start = $start;
-        $this->end   = $end;
+        $start = self::validateDateTime($start);
+        $end   = clone $start;
+        $end->add(self::validateDateInterval($interval));
+
+        return new self($start, $end);
     }
 
     /**
@@ -91,14 +111,11 @@ final class Period
      */
     public static function createFromWeek($year, $week)
     {
-        $year = self::validateYear($year);
-        $week = self::validateRange($week, 1, 53);
-
         $start = new DateTime;
-        $start->setISODate($year, $week);
+        $start->setISODate(self::validateYear($year), self::validateRange($week, 1, 53));
         $start->setTime(0, 0, 0);
 
-        return new self($start, '1 WEEK');
+        return self::createFromDuration($start, '1 WEEK');
     }
 
     /**
@@ -121,7 +138,7 @@ final class Period
         $year  = self::validateYear($year);
         $month = self::validateRange($month, 1, 12);
 
-        return new self($year.'-'.sprintf('%02s', $month).'-01', '1 MONTH');
+        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '1 MONTH');
     }
 
     /**
@@ -145,7 +162,7 @@ final class Period
         $quarter = self::validateRange($quarter, 1, 4);
         $month   = (($quarter - 1) * 3) + 1;
 
-        return new self($year.'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
+        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
     }
 
     /**
@@ -169,7 +186,7 @@ final class Period
         $semester = self::validateRange($semester, 1, 2);
         $month    = (($semester - 1) * 6) + 1;
 
-        return new self($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
+        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
     }
 
     /**
@@ -188,7 +205,7 @@ final class Period
      */
     public static function createFromYear($year)
     {
-        return new self(self::validateYear($year).'-01-01', '1 YEAR');
+        return self::createFromDuration(self::validateYear($year).'-01-01', '1 YEAR');
     }
 
     /**
@@ -206,19 +223,10 @@ final class Period
      * @param \DateTime|string $datetime
      *
      * @return static
-     *
-     * @throws \LogicException If the new date is greater than the current end date
      */
     public function setStart($datetime)
     {
-        $datetime = self::validateDateTime($datetime);
-        if ($datetime > $this->end) {
-            throw new LogicException('The start date should be lesser than the current End date');
-        }
-        $period        = clone $this;
-        $period->start = $datetime;
-
-        return $period;
+        return new self(self::validateDateTime($datetime), $this->end);
     }
 
     /**
@@ -246,19 +254,10 @@ final class Period
      * @param \DateTime|string $datetime
      *
      * @return static
-     *
-     * @throws \LogicException If the new date is lesser than the current start date
      */
     public function setEnd($datetime)
     {
-        $datetime = self::validateDateTime($datetime);
-        if ($datetime < $this->start) {
-            throw new LogicException('End Date should be greater than the current Start date');
-        }
-        $period      = clone $this;
-        $period->end = $datetime;
-
-        return $period;
+        return new self($this->start, self::validateDateTime($datetime));
     }
 
     /**
@@ -281,7 +280,7 @@ final class Period
      */
     public function setDuration($interval)
     {
-        return new self($this->start, $interval);
+        return self::createFromDuration($this->start, $interval);
     }
 
     /**
@@ -365,17 +364,13 @@ final class Period
             $end = $period->end;
         }
 
-        $period        = clone $this;
-        $period->start = clone $start;
-        $period->end   = clone $end;
-
-        return $period;
+        return new self($start, $end);
     }
 
     /**
      * Validate a DateTime
      *
-     * @param mixed $str
+     * @param \DateTime|string $str
      *
      * @return \DateTime
      *
@@ -393,7 +388,7 @@ final class Period
     /**
      * Validate a DateInterval
      *
-     * @param \DateInterval|String $ttl
+     * @param \DateInterval|string $ttl
      *
      * @return \DateInterval
      *

@@ -4,10 +4,17 @@ use Bakame\Period;
 
 class PeriodTest extends PHPUnit_Framework_TestCase
 {
+    public function testConstructor()
+    {
+        $period = new Period('2014-05-01', '2014-05-08');
+        $this->assertEquals(new DateTime('2014-05-01'), $period->getStart());
+        $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
+    }
+
     public function testCreateFromDurationWithDateTime()
     {
         $start = new DateTime;
-        $obj = new Period($start, "1 DAY");
+        $obj   = Period::createFromDuration($start, "1 DAY");
         $this->assertEquals($obj->getStart(), $start);
         $this->assertEquals($obj->getEnd(), $start->add(new DateInterval('P1D')));
     }
@@ -18,7 +25,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $ttl = new DateInterval('P2D');
         $end = clone $start;
         $end->add($ttl);
-        $obj = new Period("-1 DAY", $ttl);
+        $obj = Period::createFromDuration("-1 DAY", $ttl);
         $this->assertEquals($obj->getStart(), $start);
         $this->assertEquals($obj->getEnd(), $end);
     }
@@ -28,7 +35,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromDurationFailedWithOutofRangeInterval()
     {
-        new Period(new DateTime, "-1 DAY");
+        Period::createFromDuration(new DateTime, "-1 DAY");
     }
 
     public function testMonth()
@@ -116,7 +123,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testgetDatePeriod()
     {
-        $obj    = new Period(new DateTime, "1 DAY");
+        $obj    = Period::createFromDuration(new DateTime, "1 DAY");
         $period = $obj->getRange(new DateInterval('PT1H'));
         $arr    = iterator_to_array($period);
         $this->assertCount(24, $arr);
@@ -177,7 +184,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testSetDuration()
     {
         $expected = Period::createFromMonth(2014, 3);
-        $obj = new Period('2014-03-01', '2 Weeks');
+        $obj = Period::createFromDuration('2014-03-01', '2 Weeks');
         $res = $obj->setDuration('1 MONTH');
         $this->assertEquals($expected, $res);
     }
@@ -186,7 +193,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period1 = Period::createFromMonth(2014, 3);
         $period2 = Period::createFromMonth(2014, 4);
-        $period3 = new Period('2014-03-15', '3 WEEKS');
+        $period3 = Period::createFromDuration('2014-03-15', '3 WEEKS');
         $this->assertFalse($period1->overlaps($period2));
         $this->assertTrue($period1->overlaps($period3));
         $this->assertTrue($period2->overlaps($period3));
@@ -196,7 +203,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period1  = Period::createFromMonth(2014, 3);
         $period2  = Period::createFromMonth(2014, 4);
-        $expected = new Period('2014-03-01', '2 MONTHS');
+        $expected = Period::createFromDuration('2014-03-01', '2 MONTHS');
 
         $this->assertEquals($expected, $period1->merge($period2));
         $this->assertEquals($expected, $period2->merge($period1));
