@@ -1,11 +1,11 @@
 <?php
 /**
-* This file is part of the Bakame.tools library
+* This file is part of the Bakame.Period library
 *
 * @license http://opensource.org/licenses/MIT
-* @link https://github.com/nyamsprod/Bakame.Tools/
-* @version 0.2.0
-* @package Bakame.Tools
+* @link https://github.com/nyamsprod/Period/
+* @version 0.3.0
+* @package Bakame.Period
 *
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
@@ -22,7 +22,7 @@ use OutOfRangeException;
 /**
 * A value object class to manipulate Date period
 *
-* @package Bakame.Tools
+* @package Bakame.Period
 * @since 0.1.0
 *
 */
@@ -399,9 +399,9 @@ final class Period
     /**
      * Validate a DateInterval
      *
-     * @param DateInterval|String $ttl
+     * @param \DateInterval|String $ttl
      *
-     * @return DateInterval
+     * @return \DateInterval
      *
      * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
      */

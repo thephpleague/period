@@ -3,12 +3,12 @@ Period
 
 This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Matthias Verraes and helps resolve many recurrent issues around Date range selection and usage.
 
-[![Latest Version](https://img.shields.io/github/release/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://github.com/nyamsprod/Bakame.Tools/releases)
+[![Latest Version](https://img.shields.io/github/release/nyamsprod/Period.svg?style=flat-square)](https://github.com/nyamsprod/Period/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/nyamsprod/Bakame.Tools/master.svg?style=flat-square)](https://travis-ci.org/nyamsprod/Bakame.Tools)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Bakame.Tools/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Bakame.Tools)
-[![Total Downloads](https://img.shields.io/packagist/dt/bakame/tools.svg?style=flat-square)](https://packagist.org/packages/bakame/tools)
+[![Build Status](https://img.shields.io/travis/nyamsprod/Period/master.svg?style=flat-square)](https://travis-ci.org/nyamsprod/Period)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nyamsprod/Period.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Period/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/nyamsprod/Period.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Period)
+[![Total Downloads](https://img.shields.io/packagist/dt/bakame/period.svg?style=flat-square)](https://packagist.org/packages/bakame/period)
 
 
 This package is compliant with [PSR-2], and [PSR-4].
@@ -29,11 +29,11 @@ Install `Period` using Composer.
 ```json
 {
     "require": {
-        "Bakame\Period": "*"
+        "bakame/period": "*"
     }
 }
 ```
-### Going Solo
+#### Going Solo
 
 You can also use `Bakame\Period` without using Composer by downloading the library and registing an autoloader function:
 
@@ -56,51 +56,85 @@ spl_autoload_register(function ($class) {
 
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
+Usage
+-------
 
 ### Instantiation
 
-The `Period` class is a Immutable Value Object so any change to its property returns a new `Period` class.
-
-**Of Note:** The `Period::end` represents the first `DateTime` object which is **not** part of the period.
-
-
 This class comes with many named constructors to ease its instantiation:
 
-- `Period::createFromWeek($year, $week)` : returns a Period object with a duration of 1 week for a given week
-- `Period::createFromMonth($year, $month)` : returns a Period object with a duration of 1 month for a given month
-- `Period::createFromQuarter($year, $quarter)` : returns a Period object with a duration of 3 months for a given quarter
-- `Period::createFromSemester($year, $semester)` : returns a Period object with a duration of 6 months for a given semester
-- `Period::createFromDuration($datetime, $interval)` : returns a Period object which start at `$datetime` with a duration equals to `$interval`
+#### Period::createFromWeek($year, $week)
 
-Where:
+returns a `Period` object with a duration of 1 week for a given year and week. 
+The `$week` parameter is a selected week (between 1 to 53);
 
- - `$year` is a selected year;
- - `$week` is a selected week (between 1 to 53);
- - `$month` is a selected month (between 1 to 12);
- - `$quarter` is a selected quarter (between 1 to 4);
- - `$semester` is a selected semester (between 1 and 2);
- - `$datetime` is a `DateTime` object or a string parsable by the `DateTime` constructor;
- - `$interval` is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+#### Period::createFromMonth($year, $month)
 
+returns a `Period` object with a duration of 1 month for a given year and month. 
+The `$month` parameter is a selected month (between 1 to 12);
 
-### Usage
+#### Period::createFromQuarter($year, $quarter)
 
-Once instantiated the `Period` object :
+returns a `Period` object with a duration of 3 months for a given year and quarter. 
+The `$quarter` parameter is a selected quarter (between 1 to 4);
 
-- gives you the starting `DateTime` using the `getStart` method;
-- gives you the ending `DateTime` using the `getEnd` method - **of note: the returned `DateTime` is not part of the Period**;
-- gives you the duration as a `DateInterval` object using the `getDuration` method;
-- tells you if a given `DateTime` is contained within the range using the `contains` method;
-- gives you the list of `DateTime` object inside the range as a `DatePeriod` object using the `getRange()` method;
-- can merge with another `Period` object;
-- tells you if it overlaps with another `Period` object;
+#### Period::createFromSemester($year, $semester)
 
-You can change:
+returns a `Period` object with a duration of 6 months for a given year and semester. 
+The `$semester` parameter is a selected semester (between 1 and 2);
 
-* the starting `DateTime` using the `setStart` method;
-* the ending `DateTime` using the `setEnd` method or the `setDuration` method;
+#### Period::createFromDuration($datetime, $interval)
+For any other DateTime Range you can use this named constructor which start at `$datetime` with a duration equals to `$interval`
 
-Any setter method returns a new `Period` object as the object is immutable.
+- The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
+- The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+
+### Manipulation
+
+The `Period` class is a Immutable Value Object so any change to its property returns a new `Period` class.
+
+#### getStart()
+
+returns the starting `DateTime`;
+
+#### setStart($datetime)
+
+set the starting `DateTime` and returns a new `Period` object
+
+#### getEnd();
+
+return the ending `DateTime`. **This object represents the first `DateTime` which is not part of the `Period`**.
+
+#### setEnd($datetime)
+
+set the ending `DateTime` and returns a new `Period` object;
+
+#### getDuration()
+
+return the current Period Duration as a `DateInterval` object.
+
+#### setDuration($interval)
+
+modify the Period duration and change the ending `DateTime` value. The methods returns a new `Period` object.
+
+#### getRange($interval)
+
+returns a DatePeriod object that lists `DateTime` objects inside the Period separeted by the given `$interval`. The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+
+#### contains($datetime)
+
+Tells whether a `$datetime` is contained within the `Period` or not. The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
+
+#### overlaps(Period $period)
+
+Tells whether two `Period` object overlaps each other or not.
+
+#### merge(Period $period)
+
+Merge two `Period` object by return a new `Period` object which starting DateTime is the smallest of both objects and the ending DateTime is the biggest between bith objects.
+
+Examples
+-------
 
 ```php
 
@@ -110,7 +144,6 @@ $range = Period::createFromSemester(2012, 1);
 $range->getStart(); //2012-01-01
 $range->getEnd(); //2012-07-01
 $range->getDuration(); //returns a DateInterval object
-$range->getRange('1 DAY'); //return a DatePeriod object with an Interval between date of 1 DAY
 $range->contains('2012-07-01'); // returns false;
 $range->contains('2012-06-30'); // returns true;
 
@@ -123,6 +156,11 @@ $anotherRange = $range->setDuration('1 MONTH');
 $newRange->overlaps($range) //return true;
 $newPeriod = $range->merge($newRange); //$newPeriod will have the smallest start and the biggest end value
 
+foreach ($range->getRange('1 DAY') as $datetime) {
+    echo $datetime->format('Y-m-d H:i:s'); 
+    //each $datetime is separated by the $interval parameter
+    //in this example '1 DAY'
+}
 ```
 
 Testing
