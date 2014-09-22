@@ -3,6 +3,13 @@ Bakame.Tools
 
 Tools to perform simple tasks
 
+[![Latest Version](https://img.shields.io/github/release/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://github.com/nyamsprod/Bakame.Tools/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/nyamsprod/Bakame.Tools/master.svg?style=flat-square)](https://travis-ci.org/nyamsprod/Bakame.Tools)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Bakame.Tools/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/nyamsprod/Bakame.Tools.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Bakame.Tools)
+[![Total Downloads](https://img.shields.io/packagist/dt/bakame/tools.svg?style=flat-square)](https://packagist.org/packages/bakame/tools)
+
 
 This package is compliant with [PSR-2], and [PSR-4].
 

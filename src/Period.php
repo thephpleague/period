@@ -31,14 +31,14 @@ final class Period
     /**
      * The Range start date
      *
-     * @var DateTime
+     * @var \DateTime
      */
     private $start;
 
     /**
      * The Range end date
      *
-     * @var DateTime
+     * @var \DateTime
      */
     private $end;
 
@@ -64,8 +64,8 @@ final class Period
      * ?>
      * </code>
      *
-     * @param DateTime|string     $datetime start date
-     * @param DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
+     * @param \DateTime|string     $datetime start date
+     * @param \DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
      *
      * @return static
      */
@@ -206,11 +206,11 @@ final class Period
      * ?>
      * </code>
      *
-     * @param DateTime|string $datetime
+     * @param \DateTime|string $datetime
      *
      * @return static
      *
-     * @throws LogicException If the new date is greater than the current end date
+     * @throws \LogicException If the new date is greater than the current end date
      */
     public function setStart($datetime)
     {
@@ -229,7 +229,7 @@ final class Period
     /**
      * start date getter
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getStart()
     {
@@ -248,11 +248,11 @@ final class Period
      * ?>
      * </code>
      *
-     * @param DateTime|string $datetime
+     * @param \DateTime|string $datetime
      *
      * @return static
      *
-     * @throws LogicException If the new date is lesser than the current start date
+     * @throws \LogicException If the new date is lesser than the current start date
      */
     public function setEnd($datetime)
     {
@@ -271,7 +271,7 @@ final class Period
     /**
      * end date getter
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getEnd()
     {
@@ -282,7 +282,7 @@ final class Period
      * return a new Period with the same start
      * but with a different duration
      *
-     * @param DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
+     * @param \DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
      *
      * @return static
      */
@@ -294,7 +294,7 @@ final class Period
     /**
      * return the Period duration as a DateInterval object
      *
-     * @return DateInterval
+     * @return \DateInterval
      */
     public function getDuration()
     {
@@ -313,7 +313,7 @@ final class Period
      * ?>
      * </code>
      *
-     * @param DateTime|string $datetime
+     * @param \DateTime|string $datetime
      *
      * @return boolean
      */
@@ -328,9 +328,9 @@ final class Period
      * return the Datetime included in the Period
      * according to a given interval
      *
-     * @param DateInterval|string $ttl
+     * @param \DateInterval|string $ttl
      *
-     * @return DatePeriod
+     * @return \DatePeriod
      */
     public function getRange($ttl)
     {
@@ -346,9 +346,9 @@ final class Period
      *
      * @param mixed $str
      *
-     * @return DateTime
+     * @return \DateTime
      *
-     * @throws RuntimException If The Data can not be converted into a proper DateTime object
+     * @throws \RuntimException If The Data can not be converted into a proper DateTime object
      */
     private static function validateDateTime($str)
     {
@@ -366,7 +366,7 @@ final class Period
      *
      * @return DateInterval
      *
-     * @throws RuntimException If The Data can not be converted into a proper DateInterval object
+     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
      */
     private static function validateDateInterval($ttl)
     {
@@ -384,7 +384,7 @@ final class Period
      *
      * @return integer
      *
-     * @throws InvalidArgumentException If year is not a valid integer
+     * @throws \InvalidArgumentException If year is not a valid integer
      */
     private static function validateYear($year)
     {
@@ -405,7 +405,7 @@ final class Period
      *
      * @return integer the validated value
      *
-     * @throws OutOfRangeException If the value is not in the range
+     * @throws \OutOfRangeException If the value is not in the range
      */
     private static function validateRange($value, $min, $max)
     {
