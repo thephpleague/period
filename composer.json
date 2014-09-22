@@ -1,8 +1,8 @@
 {
-    "name": "bakame/tools",
+    "name": "bakame/period",
     "type": "library",
-    "description" : "Bakame/Tools is Toolkit of single claases for many purpose",
-    "keywords": ["date", "datetime", "dateinterval"],
+    "description" : "Bakame/Period a tiny class to deal with DateTime Period",
+    "keywords": ["period", "datetime", "dateinterval", "dateperiod"],
     "license": "MIT",
     "authors": [
         {
@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Bakame\\Tools\\": "src"
+            "Bakame\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Bakame\\Tools\\test\\": "test"
+            "Bakame\\test\\": "test"
         }
     }
 }

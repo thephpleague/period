@@ -1,6 +1,6 @@
 <?php
 
-use Bakame\Tools\Period;
+use Bakame\Period;
 
 class PeriodTest extends PHPUnit_Framework_TestCase
 {

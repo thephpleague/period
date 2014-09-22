@@ -19,7 +19,7 @@ This package is compliant with [PSR-2], and [PSR-4].
 System Requirements
 -------
 
-You need **PHP >= 5.3.0** to use `Bakame\Tools` but the latest stable version of PHP is recommended.
+You need **PHP >= 5.3.0** to use `Bakame\Period` but the latest stable version of PHP is recommended.
 
 Install
 -------
@@ -29,17 +29,17 @@ Install the `Bakame.Tools` package with Composer.
 ```json
 {
     "require": {
-        "Bakame\Tools": "*"
+        "Bakame\Period": "*"
     }
 }
 ```
 ### Going Solo
 
-You can also use `Bakame\Tools` without using Composer by downloading the library and registing an autoloader function:
+You can also use `Bakame\Period` without using Composer by downloading the library and registing an autoloader function:
 
 ```php
 spl_autoload_register(function ($class) {
-    $prefix = 'Bakame\\Tools\\';
+    $prefix = 'Bakame\\Period\\';
     $base_dir = __DIR__ . '/src/';
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -95,7 +95,7 @@ But those methods return a new `Period` object as the object is immutable.
 
 ```php
 
-use Bakame\Tools\Period;
+use Bakame\Period;
 
 $range = Period::createFromSemester(2012, 1);
 $range->getStart(); //2012-01-01
