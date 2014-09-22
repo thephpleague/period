@@ -101,7 +101,7 @@ $range = Period::createFromSemester(2012, 1);
 $range->getStart(); //2012-01-01
 $range->getEnd(); //2012-07-01
 $range->getDuration(); //returns a DateInterval object
-$range->getDatePeriod('1 DAY'); //return a DatePeriod object with an Interval between date of 1 DAY
+$range->getRange('1 DAY'); //return a DatePeriod object with an Interval between date of 1 DAY
 $range->contains('2012-07-01'); // returns false;
 $range->contains('2012-06-30'); // returns true;
 
