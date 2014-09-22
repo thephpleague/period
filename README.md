@@ -66,10 +66,10 @@ The `Period` class is a Immutable Value Object so any change to its property ret
 
 This class comes with many named constructors to ease its instantiation:
 
-- `Period::createFromWeek($year, $week)` : returns a Period object with a duration of 1 week
-- `Period::createFromMonth($year, $month)` : returns a Period object with a duration of 1 month
-- `Period::createFromQuarter($year, $quarter)` : returns a Period object with a duration of 3 months
-- `Period::createFromSemester($year, $semester)` : returns a Period object with a duration of 6 months
+- `Period::createFromWeek($year, $week)` : returns a Period object with a duration of 1 week for a given week
+- `Period::createFromMonth($year, $month)` : returns a Period object with a duration of 1 month for a given month
+- `Period::createFromQuarter($year, $quarter)` : returns a Period object with a duration of 3 months for a given quarter
+- `Period::createFromSemester($year, $semester)` : returns a Period object with a duration of 6 months for a given semester
 - `Period::createFromDuration($datetime, $interval)` : returns a Period object which start at `$datetime` with a duration equals to `$interval`
 
 Where:
@@ -88,10 +88,12 @@ Where:
 Once instantiated the `Period` object :
 
 - gives you the starting `DateTime` using the `getStart` method;
-- gives you the ending `DateTime` using the `getEnd` method;
+- gives you the ending `DateTime` using the `getEnd` method - **of note: the returned `DateTime` is not part of the Period**;
 - gives you the duration as a `DateInterval` object using the `getDuration` method;
 - tells you if a given `DateTime` is contained within the range using the `contains` method;
 - gives you the list of `DateTime` object inside the range as a `DatePeriod` object using the `getRange()` method;
+- can merge with another `Period` object;
+- tells you if it overlaps with another `Period` object;
 
 You can change:
 
@@ -117,6 +119,10 @@ $altRange     = $range->setEnd(new DateTime('2012-02-01'));
 $anotherRange = $range->setDuration('1 MONTH');
 
 //$anotherRange->getDuration() is equal to $altRange->getDuration();
+
+$newRange->overlaps($range) //return true;
+$newPeriod = $range->merge($newRange); //$newPeriod will have the smallest start and the biggest end value
+
 ```
 
 Testing

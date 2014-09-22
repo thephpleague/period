@@ -328,17 +328,54 @@ final class Period
      * return the Datetime included in the Period
      * according to a given interval
      *
-     * @param \DateInterval|string $ttl
+     * @param \DateInterval|string $interval
      *
      * @return \DatePeriod
      */
-    public function getRange($ttl)
+    public function getRange($interval)
     {
         return new DatePeriod(
             $this->start,
-            self::validateDateInterval($ttl),
+            self::validateDateInterval($interval),
             $this->end
         );
+    }
+
+    /**
+     * Tell whether two Period objects overlaps
+     *
+     * @param Period $period
+     *
+     * @return boolean
+     */
+    public function overlaps(Period $period)
+    {
+        return $this->contains($period->start) || $this->contains($period->end);
+    }
+
+    /**
+     * Merge two Period objects to return a new Period object
+     * that englobes both Periods
+     *
+     * @param Period $period
+     *
+     * @return static
+     */
+    public function merge(Period $period)
+    {
+        $start = $this->start;
+        if ($start > $period->start) {
+            $start = $period->start;
+        }
+        $end = $this->end;
+        if ($end < $period->end) {
+            $end = $period->end;
+        }
+        $range        = new static;
+        $range->start = clone $start;
+        $range->end   = clone $end;
+
+        return $range;
     }
 
     /**
