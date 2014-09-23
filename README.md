@@ -61,9 +61,11 @@ Usage
 
 #### Period::__construct($start, $end)
 
-Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor; `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
+Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor. They represent the range endpoints 
 
-The `$end` value represents the range excluded endpoint.
+- The `$start` endpoint represent the starting included endpoint.
+- The `$end` value represents the ending excluded endpoint. `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
+
 
 ```php
 use Bakame\Period;
@@ -72,7 +74,7 @@ $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'))
 
 ```
 
-But this class comes with many named constructors to ease its instantiation:
+To ease instantiation rhe class comes with many named constructors to ease its instantiation:
 
 #### Period::createFromDuration($datetime, $interval)
 
@@ -91,8 +93,10 @@ $period2 = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P
 
 #### Period::createFromWeek($year, $week)
 
-returns a `Period` object with a duration of 1 week for a given year and week. 
-The `$week` parameter is a selected week (between 1 to 53);
+returns a `Period` object with a duration of 1 week for a given year and week.
+
+- The `$year` parameter is a valid year;
+- The `$week` parameter is a selected week (between 1 to 53);
 
 ```php
 use Bakame\Period;
@@ -105,7 +109,9 @@ $period  = Period::createFromWeek(2013, 23);
 #### Period::createFromMonth($year, $month)
 
 returns a `Period` object with a duration of 1 month for a given year and month. 
-The `$month` parameter is a selected month (between 1 to 12);
+
+- The `$year` parameter is a valid year;
+- The `$month` parameter is a selected month (between 1 to 12);
 
 ```php
 use Bakame\Period;
@@ -118,7 +124,9 @@ $period  = Period::createFromMonth(2013, 7);
 #### Period::createFromQuarter($year, $quarter)
 
 returns a `Period` object with a duration of 3 months for a given year and quarter. 
-The `$quarter` parameter is a selected quarter (between 1 to 4);
+
+- The `$year` parameter is a valid year;
+- The `$quarter` parameter is a selected quarter (between 1 to 4);
 
 ```php
 use Bakame\Period;
@@ -131,7 +139,9 @@ $period  = Period::createFromQuarter(2013, 2);
 #### Period::createFromSemester($year, $semester)
 
 returns a `Period` object with a duration of 6 months for a given year and semester. 
-The `$semester` parameter is a selected semester (between 1 and 2);
+
+- The `$year` parameter is a valid year;
+- The `$semester` parameter is a selected semester (between 1 and 2);
 
 ```php
 use Bakame\Period;
@@ -145,6 +155,8 @@ $period  = Period::createFromSemester(2011, 1);
 
 returns a `Period` object with a duration of 1 year for a given year.
 
+- The `$year` parameter is a valid year;
+
 ```php
 use Bakame\Period;
 
@@ -156,11 +168,11 @@ Once you have a instantiated `Period` object you can access its property using g
 
 #### Period::getStart()
 
-Returns the starting `DateTime`;
+Returns the starting **included** endpoint as a `DateTime`.
 
 #### Period::getEnd();
 
-Returns the ending `DateTime`. *This value represents the range excluded endpoint.*
+Returns the ending **excluded** endpoint as a `DateTime`.
 
 #### Period::getDuration()
 
@@ -218,7 +230,7 @@ The `Period` object is an Immutable Value Object so any change to its property r
 
 #### Period::startingOn($datetime)
 
-Returns a new `Period` object with an updated starting `DateTime`.
+Returns a new `Period` object with an updated starting included endpoint.
 
 The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
@@ -234,7 +246,7 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 
 #### Period::endingOn($datetime)
 
-Returns a new `Period` object with an updated excluded endpoint `DateTime`.
+Returns a new `Period` object with an updated excluded endpoint.
 
 The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
@@ -250,7 +262,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 #### Period::withDuration($interval)
 
-Returns a new `Period` object by updating its duration. The excluded endpoint is updated.
+Returns a new `Period` object by updating its duration. The excluded endpoint is updated, the starting included endpoint remains the same.
 
 The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
