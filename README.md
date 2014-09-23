@@ -153,19 +153,19 @@ $period  = Period::createFromYear(1971);
 
 Once you have a instantiated `Period` object you can access its property using getter methods:
 
-#### getStart()
+#### Period::getStart()
 
 Returns the starting `DateTime`;
 
-#### getEnd();
+#### Period::getEnd();
 
 Returns the ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
 
-#### getDuration()
+#### Period::getDuration()
 
 Returns the period duration as a `DateInterval` object.
 
-#### getRange($interval)
+#### Period::getRange($interval)
 
 Returns a `DatePeriod` object that lists `DateTime` objects inside the period separeted by the given `$interval`. The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
@@ -179,7 +179,7 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 //will iterate 12 times
 ```
 
-#### contains($datetime)
+#### Period::contains($datetime)
 
 Tells whether a `$datetime` is contained within the `Period` or not. The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
@@ -193,7 +193,7 @@ $period->contains('1983-04-15'); //returns true;
 $period->contains($period->getEnd()); //returns false because of `getEnd` definition;
 ```
 
-#### overlaps(Period $period)
+#### Period::overlaps(Period $period)
 
 Tells whether two `Period` object overlaps each other or not.
 
@@ -211,7 +211,7 @@ $period2->overlaps($period3); //return true
 
 The `Period` object is an Immutable Value Object so any change to its property returns a new `Period` class. 
 
-#### startingOn($datetime)
+#### Period::startingOn($datetime)
 
 Returns a new `Period` object with an updated starting `DateTime`.
 
@@ -225,7 +225,7 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 // $period->getEnd() equals $newPeriod->getEnd();
 ```
 
-#### endingOn($datetime)
+#### Period::endingOn($datetime)
 
 Returns a new `Period` object with an updated ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
 
@@ -239,7 +239,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 // $period->getStart() equals $newPeriod->getStart();
 ```
 
-#### withDuration($interval)
+#### Period::withDuration($interval)
 
 Returns a new `Period` object by updating its duration. The ending `DateTime` is updated.  *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
 
@@ -253,7 +253,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 // $period->getStart() equals $newPeriod->getStart();
 ```
 
-#### merge(Period $period)
+#### Period::merge(Period $period)
 
 Merge two `Period` object by return a new `Period` object which starting DateTime is the smallest of both objects and the ending DateTime is the biggest between bith objects.
 
