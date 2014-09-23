@@ -78,7 +78,7 @@ final class Period
      */
     private static function validateDateTime($str)
     {
-        if ($str instanceof Datetime) {
+        if ($str instanceof DateTime) {
             return $str;
         }
 
