@@ -39,7 +39,7 @@ You can also use `Bakame\Period` without using Composer by downloading the libra
 
 ```php
 spl_autoload_register(function ($class) {
-    $prefix = 'Bakame\\Period\\';
+    $prefix = 'Bakame\\';
     $base_dir = __DIR__ . '/src/';
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -74,7 +74,7 @@ $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'))
 
 ```
 
-To ease instantiation rhe class comes with many named constructors to ease its instantiation:
+To ease instantiation the class comes with many named constructors to ease its instantiation:
 
 #### Period::createFromDuration($datetime, $interval)
 
