@@ -56,12 +56,20 @@ spl_autoload_register(function ($class) {
 
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
-Instantiation
+Usage
 -------
 
 #### Period::__construct($start, $end)
 
-Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor; `$end` MUST BE greater or equals to `$start` or the instantiation will failed.
+Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor; `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
+The `$end` value represents the first `DateTime` object greater than the last included `DateTime` object in the given period. Please refer to the examples to understand its concrete meaning.
+
+```php
+use Bakame\Period;
+
+$period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
+
+```
 
 But this class comes with many named constructors to ease its instantiation:
 
@@ -72,105 +80,192 @@ returns a `Period` object which starts at `$datetime` with a duration equals to 
 - The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
 - The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
+```php
+use Bakame\Period;
+
+$period  = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
+$period2 = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
+
+```
+
 #### Period::createFromWeek($year, $week)
 
 returns a `Period` object with a duration of 1 week for a given year and week. 
 The `$week` parameter is a selected week (between 1 to 53);
+
+```php
+use Bakame\Period;
+
+$period  = Period::createFromWeek(2013, 23);
+//this period represents the 23rd week of 2013
+
+```
 
 #### Period::createFromMonth($year, $month)
 
 returns a `Period` object with a duration of 1 month for a given year and month. 
 The `$month` parameter is a selected month (between 1 to 12);
 
+```php
+use Bakame\Period;
+
+$period  = Period::createFromMonth(2013, 7);
+//this period represents the month of July 2013
+
+```
+
 #### Period::createFromQuarter($year, $quarter)
 
 returns a `Period` object with a duration of 3 months for a given year and quarter. 
 The `$quarter` parameter is a selected quarter (between 1 to 4);
+
+```php
+use Bakame\Period;
+
+$period  = Period::createFromQuarter(2013, 2);
+//this period represents the second quarter of 2013
+
+```
 
 #### Period::createFromSemester($year, $semester)
 
 returns a `Period` object with a duration of 6 months for a given year and semester. 
 The `$semester` parameter is a selected semester (between 1 and 2);
 
+```php
+use Bakame\Period;
+
+$period  = Period::createFromSemester(2011, 1);
+//this period represents the first semester of 2013
+
+```
+
 #### Period::createFromYear($year)
 
 returns a `Period` object with a duration of 1 year for a given year. 
 
-Usage
--------
+```php
+use Bakame\Period;
 
-The `Period` object is an Immutable Value Object so any change to its property returns a new `Period` class. 
+$period  = Period::createFromYear(1971);
+//this period represents the year 1971
+```
 
-This object has a property `$end` which represents the first `DateTime` object greater than the last included `DateTime` object in the given period. Please refer to the examples to understand its concrete meaning.
+Once you have a instantiated `Period` object you can access its property using getter methods:
 
 #### getStart()
 
-returns the starting `DateTime`;
-
-#### setStart($datetime)
-
-set the starting `DateTime` and returns a new `Period` object
+Returns the starting `DateTime`;
 
 #### getEnd();
 
-return the ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
-
-#### setEnd($datetime)
-
-set the ending `DateTime` and returns a new `Period` object. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
+Returns the ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
 
 #### getDuration()
 
-return the current Period Duration as a `DateInterval` object.
-
-#### setDuration($interval)
-
-modify the Period duration and change the ending `DateTime` value. The methods returns a new `Period` object.
+Returns the period duration as a `DateInterval` object.
 
 #### getRange($interval)
 
-returns a DatePeriod object that lists `DateTime` objects inside the Period separeted by the given `$interval`. The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+Returns a `DatePeriod` object that lists `DateTime` objects inside the period separeted by the given `$interval`. The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+
+```php
+use Bakame\Period;
+
+$period  = Period::createFromYear(1971);
+foreach ($period->getRange('1 MONTH') as $datetime) {
+    echo $datetime->format('Y-m-d H:i:s');
+}
+//will iterate 12 times
+```
 
 #### contains($datetime)
 
 Tells whether a `$datetime` is contained within the `Period` or not. The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
+```php
+use Bakame\Period;
+
+$period = Period::createFromMonth(1983, 4);
+$period->getStart(); //returns DateTime('1983-04-01');
+$period->getEnd(); //returns DateTime('1983-05-01');
+$period->contains('1983-04-15'); //returns true;
+$period->contains($period->getEnd()); //returns false because of `getEnd` definition;
+```
+
 #### overlaps(Period $period)
 
 Tells whether two `Period` object overlaps each other or not.
+
+```php
+use Bakame\Period;
+
+$period1 = Period::createFromMonth(2014, 3);
+$period2 = Period::createFromMonth(2014, 4);
+$period3 = Period::createFromDuration('2014-03-15', '3 WEEKS');
+
+$period1->overlaps($period2); //return false
+$period1->overlaps($period3); //return true
+$period2->overlaps($period3); //return true
+```
+
+The `Period` object is an Immutable Value Object so any change to its property returns a new `Period` class. 
+
+#### startingOn($datetime)
+
+Returns a new `Period` object with an updated starting `DateTime`.
+
+```php
+use Bakame\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->startingOn('2014-02-01');
+$period->getStart(); //returns DateTime('2014-03-01');
+$newPeriod->getStart(); //returns DateTime('2014-02-01');
+// $period->getEnd() equals $newPeriod->getEnd();
+```
+
+#### endingOn($datetime)
+
+Returns a new `Period` object with an updated ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
+
+```php
+use Bakame\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->EndingOn('2014-03-16');
+$period->getEnd(); //returns DateTime('2014-04-01');
+$newPeriod->getEnd(); //returns DateTime('2014-03-16');
+// $period->getStart() equals $newPeriod->getStart();
+```
+
+#### withDuration($interval)
+
+Returns a new `Period` object by updating its duration. The ending `DateTime` is updated.  *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
+
+```php
+use Bakame\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->withDuration('2 WEEKS');
+$period->getEnd(); //returns DateTime('2014-04-01');
+$newPeriod->getEnd(); //returns DateTime('2014-03-16');
+// $period->getStart() equals $newPeriod->getStart();
+```
 
 #### merge(Period $period)
 
 Merge two `Period` object by return a new `Period` object which starting DateTime is the smallest of both objects and the ending DateTime is the biggest between bith objects.
 
-Examples
--------
-
 ```php
 
 use Bakame\Period;
 
-$range = Period::createFromSemester(2012, 1);
-$range->getStart(); //2012-01-01
-$range->getEnd(); //2012-07-01
-$range->getDuration(); //returns a DateInterval object
-$range->contains('2012-07-01'); // returns false;
-$range->contains('2012-06-30'); // returns true;
-
-$newRange     = $range->setEnd('2012-02-01');
-$altRange     = $range->setEnd(new DateTime('2012-02-01'));
-$anotherRange = $range->setDuration('1 MONTH');
-
-//$anotherRange->getDuration() is equal to $altRange->getDuration();
-
-$newRange->overlaps($range) //return true;
-$newPeriod = $range->merge($newRange); //$newPeriod will have the smallest start and the biggest end value
-
-foreach ($range->getRange('1 DAY') as $datetime) {
-    echo $datetime->format('Y-m-d H:i:s'); 
-    //each $datetime is separated by the $interval parameter
-    //in this example '1 DAY'
-}
+$period    = Period::createFromSemester(2012, 1);
+$altPeriod = Period::createFromWeek(2013, 4);
+$newPeriod = $period->merge($altPeriod); 
+// $newPeriod->getStart() equals $period->getStart();
+// $newPeriod->getEnd() equals $altPeriod->getEnd();
 ```
 
 Testing

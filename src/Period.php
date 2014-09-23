@@ -68,6 +68,124 @@ final class Period
     }
 
     /**
+     * Validate a DateTime
+     *
+     * @param \DateTime|string $str
+     *
+     * @return \DateTime
+     *
+     * @throws \RuntimException If The Data can not be converted into a proper DateTime object
+     */
+    private static function validateDateTime($str)
+    {
+        if ($str instanceof Datetime) {
+            return $str;
+        }
+
+        return new DateTime((string) $str);
+    }
+
+    /**
+     * returns the starting DateTime
+     *
+     * @return \DateTime
+     */
+    public function getStart()
+    {
+        return clone $this->start;
+    }
+
+    /**
+     * returns the ending DateTime
+     *
+     * @return \DateTime
+     */
+    public function getEnd()
+    {
+        return clone $this->end;
+    }
+
+    /**
+     * return the Period duration as a DateInterval object
+     *
+     * @return \DateInterval
+     */
+    public function getDuration()
+    {
+        return $this->start->diff($this->end);
+    }
+
+    /**
+     * Tell whether two Period objects overlaps
+     *
+     * @param Period $period
+     *
+     * @return boolean
+     */
+    public function overlaps(Period $period)
+    {
+        return $this->contains($period->start) || $this->contains($period->end);
+    }
+
+    /**
+     * Tells whether a DateTime is contained within the Period object
+     *
+     * <code>
+     *<?php
+     *   $obj = Period::createFromMonth(2014, 3);
+     *   $obj->contains('2014-03-30'); //return true
+     *   $obj->contains('2014-04-01'); //return false
+     *
+     * ?>
+     * </code>
+     *
+     * @param \DateTime|string $datetime
+     *
+     * @return boolean
+     */
+    public function contains($datetime)
+    {
+        $date = self::validateDateTime($datetime);
+
+        return $date >= $this->start && $date < $this->end;
+    }
+
+    /**
+     * return the Datetime included in the Period
+     * according to a given interval
+     *
+     * @param \DateInterval|string $interval
+     *
+     * @return \DatePeriod
+     */
+    public function getRange($interval)
+    {
+        return new DatePeriod(
+            $this->start,
+            self::validateDateInterval($interval),
+            $this->end
+        );
+    }
+
+    /**
+     * Validate a DateInterval
+     *
+     * @param \DateInterval|string $ttl
+     *
+     * @return \DateInterval
+     *
+     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
+     */
+    private static function validateDateInterval($ttl)
+    {
+        if ($ttl instanceof DateInterval) {
+            return $ttl;
+        }
+
+        return DateInterval::createFromDateString((string) $ttl);
+    }
+
+    /**
      * Create a Period object from a starting point and an interval
      *
      * <code>
@@ -116,6 +234,50 @@ final class Period
         $start->setTime(0, 0, 0);
 
         return self::createFromDuration($start, '1 WEEK');
+    }
+
+    /**
+     * Validate a year
+     *
+     * @param integer $year
+     *
+     * @return integer
+     *
+     * @throws \InvalidArgumentException If year is not a valid integer
+     */
+    private static function validateYear($year)
+    {
+        $year = filter_var($year, FILTER_VALIDATE_INT);
+        if (false === $year) {
+            throw new InvalidArgumentException("A Year must be a valid integer");
+        }
+
+        return $year;
+    }
+
+    /**
+     * Validate a integer according to a range
+     *
+     * @param integer $value the value to validate
+     * @param integer $min   the minimun value
+     * @param integer $max   the maximal value
+     *
+     * @return integer the validated value
+     *
+     * @throws \OutOfRangeException If the value is not in the range
+     */
+    private static function validateRange($value, $min, $max)
+    {
+        $res = filter_var(
+            $value,
+            FILTER_VALIDATE_INT,
+            array('options' => array('min_range' => $min, 'max_range' => $max))
+        );
+        if (false === $res) {
+            throw new OutOfRangeException("please verify your value range");
+        }
+
+        return $res;
     }
 
     /**
@@ -209,13 +371,13 @@ final class Period
     }
 
     /**
-     * start date setter
+     * returns a new Period object with a new starting DateTime
      *
      * <code>
      *<?php
      * $period = Period::createFromSemester(2012, 1);
-     * $newRange = $period->setStart('2012-02-01');
-     * $altRange = $period->setStart(new DateTime('2012-02-01'));
+     * $newRange = $period->startingOn('2012-02-01');
+     * $altRange = $period->startingOn(new DateTime('2012-02-01'));
      *
      * ?>
      * </code>
@@ -224,29 +386,19 @@ final class Period
      *
      * @return static
      */
-    public function setStart($datetime)
+    public function startingOn($datetime)
     {
         return new self(self::validateDateTime($datetime), $this->end);
     }
 
     /**
-     * start date getter
-     *
-     * @return \DateTime
-     */
-    public function getStart()
-    {
-        return clone $this->start;
-    }
-
-    /**
-     * start end setter
+     * returns a new Period object with a new ending DateTime
      *
      * <code>
      *<?php
      * $period = Period::createFromSemester(2012, 1);
-     * $newRange = $period->setEnd('2012-02-01');
-     * $altRange = $period->setEnd(new DateTime('2012-02-01'));
+     * $newRange = $period->endingOn('2012-02-01');
+     * $altRange = $period->endingOn(new DateTime('2012-02-01'));
      *
      * ?>
      * </code>
@@ -255,94 +407,21 @@ final class Period
      *
      * @return static
      */
-    public function setEnd($datetime)
+    public function endingOn($datetime)
     {
         return new self($this->start, self::validateDateTime($datetime));
     }
 
     /**
-     * end date getter
-     *
-     * @return \DateTime
-     */
-    public function getEnd()
-    {
-        return clone $this->end;
-    }
-
-    /**
-     * return a new Period with the same start
-     * but with a different duration
+     * returns a new Period object with a new ending DateTime
      *
      * @param \DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
      *
      * @return static
      */
-    public function setDuration($interval)
+    public function withDuration($interval)
     {
         return self::createFromDuration($this->start, $interval);
-    }
-
-    /**
-     * return the Period duration as a DateInterval object
-     *
-     * @return \DateInterval
-     */
-    public function getDuration()
-    {
-        return $this->start->diff($this->end);
-    }
-
-    /**
-     * return the Datetime included in the Period
-     * according to a given interval
-     *
-     * @param \DateInterval|string $interval
-     *
-     * @return \DatePeriod
-     */
-    public function getRange($interval)
-    {
-        return new DatePeriod(
-            $this->start,
-            self::validateDateInterval($interval),
-            $this->end
-        );
-    }
-
-    /**
-     * Tells whether a DateTime is contained within the Period object
-     *
-     * <code>
-     *<?php
-     *   $obj = Period::createFromMonth(2014, 3);
-     *   $obj->contains('2014-03-30'); //return true
-     *   $obj->contains('2014-04-01'); //return false
-     *
-     * ?>
-     * </code>
-     *
-     * @param \DateTime|string $datetime
-     *
-     * @return boolean
-     */
-    public function contains($datetime)
-    {
-        $date = self::validateDateTime($datetime);
-
-        return $date >= $this->start && $date < $this->end;
-    }
-
-    /**
-     * Tell whether two Period objects overlaps
-     *
-     * @param Period $period
-     *
-     * @return boolean
-     */
-    public function overlaps(Period $period)
-    {
-        return $this->contains($period->start) || $this->contains($period->end);
     }
 
     /**
@@ -365,85 +444,5 @@ final class Period
         }
 
         return new self($start, $end);
-    }
-
-    /**
-     * Validate a DateTime
-     *
-     * @param \DateTime|string $str
-     *
-     * @return \DateTime
-     *
-     * @throws \RuntimException If The Data can not be converted into a proper DateTime object
-     */
-    private static function validateDateTime($str)
-    {
-        if ($str instanceof Datetime) {
-            return $str;
-        }
-
-        return new DateTime((string) $str);
-    }
-
-    /**
-     * Validate a DateInterval
-     *
-     * @param \DateInterval|string $ttl
-     *
-     * @return \DateInterval
-     *
-     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
-     */
-    private static function validateDateInterval($ttl)
-    {
-        if ($ttl instanceof DateInterval) {
-            return $ttl;
-        }
-
-        return DateInterval::createFromDateString((string) $ttl);
-    }
-
-    /**
-     * Validate a year
-     *
-     * @param integer $year
-     *
-     * @return integer
-     *
-     * @throws \InvalidArgumentException If year is not a valid integer
-     */
-    private static function validateYear($year)
-    {
-        $year = filter_var($year, FILTER_VALIDATE_INT);
-        if (false === $year) {
-            throw new InvalidArgumentException("A Year must be a valid integer");
-        }
-
-        return $year;
-    }
-
-    /**
-     * Validate a integer according to a range
-     *
-     * @param integer $value the value to validate
-     * @param integer $min   the minimun value
-     * @param integer $max   the maximal value
-     *
-     * @return integer the validated value
-     *
-     * @throws \OutOfRangeException If the value is not in the range
-     */
-    private static function validateRange($value, $min, $max)
-    {
-        $res = filter_var(
-            $value,
-            FILTER_VALIDATE_INT,
-            array('options' => array('min_range' => $min, 'max_range' => $max))
-        );
-        if (false === $res) {
-            throw new OutOfRangeException("please verify your value range");
-        }
-
-        return $res;
     }
 }
