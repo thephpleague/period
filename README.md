@@ -62,7 +62,8 @@ Usage
 #### Period::__construct($start, $end)
 
 Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor; `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
-The `$end` value represents the first `DateTime` object greater than the last included `DateTime` object in the given period. Please refer to the examples to understand its concrete meaning.
+
+The `$end` value represents the range excluded endpoint.
 
 ```php
 use Bakame\Period;
@@ -142,7 +143,7 @@ $period  = Period::createFromSemester(2011, 1);
 
 #### Period::createFromYear($year)
 
-returns a `Period` object with a duration of 1 year for a given year. 
+returns a `Period` object with a duration of 1 year for a given year.
 
 ```php
 use Bakame\Period;
@@ -159,7 +160,7 @@ Returns the starting `DateTime`;
 
 #### Period::getEnd();
 
-Returns the ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
+Returns the ending `DateTime`. *This value represents the range excluded endpoint.*
 
 #### Period::getDuration()
 
@@ -167,7 +168,9 @@ Returns the period duration as a `DateInterval` object.
 
 #### Period::getRange($interval)
 
-Returns a `DatePeriod` object that lists `DateTime` objects inside the period separeted by the given `$interval`. The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+Returns a `DatePeriod` object that lists `DateTime` objects inside the period separeted by the given `$interval`. 
+
+The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 ```php
 use Bakame\Period;
@@ -181,7 +184,9 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 
 #### Period::contains($datetime)
 
-Tells whether a `$datetime` is contained within the `Period` or not. The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
+Tells whether a `$datetime` is contained within the `Period` or not.
+
+The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
 ```php
 use Bakame\Period;
@@ -195,7 +200,7 @@ $period->contains($period->getEnd()); //returns false because of `getEnd` defini
 
 #### Period::overlaps(Period $period)
 
-Tells whether two `Period` object overlaps each other or not.
+Tells whether two `Period` objects overlap each other or not.
 
 ```php
 use Bakame\Period;
@@ -215,6 +220,8 @@ The `Period` object is an Immutable Value Object so any change to its property r
 
 Returns a new `Period` object with an updated starting `DateTime`.
 
+The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
+
 ```php
 use Bakame\Period;
 
@@ -227,7 +234,9 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 
 #### Period::endingOn($datetime)
 
-Returns a new `Period` object with an updated ending `DateTime`. *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
+Returns a new `Period` object with an updated excluded endpoint `DateTime`.
+
+The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
 ```php
 use Bakame\Period;
@@ -241,7 +250,9 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 #### Period::withDuration($interval)
 
-Returns a new `Period` object by updating its duration. The ending `DateTime` is updated.  *This value represents the first `DateTime` object greater than the last included `DateTime` object in the given period.*
+Returns a new `Period` object by updating its duration. The excluded endpoint is updated.
+
+The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 ```php
 use Bakame\Period;
@@ -255,7 +266,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 #### Period::merge(Period $period)
 
-Merge two `Period` object by return a new `Period` object which starting DateTime is the smallest of both objects and the ending DateTime is the biggest between bith objects.
+Merge two `Period` objects by returning a new `Period` object which starting endpoint is the smallest and the excluded endpoint is the biggest between both objects.
 
 ```php
 
