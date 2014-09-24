@@ -1,8 +1,8 @@
 {
     "name": "bakame/period",
     "type": "library",
-    "description" : "Period a tiny class to deal with DateTime Period",
-    "keywords": ["period", "datetime", "dateinterval", "dateperiod"],
+    "description" : "Period an immutable value object to deal with time range",
+    "keywords": ["time", "range", "period", "datetime", "dateinterval", "dateperiod", "compare"],
     "license": "MIT",
     "authors": [
         {
