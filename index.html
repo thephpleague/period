@@ -1,0 +1,352 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Period by nyamsprod</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Period</h1>
+        <p>Time range made easy in PHP</p>
+        <p class="view"><a href="https://github.com/nyamsprod/Period">View the Project on GitHub <small>nyamsprod/Period</small></a></p>
+        <ul>
+          <li><a href="https://github.com/nyamsprod/Period/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nyamsprod/Period/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nyamsprod/Period">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="period" class="anchor" href="#period"><span class="octicon octicon-link"></span></a>Period</h1>
+
+<p><a href="https://twitter.com/nyamsprod"><img src="http://img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square" alt="Author"></a>
+<a href="https://github.com/nyamsprod/Period/releases"><img src="https://img.shields.io/github/release/nyamsprod/Period.svg?style=flat-square" alt="Latest Version"></a>
+<a href="LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="Software License"></a><br><a href="https://travis-ci.org/nyamsprod/Period"><img src="https://img.shields.io/travis/nyamsprod/Period/master.svg?style=flat-square" alt="Build Status"></a>
+<a href="https://scrutinizer-ci.com/g/nyamsprod/Period/code-structure"><img src="https://img.shields.io/scrutinizer/coverage/g/nyamsprod/Period.svg?style=flat-square" alt="Coverage Status"></a>
+<a href="https://scrutinizer-ci.com/g/nyamsprod/Period"><img src="https://img.shields.io/scrutinizer/g/nyamsprod/Period.svg?style=flat-square" alt="Quality Score"></a>
+<a href="https://packagist.org/packages/bakame/period"><img src="https://img.shields.io/packagist/dt/bakame/period.svg?style=flat-square" alt="Total Downloads"></a></p>
+
+<p>This class is based on <a href="http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/">Resolving Feature Envy in the Domain</a> by Mathias Verraes and helps resolve many recurrent issues around Date range selection and usage.</p>
+
+<p>This package is compliant with <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md">PSR-2</a>, and <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md">PSR-4</a>.</p>
+
+<h2>
+<a name="system-requirements" class="anchor" href="#system-requirements"><span class="octicon octicon-link"></span></a>System Requirements</h2>
+
+<p>You need <strong>PHP &gt;= 5.3.0</strong> to use <code>Period</code> but the latest stable version of PHP is recommended.</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Install <code>Period</code> using Composer.</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"bakame/period"</span><span class="p">:</span> <span class="s2">"*"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="going-solo" class="anchor" href="#going-solo"><span class="octicon octicon-link"></span></a>Going Solo</h4>
+
+<p>You can also use <code>Period</code> without using Composer by downloading the library and registing an autoloader function:</p>
+
+<div class="highlight highlight-php"><pre><span class="nb">spl_autoload_register</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$class</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$prefix</span> <span class="o">=</span> <span class="s1">'Period\\'</span><span class="p">;</span>
+    <span class="nv">$base_dir</span> <span class="o">=</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/src/'</span><span class="p">;</span>
+    <span class="nv">$len</span> <span class="o">=</span> <span class="nb">strlen</span><span class="p">(</span><span class="nv">$prefix</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">strncmp</span><span class="p">(</span><span class="nv">$prefix</span><span class="p">,</span> <span class="nv">$class</span><span class="p">,</span> <span class="nv">$len</span><span class="p">)</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// no, move to the next registered autoloader</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nv">$relative_class</span> <span class="o">=</span> <span class="nb">substr</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$len</span><span class="p">);</span>
+    <span class="nv">$file</span> <span class="o">=</span> <span class="nv">$base_dir</span> <span class="o">.</span> <span class="nb">str_replace</span><span class="p">(</span><span class="s1">'\\'</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">,</span> <span class="nv">$relative_class</span><span class="p">)</span> <span class="o">.</span> <span class="s1">'.php'</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">file_exists</span><span class="p">(</span><span class="nv">$file</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">require</span> <span class="nv">$file</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Or, use any other <a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a> compatible autoloader.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h4>
+<a name="period__constructstart-end" class="anchor" href="#period__constructstart-end"><span class="octicon octicon-link"></span></a>Period::__construct($start, $end)</h4>
+
+<p>Both <code>$start</code> and <code>$end</code> parameters are <code>DateTime</code> objects or strings parsable by the <code>DateTime</code> constructor. They represent the range endpoints </p>
+
+<ul>
+<li>The <code>$start</code> endpoint represent <strong>the starting included endpoint</strong>.</li>
+<li>The <code>$end</code> value represents <strong>the ending excluded endpoint</strong>. <code>$end</code> MUST BE greater or equals to <code>$start</code> or the instantiation will failed. </li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Period</span><span class="p">(</span><span class="s1">'2012-04-01 08:30:25'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">DateTime</span><span class="p">(</span><span class="s1">'2013-09-04 12:35:21'</span><span class="p">));</span>
+</pre></div>
+
+<p>To ease instantiation the class comes with many named constructors to ease its instantiation:</p>
+
+<h4>
+<a name="periodcreatefromdurationdatetime-interval" class="anchor" href="#periodcreatefromdurationdatetime-interval"><span class="octicon octicon-link"></span></a>Period::createFromDuration($datetime, $interval)</h4>
+
+<p>returns a <code>Period</code> object which starts at <code>$datetime</code> with a duration equals to <code>$interval</code></p>
+
+<ul>
+<li>The <code>$datetime</code> parameter is a <code>DateTime</code> object or a string parsable by the <code>DateTime</code> constructor;</li>
+<li>The <code>$interval</code> parameter is a <code>DateInterval</code> or a string parsable by the <code>DateInterval::createFromDateString</code> method.</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromDuration</span><span class="p">(</span><span class="s1">'2012-04-01 08:30:25'</span><span class="p">,</span> <span class="s1">'1 DAY'</span><span class="p">);</span>
+<span class="nv">$period2</span> <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromDuration</span><span class="p">(</span><span class="s1">'2012-04-01 08:30:25'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">DateInterval</span><span class="p">(</span><span class="s1">'P1D'</span><span class="p">));</span>
+</pre></div>
+
+<h4>
+<a name="periodcreatefromweekyear-week" class="anchor" href="#periodcreatefromweekyear-week"><span class="octicon octicon-link"></span></a>Period::createFromWeek($year, $week)</h4>
+
+<p>returns a <code>Period</code> object with a duration of 1 week for a given year and week.</p>
+
+<ul>
+<li>The <code>$year</code> parameter is a valid year;</li>
+<li>The <code>$week</code> parameter is a selected week (between 1 to 53);</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromWeek</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">23</span><span class="p">);</span>
+<span class="c1">//this period represents the 23rd week of 2013</span>
+</pre></div>
+
+<h4>
+<a name="periodcreatefrommonthyear-month" class="anchor" href="#periodcreatefrommonthyear-month"><span class="octicon octicon-link"></span></a>Period::createFromMonth($year, $month)</h4>
+
+<p>returns a <code>Period</code> object with a duration of 1 month for a given year and month. </p>
+
+<ul>
+<li>The <code>$year</code> parameter is a valid year;</li>
+<li>The <code>$month</code> parameter is a selected month (between 1 to 12);</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+<span class="c1">//this period represents the month of July 2013</span>
+</pre></div>
+
+<h4>
+<a name="periodcreatefromquarteryear-quarter" class="anchor" href="#periodcreatefromquarteryear-quarter"><span class="octicon octicon-link"></span></a>Period::createFromQuarter($year, $quarter)</h4>
+
+<p>returns a <code>Period</code> object with a duration of 3 months for a given year and quarter. </p>
+
+<ul>
+<li>The <code>$year</code> parameter is a valid year;</li>
+<li>The <code>$quarter</code> parameter is a selected quarter (between 1 to 4);</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromQuarter</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="c1">//this period represents the second quarter of 2013</span>
+</pre></div>
+
+<h4>
+<a name="periodcreatefromsemesteryear-semester" class="anchor" href="#periodcreatefromsemesteryear-semester"><span class="octicon octicon-link"></span></a>Period::createFromSemester($year, $semester)</h4>
+
+<p>returns a <code>Period</code> object with a duration of 6 months for a given year and semester. </p>
+
+<ul>
+<li>The <code>$year</code> parameter is a valid year;</li>
+<li>The <code>$semester</code> parameter is a selected semester (between 1 and 2);</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromSemester</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="c1">//this period represents the first semester of 2013</span>
+</pre></div>
+
+<h4>
+<a name="periodcreatefromyearyear" class="anchor" href="#periodcreatefromyearyear"><span class="octicon octicon-link"></span></a>Period::createFromYear($year)</h4>
+
+<p>returns a <code>Period</code> object with a duration of 1 year for a given year.</p>
+
+<ul>
+<li>The <code>$year</code> parameter is a valid year;</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromYear</span><span class="p">(</span><span class="mi">1971</span><span class="p">);</span>
+<span class="c1">//this period represents the year 1971</span>
+</pre></div>
+
+<p>Once you have a instantiated <code>Period</code> object you can access its property using getter methods:</p>
+
+<h4>
+<a name="periodgetstart" class="anchor" href="#periodgetstart"><span class="octicon octicon-link"></span></a>Period::getStart()</h4>
+
+<p>Returns the starting <strong>included</strong> endpoint as a <code>DateTime</code>.</p>
+
+<h4>
+<a name="periodgetend" class="anchor" href="#periodgetend"><span class="octicon octicon-link"></span></a>Period::getEnd();</h4>
+
+<p>Returns the ending <strong>excluded</strong> endpoint as a <code>DateTime</code>.</p>
+
+<h4>
+<a name="periodgetduration" class="anchor" href="#periodgetduration"><span class="octicon octicon-link"></span></a>Period::getDuration()</h4>
+
+<p>Returns the period duration as a <code>DateInterval</code> object.</p>
+
+<h4>
+<a name="periodgetrangeinterval" class="anchor" href="#periodgetrangeinterval"><span class="octicon octicon-link"></span></a>Period::getRange($interval)</h4>
+
+<p>Returns a <code>DatePeriod</code> object that lists <code>DateTime</code> objects inside the period separeted by the given <code>$interval</code>. </p>
+
+<p>The <code>$interval</code> parameter is a <code>DateInterval</code> or a string parsable by the <code>DateInterval::createFromDateString</code> method.</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromYear</span><span class="p">(</span><span class="mi">1971</span><span class="p">);</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getRange</span><span class="p">(</span><span class="s1">'1 MONTH'</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$datetime</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="nv">$datetime</span><span class="o">-&gt;</span><span class="na">format</span><span class="p">(</span><span class="s1">'Y-m-d H:i:s'</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//will iterate 12 times</span>
+</pre></div>
+
+<h4>
+<a name="periodcontainsdatetime" class="anchor" href="#periodcontainsdatetime"><span class="octicon octicon-link"></span></a>Period::contains($datetime)</h4>
+
+<p>Tells whether a <code>$datetime</code> is contained within the <code>Period</code> or not.</p>
+
+<p>The <code>$datetime</code> parameter is a <code>DateTime</code> object or a string parsable by the <code>DateTime</code> constructor</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span> <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">1983</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getStart</span><span class="p">();</span> <span class="c1">//returns DateTime('1983-04-01');</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getEnd</span><span class="p">();</span> <span class="c1">//returns DateTime('1983-05-01');</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">contains</span><span class="p">(</span><span class="s1">'1983-04-15'</span><span class="p">);</span> <span class="c1">//returns true;</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">contains</span><span class="p">(</span><span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getEnd</span><span class="p">());</span> <span class="c1">//returns false because of `getEnd` definition;</span>
+</pre></div>
+
+<h4>
+<a name="periodoverlapsperiod-period" class="anchor" href="#periodoverlapsperiod-period"><span class="octicon octicon-link"></span></a>Period::overlaps(Period $period)</h4>
+
+<p>Tells whether two <code>Period</code> objects overlap each other or not.</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period1</span> <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="nv">$period2</span> <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nv">$period3</span> <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromDuration</span><span class="p">(</span><span class="s1">'2014-03-15'</span><span class="p">,</span> <span class="s1">'3 WEEKS'</span><span class="p">);</span>
+
+<span class="nv">$period1</span><span class="o">-&gt;</span><span class="na">overlaps</span><span class="p">(</span><span class="nv">$period2</span><span class="p">);</span> <span class="c1">//return false</span>
+<span class="nv">$period1</span><span class="o">-&gt;</span><span class="na">overlaps</span><span class="p">(</span><span class="nv">$period3</span><span class="p">);</span> <span class="c1">//return true</span>
+<span class="nv">$period2</span><span class="o">-&gt;</span><span class="na">overlaps</span><span class="p">(</span><span class="nv">$period3</span><span class="p">);</span> <span class="c1">//return true</span>
+</pre></div>
+
+<p>The <code>Period</code> object is an Immutable Value Object so any change to its property returns a new <code>Period</code> class. </p>
+
+<h4>
+<a name="periodstartingondatetime" class="anchor" href="#periodstartingondatetime"><span class="octicon octicon-link"></span></a>Period::startingOn($datetime)</h4>
+
+<p>Returns a new <code>Period</code> object with an updated starting included endpoint.</p>
+
+<p>The <code>$datetime</code> parameter is a <code>DateTime</code> object or a string parsable by the <code>DateTime</code> constructor</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>    <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="nv">$newPeriod</span> <span class="o">=</span> <span class="nv">$period</span><span class="o">-&gt;</span><span class="na">startingOn</span><span class="p">(</span><span class="s1">'2014-02-01'</span><span class="p">);</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getStart</span><span class="p">();</span> <span class="c1">//returns DateTime('2014-03-01');</span>
+<span class="nv">$newPeriod</span><span class="o">-&gt;</span><span class="na">getStart</span><span class="p">();</span> <span class="c1">//returns DateTime('2014-02-01');</span>
+<span class="c1">// $period-&gt;getEnd() equals $newPeriod-&gt;getEnd();</span>
+</pre></div>
+
+<h4>
+<a name="periodendingondatetime" class="anchor" href="#periodendingondatetime"><span class="octicon octicon-link"></span></a>Period::endingOn($datetime)</h4>
+
+<p>Returns a new <code>Period</code> object with an updated excluded endpoint.</p>
+
+<p>The <code>$datetime</code> parameter is a <code>DateTime</code> object or a string parsable by the <code>DateTime</code> constructor</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>    <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="nv">$newPeriod</span> <span class="o">=</span> <span class="nv">$period</span><span class="o">-&gt;</span><span class="na">EndingOn</span><span class="p">(</span><span class="s1">'2014-03-16'</span><span class="p">);</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getEnd</span><span class="p">();</span> <span class="c1">//returns DateTime('2014-04-01');</span>
+<span class="nv">$newPeriod</span><span class="o">-&gt;</span><span class="na">getEnd</span><span class="p">();</span> <span class="c1">//returns DateTime('2014-03-16');</span>
+<span class="c1">// $period-&gt;getStart() equals $newPeriod-&gt;getStart();</span>
+</pre></div>
+
+<h4>
+<a name="periodwithdurationinterval" class="anchor" href="#periodwithdurationinterval"><span class="octicon octicon-link"></span></a>Period::withDuration($interval)</h4>
+
+<p>Returns a new <code>Period</code> object by updating its duration. The excluded endpoint is updated, the starting included endpoint remains the same.</p>
+
+<p>The <code>$interval</code> parameter is a <code>DateInterval</code> or a string parsable by the <code>DateInterval::createFromDateString</code> method.</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>    <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="nv">$newPeriod</span> <span class="o">=</span> <span class="nv">$period</span><span class="o">-&gt;</span><span class="na">withDuration</span><span class="p">(</span><span class="s1">'2 WEEKS'</span><span class="p">);</span>
+<span class="nv">$period</span><span class="o">-&gt;</span><span class="na">getEnd</span><span class="p">();</span> <span class="c1">//returns DateTime('2014-04-01');</span>
+<span class="nv">$newPeriod</span><span class="o">-&gt;</span><span class="na">getEnd</span><span class="p">();</span> <span class="c1">//returns DateTime('2014-03-16');</span>
+<span class="c1">// $period-&gt;getStart() equals $newPeriod-&gt;getStart();</span>
+</pre></div>
+
+<h4>
+<a name="periodmergeperiod-period" class="anchor" href="#periodmergeperiod-period"><span class="octicon octicon-link"></span></a>Period::merge(Period $period)</h4>
+
+<p>Merge two <code>Period</code> objects by returning a new <code>Period</code> object which starting endpoint is the smallest and the excluded endpoint is the biggest between both objects.</p>
+
+<div class="highlight highlight-php"><pre>
+<span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
+
+<span class="nv">$period</span>    <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromSemester</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nv">$altPeriod</span> <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromWeek</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nv">$newPeriod</span> <span class="o">=</span> <span class="nv">$period</span><span class="o">-&gt;</span><span class="na">merge</span><span class="p">(</span><span class="nv">$altPeriod</span><span class="p">);</span> 
+<span class="c1">// $newPeriod-&gt;getStart() equals $period-&gt;getStart();</span>
+<span class="c1">// $newPeriod-&gt;getEnd() equals $altPeriod-&gt;getEnd();</span>
+</pre></div>
+
+<h2>
+<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h2>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>phpunit
+</pre></div>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Please see <a href="CONTRIBUTING.md">CONTRIBUTING</a> for details.</p>
+
+<h2>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h2>
+
+<ul>
+<li><a href="https://github.com/nyamsprod">ignace nyamagana butera</a></li>
+<li><a href="https://github.com/nyamsprod/Bakame.Tools/graphs/contributors">All Contributors</a></li>
+</ul>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/nyamsprod">nyamsprod</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1200654-50");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
