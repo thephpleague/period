@@ -3,8 +3,9 @@ Period
 
 This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and helps resolve many recurrent issues around Date range selection and usage.
 
+[![Author](http://img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square)](https://twitter.com/nyamsprod)
 [![Latest Version](https://img.shields.io/github/release/nyamsprod/Period.svg?style=flat-square)](https://github.com/nyamsprod/Period/releases)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)<br>
 [![Build Status](https://img.shields.io/travis/nyamsprod/Period/master.svg?style=flat-square)](https://travis-ci.org/nyamsprod/Period)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nyamsprod/Period.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Period/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/nyamsprod/Period.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Period)
@@ -19,7 +20,7 @@ This package is compliant with [PSR-2], and [PSR-4].
 System Requirements
 -------
 
-You need **PHP >= 5.3.0** to use `Bakame\Period` but the latest stable version of PHP is recommended.
+You need **PHP >= 5.3.0** to use `Period` but the latest stable version of PHP is recommended.
 
 Install
 -------
@@ -35,11 +36,11 @@ Install `Period` using Composer.
 ```
 #### Going Solo
 
-You can also use `Bakame\Period` without using Composer by downloading the library and registing an autoloader function:
+You can also use `Period` without using Composer by downloading the library and registing an autoloader function:
 
 ```php
 spl_autoload_register(function ($class) {
-    $prefix = 'Bakame\\';
+    $prefix = 'Period\\';
     $base_dir = __DIR__ . '/src/';
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -68,7 +69,7 @@ Both `$start` and `$end` parameters are `DateTime` objects or strings parsable b
 
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 
@@ -84,7 +85,7 @@ returns a `Period` object which starts at `$datetime` with a duration equals to 
 - The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
 $period2 = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
@@ -99,7 +100,7 @@ returns a `Period` object with a duration of 1 week for a given year and week.
 - The `$week` parameter is a selected week (between 1 to 53);
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromWeek(2013, 23);
 //this period represents the 23rd week of 2013
@@ -114,7 +115,7 @@ returns a `Period` object with a duration of 1 month for a given year and month.
 - The `$month` parameter is a selected month (between 1 to 12);
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromMonth(2013, 7);
 //this period represents the month of July 2013
@@ -129,7 +130,7 @@ returns a `Period` object with a duration of 3 months for a given year and quart
 - The `$quarter` parameter is a selected quarter (between 1 to 4);
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromQuarter(2013, 2);
 //this period represents the second quarter of 2013
@@ -144,7 +145,7 @@ returns a `Period` object with a duration of 6 months for a given year and semes
 - The `$semester` parameter is a selected semester (between 1 and 2);
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromSemester(2011, 1);
 //this period represents the first semester of 2013
@@ -158,7 +159,7 @@ returns a `Period` object with a duration of 1 year for a given year.
 - The `$year` parameter is a valid year;
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromYear(1971);
 //this period represents the year 1971
@@ -185,7 +186,7 @@ Returns a `DatePeriod` object that lists `DateTime` objects inside the period se
 The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period  = Period::createFromYear(1971);
 foreach ($period->getRange('1 MONTH') as $datetime) {
@@ -201,7 +202,7 @@ Tells whether a `$datetime` is contained within the `Period` or not.
 The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period = Period::createFromMonth(1983, 4);
 $period->getStart(); //returns DateTime('1983-04-01');
@@ -215,7 +216,7 @@ $period->contains($period->getEnd()); //returns false because of `getEnd` defini
 Tells whether two `Period` objects overlap each other or not.
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period1 = Period::createFromMonth(2014, 3);
 $period2 = Period::createFromMonth(2014, 4);
@@ -235,7 +236,7 @@ Returns a new `Period` object with an updated starting included endpoint.
 The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->startingOn('2014-02-01');
@@ -251,7 +252,7 @@ Returns a new `Period` object with an updated excluded endpoint.
 The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->EndingOn('2014-03-16');
@@ -267,7 +268,7 @@ Returns a new `Period` object by updating its duration. The excluded endpoint is
 The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
 
 ```php
-use Bakame\Period;
+use Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->withDuration('2 WEEKS');
@@ -282,7 +283,7 @@ Merge two `Period` objects by returning a new `Period` object which starting end
 
 ```php
 
-use Bakame\Period;
+use Period\Period;
 
 $period    = Period::createFromSemester(2012, 1);
 $altPeriod = Period::createFromWeek(2013, 4);

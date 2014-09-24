@@ -1,6 +1,6 @@
 <?php
 /**
-* This file is part of the Bakame.Period library
+* This file is part of the Period library
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/nyamsprod/Period/
@@ -10,7 +10,7 @@
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
 */
-namespace Bakame;
+namespace Period;
 
 use DateTime;
 use DateInterval;
