@@ -1,8 +1,6 @@
 Period
 ============
 
-This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and helps resolve many recurrent issues around Date range selection and usage.
-
 [![Author](http://img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square)](https://twitter.com/nyamsprod)
 [![Latest Version](https://img.shields.io/github/release/nyamsprod/Period.svg?style=flat-square)](https://github.com/nyamsprod/Period/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)<br>
@@ -11,6 +9,7 @@ This class is based on [Resolving Feature Envy in the Domain](http://verraes.net
 [![Quality Score](https://img.shields.io/scrutinizer/g/nyamsprod/Period.svg?style=flat-square)](https://scrutinizer-ci.com/g/nyamsprod/Period)
 [![Total Downloads](https://img.shields.io/packagist/dt/bakame/period.svg?style=flat-square)](https://packagist.org/packages/bakame/period)
 
+This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and helps resolve many recurrent issues around Date range selection and usage.
 
 This package is compliant with [PSR-2], and [PSR-4].
 
@@ -64,15 +63,14 @@ Usage
 
 Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor. They represent the range endpoints 
 
-- The `$start` endpoint represent the starting included endpoint.
-- The `$end` value represents the ending excluded endpoint. `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
+- The `$start` endpoint represent **the starting included endpoint**.
+- The `$end` value represents **the ending excluded endpoint**. `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
 
 
 ```php
 use Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
-
 ```
 
 To ease instantiation the class comes with many named constructors to ease its instantiation:
@@ -89,7 +87,6 @@ use Period\Period;
 
 $period  = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
 $period2 = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
-
 ```
 
 #### Period::createFromWeek($year, $week)
@@ -104,7 +101,6 @@ use Period\Period;
 
 $period  = Period::createFromWeek(2013, 23);
 //this period represents the 23rd week of 2013
-
 ```
 
 #### Period::createFromMonth($year, $month)
@@ -119,7 +115,6 @@ use Period\Period;
 
 $period  = Period::createFromMonth(2013, 7);
 //this period represents the month of July 2013
-
 ```
 
 #### Period::createFromQuarter($year, $quarter)
@@ -134,7 +129,6 @@ use Period\Period;
 
 $period  = Period::createFromQuarter(2013, 2);
 //this period represents the second quarter of 2013
-
 ```
 
 #### Period::createFromSemester($year, $semester)
@@ -149,7 +143,6 @@ use Period\Period;
 
 $period  = Period::createFromSemester(2011, 1);
 //this period represents the first semester of 2013
-
 ```
 
 #### Period::createFromYear($year)
