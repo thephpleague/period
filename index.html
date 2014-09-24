@@ -120,7 +120,7 @@
 
 <ul>
 <li>The <code>$year</code> parameter is a valid year;</li>
-<li>The <code>$week</code> parameter is a selected week (between 1 to 53);</li>
+<li>The <code>$week</code> parameter is a selected week (between 1 and 53 included);</li>
 </ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
 
 <span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromWeek</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">23</span><span class="p">);</span>
@@ -134,7 +134,7 @@
 
 <ul>
 <li>The <code>$year</code> parameter is a valid year;</li>
-<li>The <code>$month</code> parameter is a selected month (between 1 to 12);</li>
+<li>The <code>$month</code> parameter is a selected month (between 1 and 12 included);</li>
 </ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
 
 <span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromMonth</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
@@ -148,7 +148,7 @@
 
 <ul>
 <li>The <code>$year</code> parameter is a valid year;</li>
-<li>The <code>$quarter</code> parameter is a selected quarter (between 1 to 4);</li>
+<li>The <code>$quarter</code> parameter is a selected quarter (between 1 and 4 included);</li>
 </ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
 
 <span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromQuarter</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
@@ -162,7 +162,7 @@
 
 <ul>
 <li>The <code>$year</code> parameter is a valid year;</li>
-<li>The <code>$semester</code> parameter is a selected semester (between 1 and 2);</li>
+<li>The <code>$semester</code> parameter is a selected semester (between 1 and 2 included);</li>
 </ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
 
 <span class="nv">$period</span>  <span class="o">=</span> <span class="nx">Period</span><span class="o">::</span><span class="na">createFromSemester</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
