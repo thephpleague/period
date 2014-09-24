@@ -56,6 +56,11 @@ spl_autoload_register(function ($class) {
 
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
+Documentation
+------
+
+`Period` is [fully documented](http://nyamsprod.github.io/Period/). You can contribute to its documentation in the [gh-pages branch](https://github.com/nyamsprod/Period/tree/gh-pages).
+
 Usage
 -------
 
