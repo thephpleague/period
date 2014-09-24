@@ -39,7 +39,7 @@
 
 <p>This class is based on <a href="http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/">Resolving Feature Envy in the Domain</a> by Mathias Verraes and helps resolve many recurrent issues around Date range selection and usage.</p>
 
-<p>This package is compliant with <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md">PSR-2</a>, and <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md">PSR-4</a>.</p>
+<p>This package is compliant with <a href="http://www.php-fig.org/psr/psr-2/">PSR-2</a>, and <a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a>.</p>
 
 <h2>
 <a name="system-requirements" class="anchor" href="#system-requirements"><span class="octicon octicon-link"></span></a>System Requirements</h2>
@@ -91,7 +91,7 @@
 
 <ul>
 <li>The <code>$start</code> endpoint represent <strong>the starting included endpoint</strong>.</li>
-<li>The <code>$end</code> value represents <strong>the ending excluded endpoint</strong>. <code>$end</code> MUST BE greater or equals to <code>$start</code> or the instantiation will failed. </li>
+<li>The <code>$end</code> value represents <strong>the ending excluded endpoint</strong>. <code>$end</code> <strong>must be</strong> greater or equals to <code>$start</code> or the instantiation will failed. </li>
 </ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Period\Period</span><span class="p">;</span>
 
 <span class="nv">$period</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Period</span><span class="p">(</span><span class="s1">'2012-04-01 08:30:25'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">DateTime</span><span class="p">(</span><span class="s1">'2013-09-04 12:35:21'</span><span class="p">));</span>
@@ -321,14 +321,14 @@
 <h2>
 <a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
 
-<p>Please see <a href="CONTRIBUTING.md">CONTRIBUTING</a> for details.</p>
+<p>Please see <a href="https://github.com/nyamsprod/Period/CONTRIBUTING.md">CONTRIBUTING</a> for details.</p>
 
 <h2>
 <a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h2>
 
 <ul>
 <li><a href="https://github.com/nyamsprod">ignace nyamagana butera</a></li>
-<li><a href="https://github.com/nyamsprod/Bakame.Tools/graphs/contributors">All Contributors</a></li>
+<li><a href="https://github.com/nyamsprod/Period/graphs/contributors">All Contributors</a></li>
 </ul>
       </section>
     </div>
