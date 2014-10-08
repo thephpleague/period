@@ -1,6 +1,28 @@
 #Changelog
 All Notable changes to `Period` will be documented in this file
 
+## 1.1.0 - YYYY-MM-DD
+
+### Added
+- Comparing methods : 
+    - `Period::sameValueAs`,
+    - `Period::compareDuration`,
+    - `Period::durationGreaterThan`,
+    - `Period::durationLessThan`,
+    - `Period::sameDurationAs`,
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.0.1 - 2014-10-08
 
 ### Added

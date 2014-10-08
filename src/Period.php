@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/nyamsprod/Period/
-* @version 1.0.0
+* @version 1.1.0
 * @package Bakame.Period
 *
 * For the full copyright and license information, please view the LICENSE
@@ -66,19 +66,19 @@ final class Period
     /**
      * Validate a DateTime
      *
-     * @param \DateTime|string $str
+     * @param \DateTime|string $datetime
      *
      * @return \DateTime
      *
      * @throws \RuntimException If The Data can not be converted into a proper DateTime object
      */
-    private static function validateDateTime($str)
+    private static function validateDateTime($datetime)
     {
-        if ($str instanceof DateTime) {
-            return $str;
+        if ($datetime instanceof DateTime) {
+            return $datetime;
         }
 
-        return new DateTime((string) $str);
+        return new DateTime((string) $datetime);
     }
 
     /**
@@ -102,13 +102,62 @@ final class Period
     }
 
     /**
-     * return the Period duration as a DateInterval object
+     * return the Datetime included in the Period
+     * according to a given interval
+     *
+     * @param \DateInterval|integer|string $interval The range interval
+     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
+     *
+     * @return \DatePeriod
+     */
+    public function getRange($interval)
+    {
+        return new DatePeriod(
+            $this->start,
+            self::validateDateInterval($interval),
+            $this->end
+        );
+    }
+
+    /**
+     * Validate a DateInterval
+     *
+     * @param \DateInterval|integer|string $interval The Period duration
+     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return \DateInterval
+     *
+     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
      */
-    public function getDuration()
+    private static function validateDateInterval($interval)
     {
-        return $this->start->diff($this->end);
+        if ($interval instanceof DateInterval) {
+            return $interval;
+        }
+        $res = filter_var(
+            $interval,
+            FILTER_VALIDATE_INT,
+            array('options' => array('min_range' => 0))
+        );
+        if (false !== $res) {
+            return new DateInterval('PT'.$res.'S');
+        }
+
+        return DateInterval::createFromDateString((string) $interval);
+    }
+
+    /**
+     * Tell whether both Period object are equals in duration AND endpoints
+     *
+     * @param Period $period
+     *
+     * @return true
+     */
+    public function sameValueAs(Period $period)
+    {
+        return $this->start == $period->start && $this->end == $period->end;
     }
 
     /**
@@ -147,50 +196,72 @@ final class Period
     }
 
     /**
-     * return the Datetime included in the Period
-     * according to a given interval
+     * return the Period duration as a DateInterval object
      *
-     * @param \DateInterval|integer|string $interval The range interval
-     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
-     * @return \DatePeriod
+     * @return \DateInterval
      */
-    public function getRange($interval)
+    public function getDuration()
     {
-        return new DatePeriod(
-            $this->start,
-            self::validateDateInterval($interval),
-            $this->end
-        );
+        return $this->start->diff($this->end);
     }
 
     /**
-     * Validate a DateInterval
+     * Compare two Period objects according to their duration
      *
-     * @param \DateInterval|integer|string $ttl The Period duration
-     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
+     * @param Period $period
      *
-     * @return \DateInterval
-     *
-     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
+     * @return integer
      */
-    private static function validateDateInterval($ttl)
+    public function compareDuration(Period $period)
     {
-        if ($ttl instanceof DateInterval) {
-            return $ttl;
-        }
-        $res = filter_var(
-            $ttl,
-            FILTER_VALIDATE_INT,
-            array('options' => array('min_range' => 0))
-        );
-        if (false !== $res) {
-            return new DateInterval('PT'.$res.'S');
+        $date = new DateTime;
+        $alt  = clone $date;
+
+        $date->add($this->getDuration());
+        $alt->add($period->getDuration());
+        if ($date > $alt) {
+            return 1;
+        } elseif ($date < $alt) {
+            return -1;
         }
 
-        return DateInterval::createFromDateString((string) $ttl);
+        return 0;
+    }
+
+    /**
+     * Tell whether the given object duration is less than the current Period object
+     *
+     * @param Period $period
+     *
+     * @return true
+     */
+    public function durationGreaterThan(Period $period)
+    {
+        return 1 === $this->compareDuration($period);
+    }
+
+    /**
+     * Tell whether the given object duration is greater than the current Period object
+     *
+     * @param Period $period
+     *
+     * @return true
+     */
+    public function durationLessThan(Period $period)
+    {
+        return -1 === $this->compareDuration($period);
+    }
+
+    /**
+     * Tell whether the given object duration is equals to the current Period object
+     *
+     * @param Period $period
+     *
+     * @return true
+     */
+    public function sameDurationAs(Period $period)
+    {
+        return 0 === $this->compareDuration($period);
     }
 
     /**
@@ -208,17 +279,17 @@ final class Period
      * </code>
      *
      * @param \DateTime|string             $start    start date
-     * @param \DateInterval|integer|string $interval period duration
-     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
+     * @param \DateInterval|integer|string $duration period duration
+     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return static
      */
-    public static function createFromDuration($start, $interval)
+    public static function createFromDuration($start, $duration)
     {
         $start = self::validateDateTime($start);
         $end   = clone $start;
-        $end->add(self::validateDateInterval($interval));
+        $end->add(self::validateDateInterval($duration));
 
         return new self($start, $end);
     }
@@ -393,13 +464,13 @@ final class Period
      * ?>
      * </code>
      *
-     * @param \DateTime|string $datetime
+     * @param \DateTime|string $start
      *
      * @return static
      */
-    public function startingOn($datetime)
+    public function startingOn($start)
     {
-        return new self(self::validateDateTime($datetime), $this->end);
+        return new self(self::validateDateTime($start), $this->end);
     }
 
     /**
@@ -414,27 +485,27 @@ final class Period
      * ?>
      * </code>
      *
-     * @param \DateTime|string $datetime
+     * @param \DateTime|string $end
      *
      * @return static
      */
-    public function endingOn($datetime)
+    public function endingOn($end)
     {
-        return new self($this->start, self::validateDateTime($datetime));
+        return new self($this->start, self::validateDateTime($end));
     }
 
     /**
      * returns a new Period object with a new ending DateTime
      *
-     * @param \DateInterval|integer|string $interval period duration
-     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
+     * @param \DateInterval|integer|string $duration period duration
+     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return static
      */
-    public function withDuration($interval)
+    public function withDuration($duration)
     {
-        return self::createFromDuration($this->start, $interval);
+        return self::createFromDuration($this->start, $duration);
     }
 
     /**

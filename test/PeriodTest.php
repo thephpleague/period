@@ -215,4 +215,19 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $period->merge($altPeriod));
         $this->assertEquals($expected, $altPeriod->merge($period));
     }
+
+    public function testCompareMethods()
+    {
+        $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
+        $other = Period::createFromDuration('2013-01-01', '1 MONTH');
+        $same  = Period::createFromMonth(2012, 1);
+
+        $this->assertTrue($orig->durationGreaterThan($alt));
+        $this->assertFalse($orig->durationLessThan($alt));
+        $this->assertTrue($alt->durationLessThan($other));
+        $this->assertTrue($orig->sameDurationAs($other));
+        $this->assertFalse($orig->sameValueAs($other));
+        $this->assertTrue($orig->sameValueAs($same));
+    }
 }

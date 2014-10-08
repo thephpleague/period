@@ -56,21 +56,38 @@ spl_autoload_register(function ($class) {
 
 Or, use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
-Documentation
-------
+Definitions
+-------
 
-`Period` is [fully documented](http://nyamsprod.github.io/Period/). You can contribute to its documentation in the [gh-pages branch](https://github.com/nyamsprod/Period/tree/gh-pages).
+- **endpoint** - A period consists of a continuous portion of time between two positions in time called endpoints. This library assumes that the starting endpoint is included into the period. Conversely, the ending endpoint is excluded from the specified period. The endpoints are defined as DateTime objects.
 
-Usage
+- **duration** - The continuous portion of time between endpoints is called the duration. This duration is defined as a DateInterval object.
+
+Arguments
+-------
+
+Unless stated otherwise, whenever a `DateTime` object is expected you can provide:
+
+- a `DateTime` object;
+- a string parsable by the `DateTime` constructor.
+
+Unless stated otherwise, whenever a `DateInterval` object is expected you can provide:
+
+- a `DateInterval` object;
+- a string parsable by the `DateInterval::createFromDateString` method.
+- an integer interpreted as the duration expressed in seconds.
+
+Instantiation
 -------
 
 #### Period::__construct($start, $end)
 
-Both `$start` and `$end` parameters are `DateTime` objects or strings parsable by the `DateTime` constructor. They represent the range endpoints 
+Both `$start` and `$end` parameters represent the period endpoints as `DateTime` objects. 
 
-- The `$start` endpoint represent **the starting included endpoint**.
-- The `$end` value represents **the ending excluded endpoint**. `$end` MUST BE greater or equals to `$start` or the instantiation will failed. 
+- The `$start` endpoint represents **the starting included endpoint**.
+- The `$end` value represents **the ending excluded endpoint**. 
 
+`$end` **must be** greater or equal to `$start` or the instantiation will failed. 
 
 ```php
 use Period\Period;
@@ -78,31 +95,28 @@ use Period\Period;
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ```
 
-To ease instantiation the class comes with many named constructors to ease its instantiation:
+To ease instantiation the class comes with many named constructors:
 
-#### Period::createFromDuration($datetime, $interval)
+#### Period::createFromDuration($start, $duration)
 
-returns a `Period` object which starts at `$datetime` with a duration equals to `$interval`
+returns a `Period` object which starts at `$start` with a duration equals to `$duration`
 
-- The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
-- The `$interval` parameter can be:
-    - a `DateInterval` object
-    - a string parsable by the `DateInterval::createFromDateString` method.
-    - an integer interpreted as the number of seconds after which the period MUST be considered over
+- The `$start` represents **the starting included endpoint** expressed as `DateTime` object.
+- The `$duration` parameter is a `DateInterval` object;
 
 ```php
 use Period\Period;
 
-$period  = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
-$period2 = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
-$period3 = Period::createFromDuration('2012-04-01 08:30:25', 86400);
+$period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
+$alt    = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
+$other  = Period::createFromDuration(new DateTime('2012-04-01 08:30:25'), 86400);
 ```
 #### Period::createFromWeek($year, $week)
 
 returns a `Period` object with a duration of 1 week for a given year and week.
 
 - The `$year` parameter is a valid year;
-- The `$week` parameter is a selected week (between 1 to 53);
+- The `$week` parameter is a selected week (between 1 and 53);
 
 ```php
 use Period\Period;
@@ -116,7 +130,7 @@ $period  = Period::createFromWeek(2013, 23);
 returns a `Period` object with a duration of 1 month for a given year and month. 
 
 - The `$year` parameter is a valid year;
-- The `$month` parameter is a selected month (between 1 to 12);
+- The `$month` parameter is a selected month (between 1 and 12);
 
 ```php
 use Period\Period;
@@ -130,7 +144,7 @@ $period  = Period::createFromMonth(2013, 7);
 returns a `Period` object with a duration of 3 months for a given year and quarter. 
 
 - The `$year` parameter is a valid year;
-- The `$quarter` parameter is a selected quarter (between 1 to 4);
+- The `$quarter` parameter is a selected quarter (between 1 and 4);
 
 ```php
 use Period\Period;
@@ -166,7 +180,10 @@ $period  = Period::createFromYear(1971);
 //this period represents the year 1971
 ```
 
-Once you have a instantiated `Period` object you can access its property using getter methods:
+Accessing properties
+-------
+
+Once you have a instantiated `Period` object you can access its properties using getter methods:
 
 #### Period::getStart()
 
@@ -182,9 +199,7 @@ Returns the period duration as a `DateInterval` object.
 
 #### Period::getRange($interval)
 
-Returns a `DatePeriod` object that lists `DateTime` objects inside the period separeted by the given `$interval`. 
-
-The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+Returns a `DatePeriod` object that lists `DateTime` objects inside the period separated by the given `$interval` expressed as a `DateInterval` object.
 
 ```php
 use Period\Period;
@@ -200,8 +215,6 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 
 Tells whether a `$datetime` is contained within the `Period` or not.
 
-The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
-
 ```php
 use Period\Period;
 
@@ -210,6 +223,24 @@ $period->getStart(); //returns DateTime('1983-04-01');
 $period->getEnd(); //returns DateTime('1983-05-01');
 $period->contains('1983-04-15'); //returns true;
 $period->contains($period->getEnd()); //returns false because of `getEnd` definition;
+```
+ 
+Comparing Period objects
+-------
+
+#### Period::sameValueAs(Period $period)
+
+Tells whether two `Period` objects shares the same endpoints.
+
+```php
+use Period\Period;
+
+$orig  = Period::createFromMonth(2014, 3);
+$other = Period::createFromMonth(2014, 4);
+$alt   = Period::createFromDuration('2014-03-01', '1 MONTH');
+
+$orig->sameValueAs($other); //return false
+$orig->sameValueAs($alt); //return true
 ```
 
 #### Period::overlaps(Period $period)
@@ -228,13 +259,47 @@ $period1->overlaps($period3); //return true
 $period2->overlaps($period3); //return true
 ```
 
+#### Period::compareDuration(Period $period)
+
+Compare two `Period` objects according to their duration.
+
+- Return `1` if the current object duration is greater than the submitted `$period` duration;
+- Return `-1` if the current object duration is less than the submitted `$period` duration;
+- Return `0` if the current object duration is equal to the submitted `$period` duration;
+
+To ease the method usage you can rely on the following aliases methods that only return boolean values:
+
+- **`Period::durationGreaterThan(Period $period)`** return `true` when `Period::compareDuration(Period $period)` returns `1`;
+- **`Period::durationLessThan(Period $period)`** return `true` when `Period::compareDuration(Period $period)` returns `-1`;
+- **`Period::sameDurationAs(Period $period)`** return `true` when `Period::compareDuration(Period $period)` returns `0`;
+
+```php
+$orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
+$alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
+$other = Period::createFromDuration('2013-01-01', '1 MONTH');
+
+$orig->compareDuration($alt);     //return 1
+$orig->durationGreaterThan($alt); //return true
+$orig->durationLessThan($alt);    //return false
+
+$alt->compareDuration($other);     //return -1
+$alt->durationLessThan($other);    //return true
+$alt->durationGreaterThan($other); //return false
+
+$orig->compareDuration($other);   //return 0
+$orig->sameDurationAs($other);    //return true
+$orig->sameValueAs($other);       //return false
+//the duration between $orig and $other are equals but not the endpoints!!
+```
+ 
+Period as a Immutable Value Object
+-------
+
 The `Period` object is an Immutable Value Object so any change to its property returns a new `Period` class. 
 
-#### Period::startingOn($datetime)
+#### Period::startingOn($start)
 
-Returns a new `Period` object with an updated starting included endpoint.
-
-The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
+Returns a new `Period` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
 
 ```php
 use Period\Period;
@@ -246,11 +311,9 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 // $period->getEnd() equals $newPeriod->getEnd();
 ```
 
-#### Period::endingOn($datetime)
+#### Period::endingOn($end)
 
-Returns a new `Period` object with an updated excluded endpoint.
-
-The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor
+Returns a new `Period` object with `$end` as the new **ending excluded endpoint** defined as a `DateTime` object.
 
 ```php
 use Period\Period;
@@ -262,16 +325,11 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 // $period->getStart() equals $newPeriod->getStart();
 ```
 
-#### Period::withDuration($interval)
+#### Period::withDuration($duration)
 
-Returns a new `Period` object by updating its duration. The excluded endpoint is updated, the starting included endpoint remains the same.
+Returns a new `Period` object by updating its duration. Only the excluded endpoint is updated.
 
-The `$interval` parameter can be:
-
-- a `DateInterval` object
-- a string parsable by the `DateInterval::createFromDateString` method.
-- an integer interpreted as the number of seconds after which the period MUST be considered finished
-
+The `$duration` parameter is expressed as a `DateInterval` object.
 
 ```php
 use Period\Period;
