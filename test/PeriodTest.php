@@ -180,6 +180,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($start->diff($end), $period->getDuration());
     }
 
+    public function testUsingTimestampAsInterval()
+    {
+        $period1 = Period::createFromDuration('2014-03-12', '1 HOUR');
+        $period2 = Period::createFromDuration('2014-03-12', 3600);
+        $this->assertEquals($period1->getEnd(), $period2->getEnd());
+
+    }
+
     public function testSetDuration()
     {
         $expected = Period::createFromMonth(2014, 3);

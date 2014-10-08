@@ -29,7 +29,7 @@ Install `Period` using Composer.
 ```json
 {
     "require": {
-        "bakame/period": "*"
+        "bakame/period": "1.*"
     }
 }
 ```
@@ -85,15 +85,18 @@ To ease instantiation the class comes with many named constructors to ease its i
 returns a `Period` object which starts at `$datetime` with a duration equals to `$interval`
 
 - The `$datetime` parameter is a `DateTime` object or a string parsable by the `DateTime` constructor;
-- The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+- The `$interval` parameter can be:
+    - a `DateInterval` object
+    - a string parsable by the `DateInterval::createFromDateString` method.
+    - an integer interpreted as the number of seconds after which the period MUST be considered over
 
 ```php
 use Period\Period;
 
 $period  = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
 $period2 = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
+$period3 = Period::createFromDuration('2012-04-01 08:30:25', 86400);
 ```
-
 #### Period::createFromWeek($year, $week)
 
 returns a `Period` object with a duration of 1 week for a given year and week.
@@ -263,7 +266,12 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 Returns a new `Period` object by updating its duration. The excluded endpoint is updated, the starting included endpoint remains the same.
 
-The `$interval` parameter is a `DateInterval` or a string parsable by the `DateInterval::createFromDateString` method.
+The `$interval` parameter can be:
+
+- a `DateInterval` object
+- a string parsable by the `DateInterval::createFromDateString` method.
+- an integer interpreted as the number of seconds after which the period MUST be considered finished
+
 
 ```php
 use Period\Period;

@@ -29,18 +29,14 @@ use OutOfRangeException;
 final class Period
 {
     /**
-     * The Range start date
+     * The date period starting included endpoint
      *
      * @var \DateTime
      */
     private $start;
 
     /**
-     * The Range end date
-     * This date is not included in the Period
-     * It is the first DateTime object greater than
-     * the last DateTime object included in the given
-     * Period
+     * The date period ending excluded endpoint
      *
      * @var \DateTime
      */
@@ -154,7 +150,9 @@ final class Period
      * return the Datetime included in the Period
      * according to a given interval
      *
-     * @param \DateInterval|string $interval
+     * @param \DateInterval|integer|string $interval The range interval
+     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return \DatePeriod
      */
@@ -170,7 +168,9 @@ final class Period
     /**
      * Validate a DateInterval
      *
-     * @param \DateInterval|string $ttl
+     * @param \DateInterval|integer|string $ttl The Period duration
+     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return \DateInterval
      *
@@ -181,6 +181,14 @@ final class Period
         if ($ttl instanceof DateInterval) {
             return $ttl;
         }
+        $res = filter_var(
+            $ttl,
+            FILTER_VALIDATE_INT,
+            array('options' => array('min_range' => 0))
+        );
+        if (false !== $res) {
+            return new DateInterval('PT'.$res.'S');
+        }
 
         return DateInterval::createFromDateString((string) $ttl);
     }
@@ -190,16 +198,19 @@ final class Period
      *
      * <code>
      *<?php
-     * $period = Period::createFromDuration('2012-01-01', '3 MONTH');
-     * $period = Period::createFromDuration(new DateTime('2012-01-01'), new DateInterval('P3M'));
-     * $period = Period::createFromDuration(new DateTime('2012-01-01'), '3 MONTH');
-     * $period = Period::createFromDuration('2012-01-01', new DateInterval('P3M'));
+     * $period = Period::createFromDuration('2012-01-01', '1 HOUR');
+     * $period = Period::createFromDuration(new DateTime('2012-01-01'), new DateInterval('PT1H'));
+     * $period = Period::createFromDuration(new DateTime('2012-01-01'), '1 HOUR');
+     * $period = Period::createFromDuration('2012-01-01', new DateInterval('PT1H'));
+     * $period = Period::createFromDuration('2012-01-01', 3600);
      *
      * ?>
      * </code>
      *
-     * @param \DateTime|string     $start    start date
-     * @param \DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
+     * @param \DateTime|string             $start    start date
+     * @param \DateInterval|integer|string $interval period duration
+     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return static
      */
@@ -371,7 +382,7 @@ final class Period
     }
 
     /**
-     * returns a new Period object with a new starting DateTime
+     * returns a new Period object with a new includedd starting endpoint
      *
      * <code>
      *<?php
@@ -392,7 +403,7 @@ final class Period
     }
 
     /**
-     * returns a new Period object with a new ending DateTime
+     * returns a new Period object with a new excluded ending endpoint
      *
      * <code>
      *<?php
@@ -415,7 +426,9 @@ final class Period
     /**
      * returns a new Period object with a new ending DateTime
      *
-     * @param \DateInterval|string $interval interval or a string understood by DateInterval::createFromDateString
+     * @param \DateInterval|integer|string $interval period duration
+     *   - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *   - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
      *
      * @return static
      */
