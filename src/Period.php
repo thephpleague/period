@@ -20,11 +20,7 @@ use LogicException;
 use OutOfRangeException;
 
 /**
-* A value object class to manipulate Date period
-*
-* @package Bakame.Period
-* @since 0.1.0
-*
+* A value object class to manipulate Time Range
 */
 final class Period
 {
@@ -57,7 +53,9 @@ final class Period
         $start = self::validateDateTime($start);
         $end   = self::validateDateTime($end);
         if ($start > $end) {
-            throw new LogicException('the end must be greater or equals to the start');
+            throw new LogicException(
+                'the ending endpoint must be greater or equal to the starting endpoint'
+            );
         }
         $this->start = clone $start;
         $this->end   = clone $end;
@@ -356,7 +354,9 @@ final class Period
             array('options' => array('min_range' => $min, 'max_range' => $max))
         );
         if (false === $res) {
-            throw new OutOfRangeException("please verify your value range");
+            throw new OutOfRangeException(
+                "the submitted value is not contained within the valid range"
+            );
         }
 
         return $res;
