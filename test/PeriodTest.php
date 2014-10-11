@@ -1,6 +1,6 @@
 <?php
 
-use Period\Period;
+use League\Period\Period;
 
 class PeriodTest extends PHPUnit_Framework_TestCase
 {

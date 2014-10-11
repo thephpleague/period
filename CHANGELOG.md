@@ -1,9 +1,10 @@
 #Changelog
-All Notable changes to `Period` will be documented in this file
+All Notable changes to `League\Period` will be documented in this file
 
-## 1.1.0 - YYYY-MM-DD
+## 2.0.0 - 2014-10-13
 
 ### Added
+- Change vendor namespace from `Period` to `League\Period`
 - Comparing methods : 
     - `Period::sameValueAs`,
     - `Period::compareDuration`,
