@@ -88,14 +88,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromQuarterFailedWithOutofRangeQuarter()
     {
-        Period::createFromMonth(2014, -5);
+        Period::createFromQuarter(2014, 10);
     }
 
     public function testCreateFromSemester()
     {
         $period = Period::createFromSemester(2014, 2);
-        $this->assertEquals($period->getStart(), new DateTime('2014-07-01'));
-        $this->assertEquals($period->getEnd(), new DateTime('2015-01-01'));
+        $this->assertEquals($period->getStart(), new DateTime('2014-05-01'));
+        $this->assertEquals($period->getEnd(), new DateTime('2014-09-01'));
     }
 
     /**
@@ -104,6 +104,21 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromSemesterFailedWithOutofRangeSemester()
     {
         Period::createFromSemester(2014, 32);
+    }
+
+    public function testCreateFromBiennal()
+    {
+        $period = Period::createFromBiennal(2014, 2);
+        $this->assertEquals($period->getStart(), new DateTime('2014-07-01'));
+        $this->assertEquals($period->getEnd(), new DateTime('2015-01-01'));
+    }
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testCreateFromBiennalFailedWithOutofRangeSemester()
+    {
+        Period::createFromBiennal(2014, 32);
     }
 
     public function testCreateFromYear()
@@ -124,7 +139,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testGetRange()
     {
         $period = Period::createFromDuration(new DateTime, "1 DAY");
-        $range  = $period->getRange(new DateInterval('PT1H'));
+        $range  = $period->getRange(3600);
+        $this->assertInstanceof('DatePeriod', $range);
         $this->assertCount(24, iterator_to_array($range));
     }
 

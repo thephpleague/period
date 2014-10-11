@@ -420,15 +420,39 @@ final class Period
      * </code>
      *
      * @param integer $year
-     * @param integer $semester Semester Index from 1 to 2
+     * @param integer $semester Semester Index from 1 to 3
      *
      * @return static
      */
     public static function createFromSemester($year, $semester)
     {
         $year     = self::validateYear($year);
-        $semester = self::validateRange($semester, 1, 2);
-        $month    = (($semester - 1) * 6) + 1;
+        $semester = self::validateRange($semester, 1, 3);
+        $month    = (($semester - 1) * 4) + 1;
+
+        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '4 MONTHS');
+    }
+
+    /**
+     * Create a Period object from a Year and a Quarter
+     *
+     * <code>
+     *<?php
+     * $period = Period::createFromBiennal(2012, 1);
+     *
+     * ?>
+     * </code>
+     *
+     * @param integer $year
+     * @param integer $semester Semester Index from 1 to 2
+     *
+     * @return static
+     */
+    public static function createFromBiennal($year, $biennal)
+    {
+        $year    = self::validateYear($year);
+        $biennal = self::validateRange($biennal, 1, 2);
+        $month   = (($biennal - 1) * 6) + 1;
 
         return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
     }
