@@ -102,6 +102,20 @@ $period = Period::createFromQuarter(2013, 2);
 
 ### Period::createFromSemester($year, $semester)
 
+returns a `Period` object with a duration of 4 months for a given year and semester. 
+
+- The `$year` parameter is a valid year;
+- The `$semester` parameter is a selected semester (between 1 and 3);
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromSemester(2011, 1);
+//this period represents the first semester of 2013
+~~~
+
+### Period::createFromBiennal($year, $semester)
+
 returns a `Period` object with a duration of 6 months for a given year and semester. 
 
 - The `$year` parameter is a valid year;
@@ -110,7 +124,7 @@ returns a `Period` object with a duration of 6 months for a given year and semes
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromSemester(2011, 1);
+$period = Period::createFromBiennal(2011, 1);
 //this period represents the first semester of 2013
 ~~~
 
