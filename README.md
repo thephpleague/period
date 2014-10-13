@@ -35,7 +35,7 @@ Install `Period` using Composer.
 ```
 #### Going Solo
 
-You can also use `Period` without using Composer by downloading the library and using any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
+You can also use `League\Period` without using Composer by downloading the library and using a [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
 Documentation
 -------

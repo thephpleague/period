@@ -16,7 +16,8 @@ All Notable changes to `League\Period` will be documented in this file
 - Modifying methods:
     - `Period::add`,
     - `Period::sub`,
-    - `Period::intersect`,
+    - `Period::intersect`
+
 ### Deprecated
 - Nothing
 
@@ -39,7 +40,7 @@ All Notable changes to `League\Period` will be documented in this file
 - Nothing
 
 ### Fixed
-- The `$interval` parameter can also be an integer interpreted as the number of seconds after which the period **must** be considered over.
+- The `$interval` parameter can also an integer which represents the interval expressed in seconds.
 
 ### Remove
 - Nothing

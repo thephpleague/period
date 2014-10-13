@@ -3,9 +3,9 @@
 * This file is part of the Period library
 *
 * @license http://opensource.org/licenses/MIT
-* @link https://github.com/nyamsprod/Period/
-* @version 1.1.0
-* @package Bakame.Period
+* @link https://github.com/thephpleague/period/
+* @version 2.0.0
+* @package League.Period
 *
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
