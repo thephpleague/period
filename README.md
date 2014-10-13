@@ -30,7 +30,7 @@ Install `Period` using Composer.
 composer require league/period
 ```
 
-This will edit (or create) your `composer.json` file and automatically choose the most recenve version, foe example: `~1.0`
+This will edit (or create) your `composer.json` file and automatically choose the most recent version, for example: `~1.0`
 
 #### Going Solo
 
