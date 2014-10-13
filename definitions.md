@@ -12,14 +12,28 @@ permalink: definitions/
 
 - **duration** - The continuous portion of time between endpoints is called the duration. This duration is defined as a DateInterval object. The duration can not be negative.
 
+## Arguments
+
+Unless stated otherwise:
+
+- Whenever a `DateTime` object is expected you can provide:
+    - a `DateTime` object;
+    - a string parsable by the `DateTime` constructor.
+
+- Whenever a `DateInterval` object is expected you can provide:
+    - a `DateInterval` object;
+    - a string parsable by the `DateInterval::createFromDateString` method.
+    - an integer interpreted as the interval expressed in seconds.
+
 ~~~php
 use League\Period\Period;
 
  //create a time range of 1 month for April 1983
-$period = new Period(new DateTime('1983-04-01'), new DateTime('1983-05-01'));
+$period = new Period('1983-04-01', new DateTime('1983-05-01'));
 $period->getStart(); //return new DateTime('1983-04-01')
 $period->getEnd();   //return new DateTime('1983-05-01')
 $period->contains($period->getStart()); //returns true
 $period->contains($period->getEnd()); //returns false
 $period->getDuration(); //return the duration as an DateInterval object
 ~~~
+
