@@ -26,13 +26,12 @@ Install
 
 Install `Period` using Composer.
 
-```json
-{
-    "require": {
-        "league/period": "2.*"
-    }
-}
 ```
+composer require league/period
+```
+
+This will edit (or create) your `composer.json` file and automatically choose the most recenve version, foe example: `~1.0`
+
 #### Going Solo
 
 You can also use `League\Period` without using Composer by downloading the library and using a [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
