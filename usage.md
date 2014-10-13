@@ -100,7 +100,7 @@ $period = Period::createFromQuarter(2013, 2);
 returns a `Period` object with a duration of 4 months for a given year and trimester. 
 
 - The `$year` parameter is a valid year;
-- The `$semester` parameter is a selected semester (between 1 and 3);
+- The `$trimester` parameter is a selected semester (between 1 and 3);
 
 ~~~php
 use League\Period\Period;
