@@ -1,8 +1,8 @@
 {
     "name": "league/period",
     "type": "library",
-    "description" : "Period an immutable value object which deals with time range",
-    "keywords": ["time", "range", "period", "datetime", "dateinterval", "dateperiod", "compare"],
+    "description" : "A time range immutable value object",
+    "keywords": ["time", "range", "dateinterval", "dateperiod", "period", "datetime", "compare"],
     "license": "MIT",
     "authors": [
         {
@@ -27,5 +27,8 @@
         "psr-4": {
             "League\\Period\\test\\": "test"
         }
+    },
+    "replace": {
+        "bakame/period": "*"
     }
 }
