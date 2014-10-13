@@ -237,7 +237,6 @@ $alt->overlaps($other);  //return true
 Returns the difference between two `Period` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
 ~~~php
-
 use League\Period\Period;
 
 $period    = Period::createFromSemester(2012, 1);
@@ -377,7 +376,8 @@ $newPeriod = $period->merge($altPeriod);
 ### Period::intersect(Period $period)
 
 Computes the intersection between two `Period` objects and returns a new `Period` object.
-<p class="message-warning">If the two objects do not at least overlaps. The method will throw a <code>LogicException</code>.</p>
+
+<p class="message-info">Before getting the intersection, make sure the <code>Period</code> object, at least, overlaps.</p>
 
 ~~~php
 
@@ -385,6 +385,8 @@ use League\Period\Period;
 
 $period    = Period::createFromDuration(2012-01-01, '2 MONTHS');
 $altPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
-$newPeriod = $period->insersect($altPeriod);
-//$newPeriod is a Period object
+if ($period->overlaps($altPeriod)) {
+    $newPeriod = $period->insersect($altPeriod);
+    //$newPeriod is a Period object 
+}
 ~~~

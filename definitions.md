@@ -17,8 +17,9 @@ use League\Period\Period;
 
  //create a time range of 1 month for April 1983
 $period = new Period(new DateTime('1983-04-01'), new DateTime('1983-05-01'));
-$period->contains($period->getStart()); //returns true;
-$period->contains($period->getEnd()); //returns false;
-$period->getDuration(); //return the equivalent of DateInterval('1 MONTH');
-
+$period->getStart(); //return new DateTime('1983-04-01')
+$period->getEnd();   //return new DateTime('1983-05-01')
+$period->contains($period->getStart()); //returns true
+$period->contains($period->getEnd()); //returns false
+$period->getDuration(); //return the duration as an DateInterval object
 ~~~
