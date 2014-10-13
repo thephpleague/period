@@ -153,9 +153,19 @@ Returns the starting **included** endpoint as a `DateTime`.
 
 Returns the ending **excluded** endpoint as a `DateTime`.
 
-### Period::getDuration()
+### Period::getDuration($get_as_seconds = false)
 
-Returns the duration as a `DateInterval` object.
+Returns the `Period` duration. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromMonth(1983, 4);
+$period->getStart(); //returns DateTime('1983-04-01');
+$period->getEnd(); //returns DateTime('1983-05-01');
+$duration = $period->getDuration(); //returns a DateInterval object
+$altduration = $period->getDuration(true); //returns the interval as expressed in seconds
+~~~
 
 ### Period::getRange($interval)
 
@@ -175,16 +185,16 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 
 ### Period::contains($index)
 
-Tells whether `$index` is contained within the `Period` or not. `$index` can be a `Period` object or a `DateTime` object.
+Tells whether `$index` is contained within the `Period` or not. `$index` can be
+
+- a `Period` object
+- a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromMonth(1983, 4);
-$period->getStart(); //returns DateTime('1983-04-01');
-$period->getEnd(); //returns DateTime('1983-05-01');
-
 //comparing a datetime
+$period = Period::createFromMonth(1983, 4);
 $period->contains('1983-04-15');      //returns true;
 $period->contains($period->getEnd()); //returns false;
 
@@ -225,9 +235,9 @@ $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
 
-### Period::diff(Period $period, $as_seconds = false)
+### Period::diff(Period $period, $get_as_seconds = false)
 
-Returns the difference between two period duration expressed in `DateInterval` or in secods if the second parameter is set to `true`.
+Returns the difference between two `Period` duration. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
 ~~~php
 
