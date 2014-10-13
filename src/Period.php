@@ -100,6 +100,25 @@ final class Period
     }
 
     /**
+     * return the Period duration as a DateInterval object
+     *
+     * @param boolean $get_as_seconds
+     *                                If used and set to true, the method will return an integer which represents
+     *                                the duration in seconds instead of a \DateInterval object
+     *
+     *
+     * @return \DateInterval|integer
+     */
+    public function getDuration($get_as_seconds = false)
+    {
+        if ($get_as_seconds) {
+            return $this->end->getTimestamp() - $this->start->getTimestamp();
+        }
+
+        return $this->start->diff($this->end);
+    }
+
+    /**
      * return the Datetime included in the Period
      * according to a given interval
      *
@@ -182,25 +201,47 @@ final class Period
      * ?>
      * </code>
      *
-     * @param \DateTime|string $datetime
+     * @param Period|\DateTime|string $index
      *
      * @return boolean
      */
-    public function contains($datetime)
+    public function contains($index)
     {
-        $date = self::validateDateTime($datetime);
+        if ($index instanceof Period) {
+            return $this->contains($index->start) && $this->contains($index->end);
+        }
+
+        $date = self::validateDateTime($index);
 
         return $date >= $this->start && $date < $this->end;
     }
 
     /**
-     * return the Period duration as a DateInterval object
+     * Returns the difference between two Period objects
      *
-     * @return \DateInterval
+     * @param Period  $period
+     * @param boolean $get_as_seconds
+     *                                If used and set to true, the method will return an integer which represents
+     *                                the interval in seconds instead of a \DateInterval object
+     *
+     * @return \DateInterval|integer
      */
-    public function getDuration()
+    public function diff(Period $period, $get_as_seconds = false)
     {
-        return $this->start->diff($this->end);
+        $diff =   $this->end->getTimestamp()
+                - $this->start->getTimestamp()
+                - $period->end->getTimestamp()
+                + $period->start->getTimestamp();
+        if (! $get_as_seconds) {
+            $res = new DateInterval('PT'.abs($diff).'S');
+            if (0 > $diff) {
+                $res->invert = 1;
+            }
+
+            return $res;
+        }
+
+        return $diff;
     }
 
     /**
@@ -214,9 +255,8 @@ final class Period
     {
         $date = new DateTime;
         $alt  = clone $date;
-
-        $date->add($this->getDuration());
-        $alt->add($period->getDuration());
+        $date->add($this->start->diff($this->end));
+        $alt->add($period->start->diff($period->end));
         if ($date > $alt) {
             return 1;
         } elseif ($date < $alt) {
@@ -420,15 +460,15 @@ final class Period
      * </code>
      *
      * @param integer $year
-     * @param integer $semester Semester Index from 1 to 3
+     * @param integer $trimester Trimester Index from 1 to 3
      *
      * @return static
      */
-    public static function createFromSemester($year, $semester)
+    public static function createFromTrimester($year, $trimester)
     {
-        $year     = self::validateYear($year);
-        $semester = self::validateRange($semester, 1, 3);
-        $month    = (($semester - 1) * 4) + 1;
+        $year      = self::validateYear($year);
+        $trimester = self::validateRange($trimester, 1, 3);
+        $month     = (($trimester - 1) * 4) + 1;
 
         return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '4 MONTHS');
     }
@@ -448,11 +488,11 @@ final class Period
      *
      * @return static
      */
-    public static function createFromBiennal($year, $biennal)
+    public static function createFromSemester($year, $semester)
     {
-        $year    = self::validateYear($year);
-        $biennal = self::validateRange($biennal, 1, 2);
-        $month   = (($biennal - 1) * 6) + 1;
+        $year     = self::validateYear($year);
+        $semester = self::validateRange($semester, 1, 2);
+        $month    = (($semester - 1) * 6) + 1;
 
         return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
     }
@@ -533,6 +573,38 @@ final class Period
     }
 
     /**
+     * Add an interval to the current Period object
+     *
+     * @param \DateInterval|integer|string $duration period duration
+     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
+     *
+     * @return static
+     */
+    public function add($interval)
+    {
+        $end = clone $this->end;
+
+        return new self($this->start, $end->add(self::validateDateInterval($interval)));
+    }
+
+    /**
+     * remove an interval to the current Period object
+     *
+     * @param \DateInterval|integer|string $duration period duration
+     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
+     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
+     *
+     * @return static
+     */
+    public function sub($interval)
+    {
+        $end = clone $this->end;
+
+        return new self($this->start, $end->sub(self::validateDateInterval($interval)));
+    }
+
+    /**
      * Merge two Period objects to return a new Period object
      * that englobes both Periods
      *
@@ -548,6 +620,28 @@ final class Period
         }
         $end = $this->end;
         if ($end < $period->end) {
+            $end = $period->end;
+        }
+
+        return new self($start, $end);
+    }
+
+    /**
+     * Compute the intersection between two Period objects
+     *
+     * @param Period $period
+     *
+     * @return static
+     */
+    public function intersect(Period $period)
+    {
+        $start = $this->start;
+        if ($period->start > $start) {
+            $start = $period->start;
+        }
+
+        $end = $this->end;
+        if ($period->end < $end) {
             $end = $period->end;
         }
 

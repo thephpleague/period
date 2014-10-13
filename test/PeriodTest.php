@@ -91,9 +91,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         Period::createFromQuarter(2014, 10);
     }
 
-    public function testCreateFromSemester()
+    public function testCreateFromTrimester()
     {
-        $period = Period::createFromSemester(2014, 2);
+        $period = Period::createFromTrimester(2014, 2);
         $this->assertEquals($period->getStart(), new DateTime('2014-05-01'));
         $this->assertEquals($period->getEnd(), new DateTime('2014-09-01'));
     }
@@ -101,14 +101,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testCreateFromSemesterFailedWithOutofRangeSemester()
+    public function testCreateFromTrimesterFailedWithOutofRangeTrimester()
     {
-        Period::createFromSemester(2014, 32);
+        Period::createFromTrimester(2014, 32);
     }
 
-    public function testCreateFromBiennal()
+    public function testCreateFromSemester()
     {
-        $period = Period::createFromBiennal(2014, 2);
+        $period = Period::createFromSemester(2014, 2);
         $this->assertEquals($period->getStart(), new DateTime('2014-07-01'));
         $this->assertEquals($period->getEnd(), new DateTime('2015-01-01'));
     }
@@ -116,9 +116,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testCreateFromBiennalFailedWithOutofRangeSemester()
+    public function testCreateFromSemesterFailedWithOutofRangeTrimester()
     {
-        Period::createFromBiennal(2014, 32);
+        Period::createFromSemester(2014, 32);
     }
 
     public function testCreateFromYear()
@@ -180,12 +180,20 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period->endingOn(new DateTime('2012-03-02'));
     }
 
-    public function testContains()
+    public function testContainsWithDateTime()
     {
         $period = Period::createFromMonth(2014, 3);
         $this->assertTrue($period->contains(new DateTime('2014-03-12')));
         $this->assertFalse($period->contains('2012-03-12'));
         $this->assertFalse($period->contains('2014-04-01'));
+    }
+
+    public function testContainsWithPeriod()
+    {
+        $orig = Period::createFromSemester(2014, 1);
+        $alt  = Period::createFromQuarter(2014, 1);
+        $this->assertTrue($orig->contains($alt));
+        $this->assertFalse($alt->contains($orig));
     }
 
     public function testDuration()
@@ -194,6 +202,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
         $this->assertEquals($start->diff($end), $period->getDuration());
+        $this->assertInternalType('integer', $period->getDuration(true));
     }
 
     public function testUsingTimestampAsInterval()
@@ -245,5 +254,66 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($orig->sameDurationAs($other));
         $this->assertFalse($orig->sameValueAs($other));
         $this->assertTrue($orig->sameValueAs($same));
+    }
+
+    public function testAdd()
+    {
+        $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $period = $orig->add('1 MONTH');
+        $this->assertTrue($period->durationGreaterThan($orig));
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testAddThrowsLogicException()
+    {
+        $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $orig->add('-3 MONTHS');
+    }
+
+    public function testSub()
+    {
+        $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $period = $orig->sub('1 WEEK');
+        $this->assertTrue($period->durationLessThan($orig));
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testSubThrowsLogicException()
+    {
+        $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $orig->sub('3 MONTHS');
+    }
+
+    public function testDiff()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $res = $orig->diff($alt);
+        $this->assertInstanceof('\DateInterval', $res);
+        $res = $orig->diff($alt, true);
+        $this->assertInternalType('integer', $res);
+    }
+
+    public function testIntersect()
+    {
+        $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
+        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+
+        $res = $orig->intersect($alt);
+        $this->assertInstanceof('\League\Period\Period', $res);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testIntersectThrowsException()
+    {
+        $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
+        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $orig->intersect($alt);
     }
 }

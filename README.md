@@ -35,15 +35,12 @@ Install `Period` using Composer.
 ```
 #### Going Solo
 
-You can also use `Period` without using Composer by downloading the library and:
-
-- mapping the `League\Period` vendor namespace to the package `src` directory using a registered autoloading function;
-- using any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
+You can also use `Period` without using Composer by downloading the library and using any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 
 Documentation
 -------
 
-`League\Period` is fully documentation. Contribute to this documentation in the [gh-pages branch](https://github.com/thephpleague/period/tree/gh-pages).
+`League\Period` is [fully documentation](http://period.thephpleague.com). Contribute to this documentation in the [gh-pages branch](https://github.com/thephpleague/period/tree/gh-pages).
 
 Testing
 -------
