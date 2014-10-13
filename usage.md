@@ -100,7 +100,7 @@ $period = Period::createFromQuarter(2013, 2);
 //this period represents the second quarter of 2013
 ~~~
 
-### Period::createFromSemester($year, $semester)
+### Period::createFromTrimester($year, $trimester)
 
 returns a `Period` object with a duration of 4 months for a given year and semester. 
 
@@ -110,11 +110,11 @@ returns a `Period` object with a duration of 4 months for a given year and semes
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromSemester(2011, 1);
-//this period represents the first semester of 2013
+$period = Period::createFromTrimester(2011, 1);
+//this period represents the first trimester of 2013
 ~~~
 
-### Period::createFromBiennal($year, $semester)
+### Period::createFromSemester($year, $semester)
 
 returns a `Period` object with a duration of 6 months for a given year and semester. 
 
@@ -124,7 +124,7 @@ returns a `Period` object with a duration of 6 months for a given year and semes
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromBiennal(2011, 1);
+$period = Period::createFromSemester(2011, 1);
 //this period represents the first semester of 2013
 ~~~
 
@@ -171,9 +171,11 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 //will iterate 12 times
 ~~~
 
-### Period::contains($datetime)
+## Comparing Period objects
 
-Tells whether a `$datetime` is contained within the `Period` or not.
+### Period::contains($index)
+
+Tells whether `$index` is contained within the `Period` or not. `$index` can be a `Period` object or a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -181,12 +183,17 @@ use League\Period\Period;
 $period = Period::createFromMonth(1983, 4);
 $period->getStart(); //returns DateTime('1983-04-01');
 $period->getEnd(); //returns DateTime('1983-05-01');
-$period->contains('1983-04-15'); //returns true;
+
+//comparing a datetime
+$period->contains('1983-04-15');      //returns true;
 $period->contains($period->getEnd()); //returns false;
+
+//comparing two Period objects
+$alt = Period::createFromDuration(1983-04-12, '12 DAYS');
+$period->contains($alt); //return true;
+$alt->contains($period); //return false;
 ~~~
  
-## Comparing Period objects
-
 ### Period::sameValueAs(Period $period)
 
 Tells whether two `Period` objects shares the same endpoints.
@@ -216,6 +223,22 @@ $other = Period::createFromDuration('2014-03-15', '3 WEEKS');
 $orig->overlaps($alt);   //return false
 $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
+~~~
+
+### Period::diff(Period $period, $as_seconds = false)
+
+Returns the difference between two period duration expressed in `DateInterval` or in secods if the second parameter is set to `true`.
+
+~~~php
+
+use League\Period\Period;
+
+$period    = Period::createFromSemester(2012, 1);
+$altPeriod = Period::createFromWeek(2012, 4);
+$diff = $period->diff($altPeriod);
+// $diff is a DateInterval object
+$diff_as_seconds = $period->diff($altPeriod, true);
+//$diff_as_seconds represents the interval expressed in seconds
 ~~~
 
 ### Period::compareDuration(Period $period)
@@ -251,9 +274,9 @@ $orig->sameValueAs($other);       //return false
 //the duration between $orig and $other are equals but not the endpoints!!
 ~~~
  
-## Period as a Immutable Value Object
+## Modifying a Period object
 
-The `Period` object is an Immutable Value Object so any change to its property returns a new `Period` class. 
+The `Period` object is an **immutable value object** so any change to its property returns a new `Period` class. If the return object can not be created the method will throw a `LogicException` exception.
 
 ### Period::startingOn($start)
 
@@ -299,6 +322,34 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
 
+### Period::add($interval)
+
+Returns a new `Period` object by adding an interval to the current ending excluded endpoint.
+
+The `$interval` parameter is expressed as a `DateInterval` object.
+
+~~~php
+use League\Period\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->add('2 WEEKS');
+// $period->getStart() equals $newPeriod->getStart();
+~~~
+
+### Period::sub($interval)
+
+Returns a new `Period` object by substracting an interval to the current ending excluded endpoint.
+
+The `$interval` parameter is expressed as a `DateInterval` object.
+
+~~~php
+use League\Period\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->sub('2 WEEKS');
+// $period->getStart() equals $newPeriod->getStart();
+~~~
+
 ### Period::merge(Period $period)
 
 Merge two `Period` objects by returning a new `Period` object which starting endpoint is the smallest and the excluded endpoint is the biggest between both objects.
@@ -312,4 +363,18 @@ $altPeriod = Period::createFromWeek(2013, 4);
 $newPeriod = $period->merge($altPeriod); 
 // $newPeriod->getStart() equals $period->getStart();
 // $newPeriod->getEnd() equals $altPeriod->getEnd();
+~~~
+
+### Period::intersect(Period $period)
+
+Computes the intersection between two `Period` objects and returns a new `Period` object. If the two objects do not at least overlaps. The method will throw a `LogicException`.
+
+~~~php
+
+use League\Period\Period;
+
+$period    = Period::createFromDuration(2012-01-01, '2 MONTHS');
+$altPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
+$newPeriod = $period->insersect($altPeriod);
+//$newPeriod is a Period object
 ~~~
