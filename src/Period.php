@@ -102,10 +102,9 @@ final class Period
     /**
      * return the Period duration as a DateInterval object
      *
-     * @param boolean $get_as_seconds
-     *                                If used and set to true, the method will return an integer which represents
-     *                                the duration in seconds instead of a \DateInterval object
-     *
+     * @param boolean $get_as_seconds If used and set to true, the method will return an integer
+     *                                which represents the duration in seconds instead of a
+     *                                \DateInterval object
      *
      * @return \DateInterval|integer
      */
@@ -122,10 +121,10 @@ final class Period
      * return the Datetime included in the Period
      * according to a given interval
      *
-     * @param \DateInterval|integer|string $interval The range interval
-     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
+     * @param  \DateInterval|integer|string $interval The interval. If an integer is passed, it is
+     *                                                interpreted as the duration expressed in
+     *                                                seconds. If a string is passed, it must be
+     *                                                parsable by `DateInterval::createFromDateString`
      * @return \DatePeriod
      */
     public function getRange($interval)
@@ -140,10 +139,10 @@ final class Period
     /**
      * Validate a DateInterval
      *
-     * @param \DateInterval|integer|string $interval The Period duration
-     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
+     * @param  \DateInterval|integer|string $interval The interval. If an integer is passed, it is
+     *                                                interpreted as the duration expressed in
+     *                                                seconds. If a string is passed, it must be
+     *                                                parsable by `DateInterval::createFromDateString`
      * @return \DateInterval
      *
      * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
@@ -220,9 +219,9 @@ final class Period
      * Returns the difference between two Period objects
      *
      * @param Period  $period
-     * @param boolean $get_as_seconds
-     *                                If used and set to true, the method will return an integer which represents
-     *                                the interval in seconds instead of a \DateInterval object
+     * @param boolean $get_as_seconds If used and set to true, the method will return an integer
+     *                                which represents the duration in seconds instead of a
+     *                                \DateInterval object
      *
      * @return \DateInterval|integer
      */
@@ -316,11 +315,11 @@ final class Period
      * ?>
      * </code>
      *
-     * @param \DateTime|string             $start    start date
-     * @param \DateInterval|integer|string $duration period duration
-     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
+     * @param  \DateTime|string             $start    start date
+     * @param  \DateInterval|integer|string $duration The duration. If an integer is passed, it is
+     *                                                interpreted as the duration expressed in
+     *                                                seconds. If a string is passed, it must be
+     *                                                parsable by `DateInterval::createFromDateString`
      * @return static
      */
     public static function createFromDuration($start, $duration)
@@ -561,10 +560,10 @@ final class Period
     /**
      * returns a new Period object with a new ending DateTime
      *
-     * @param \DateInterval|integer|string $duration period duration
-     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
+     * @param  \DateInterval|integer|string $duration The duration. If an integer is passed, it is
+     *                                                interpreted as the duration expressed in
+     *                                                seconds. If a string is passed, it must be
+     *                                                parsable by `DateInterval::createFromDateString`
      * @return static
      */
     public function withDuration($duration)
@@ -575,10 +574,10 @@ final class Period
     /**
      * Add an interval to the current Period object
      *
-     * @param \DateInterval|integer|string $duration period duration
-     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
+     * @param  \DateInterval|integer|string $duration The duration. If an integer is passed, it is
+     *                                                interpreted as the duration expressed in
+     *                                                seconds. If a string is passed, it must be
+     *                                                parsable by `DateInterval::createFromDateString`
      * @return static
      */
     public function add($interval)
@@ -591,10 +590,10 @@ final class Period
     /**
      * remove an interval to the current Period object
      *
-     * @param \DateInterval|integer|string $duration period duration
-     *                                               - If an integer is passed, it is interpreted as the duration as expressed in seconds
-     *                                               - If a string is passed, it must be undestandable by the `DateInterval::createFromDateString` method
-     *
+     * @param  \DateInterval|integer|string $duration The duration. If an integer is passed, it is
+     *                                                interpreted as the duration expressed in
+     *                                                seconds. If a string is passed, it must be
+     *                                                parsable by `DateInterval::createFromDateString`
      * @return static
      */
     public function sub($interval)
