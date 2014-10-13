@@ -5,6 +5,7 @@ All Notable changes to `League\Period` will be documented in this file
 
 ### Added
 - Change vendor namespace from `Period` to `League\Period`
+- Named constructor: `Period::createFromTrimester`
 - Comparing methods: 
     - `Period::sameValueAs`,
     - `Period::compareDuration`,
@@ -21,7 +22,7 @@ All Notable changes to `League\Period` will be documented in this file
 
 ### Fixed
 - `Period::contains` now works with `Period` objects
-- `Period::getDuration` accept an optional parameter $get_as_seconds if used and set to `true`, the method will return a integer which represents the duration in seconds.
+- `Period::getDuration` accept an optional parameter `$get_as_seconds` if used and set to `true`, the method will return a integer which represents the duration in seconds.
 
 ### Remove
 - Nothing
