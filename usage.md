@@ -6,12 +6,6 @@ permalink: usage/
 
 # Usage
 
-## Definitions
-
-- **endpoint** - A period consists of a continuous portion of time between two positions in time called endpoints. This library assumes that the starting endpoint is included into the period. Conversely, the ending endpoint is excluded from the specified period. The starting endpoint is always less than or equal to the ending endpoint. The endpoints are defined as DateTime objects.
-
-- **duration** - The continuous portion of time between endpoints is called the duration. This duration is defined as a DateInterval object. The duration can not be negative.
-
 ## Arguments
 
 Unless stated otherwise:
@@ -23,7 +17,7 @@ Unless stated otherwise:
 - Whenever a `DateInterval` object is expected you can provide:
     - a `DateInterval` object;
     - a string parsable by the `DateInterval::createFromDateString` method.
-    - an integer interpreted as the duration expressed in seconds.
+    - an integer interpreted as the interval expressed in seconds.
 
 ## Instantiation
 
@@ -42,7 +36,7 @@ use League\Period\Period;
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
 
-To ease instantiation the class comes with many named constructors:
+<p class="message-info">To ease instantiation the class comes with many named constructors.</p>
 
 ### Period::createFromDuration($start, $duration)
 
@@ -58,12 +52,13 @@ $period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
 $alt    = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
 $other  = Period::createFromDuration(new DateTime('2012-04-01 08:30:25'), 86400);
 ~~~
+
 ### Period::createFromWeek($year, $week)
 
 returns a `Period` object with a duration of 1 week for a given year and week.
 
 - The `$year` parameter is a valid year;
-- The `$week` parameter is a selected week (between 1 and 53);
+- The `$week` parameter is a selected week (between 1 and 53) according to the [ISO8601 date and time standard](http://en.wikipedia.org/wiki/ISO_week_date);
 
 ~~~php
 use League\Period\Period;
@@ -102,7 +97,7 @@ $period = Period::createFromQuarter(2013, 2);
 
 ### Period::createFromTrimester($year, $trimester)
 
-returns a `Period` object with a duration of 4 months for a given year and semester. 
+returns a `Period` object with a duration of 4 months for a given year and trimester. 
 
 - The `$year` parameter is a valid year;
 - The `$semester` parameter is a selected semester (between 1 and 3);
@@ -176,7 +171,7 @@ use League\Period\Period;
 
 $period  = Period::createFromYear(1971);
 foreach ($period->getRange('1 MONTH') as $datetime) {
-    echo $datetime->format('Y-m-d H:i:s');
+    echo $datetime->format('F, Y');
 }
 //will iterate 12 times
 ~~~
@@ -185,7 +180,9 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 
 ### Period::contains($index)
 
-Tells whether `$index` is contained within the `Period` or not. `$index` can be
+Tells whether `$index` is contained within the `Period` or not. 
+
+`$index` can be:
 
 - a `Period` object
 - a `DateTime` object.
@@ -237,7 +234,7 @@ $alt->overlaps($other);  //return true
 
 ### Period::diff(Period $period, $get_as_seconds = false)
 
-Returns the difference between two `Period` duration. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
+Returns the difference between two `Period` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
 ~~~php
 
@@ -286,7 +283,9 @@ $orig->sameValueAs($other);       //return false
  
 ## Modifying a Period object
 
-The `Period` object is an **immutable value object** so any change to its property returns a new `Period` class. If the return object can not be created the method will throw a `LogicException` exception.
+The `Period` object is an **immutable value object** so any change to its property returns a new `Period` object. 
+
+<p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
 ### Period::startingOn($start)
 

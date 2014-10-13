@@ -25,4 +25,4 @@ This package is compliant with [PSR-2], and [PSR-4].
 
 ## Questions?
 
-CSV was created by Nyamagana Butera Ignace. Find him on Twitter at [@nyamsprod](https://twitter.com/nyamsprod).
+`League\Period` was created by Nyamagana Butera Ignace. Find him on Twitter at [@nyamsprod](https://twitter.com/nyamsprod).
