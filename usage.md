@@ -376,7 +376,7 @@ $newPeriod = $period->merge($altPeriod);
 
 ### Period::intersect(Period $period)
 
-Computes the intersection between two `Period` objects and returns a new `Period` object. 
+Computes the intersection between two `Period` objects and returns a new `Period` object.
 <p class="message-warning">If the two objects do not at least overlaps. The method will throw a <code>LogicException</code>.</p>
 
 ~~~php
