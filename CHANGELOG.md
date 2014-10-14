@@ -24,6 +24,7 @@ All Notable changes to `League\Period` will be documented in this file
 ### Fixed
 - `Period::contains` now works with `Period` objects
 - `Period::getDuration` accept an optional parameter `$get_as_seconds` if used and set to `true`, the method will return a integer which represents the duration in seconds.
+- `Period::merge` now accepts one or more `Period` objects to return the `Period` object which contains all submitted `Period` objects. 
 
 ### Remove
 - Nothing

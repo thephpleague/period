@@ -604,25 +604,34 @@ final class Period
     }
 
     /**
-     * Merge two Period objects to return a new Period object
-     * that englobes both Periods
+     * Merge one or more Period objects to return a new Period object
+     * that englobes the biggest duration possible
      *
-     * @param Period $period
+     * @param Period $arg,... one or more Period objects
      *
      * @return static
      */
-    public function merge(Period $period)
+    public function merge()
     {
-        $start = $this->start;
-        if ($start > $period->start) {
-            $start = $period->start;
+        $args = func_get_args();
+        if (! $args) {
+            throw new InvalidArgumentException('A Period object is missing');
         }
-        $end = $this->end;
-        if ($end < $period->end) {
-            $end = $period->end;
-        }
+        $res = $this;
+        array_walk($args, function (Period $period) use (&$res) {
+            $start = $res->getStart();
+            if ($start > $period->getStart()) {
+                $start = $period->getStart();
+            }
+            $end = $res->getEnd();
+            if ($end < $period->getEnd()) {
+                $end = $period->getEnd();
+            }
 
-        return new self($start, $end);
+            $res = new Period($start, $end);
+        });
+
+        return $res;
     }
 
     /**
