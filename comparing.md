@@ -62,7 +62,7 @@ $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
 
-### Period::diff(Period $period, $get_as_seconds = false)
+### Period::durationDiff(Period $period, $get_as_seconds = false)
 
 Returns the difference between two `Period` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
@@ -71,9 +71,9 @@ use League\Period\Period;
 
 $period    = Period::createFromSemester(2012, 1);
 $altPeriod = Period::createFromWeek(2012, 4);
-$diff = $period->diff($altPeriod);
+$diff = $period->durationDiff($altPeriod);
 // $diff is a DateInterval object
-$diff_as_seconds = $period->diff($altPeriod, true);
+$diff_as_seconds = $period->durationDiff($altPeriod, true);
 //$diff_as_seconds represents the interval expressed in seconds
 ~~~
 

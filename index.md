@@ -6,7 +6,7 @@ permalink: /
 # Period
 
 [![Author](http://img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square)](https://twitter.com/nyamsprod)
-[![Source Code](http://img.shields.io/badge/source-period/csv-blue.svg?style=flat-square)](https://github.com/thephpleague/period)
+[![Source Code](http://img.shields.io/badge/source-league/period-blue.svg?style=flat-square)](https://github.com/thephpleague/period)
 [![Latest Version](https://img.shields.io/github/release/thephpleague/period.svg?style=flat-square)](https://github.com/thephpleague/period/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)<br>
 [![Build Status](https://img.shields.io/travis/thephpleague/period/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/period)
