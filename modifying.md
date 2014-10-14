@@ -82,16 +82,17 @@ $newPeriod = $period->sub('2 WEEKS');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
 
-### Period::merge(Period $period)
+### Period::merge(Period $period[, Period $...])
 
-Merge two `Period` objects by returning a new `Period` object which starting endpoint is the smallest and the excluded endpoint is the biggest between both objects.
+Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
 
 ~~~php
 use League\Period\Period;
 
-$period    = Period::createFromSemester(2012, 1);
-$altPeriod = Period::createFromWeek(2013, 4);
-$newPeriod = $period->merge($altPeriod); 
+$period = Period::createFromSemester(2012, 1);
+$alt    = Period::createFromWeek(2013, 4);
+$other  = Period::createFromDuration('2012-03-07 08:10:27', 86000*3);
+$newPeriod = $period->merge($alt, $other); 
 // $newPeriod->getStart() equals $period->getStart();
 // $newPeriod->getEnd() equals $altPeriod->getEnd();
 ~~~
