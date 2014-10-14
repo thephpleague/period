@@ -6,31 +6,10 @@ permalink: comparing/
 
 # Comparing Period objects
 
-The following methods help you compare different `Period` objects according to their endpoints and/or duration.
+The following methods help you compare different `Period` objects according to their endpoints or durations.
 
-### Period::contains($index)
+## Using endpoints
 
-Tells whether `$index` is contained within the `Period` or not. 
-
-`$index` can be:
-
-- a `Period` object
-- a `DateTime` object.
-
-~~~php
-use League\Period\Period;
-
-//comparing a datetime
-$period = Period::createFromMonth(1983, 4);
-$period->contains('1983-04-15');      //returns true;
-$period->contains($period->getEnd()); //returns false;
-
-//comparing two Period objects
-$alt = Period::createFromDuration(1983-04-12, '12 DAYS');
-$period->contains($alt); //return true;
-$alt->contains($period); //return false;
-~~~
- 
 ### Period::sameValueAs(Period $period)
 
 Tells whether two `Period` objects shares the same endpoints.
@@ -61,6 +40,31 @@ $orig->overlaps($alt);   //return false
 $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
+
+### Period::contains($index)
+
+Tells whether `$index` is contained within the `Period` or not. 
+
+`$index` can be:
+
+- a `Period` object
+- a `DateTime` object.
+
+~~~php
+use League\Period\Period;
+
+//comparing a datetime
+$period = Period::createFromMonth(1983, 4);
+$period->contains('1983-04-15');      //returns true;
+$period->contains($period->getEnd()); //returns false;
+
+//comparing two Period objects
+$alt = Period::createFromDuration(1983-04-12, '12 DAYS');
+$period->contains($alt); //return true;
+$alt->contains($period); //return false;
+~~~
+ 
+## Using durations
 
 ### Period::durationDiff(Period $period, $get_as_seconds = false)
 
