@@ -288,13 +288,13 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $orig->sub('3 MONTHS');
     }
 
-    public function testDiff()
+    public function testDurationDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
-        $res = $orig->diff($alt);
+        $res = $orig->durationDiff($alt);
         $this->assertInstanceof('\DateInterval', $res);
-        $res = $orig->diff($alt, true);
+        $res = $orig->durationDiff($alt, true);
         $this->assertInternalType('integer', $res);
     }
 

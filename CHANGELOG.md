@@ -12,7 +12,7 @@ All Notable changes to `League\Period` will be documented in this file
     - `Period::durationGreaterThan`,
     - `Period::durationLessThan`,
     - `Period::sameDurationAs`,
-    - `Period::diff`
+    - `Period::durationDiff`
 - Modifying methods:
     - `Period::add`,
     - `Period::sub`,

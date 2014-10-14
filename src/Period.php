@@ -225,7 +225,7 @@ final class Period
      *
      * @return \DateInterval|integer
      */
-    public function diff(Period $period, $get_as_seconds = false)
+    public function durationDiff(Period $period, $get_as_seconds = false)
     {
         $diff =   $this->end->getTimestamp()
                 - $this->start->getTimestamp()
