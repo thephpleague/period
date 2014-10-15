@@ -1,11 +1,10 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
-## 2.0.0 - YYYY-MM-DD
+## 2.0.0 - 2014-10-15
 
 ### Added
 - Change vendor namespace from `Period` to `League\Period`
-- Named constructor: `Period::createFromTrimester`
 - Comparing methods: 
     - `Period::sameValueAs`,
     - `Period::compareDuration`,
