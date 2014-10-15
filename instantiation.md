@@ -65,20 +65,6 @@ $period = Period::createFromQuarter(2013, 2);
 //this period represents the second quarter of 2013
 ~~~
 
-### Period::createFromTrimester($year, $trimester)
-
-returns a `Period` object with a duration of 4 months for a given year and trimester. 
-
-- The `$year` parameter is a valid year;
-- The `$trimester` parameter is a selected semester (between 1 and 3);
-
-~~~php
-use League\Period\Period;
-
-$period = Period::createFromTrimester(2011, 1);
-//this period represents the first trimester of 2013
-~~~
-
 ### Period::createFromSemester($year, $semester)
 
 returns a `Period` object with a duration of 6 months for a given year and semester. 
