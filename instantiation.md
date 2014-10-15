@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Named Constructors
+title: Instantiation using named constructors
 permalink: instantiation/
 ---
 

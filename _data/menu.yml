@@ -5,6 +5,6 @@ Getting Started:
 API:
     Definitions: '/definitions/'
     Overview: '/overview/'
-    Named Constructors: '/instantiation/'
+    Instantiation: '/instantiation/'
     Comparing: '/comparing/'
     Modifying: '/modifying/'
