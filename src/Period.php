@@ -453,30 +453,6 @@ final class Period
      *
      * <code>
      *<?php
-     * $period = Period::createFromSemester(2012, 1);
-     *
-     * ?>
-     * </code>
-     *
-     * @param integer $year
-     * @param integer $trimester Trimester Index from 1 to 3
-     *
-     * @return static
-     */
-    public static function createFromTrimester($year, $trimester)
-    {
-        $year      = self::validateYear($year);
-        $trimester = self::validateRange($trimester, 1, 3);
-        $month     = (($trimester - 1) * 4) + 1;
-
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '4 MONTHS');
-    }
-
-    /**
-     * Create a Period object from a Year and a Quarter
-     *
-     * <code>
-     *<?php
      * $period = Period::createFromBiennal(2012, 1);
      *
      * ?>

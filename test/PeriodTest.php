@@ -91,21 +91,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         Period::createFromQuarter(2014, 10);
     }
 
-    public function testCreateFromTrimester()
-    {
-        $period = Period::createFromTrimester(2014, 2);
-        $this->assertEquals($period->getStart(), new DateTime('2014-05-01'));
-        $this->assertEquals($period->getEnd(), new DateTime('2014-09-01'));
-    }
-
-    /**
-     * @expectedException \OutOfRangeException
-     */
-    public function testCreateFromTrimesterFailedWithOutofRangeTrimester()
-    {
-        Period::createFromTrimester(2014, 32);
-    }
-
     public function testCreateFromSemester()
     {
         $period = Period::createFromSemester(2014, 2);
