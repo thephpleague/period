@@ -75,7 +75,7 @@ returns a `Period` object with a duration of 6 months for a given year and semes
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromSemester(2011, 1);
+$period = Period::createFromSemester(2013, 1);
 //this period represents the first semester of 2013
 ~~~
 
