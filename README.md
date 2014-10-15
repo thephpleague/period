@@ -39,7 +39,7 @@ You can also use `League\Period` without using Composer by downloading the libra
 Documentation
 -------
 
-`League\Period` is [fully documentation](http://period.thephpleague.com). Contribute to this documentation in the [gh-pages branch](https://github.com/thephpleague/period/tree/gh-pages).
+`League\Period` is [fully documented](http://period.thephpleague.com). Contribute to this documentation in the [gh-pages branch](https://github.com/thephpleague/period/tree/gh-pages).
 
 Testing
 -------
