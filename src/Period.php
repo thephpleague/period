@@ -12,9 +12,9 @@
 */
 namespace League\Period;
 
-use DateTime;
 use DateInterval;
 use DatePeriod;
+use DateTime;
 use InvalidArgumentException;
 use LogicException;
 use OutOfRangeException;
@@ -169,7 +169,7 @@ final class Period
      *
      * @param Period $period
      *
-     * @return true
+     * @return boolean
      */
     public function sameValueAs(Period $period)
     {
@@ -200,7 +200,7 @@ final class Period
      * ?>
      * </code>
      *
-     * @param Period|\DateTime|string $index
+     * @param \League\Period\Period|\DateTime|string $index
      *
      * @return boolean
      */
@@ -270,7 +270,7 @@ final class Period
      *
      * @param Period $period
      *
-     * @return true
+     * @return boolean
      */
     public function durationGreaterThan(Period $period)
     {
@@ -282,7 +282,7 @@ final class Period
      *
      * @param Period $period
      *
-     * @return true
+     * @return boolean
      */
     public function durationLessThan(Period $period)
     {
@@ -294,7 +294,7 @@ final class Period
      *
      * @param Period $period
      *
-     * @return true
+     * @return boolean
      */
     public function sameDurationAs(Period $period)
     {
@@ -556,11 +556,11 @@ final class Period
      *                                                parsable by `DateInterval::createFromDateString`
      * @return static
      */
-    public function add($interval)
+    public function add($duration)
     {
         $end = clone $this->end;
 
-        return new self($this->start, $end->add(self::validateDateInterval($interval)));
+        return new self($this->start, $end->add(self::validateDateInterval($duration)));
     }
 
     /**
@@ -572,11 +572,11 @@ final class Period
      *                                                parsable by `DateInterval::createFromDateString`
      * @return static
      */
-    public function sub($interval)
+    public function sub($duration)
     {
         $end = clone $this->end;
 
-        return new self($this->start, $end->sub(self::validateDateInterval($interval)));
+        return new self($this->start, $end->sub(self::validateDateInterval($duration)));
     }
 
     /**
