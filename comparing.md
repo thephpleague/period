@@ -89,7 +89,7 @@ Compare two `Period` objects according to their duration.
 - Return `-1` if the current object duration is less than the submitted `$period` duration;
 - Return `0` if the current object duration is equal to the submitted `$period` duration;
 
-To ease the method usage you can rely on the following aliases methods which return boolean values:
+To ease the method usage you can rely on the following alias methods which return boolean values:
 
 - **Period::durationGreaterThan(Period $period)** return `true` when `Period::compareDuration(Period $period)` returns `1`;
 - **Period::durationLessThan(Period $period)** return `true` when `Period::compareDuration(Period $period)` returns `-1`;

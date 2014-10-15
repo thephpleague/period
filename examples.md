@@ -33,7 +33,7 @@ foreach ($period->getRange('1 DAY') as $day) {
 }
 ~~~
 
-The `Period` object comes with many [named constructors](/instantiation/) to help instantiate easily your time range.
+The `Period` object comes with many [named constructors](/instantiation/) to help easily instantiate your time range.
 
 ## Comparing time ranges
 
@@ -46,7 +46,7 @@ $period->sameDurationAs($altPeriod); //will return true because the duration are
 $period->sameValueAs($altPeriod); //will return false because the endpoints differ
 ~~~
 
-The class comes with other way to [compare time ranges](/comparing/) based on their duration and or their endpoints.
+The class comes with other ways to [compare time ranges](/comparing/) based on their duration and/or their endpoints.
 
 ## Modifying time ranges
 
@@ -59,4 +59,4 @@ $period->contains($altPeriod); //return false;
 $altPeriod->durationGreaterThan($period); //return true;
 ~~~
 
-`Period` is an immutable value object. Any changes to the object returns a new object. The class has more [modifying methods](/modifying/)
+`Period` is an immutable value object. Any changes to the object returns a new object. The class has more [modifying methods](/modifying/).

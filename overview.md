@@ -53,7 +53,7 @@ $altduration = $period->getDuration(true); //returns the interval as expressed i
 
 ### Period::getRange($interval)
 
-Returns a `DatePeriod` object that lists `DateTime` objects inside the period separated by the given `$interval` expressed as a `DateInterval` object.
+Returns a `DatePeriod` object that lists `DateTime` objects inside the period, separated by the given `$interval`, and expressed as a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
