@@ -1,10 +1,11 @@
 Getting Started:
     Introduction: '/'
-    Examples: '/examples/'
     Installation: '/installation/'
+    Terminology: '/definitions/'
+    Examples: '/examples/'
 API:
-    Definitions: '/definitions/'
     Overview: '/overview/'
     Instantiation: '/instantiation/'
     Comparing: '/comparing/'
     Modifying: '/modifying/'
+    Cheat Sheet: '/api/'
