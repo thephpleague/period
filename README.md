@@ -27,7 +27,7 @@ Install
 Install `Period` using Composer.
 
 ```
-composer require league/period
+$ composer require league/period
 ```
 
 This will edit (or create) your `composer.json` file and automatically choose the most recent version, for example: `~1.0`
