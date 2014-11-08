@@ -13,7 +13,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testCreateFromDurationWithDateTime()
     {
-        $start = new DateTime;
+        $start = new DateTime();
         $period = Period::createFromDuration($start, "1 DAY");
         $this->assertEquals($period->getStart(), $start);
         $this->assertEquals($period->getEnd(), $start->add(new DateInterval('P1D')));
@@ -35,7 +35,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromDurationFailedWithOutofRangeInterval()
     {
-        Period::createFromDuration(new DateTime, "-1 DAY");
+        Period::createFromDuration(new DateTime(), "-1 DAY");
     }
 
     public function testCreateFromWeek()
@@ -123,7 +123,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testGetRange()
     {
-        $period = Period::createFromDuration(new DateTime, "1 DAY");
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
         $range  = $period->getRange(3600);
         $this->assertInstanceof('DatePeriod', $range);
         $this->assertCount(24, iterator_to_array($range));
@@ -195,7 +195,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period1 = Period::createFromDuration('2014-03-12', '1 HOUR');
         $period2 = Period::createFromDuration('2014-03-12', 3600);
         $this->assertEquals($period1->getEnd(), $period2->getEnd());
-
     }
 
     public function testSetDuration()
