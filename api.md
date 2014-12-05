@@ -65,6 +65,10 @@ $period->getDuration(true); //the duration expressed in seconds
 $period->getRange('1 HOUR'); //return a DatePeriod object
 ~~~
 
+~~~php
+$period->__toString(); //return the ISO8601 representation of the Period
+~~~
+
 ## Comparing Periods
 
 Learn more about how this all works in the [Comparing](/comparing/) section.
@@ -135,6 +139,14 @@ $new_period = $period->add('1 WEEK');
 
 ~~~php
 $new_period = $period->sub(new DateInterval('P3D'));
+~~~
+
+~~~php
+$new_period = $period->next();
+~~~
+
+~~~php
+$new_period = $period->previous();
 ~~~
 
 ~~~php

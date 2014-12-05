@@ -82,6 +82,60 @@ $newPeriod = $period->sub('2 WEEKS');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
 
+### Period::next($interval = null)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.1</p>
+
+Returns a new `Period` object adjacent to the current `Period` and starting with its ending endpoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
+
+~~~php
+use League\Period\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->next('1 MONTH');
+// $period->getEnd() equals $newPeriod->getStart();
+~~~
+
+<p class="message-warning">When no <code>$interval</code> is provided to the method the new <code>Period</code> duration may vary. See below for a concrete example</p>
+
+~~~php
+use League\Period\Period;
+
+$january  = Period::createFromMonth(2012, 1); //January 2012
+$february = $period->next();
+$march    = $newPeriod->next();
+$january->sameDurationAs($february); //return false;
+$january->sameDurationAs($march); //return false;
+
+echo $january;  // 2012-01-01T00:00:00+0100/2012-02-01T00:00:00+0100 
+echo $february; // 2012-02-01T00:00:00+0100/2012-03-01T00:00:00+0100 
+echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
+
+// $march does not represents the full month 
+// since the ending endpoint is excluded from the period!!
+~~~
+
+
+
+<p class="message-info">To remove any ambiguity, it is recommended to always provide a <code>$duration</code> when using <code>Period::next</code></p>
+
+### Period::previous($interval = null)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.1</p>
+
+Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending endpoint is equal to the starting endpoint of the current object.
+
+~~~php
+use League\Period\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->previous('1 WEEK');
+// $period->getEnd() equals $newPeriod->Start();
+$period->durationGreaterThan($newPeriod); //return true
+~~~
+
+The method must be used with the same arguments and warnings as `Period::next`.
+
 ### Period::merge(Period $period[, Period $...])
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.

@@ -64,3 +64,18 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 }
 //will iterate 12 times
 ~~~
+
+### Period::__toString()
+
+<p class="message-notice">Added to <code>Period</code> in version 2.1</p>
+
+Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals) 
+
+~~~php
+date_default_timezone_set('Africa/Nairobi');
+
+use League\Period\Period;
+
+$period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
+echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
+~~~
