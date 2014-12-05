@@ -1,6 +1,26 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.1.0 - XXXX-XX-XX
+
+### Added
+- Modifying methods:
+    - `Period::next`
+    - `Period::previous`
+- `Period::__toString` using ISO8601 representation
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 2.0.0 - 2014-10-15
 
 ### Added

@@ -30,5 +30,10 @@
     },
     "replace": {
         "bakame/period": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1-dev"
+        }
     }
 }

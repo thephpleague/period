@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('UTC');
+
 use League\Period\Period;
 
 class PeriodTest extends PHPUnit_Framework_TestCase
@@ -9,6 +11,12 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = new Period('2014-05-01', '2014-05-08');
         $this->assertEquals(new DateTime('2014-05-01'), $period->getStart());
         $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
+    }
+
+    public function testToString()
+    {
+        $period = new Period('2014-05-01', '2014-05-08');
+        $this->assertSame('2014-05-01T00:00:00Z/2014-05-08T00:00:00Z', (string) $period);
     }
 
     public function testCreateFromDurationWithDateTime()
@@ -279,6 +287,34 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
         $orig->sub('3 MONTHS');
+    }
+
+    public function testNext()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $next = $orig->next('1 WEEK');
+        $this->assertEquals($next->getStart(), $orig->getEnd());
+    }
+
+    public function testPrevious()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $prev = $orig->previous('1 MONTH');
+        $this->assertEquals($prev->getEnd(), $orig->getStart());
+    }
+
+    public function testPreviousWithoutDuration()
+    {
+        $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $period = $orig->previous();
+        $this->assertEquals($period->getEnd(), $orig->getStart());
+    }
+
+    public function testPreviousNext()
+    {
+        $period = Period::createFromWeek(2014, 13);
+        $alt = $period->next('3 MONTH')->previous('1 WEEK');
+        $this->assertTrue($period->sameValueAs($alt));
     }
 
     public function testDurationDiff()

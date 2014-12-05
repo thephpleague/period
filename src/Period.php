@@ -5,7 +5,7 @@
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/thephpleague/period/
- * @version 2.0.0
+ * @version 2.1.0
  * @package League.Period
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,6 +17,7 @@ namespace League\Period;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use DateTimeZone;
 use InvalidArgumentException;
 use LogicException;
 use OutOfRangeException;
@@ -124,10 +125,10 @@ final class Period
     /**
      * Return the Datetime included in the Period according to a given interval.
      *
-     * @param  \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
      *
      * @return \DatePeriod
      */
@@ -138,6 +139,23 @@ final class Period
             self::validateDateInterval($interval),
             $this->end
         );
+    }
+
+    /**
+     * String representation of an Period using ISO8601 Time interval format
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $utc    = new DateTimeZone('UTC');
+        $format = 'Y-m-d\TH:i:s\Z';
+        $start  = clone $this->start;
+        $end    = clone $this->end;
+        $start->setTimeZone($utc);
+        $end->setTimeZone($utc);
+
+        return $start->format($format).'/'.$end->format($format);
     }
 
     /**
@@ -320,11 +338,11 @@ final class Period
      * ?>
      * </code>
      *
-     * @param  \DateTime|string         $start    start date
-     * @param  \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
+     * @param \DateTime|string         $start    start date
+     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
      *
      * @return \League\Period\Period
      */
@@ -586,6 +604,49 @@ final class Period
         $end = clone $this->end;
 
         return new self($this->start, $end->sub(self::validateDateInterval($duration)));
+    }
+
+    /**
+     * return a new Period object adjacent to the current Period
+     * and starting with its ending endpoint.
+     * If no duration is provided the new Period will have the
+     * same duration as the current one
+     *
+     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     *                                            interpreted as the duration expressed in seconds.
+     *                                            If a string is passed, it must be parsable by
+     *                                            `DateInterval::createFromDateString`
+     * @return \League\Period\Period
+     */
+    public function next($duration = null)
+    {
+        if (is_null($duration)) {
+            $duration = $this->getDuration();
+        }
+
+        return self::createFromDuration($this->end, $duration);
+    }
+
+    /**
+     * return a new Period object adjacent to the current Period
+     * and ending with its starting endpoint.
+     * If no duration is provided the new Period will have the
+     * same duration as the current one
+     *
+     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     *                                            interpreted as the duration expressed in seconds.
+     *                                            If a string is passed, it must be parsable by
+     *                                            `DateInterval::createFromDateString`
+     * @return \League\Period\Period
+     */
+    public function previous($duration = null)
+    {
+        if (is_null($duration)) {
+            $duration = $this->getDuration();
+        }
+        $start = clone $this->start;
+
+        return new self($start->sub(self::validateDateInterval($duration)), $this->start);
     }
 
     /**
