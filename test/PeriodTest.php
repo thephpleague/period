@@ -1,11 +1,21 @@
 <?php
 
-date_default_timezone_set('UTC');
-
 use League\Period\Period;
 
 class PeriodTest extends PHPUnit_Framework_TestCase
 {
+    private $timezone;
+
+    public function setUp()
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown()
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testConstructor()
     {
         $period = new Period('2014-05-01', '2014-05-08');
@@ -15,8 +25,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testToString()
     {
+        date_default_timezone_set('Africa/Nairobi');
         $period = new Period('2014-05-01', '2014-05-08');
-        $this->assertSame('2014-05-01T00:00:00Z/2014-05-08T00:00:00Z', (string) $period);
+        $this->assertSame('2014-04-30T21:00:00Z/2014-05-07T21:00:00Z', (string) $period);
     }
 
     public function testCreateFromDurationWithDateTime()
@@ -294,6 +305,13 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $next = $orig->next('1 WEEK');
         $this->assertEquals($next->getStart(), $orig->getEnd());
+    }
+
+    public function testNextWithoutDuration()
+    {
+        $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $period = $orig->next();
+        $this->assertEquals($period->getStart(), $orig->getEnd());
     }
 
     public function testPrevious()
