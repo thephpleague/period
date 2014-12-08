@@ -666,16 +666,14 @@ final class Period
         }
         $res = $this;
         array_walk($args, function (Period $period) use (&$res) {
-            $start = $res->getStart();
-            if ($start > $period->getStart()) {
-                $start = $period->getStart();
+            $start = $period->getStart();
+            if ($res->getStart() > $start) {
+                $res = $res->startingOn($start);
             }
-            $end = $res->getEnd();
-            if ($end < $period->getEnd()) {
-                $end = $period->getEnd();
+            $end = $period->getEnd();
+            if ($res->getEnd() < $end) {
+                $res = $res->endingOn($end);
             }
-
-            $res = new Period($start, $end);
         });
 
         return $res;
