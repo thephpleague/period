@@ -609,10 +609,10 @@ final class Period
     /**
      * return a new Period object adjacent to the current Period
      * and starting with its ending endpoint.
-     * If no duration is provided the new Period will have the
-     * same duration as the current one
+     * If no duration is provided the new Period will be created
+     * using the current object duration
      *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     * @param  \DateInterval|int|string $duration The duration. If an int is passed, it is
      *                                            interpreted as the duration expressed in seconds.
      *                                            If a string is passed, it must be parsable by
      *                                            `DateInterval::createFromDateString`
@@ -633,7 +633,7 @@ final class Period
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     * @param  \DateInterval|int|string $duration The duration. If an int is passed, it is
      *                                            interpreted as the duration expressed in seconds.
      *                                            If a string is passed, it must be parsable by
      *                                            `DateInterval::createFromDateString`

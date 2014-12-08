@@ -1,7 +1,7 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
-## 2.1.0 - XXXX-XX-XX
+## 2.1.0 - 2014-12-08
 
 ### Added
 - Modifying methods:
