@@ -1,6 +1,24 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.2.0 - XXXX-XX-XX
+
+### Added
+- Modifying methods:
+    - `Period::gap`
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Remove
+- Nothing
+
+### Security
+- Nothing
+
 ## 2.1.0 - 2014-12-08
 
 ### Added

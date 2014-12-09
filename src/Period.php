@@ -46,8 +46,8 @@ final class Period
      *
      * $period = new Period('2012-01-01', '2012-02-17');
      *
-     * @param \DateTime|string $start start datetime
-     * @param \DateTime|string $end   end datetime
+     * @param \DateTime|string $start starting endpoint
+     * @param \DateTime|string $end   ending endpoint
      *
      * @throws \LogicException If $start is greater than $end
      *
@@ -699,5 +699,22 @@ final class Period
         }
 
         return new self($start, $end);
+    }
+
+    /**
+     * Compute the gap between two Period objects.
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return \League\Period\Period
+     */
+    public function gap(Period $period)
+    {
+        $start = $this->start;
+        if ($period->start > $start) {
+            return new self($this->end, $period->start);
+        }
+
+        return new self($period->end, $this->start);
     }
 }
