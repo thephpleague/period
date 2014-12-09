@@ -76,50 +76,54 @@ Learn more about how this all works in the [Comparing](/comparing/) section.
 __Comparing endpoints__
 
 ~~~php
-$period->contains($another_period);
+$period->contains($another_period); //return a boolean
 //or
-$period->contains('2014-03-02');
+$period->contains('2014-03-02'); //return a boolean
 ~~~
 
 ~~~php
-$period->overlaps($another_period);
+$period->overlaps($another_period); //return a boolean
 ~~~
 
 ~~~php
-$period->sameValueAs($another_period);
+$period->sameValueAs($another_period); //return a boolean
 ~~~
 
 ~~~php
-$period->abuts($another_period);
+$period->abuts($another_period); //return a boolean
 ~~~
 
 ~~~php
-$period->isBefore($another_period);
+$period->isBefore($another_period); //return a boolean
+//or
+$period->isBefore('2014-03-02'); //return a boolean
 ~~~
 
 ~~~php
-$period->isAfter($another_period);
+$period->isAfter($another_period); //return a boolean
+//or
+$period->isAfter('2014-03-02'); //return a boolean
 ~~~
 
 __Comparing durations__
 
 ~~~php
-$period->durationGreaterThan($another_period);
+$period->durationGreaterThan($another_period); //return a boolean
 ~~~
 
 ~~~php
-$period->durationLessThan($another_period);
+$period->durationLessThan($another_period); //return a boolean
 ~~~
 
 ~~~php
-$period->sameDurationAs($another_period);
+$period->sameDurationAs($another_period); //return a boolean
 ~~~
 
 ~~~php
 $period->compareDuration($another_period);
 //returns  1 if $period > $another_period
 //returns -1 if $period < $another_period
-//returns  0 if $period = $another_period
+//returns  0 if $period == $another_period
 ~~~
 
 ~~~php
@@ -155,10 +159,14 @@ $new_period = $period->sub(new DateInterval('P3D'));
 
 ~~~php
 $new_period = $period->next();
+//or
+$new_period = $period->next(new DateInterval('P3D'));
 ~~~
 
 ~~~php
 $new_period = $period->previous();
+//or
+$new_period = $period->previous('3 DAYS');
 ~~~
 
 ~~~php
