@@ -79,6 +79,38 @@ $period->contains($alt); //return true;
 $alt->contains($period); //return false;
 ~~~
  
+### Period::isBefore($index)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
+
+Tells whether the current `Periodf` object is entirely before the specified `$index`. The `index` can be another `Period` object or a `DateTime` .
+
+~~~php
+use League\Period\Period;
+
+//comparing a datetime
+$period = Period::createFromMonth(1983, 4);
+$alt = Period::createFromMonth(1984, 4);
+$period->isBefore($alt); //returns true;
+$alt->isBefore($period); //return false;
+~~~
+
+### Period::isAfter($index)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
+
+Tells whether the current `Periodf` object is entirely after the specified `$index`. The `index` can be another `Period` object or a `DateTime` .
+
+~~~php
+use League\Period\Period;
+
+//comparing a datetime
+$period = Period::createFromMonth(1983, 4);
+$alt = Period::createFromMonth(1984, 4);
+$alt->isAfter($period); //returns true;
+$period->isAfter($alt); //return false;
+~~~
+
 ## Using durations
 
 ### Period::durationDiff(Period $period, $get_as_seconds = false)

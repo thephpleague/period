@@ -93,6 +93,14 @@ $period->sameValueAs($another_period);
 $period->abuts($another_period);
 ~~~
 
+~~~php
+$period->isBefore($another_period);
+~~~
+
+~~~php
+$period->isAfter($another_period);
+~~~
+
 __Comparing durations__
 
 ~~~php
