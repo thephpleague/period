@@ -25,6 +25,21 @@ $orig->sameValueAs($alt);   //return false
 $orig->sameValueAs($other); //return true
 ~~~
 
+### Period::abuts(Period $period)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
+
+Tells whether two `Period` objects abuts
+
+~~~php
+use League\Period\Period;
+
+$orig  = Period::createFromMonth(2014, 3);
+$alt   = Period::createFromMonth(2014, 4);
+$orig->abuts($alt); //return true
+//in this case $orig->getEnd() == $alt->getStart();
+~~~
+
 ### Period::overlaps(Period $period)
 
 Tells whether two `Period` objects overlap each other or not.

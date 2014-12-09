@@ -155,7 +155,7 @@ $newPeriod = $period->merge($alt, $other);
 
 Computes the intersection between two `Period` objects and returns a new `Period` object.
 
-<p class="message-info">Before getting the intersection, make sure the <code>Period</code> object, at least, overlaps.</p>
+<p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlaps.</p>
 
 ~~~php
 use League\Period\Period;
@@ -164,6 +164,25 @@ $period    = Period::createFromDuration(2012-01-01, '2 MONTHS');
 $altPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
 if ($period->overlaps($altPeriod)) {
     $newPeriod = $period->insersect($altPeriod);
+    //$newPeriod is a Period object 
+}
+~~~
+
+### Period::gap(Period $period)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
+
+Compute the gap between two `Period` objects and returns a new `Period` object.
+
+<p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
+
+~~~php
+use League\Period\Period;
+
+$period    = Period::createFromDuration(2012-01-01, '2 MONTHS');
+$altPeriod = Period::createFromDuration(2013-01-15, '3 MONTHS');
+if (! $period->overlaps($altPeriod)) {
+    $newPeriod = $period->gap($altPeriod);
     //$newPeriod is a Period object 
 }
 ~~~

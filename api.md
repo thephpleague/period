@@ -89,6 +89,10 @@ $period->overlaps($another_period);
 $period->sameValueAs($another_period);
 ~~~
 
+~~~php
+$period->abuts($another_period);
+~~~
+
 __Comparing durations__
 
 ~~~php
@@ -155,4 +159,8 @@ $new_period = $period->merge($another_period);
 
 ~~~php
 $new_period = $period->intersect($another_period);
+~~~
+
+~~~php
+$new_period = $period->gap($another_period);
 ~~~
