@@ -377,10 +377,12 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $orig = Period::createFromDuration('2011-12-01', '2 MONTHS');
         $alt = Period::createFromDuration('2012-06-15', '3 MONTHS');
-        $res = $orig->gap($alt);
-        $this->assertInstanceof('\League\Period\Period', $res);
-        $this->assertEquals($orig->getEnd(), $res->getStart());
-        $this->assertEquals($alt->getStart(), $res->getEnd());
+        $resOne = $orig->gap($alt);
+        $this->assertInstanceof('\League\Period\Period', $resOne);
+        $this->assertEquals($orig->getEnd(), $resOne->getStart());
+        $this->assertEquals($alt->getStart(), $resOne->getEnd());
+        $resTwo = $alt->gap($orig);
+        $this->assertTrue($resOne->sameValueAs($resTwo));
     }
 
     /**
