@@ -28,6 +28,11 @@ use OutOfRangeException;
 final class Period
 {
     /**
+     * DateTime Format to create ISO8601 Interval format
+     */
+    const ISO8601 = 'Y-m-d\TH:i:s\Z';
+
+    /**
      * The date period starting included endpoint.
      *
      * @var \DateTime
@@ -58,9 +63,7 @@ final class Period
         $start = self::validateDateTime($start);
         $end   = self::validateDateTime($end);
         if ($start > $end) {
-            throw new LogicException(
-                'the ending endpoint must be greater or equal to the starting endpoint'
-            );
+            throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
         }
         $this->start = clone $start;
         $this->end   = clone $end;
@@ -134,11 +137,7 @@ final class Period
      */
     public function getRange($interval)
     {
-        return new DatePeriod(
-            $this->start,
-            self::validateDateInterval($interval),
-            $this->end
-        );
+        return new DatePeriod($this->start, self::validateDateInterval($interval), $this->end);
     }
 
     /**
@@ -148,14 +147,11 @@ final class Period
      */
     public function __toString()
     {
-        $utc    = new DateTimeZone('UTC');
-        $format = 'Y-m-d\TH:i:s\Z';
-        $start  = clone $this->start;
-        $end    = clone $this->end;
-        $start->setTimeZone($utc);
-        $end->setTimeZone($utc);
+        $utc   = new DateTimeZone('UTC');
+        $start = clone $this->start;
+        $end   = clone $this->end;
 
-        return $start->format($format).'/'.$end->format($format);
+        return $start->setTimeZone($utc)->format(self::ISO8601).'/'.$end->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
@@ -175,11 +171,7 @@ final class Period
         if ($interval instanceof DateInterval) {
             return $interval;
         }
-        $res = filter_var(
-            $interval,
-            FILTER_VALIDATE_INT,
-            array('options' => array('min_range' => 0))
-        );
+        $res = filter_var($interval, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)));
         if (false !== $res) {
             return new DateInterval('PT'.$res.'S');
         }
@@ -225,6 +217,7 @@ final class Period
 
     /**
      * Tell whether the current Period object is entirely after the specified index
+     * The index can be a DateTime or a Period object
      *
      * @param \League\Period\Period|\DateTime|string $index
      *
@@ -241,6 +234,7 @@ final class Period
 
     /**
      * Tell whether the current Period object is entirely before the specified index
+     * The index can be a DateTime or a Period object
      *
      * @param \League\Period\Period|\DateTime|string $index
      *
@@ -395,9 +389,8 @@ final class Period
     {
         $start = self::validateDateTime($start);
         $end   = clone $start;
-        $end->add(self::validateDateInterval($duration));
 
-        return new self($start, $end);
+        return new self($start, $end->add(self::validateDateInterval($duration)));
     }
 
     /**
@@ -456,15 +449,11 @@ final class Period
      */
     private static function validateRange($value, $min, $max)
     {
-        $res = filter_var(
-            $value,
-            FILTER_VALIDATE_INT,
-            array('options' => array('min_range' => $min, 'max_range' => $max))
-        );
+        $res = filter_var($value, FILTER_VALIDATE_INT, array(
+            'options' => array('min_range' => $min, 'max_range' => $max)
+        ));
         if (false === $res) {
-            throw new OutOfRangeException(
-                "the submitted value is not contained within the valid range"
-            );
+            throw new OutOfRangeException("the submitted value is not contained within the valid range");
         }
 
         return $res;
@@ -510,9 +499,8 @@ final class Period
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $year    = self::validateYear($year);
-        $quarter = self::validateRange($quarter, 1, 4);
-        $month   = (($quarter - 1) * 3) + 1;
+        $year  = self::validateYear($year);
+        $month = ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1;
 
         return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
     }
@@ -534,9 +522,8 @@ final class Period
      */
     public static function createFromSemester($year, $semester)
     {
-        $year     = self::validateYear($year);
-        $semester = self::validateRange($semester, 1, 2);
-        $month    = (($semester - 1) * 6) + 1;
+        $year  = self::validateYear($year);
+        $month = ((self::validateRange($semester, 1, 2) - 1) * 6) + 1;
 
         return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
     }
