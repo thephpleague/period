@@ -6,6 +6,8 @@ All Notable changes to `League\Period` will be documented in this file
 ### Added
 - Modifying methods:
     - `Period::gap`
+- Comparing methods:
+    - `Period::abuts`
 
 ### Deprecated
 - Nothing

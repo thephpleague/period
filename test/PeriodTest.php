@@ -335,6 +335,15 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($period->sameValueAs($alt));
     }
 
+    public function testAbuts()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $this->assertFalse($orig->abuts($alt));
+        $another = $alt->next('1 HOUR');
+        $this->assertTrue($alt->abuts($another));
+    }
+
     public function testDurationDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');

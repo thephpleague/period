@@ -200,6 +200,18 @@ final class Period
     }
 
     /**
+     * Tell wether the current Period object abut with the specified Period
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return boolean
+     */
+    public function abuts(Period $period)
+    {
+        return $this->start == $period->end || $this->end == $period->start;
+    }
+
+    /**
      * Tell whether two Period objects overlaps.
      *
      * @param \League\Period\Period $period
@@ -212,7 +224,8 @@ final class Period
     }
 
     /**
-     * Tells whether a DateTime is contained within the Period object.
+     * Tells whether a DateTime or a Period is contained within
+     * the current Period object.
      *
      * <code>
      *<?php
