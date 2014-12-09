@@ -344,6 +344,22 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($alt->abuts($another));
     }
 
+    public function testIsBefore()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt = Period::createFromDuration('2012-04-01', '2 MONTH');
+        $this->assertTrue($orig->isBefore($alt));
+        $this->assertFalse($alt->isBefore($orig));
+    }
+
+    public function testIsAfter()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt = Period::createFromDuration('2012-04-01', '2 MONTH');
+        $this->assertFalse($orig->isAfter($alt));
+        $this->assertTrue($alt->isAfter($orig));
+    }
+
     public function testDurationDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');

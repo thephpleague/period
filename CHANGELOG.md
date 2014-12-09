@@ -8,6 +8,8 @@ All Notable changes to `League\Period` will be documented in this file
     - `Period::gap`
 - Comparing methods:
     - `Period::abuts`
+    - `Period::isAfter`
+    - `Period::isBefore`
 
 ### Deprecated
 - Nothing

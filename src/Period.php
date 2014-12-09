@@ -200,6 +200,18 @@ final class Period
     }
 
     /**
+     * Tell whether two Period objects overlaps.
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return bool
+     */
+    public function overlaps(Period $period)
+    {
+        return $this->contains($period->start) || $this->contains($period->end);
+    }
+
+    /**
      * Tell wether the current Period object abut with the specified Period
      *
      * @param \League\Period\Period $period
@@ -212,15 +224,35 @@ final class Period
     }
 
     /**
-     * Tell whether two Period objects overlaps.
+     * Tell whether the current Period object is entirely after the specified index
      *
-     * @param \League\Period\Period $period
+     * @param \League\Period\Period|\DateTime|string $index
      *
-     * @return bool
+     * @return boolean
      */
-    public function overlaps(Period $period)
+    public function isAfter($index)
     {
-        return $this->contains($period->start) || $this->contains($period->end);
+        if ($index instanceof Period) {
+            return $this->isAfter($index->end);
+        }
+
+        return $this->start > self::validateDateTime($index);
+    }
+
+    /**
+     * Tell whether the current Period object is entirely before the specified index
+     *
+     * @param \League\Period\Period|\DateTime|string $index
+     *
+     * @return boolean
+     */
+    public function isBefore($index)
+    {
+        if ($index instanceof Period) {
+            return $this->isBefore($index->start);
+        }
+
+        return $this->end < self::validateDateTime($index);
     }
 
     /**
