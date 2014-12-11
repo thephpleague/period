@@ -11,17 +11,8 @@ All Notable changes to `League\Period` will be documented in this file
     - `Period::isAfter`
     - `Period::isBefore`
 
-### Deprecated
-- Nothing
-
 ### Fixed
-- Nothing
-
-### Remove
-- Nothing
-
-### Security
-- Nothing
+- `Period::overlaps` bug fixed issue #8
 
 ## 2.1.0 - 2014-12-08
 
@@ -30,18 +21,6 @@ All Notable changes to `League\Period` will be documented in this file
     - `Period::next`
     - `Period::previous`
 - `Period::__toString` using ISO8601 representation
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Remove
-- Nothing
-
-### Security
-- Nothing
 
 ## 2.0.0 - 2014-10-15
 
@@ -59,36 +38,15 @@ All Notable changes to `League\Period` will be documented in this file
     - `Period::sub`,
     - `Period::intersect`
 
-### Deprecated
-- Nothing
-
 ### Fixed
 - `Period::contains` now works with `Period` objects
 - `Period::getDuration` accept an optional parameter `$get_as_seconds` if used and set to `true`, the method will return a integer which represents the duration in seconds.
 - `Period::merge` now accepts one or more `Period` objects to return the `Period` object which contains all submitted `Period` objects. 
 
-### Remove
-- Nothing
-
-### Security
-- Nothing
-
 ## 1.0.1 - 2014-10-08
-
-### Added
-- Nothing
-
-### Deprecated
-- Nothing
 
 ### Fixed
 - The `$interval` parameter can also an integer which represents the interval expressed in seconds.
-
-### Remove
-- Nothing
-
-### Security
-- Nothing
 
 ## 1.0 - 2014-09-24
 

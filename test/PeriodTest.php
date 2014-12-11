@@ -234,6 +234,15 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($period2->overlaps($period3));
     }
 
+    public function testOverlapsComplete()
+    {
+        $orig = Period::createFromDuration('NOW', '4HOURS');
+        $alt  = Period::createFromDuration('+2 HOURS', '1 HOURS');
+
+        $this->assertTrue($orig->overlaps($alt));
+        $this->assertTrue($alt->overlaps($orig));
+    }
+
     public function testMerge()
     {
         $period    = Period::createFromMonth(2014, 3);

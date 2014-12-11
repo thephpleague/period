@@ -192,18 +192,6 @@ final class Period
     }
 
     /**
-     * Tell whether two Period objects overlaps.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
-     */
-    public function overlaps(Period $period)
-    {
-        return $this->contains($period->start) || $this->contains($period->end);
-    }
-
-    /**
      * Tell wether the current Period object abut with the specified Period
      *
      * @param \League\Period\Period $period
@@ -213,6 +201,25 @@ final class Period
     public function abuts(Period $period)
     {
         return $this->start == $period->end || $this->end == $period->start;
+    }
+
+    /**
+     * Tell whether two Period objects overlaps.
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return bool
+     */
+    public function overlaps(Period $period)
+    {
+        if ($this->abuts($period)) {
+            return false;
+        }
+
+        return $this->contains($period->start)
+            || $this->contains($period->end)
+            || $period->contains($this->start)
+            || $period->contains($this->end);
     }
 
     /**
