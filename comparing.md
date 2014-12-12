@@ -29,20 +29,22 @@ $orig->sameValueAs($other); //return true
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-Tells whether two `Period` objects abuts
+A `Period` abuts if it starts immediately after, or ends immediately before this `Period` without overlap.
+
+![](/media/period-abuts.png "$period abuts $anotherPeriod")
 
 ~~~php
 use League\Period\Period;
 
-$orig  = Period::createFromMonth(2014, 3);
-$alt   = Period::createFromMonth(2014, 4);
-$orig->abuts($alt); //return true
-//in this case $orig->getEnd() == $alt->getStart();
+$period        = Period::createFromMonth(2014, 3);
+$anotherPeriod = Period::createFromMonth(2014, 4);
+$period->abuts($anotherPeriod); //return true
+//in this case $period->getEnd() == $anotherPeriod->getStart();
 ~~~
 
 ### Period::overlaps(Period $period)
 
-Tells whether two `Period` objects overlap each other or not.
+A `Period` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
 
 ~~~php
 use League\Period\Period;
@@ -58,12 +60,9 @@ $alt->overlaps($other);  //return true
 
 ### Period::contains($index)
 
-Tells whether `$index` is contained within the `Period` or not. 
-
-`$index` can be:
-
-- a `Period` object
-- a `DateTime` object.
+A `Period` contains a `DateTime` if it is present in its datetime continuum.  
+A `Period` contains another `Period` object if the latter datetime continuum is completely contained within the `Period` datetime continuum.  
+This means that the `$index` argument can be a `Period` object or a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -83,7 +82,7 @@ $alt->contains($period); //return false;
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-Tells whether the current `Periodf` object is entirely before the specified `$index`. The `index` can be another `Period` object or a `DateTime` .
+Tells whether the current `Period` object datetime continuum is entirely before the specified `$index`. The `index` can be another `Period` or `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -99,7 +98,7 @@ $alt->isBefore($period); //return false;
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-Tells whether the current `Periodf` object is entirely after the specified `$index`. The `index` can be another `Period` object or a `DateTime` .
+Tells whether the current `Period` object datetime continuum is entirely after the specified `$index`. The `index` can be another `Period` or a `DateTime` object.
 
 ~~~php
 use League\Period\Period;

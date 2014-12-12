@@ -10,6 +10,8 @@ The `Period` object is an **immutable value object** so any change to its proper
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
+## Using endpoints
+
 ### Period::startingOn($start)
 
 Returns a new `Period` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
@@ -37,6 +39,10 @@ $period->getEnd(); //returns DateTime('2014-04-01');
 $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
+
+## Using durations
+
+The supplied `DateInterval` object can be added or substracted from the starting and/or ending endpoint.
 
 ### Period::withDuration($duration)
 
@@ -115,8 +121,6 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 // since the ending endpoint is excluded from the period!!
 ~~~
 
-
-
 <p class="message-info">To remove any ambiguity, it is recommended to always provide a <code>$duration</code> when using <code>Period::next</code></p>
 
 ### Period::previous($interval = null)
@@ -136,6 +140,20 @@ $period->durationGreaterThan($newPeriod); //return true
 
 The method must be used with the same arguments and warnings as `Period::next`.
 
+`Period::next` and `Period::previous` methods allow to easily create adjacent Periods as shown in the graph below
+
+![](/media/period-adjacents.png "$previous and $next are adjacent to the $period object")
+
+~~~php
+use League\Period\Period;
+
+$current = Period::createFromMonth(2012, 1);
+$prev    = $current->previous('1 MONTH');
+$next    = $curent->next('1 MONTH');
+~~~
+
+## Using Period objects
+
 ### Period::merge(Period $period[, Period $...])
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
@@ -153,36 +171,34 @@ $newPeriod = $period->merge($alt, $other);
 
 ### Period::intersect(Period $period)
 
-Computes the intersection between two `Period` objects and returns a new `Period` object.
+An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
 
-<p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlaps.</p>
+<p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlap each other.</p>
+
+![](/media/period-intersect.png "$intersectPeriod represents the intersection Period between both Period object")
 
 ~~~php
 use League\Period\Period;
 
-$period    = Period::createFromDuration(2012-01-01, '2 MONTHS');
-$altPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
-if ($period->overlaps($altPeriod)) {
-    $newPeriod = $period->insersect($altPeriod);
-    //$newPeriod is a Period object 
-}
+$period        = Period::createFromDuration(2012-01-01, '2 MONTHS');
+$anotherPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
+$intersectPeriod = $period->insersect($anotherPeriod);
 ~~~
 
 ### Period::gap(Period $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-Compute the gap between two `Period` objects and returns a new `Period` object.
+ A Period has a gap to another Period if there is a non-zero duration between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap or abut, then an Exception is thrown. 
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
+
+![](/media/period-gap.png "$gapPeriod represents the gap Period between both Period objects")
 
 ~~~php
 use League\Period\Period;
 
-$period    = Period::createFromDuration(2012-01-01, '2 MONTHS');
-$altPeriod = Period::createFromDuration(2013-01-15, '3 MONTHS');
-if (! $period->overlaps($altPeriod)) {
-    $newPeriod = $period->gap($altPeriod);
-    //$newPeriod is a Period object 
-}
+$orig = Period::createFromDuration(2012-01-01, '2 MONTHS');
+$alt  = Period::createFromDuration(2013-01-15, '3 MONTHS');
+$gapPeriod = $period->gap($altPeriod);
 ~~~
