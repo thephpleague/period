@@ -723,10 +723,16 @@ final class Period
      *
      * @param \League\Period\Period $period
      *
+     * @throws \InvalidArgumentException
+     *
      * @return \League\Period\Period
      */
     public function intersect(Period $period)
     {
+        if (! $this->overlaps($period)) {
+            throw new InvalidArgumentException('Both Period objects should overlaps');
+        }
+
         $start = $this->start;
         if ($period->start > $start) {
             $start = $period->start;
@@ -745,10 +751,16 @@ final class Period
      *
      * @param \League\Period\Period $period
      *
+     * @throws \InvalidArgumentException
+     *
      * @return \League\Period\Period
      */
     public function gap(Period $period)
     {
+        if ($this->overlaps($period)) {
+            throw new InvalidArgumentException('Both Period objects should not overlaps');
+        }
+
         $start = $this->start;
         if ($period->start > $start) {
             return new self($this->end, $period->start);

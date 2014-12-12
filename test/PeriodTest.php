@@ -389,7 +389,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \InvalidArgumentException
      */
     public function testIntersectThrowsException()
     {
