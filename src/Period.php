@@ -729,7 +729,7 @@ final class Period
         if (! $args) {
             throw new InvalidArgumentException('A Period object is missing');
         }
-        $res = $this;
+        $res = clone $this;
         array_walk($args, function (Period $period) use (&$res) {
             $start = $period->getStart();
             if ($res->getStart() > $start) {
