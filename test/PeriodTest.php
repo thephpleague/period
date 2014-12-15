@@ -380,7 +380,33 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($alt->abuts($another));
     }
 
-    public function testIsBefore()
+    public function testIsBeforeDatetime()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $beforeDateTime = new DateTime('2010-01-01');
+        $afterDateTime = new DateTime('2015-01-01');
+        $this->assertTrue($orig->isBefore($afterDateTime));
+        $this->assertFalse($orig->isBefore($beforeDateTime));
+    }
+
+    public function testIsAfterDatetime()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $beforeDateTime = new DateTime('2010-01-01');
+        $afterDateTime = new DateTime('2015-01-01');
+        $this->assertFalse($orig->isAfter($afterDateTime));
+        $this->assertTrue($orig->isAfter($beforeDateTime));
+    }
+
+    public function testIsAfterDatetimeAbuts()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $this->assertTrue($orig->isBefore($orig->getEnd()));
+        $this->assertFalse($orig->isAfter($orig->getStart()));
+    }
+
+
+    public function testIsBeforePeriod()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $alt = Period::createFromDuration('2012-04-01', '2 MONTH');
@@ -388,7 +414,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($alt->isBefore($orig));
     }
 
-    public function testIsAfter()
+    public function testIsAfterPeriod()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $alt = Period::createFromDuration('2012-04-01', '2 MONTH');

@@ -6,6 +6,8 @@ All Notable changes to `League\Period` will be documented in this file
 ### Added
 - Named constructor:
     - `Period::createFromDurationBeforeEnd`
+### Fixed
+- `Period::isBefore` `Period::isAfter` because `Period` are inclusive of the start and exclusive of the end endpoints.
 
 ## 2.2.0 - 2014-12-12
 

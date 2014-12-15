@@ -233,7 +233,7 @@ final class Period
     public function isAfter($index)
     {
         if ($index instanceof Period) {
-            return $this->isAfter($index->end);
+            return $this->start >= $index->end;
         }
 
         return $this->start > self::validateDateTime($index);
@@ -250,10 +250,10 @@ final class Period
     public function isBefore($index)
     {
         if ($index instanceof Period) {
-            return $this->isBefore($index->start);
+            return $this->end <= $index->start;
         }
 
-        return $this->end < self::validateDateTime($index);
+        return $this->end <= self::validateDateTime($index);
     }
 
     /**
