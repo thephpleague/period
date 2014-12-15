@@ -135,7 +135,7 @@ $period->durationDiff($another_period, true); //the difference expressed in seco
 
 Learn more about how this all works in the [Modifying](/modifying/) section.
 
-__Period as a immutable value object__
+__Modifying using endpoints__
 
 ~~~php
 $new_period = $period->startingOn('2014-10-01');
@@ -144,6 +144,8 @@ $new_period = $period->startingOn('2014-10-01');
 ~~~php
 $new_period = $period->endingOn(new DateTime('2014-10-01'));
 ~~~
+
+__Modifying using duration__
 
 ~~~php
 $new_period = $period->withDuration(86400);
@@ -168,6 +170,8 @@ $new_period = $period->previous();
 //or
 $new_period = $period->previous('3 DAYS');
 ~~~
+
+__Modifying using `Period` objects__
 
 ~~~php
 $new_period = $period->merge($another_period);

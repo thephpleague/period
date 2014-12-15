@@ -60,11 +60,11 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
 
-### Period::add($interval)
+### Period::add($duration)
 
 Returns a new `Period` object by adding an interval to the current ending excluded endpoint.
 
-The `$interval` parameter is expressed as a `DateInterval` object.
+The `$duration` parameter is expressed as a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
@@ -74,11 +74,11 @@ $newPeriod = $period->add('2 WEEKS');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
 
-### Period::sub($interval)
+### Period::sub($duration)
 
 Returns a new `Period` object by substracting an interval to the current ending excluded endpoint.
 
-The `$interval` parameter is expressed as a `DateInterval` object.
+The `$duration` parameter is expressed as a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
@@ -88,7 +88,7 @@ $newPeriod = $period->sub('2 WEEKS');
 // $period->getStart() equals $newPeriod->getStart();
 ~~~
 
-### Period::next($interval = null)
+### Period::next($duration = null)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
@@ -102,7 +102,7 @@ $newPeriod = $period->next('1 MONTH');
 // $period->getEnd() equals $newPeriod->getStart();
 ~~~
 
-<p class="message-warning">When no <code>$interval</code> is provided to the method the new <code>Period</code> duration may vary. See below for a concrete example</p>
+<p class="message-warning">When no <code>$duration</code> is provided to the method the new <code>Period</code> duration may vary. See below for a concrete example</p>
 
 ~~~php
 use League\Period\Period;
@@ -123,7 +123,7 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
 <p class="message-info">To remove any ambiguity, it is recommended to always provide a <code>$duration</code> when using <code>Period::next</code></p>
 
-### Period::previous($interval = null)
+### Period::previous($duration = null)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 

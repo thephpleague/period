@@ -6,7 +6,7 @@ permalink: instantiation/
 
 # Instantiation
 
-To ease instantiation the class comes with many named constructors.
+Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors.
 
 ### Period::createFromDuration($start, $duration)
 
