@@ -2,7 +2,7 @@
     "name": "league/period",
     "type": "library",
     "description" : "A time range immutable value object",
-    "keywords": ["time", "range", "dateinterval", "dateperiod", "period", "datetime", "compare"],
+    "keywords": ["date", "time", "datetime", "range", "interval", "dateinterval", "dateperiod"],
     "license": "MIT",
     "authors": [
         {
@@ -12,6 +12,10 @@
             "role" : "Developer"
         }
     ],
+    "support": {
+        "forum": "https://groups.google.com/forum/#!forum/thephpleague",
+        "issues": "https://github.com/thephpleague/period/issues"
+    },
     "require": {
         "php" : ">=5.3.0"
     },

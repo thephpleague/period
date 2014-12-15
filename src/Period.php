@@ -141,20 +141,6 @@ final class Period
     }
 
     /**
-     * String representation of an Period using ISO8601 Time interval format
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        $utc   = new DateTimeZone('UTC');
-        $start = clone $this->start;
-        $end   = clone $this->end;
-
-        return $start->setTimeZone($utc)->format(self::ISO8601).'/'.$end->setTimeZone($utc)->format(self::ISO8601);
-    }
-
-    /**
      * Validate a DateInterval.
      *
      * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
@@ -177,6 +163,20 @@ final class Period
         }
 
         return DateInterval::createFromDateString((string) $interval);
+    }
+
+    /**
+     * String representation of an Period using ISO8601 Time interval format
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $utc   = new DateTimeZone('UTC');
+        $start = clone $this->start;
+        $end   = clone $this->end;
+
+        return $start->setTimeZone($utc)->format(self::ISO8601).'/'.$end->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
@@ -247,7 +247,7 @@ final class Period
     public function isBefore($index)
     {
         if ($index instanceof Period) {
-            return $this->end <= $index->start;
+            $index = $index->start;
         }
 
         return $this->end <= self::validateDateTime($index);
@@ -276,9 +276,9 @@ final class Period
             return $this->contains($index->start) && $this->contains($index->end);
         }
 
-        $date = self::validateDateTime($index);
+        $datetime = self::validateDateTime($index);
 
-        return $date >= $this->start && $date < $this->end;
+        return $datetime >= $this->start && $datetime < $this->end;
     }
 
     /**
@@ -318,13 +318,13 @@ final class Period
      */
     public function compareDuration(Period $period)
     {
-        $date = new DateTime();
-        $alt  = clone $date;
-        $date->add($this->start->diff($this->end));
+        $datetime = new DateTime();
+        $alt  = clone $datetime;
+        $datetime->add($this->start->diff($this->end));
         $alt->add($period->start->diff($period->end));
-        if ($date > $alt) {
+        if ($datetime > $alt) {
             return 1;
-        } elseif ($date < $alt) {
+        } elseif ($datetime < $alt) {
             return -1;
         }
 
