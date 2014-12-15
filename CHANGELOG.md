@@ -1,6 +1,12 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.3.0 - XXXX-XX-XX
+
+### Added
+- Named constructor:
+    - `Period::createFromDurationBeforeEnd`
+
 ## 2.2.0 - 2014-12-12
 
 ### Added

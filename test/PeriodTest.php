@@ -57,6 +57,33 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         Period::createFromDuration(new DateTime(), "-1 DAY");
     }
 
+    public function testCreateFromDurationBeforeEndWithDateTime()
+    {
+        $end = new DateTime();
+        $period = Period::createFromDurationBeforeEnd($end, "1 DAY");
+        $this->assertEquals($period->getEnd(), $end);
+        $this->assertEquals($period->getStart(), $end->sub(new DateInterval('P1D')));
+    }
+
+    public function testCreateFromDurationBeforeEndWithString()
+    {
+        $end =  new DateTime('-1 DAY');
+        $ttl = new DateInterval('P2D');
+        $start = clone $end;
+        $start->sub($ttl);
+        $period = Period::createFromDurationBeforeEnd("-1 DAY", $ttl);
+        $this->assertEquals($period->getStart(), $start);
+        $this->assertEquals($period->getEnd(), $end);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testCreateFromDurationBeforeEndFailedWithOutofRangeInterval()
+    {
+        Period::createFromDurationBeforeEnd(new DateTime(), "-1 DAY");
+    }
+
     public function testCreateFromWeek()
     {
         $period = Period::createFromWeek(2014, 3);

@@ -401,6 +401,36 @@ final class Period
     }
 
     /**
+     * Create a Period object from a ending endpoint and an interval.
+     *
+     * <code>
+     *<?php
+     * $period = Period::createFromDurationBeforeEnd('2012-01-01', '1 HOUR');
+     * $period = Period::createFromDurationBeforeEnd(new DateTime('2012-01-01'), new DateInterval('PT1H'));
+     * $period = Period::createFromDurationBeforeEnd(new DateTime('2012-01-01'), '1 HOUR');
+     * $period = Period::createFromDurationBeforeEnd('2012-01-01', new DateInterval('PT1H'));
+     * $period = Period::createFromDurationBeforeEnd('2012-01-01', 3600);
+     *
+     * ?>
+     * </code>
+     *
+     * @param \DateTime|string         $end    end date
+     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromDurationBeforeEnd($end, $duration)
+    {
+        $end   = self::validateDateTime($end);
+        $start = clone $end;
+
+        return new self($start->sub(self::validateDateInterval($duration)), $end);
+    }
+
+    /**
      * Create a Period object from a Year and a Week.
      *
      * <code>
@@ -683,9 +713,8 @@ final class Period
         if (is_null($duration)) {
             $duration = $this->getDuration();
         }
-        $start = clone $this->start;
 
-        return new self($start->sub(self::validateDateInterval($duration)), $this->start);
+        return self::createFromDurationBeforeEnd($this->start, $duration);
     }
 
     /**
