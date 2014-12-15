@@ -23,6 +23,24 @@ $alt    = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1
 $other  = Period::createFromDuration(new DateTime('2012-04-01 08:30:25'), 86400);
 ~~~
 
+### Period::createFromDurationBeforeEnd($end, $duration)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.3</p>
+
+Returns a `Period` object which ends at `$end` with a duration equals to `$duration`.
+
+- The `$end` represents **the ending excluded endpoint** expressed as `DateTime` object.
+- The `$duration` parameter is a `DateInterval` object;
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', '1 DAY');
+$alt    = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', new DateInterval('P1D'));
+$other  = Period::createFromDurationBeforeEnd(new DateTime('2012-04-01 08:30:25'), 86400);
+~~~
+
+
 ### Period::createFromWeek($year, $week)
 
 Returns a `Period` object with a duration of 1 week for a given year and week.

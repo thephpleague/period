@@ -21,7 +21,7 @@ $period = new Period(new DateTime('2014-10-15 08:35:26'), '2014-10-15 08:53:12')
 __Using named constructors__
 
 ~~~php
-$period = Period::createFromYear(2014); //a full year time range
+$period = Period::createFromYear(2014);        //a full year time range
 ~~~
 
 ~~~php
@@ -41,7 +41,13 @@ $period = Period::createFromWeek(2014, 1);     //the first week of 2014
 ~~~
 
 ~~~php
-$period = Period::createFromDuration('2014-01-01 08:00:25', 3600); //a 1 hour time range
+$period = Period::createFromDuration('2014-01-01 08:00:25', 3600);
+//a 1 hour time range starting at '2014-01-01 08:00:25'
+~~~
+
+~~~php
+$period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
+//a 1 hour time range ending at '2014-01-01 08:00:25'
 ~~~
 
 ## Period properties
@@ -135,7 +141,7 @@ $period->durationDiff($another_period, true); //the difference expressed in seco
 
 Learn more about how this all works in the [Modifying](/modifying/) section.
 
-__Modifying using endpoints__
+__Using endpoints__
 
 ~~~php
 $new_period = $period->startingOn('2014-10-01');
@@ -145,7 +151,7 @@ $new_period = $period->startingOn('2014-10-01');
 $new_period = $period->endingOn(new DateTime('2014-10-01'));
 ~~~
 
-__Modifying using duration__
+__Using duration__
 
 ~~~php
 $new_period = $period->withDuration(86400);
@@ -171,10 +177,12 @@ $new_period = $period->previous();
 $new_period = $period->previous('3 DAYS');
 ~~~
 
-__Modifying using `Period` objects__
+__Using `Period` objects__
 
 ~~~php
 $new_period = $period->merge($another_period);
+//or
+$new_period = $period->merge($another_period, $alt_period, ...);
 ~~~
 
 ~~~php
