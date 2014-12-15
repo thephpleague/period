@@ -5,7 +5,7 @@
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/thephpleague/period/
- * @version 2.1.0
+ * @version 2.3.0
  * @package League.Period
  *
  * For the full copyright and license information, please view the LICENSE
@@ -216,10 +216,7 @@ final class Period
             return false;
         }
 
-        return $this->contains($period->start)
-            || $this->contains($period->end)
-            || $period->contains($this->start)
-            || $period->contains($this->end);
+        return $this->start < $period->end && $this->end > $period->start;
     }
 
     /**
