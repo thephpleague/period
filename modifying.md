@@ -6,7 +6,7 @@ permalink: modifying/
 
 # Modifying a Period object
 
-The `Period` object is an **immutable value object** so any change to its property returns a new `Period` object. 
+The `Period` object is an **immutable value object** so any change to its property returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
@@ -113,11 +113,11 @@ $march    = $newPeriod->next();
 $january->sameDurationAs($february); //return false;
 $january->sameDurationAs($march); //return false;
 
-echo $january;  // 2012-01-01T00:00:00+0100/2012-02-01T00:00:00+0100 
-echo $february; // 2012-02-01T00:00:00+0100/2012-03-01T00:00:00+0100 
+echo $january;  // 2012-01-01T00:00:00+0100/2012-02-01T00:00:00+0100
+echo $february; // 2012-02-01T00:00:00+0100/2012-03-01T00:00:00+0100
 echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
-// $march does not represents the full month 
+// $march does not represents the full month
 // since the ending endpoint is excluded from the period!!
 ~~~
 
@@ -164,7 +164,7 @@ use League\Period\Period;
 $period = Period::createFromSemester(2012, 1);
 $alt    = Period::createFromWeek(2013, 4);
 $other  = Period::createFromDuration('2012-03-07 08:10:27', 86000*3);
-$newPeriod = $period->merge($alt, $other); 
+$newPeriod = $period->merge($alt, $other);
 // $newPeriod->getStart() equals $period->getStart();
 // $newPeriod->getEnd() equals $altPeriod->getEnd();
 ~~~
@@ -189,7 +189,7 @@ $intersectPeriod = $period->insersect($anotherPeriod);
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
- A Period has a gap to another Period if there is a non-zero duration between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap or abut, then an Exception is thrown. 
+ A Period has a gap to another Period if there is a non-zero duration between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap or abut, then an Exception is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 
@@ -200,5 +200,5 @@ use League\Period\Period;
 
 $orig = Period::createFromDuration(2012-01-01, '2 MONTHS');
 $alt  = Period::createFromDuration(2013-01-15, '3 MONTHS');
-$gapPeriod = $period->gap($altPeriod);
+$gapPeriod = $period->gap($alt);
 ~~~

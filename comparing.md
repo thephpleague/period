@@ -25,6 +25,22 @@ $orig->sameValueAs($alt);   //return false
 $orig->sameValueAs($other); //return true
 ~~~
 
+### Period::overlaps(Period $period)
+
+A `Period` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
+
+~~~php
+use League\Period\Period;
+
+$orig  = Period::createFromMonth(2014, 3);
+$alt   = Period::createFromMonth(2014, 4);
+$other = Period::createFromDuration('2014-03-15', '3 WEEKS');
+
+$orig->overlaps($alt);   //return false
+$orig->overlaps($other); //return true
+$alt->overlaps($other);  //return true
+~~~
+
 ### Period::abuts(Period $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
@@ -40,22 +56,6 @@ $period        = Period::createFromMonth(2014, 3);
 $anotherPeriod = Period::createFromMonth(2014, 4);
 $period->abuts($anotherPeriod); //return true
 //in this case $period->getEnd() == $anotherPeriod->getStart();
-~~~
-
-### Period::overlaps(Period $period)
-
-A `Period` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
-
-~~~php
-use League\Period\Period;
-
-$orig  = Period::createFromMonth(2014, 3);
-$alt   = Period::createFromMonth(2014, 4);
-$other = Period::createFromDuration('2014-03-15', '3 WEEKS');
-
-$orig->overlaps($alt);   //return false
-$orig->overlaps($other); //return true
-$alt->overlaps($other);  //return true
 ~~~
 
 ### Period::contains($index)
@@ -77,7 +77,7 @@ $alt = Period::createFromDuration(1983-04-12, '12 DAYS');
 $period->contains($alt); //return true;
 $alt->contains($period); //return false;
 ~~~
- 
+
 ### Period::isBefore($index)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
@@ -109,6 +109,34 @@ $alt = Period::createFromMonth(1984, 4);
 $alt->isAfter($period); //returns true;
 $period->isAfter($alt); //return false;
 ~~~
+
+### Period::diff(Period $period)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.4</p>
+
+ This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.  
+ The difference is expressed as an `array`. The returned array:
+
+ - is empty if both objects share the same endpoints;
+ - contains one `Period` object if both objects share only one endpoint;
+ - contains two `Period` objects if no endpoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
+
+![](/media/period-diff.png "The difference express as Period objects")
+
+~~~php
+use League\Period\Period;
+
+$orig = Period::createFromDuration(2013-01-01, '1 MONTH');
+$alt  = Period::createFromDuration(2013-01-15, '7 DAYS');
+$diff = $period->diff($alt);
+// $diff is an array containing 2 Period objects
+// the first object is equal to new Period('2013-01-01', '2013-01-15');
+// the second object is equal to new Period('2013-01-23', '2013-02-01');
+$diff[0]->isBefore($diff[1]); //return true;
+//this is always true when two Period objects are present
+~~~
+
+<p class="message-info">Before getting the difference, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 
 ## Using durations
 

@@ -111,6 +111,11 @@ $period->isAfter($another_period); //return a boolean
 $period->isAfter('2014-03-02'); //return a boolean
 ~~~
 
+~~~php
+$arr = $period->diff($another_period);
+//$arr is a array containing up to two Period objects
+~~~
+
 __Comparing durations__
 
 ~~~php
