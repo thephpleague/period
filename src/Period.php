@@ -794,4 +794,53 @@ final class Period
 
         return new self($period->end, $this->start);
     }
+
+    /**
+     * Compute the difference between two overlapsing Period objects
+     * and return an array containing the difference express as Period objects
+     * if both Period have the same endpoints the array will be empty
+     * otherwise the array may contain up to 2 Period objects
+     *
+     * @param \League\Period\Period $period
+     *
+     * @throws \LogicException
+     *
+     * @return \League\Period\Period[]
+     */
+    public function diff(Period $period)
+    {
+        if (! $this->overlaps($period)) {
+            throw new LogicException('Both Period objects should overlaps');
+        }
+
+        $res = array(
+            self::createFromEndpoints($this->start, $period->start),
+            self::createFromEndpoints($this->end, $period->end),
+        );
+
+        return array_values(array_filter($res, function (Period $period) {
+            return $period->getStart() != $period->getEnd();
+        }));
+    }
+
+    /**
+     * Create a new Period instance given two endpoints
+     * The endpoints will be used as to allow the creation of
+     * a Period object
+     *
+     * @param \DateTime|string $endpoint1 endpoint
+     * @param \DateTime|string $endpoint2 endpoint
+     *
+     * @return \League\Period\Period
+     */
+    private static function createFromEndpoints(Datetime $endpoint1, Datetime $endpoint2)
+    {
+        $start = self::validateDateTime($endpoint1);
+        $end   = self::validateDateTime($endpoint2);
+        if ($start > $end) {
+            list($start, $end) = array($end, $start);
+        }
+
+        return new self($start, $end);
+    }
 }

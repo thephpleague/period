@@ -473,4 +473,43 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
         $orig->gap($alt);
     }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testDiffThrowsException()
+    {
+        $period = Period::createFromYear(2013);
+        $alt = Period::createFromYear(2015);
+        $alt->diff($period);
+    }
+
+    public function testDiffWithEqualsPeriod()
+    {
+        $period = Period::createFromYear(2013);
+        $alt = Period::createFromDuration('2013-01-01', '1 YEAR');
+        $res = $alt->diff($period);
+        $this->assertCount(0, $res);
+    }
+
+    public function testDiffWithPeriodSharingOneEndpoints()
+    {
+        $period = Period::createFromYear(2013);
+        $alt = Period::createFromDuration('2013-01-01', '3 MONTHS');
+        $res = $alt->diff($period);
+        $this->assertCount(1, $res);
+        $this->assertInstanceof('League\Period\Period', $res[0]);
+        $this->assertEquals(new Datetime('2013-04-01'), $res[0]->getStart());
+        $this->assertEquals(new Datetime('2014-01-01'), $res[0]->getEnd());
+    }
+
+    public function testDiffWithOverlapsPeriod()
+    {
+        $period = Period::createFromDuration('2013-01-01 10:00:00', '3 HOURS');
+        $alt = Period::createFromDuration('2013-01-01 11:00:00', '3 HOURS');
+        $res = $alt->diff($period);
+        $this->assertCount(2, $res);
+        $this->assertEquals(3600, $res[1]->getDuration(true));
+        $this->assertEquals(3600, $res[0]->getDuration(true));
+    }
 }

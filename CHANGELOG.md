@@ -1,6 +1,12 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.4.0 - XXXX-XX-XX
+
+### Added
+- Modifying methods:
+    - `Period::diff`
+
 ## 2.3.0 - 2014-12-15
 
 ### Added
@@ -34,7 +40,7 @@ All Notable changes to `League\Period` will be documented in this file
 
 ### Added
 - Change vendor namespace from `Period` to `League\Period`
-- Comparing methods: 
+- Comparing methods:
     - `Period::sameValueAs`,
     - `Period::compareDuration`,
     - `Period::durationGreaterThan`,
@@ -49,7 +55,7 @@ All Notable changes to `League\Period` will be documented in this file
 ### Fixed
 - `Period::contains` now works with `Period` objects
 - `Period::getDuration` accept an optional parameter `$get_as_seconds` if used and set to `true`, the method will return a integer which represents the duration in seconds.
-- `Period::merge` now accepts one or more `Period` objects to return the `Period` object which contains all submitted `Period` objects. 
+- `Period::merge` now accepts one or more `Period` objects to return the `Period` object which contains all submitted `Period` objects.
 
 ## 1.0.1 - 2014-10-08
 
