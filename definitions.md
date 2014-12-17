@@ -17,6 +17,7 @@ permalink: definitions/
 Unless stated otherwise:
 
 - Whenever a `DateTime` object is expected you can provide:
+    - a `DateTimeInterface` object (ie: `DateTimeImmutable` since PHP 5.5+);
     - a `DateTime` object;
     - a string parsable by the `DateTime` constructor.
 

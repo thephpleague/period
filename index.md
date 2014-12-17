@@ -16,7 +16,7 @@ permalink: /
 
 ## About
 
-`League\Period` is a immutable value object based on ideas described in the [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) blog post by Mathias Verraes and helps resolve many recurrent issues around time range selection and usage.
+`League\Period` is a immutable value object based on ideas described in the [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) blog post by Mathias Verraes and helps resolve many recurrent issues around time range selection and usage in PHP.
 
 This package is compliant with [PSR-2], and [PSR-4].
 

@@ -37,7 +37,7 @@ use League\Period\Period;
 
 $period = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', '1 DAY');
 $alt    = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', new DateInterval('P1D'));
-$other  = Period::createFromDurationBeforeEnd(new DateTime('2012-04-01 08:30:25'), 86400);
+$other  = Period::createFromDurationBeforeEnd(new DateTimeImmutable('2012-04-01 08:30:25'), 86400);
 ~~~
 
 
