@@ -7,6 +7,9 @@ All Notable changes to `League\Period` will be documented in this file
 - Modifying methods:
     - `Period::diff`
 
+### Fixed
+- Adding support for `DateTimeInterface` object (ie. `DateTimeImmutable` in PHP5.5+)
+
 ## 2.3.0 - 2014-12-15
 
 ### Added

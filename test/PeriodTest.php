@@ -23,6 +23,19 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
     }
 
+    /**
+     * @requires PHP 5.5
+     */
+    public function testConstructorWithDateTimeInterface()
+    {
+        $start = new DateTimeImmutable('2014-05-01');
+        $end = new DateTimeImmutable('2014-05-08');
+        $period = new Period($start, $end);
+        $this->assertInstanceof('DateTimeInterface', $period->getStart());
+        $this->assertInstanceof('DateTimeImmutable', $period->getStart());
+        $this->assertEquals($end, $period->getEnd());
+    }
+
     public function testToString()
     {
         date_default_timezone_set('Africa/Nairobi');
