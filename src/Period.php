@@ -859,8 +859,7 @@ final class Period
             throw new LogicException('Both Period objects should not overlaps');
         }
 
-        $start = $this->start;
-        if ($period->start > $start) {
+        if ($period->start > $this->start) {
             return new self($this->end, $period->start);
         }
 
