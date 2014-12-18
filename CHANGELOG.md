@@ -1,22 +1,23 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
-## 2.4.0 - XXXX-XX-XX
+## 2.4.0 - 2014-12-18
 
 ### Added
 - Modifying methods:
     - `Period::diff`
 
 ### Fixed
-- Adding support for `DateTimeInterface` object (ie. `DateTimeImmutable` in PHP5.5+)
+- Added support for `DateTimeInterface` interface
 
 ## 2.3.0 - 2014-12-15
 
 ### Added
 - Named constructor:
     - `Period::createFromDurationBeforeEnd`
+
 ### Fixed
-- `Period::isBefore` `Period::isAfter` because `Period` are inclusive of the start and exclusive of the end endpoints.
+- `Period::isBefore` `Period::isAfter` bug fixed. must take into account the *half-open* implementation of a `Period`object.
 
 ## 2.2.0 - 2014-12-12
 
@@ -29,7 +30,7 @@ All Notable changes to `League\Period` will be documented in this file
     - `Period::isBefore`
 
 ### Fixed
-- `Period::overlaps` bug fixed issue #8
+- `Period::overlaps` bug fixed [issue #8](https://github.com/thephpleague/period/issues/8)
 
 ## 2.1.0 - 2014-12-08
 
