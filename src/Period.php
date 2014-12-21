@@ -356,20 +356,16 @@ final class Period
      */
     public function durationDiff(Period $period, $get_as_seconds = false)
     {
-        $diff =   $this->end->getTimestamp()
+        if ($get_as_seconds) {
+            return $this->end->getTimestamp()
                 - $this->start->getTimestamp()
                 - $period->end->getTimestamp()
                 + $period->start->getTimestamp();
-        if (! $get_as_seconds) {
-            $res = new DateInterval('PT'.abs($diff).'S');
-            if (0 > $diff) {
-                $res->invert = 1;
-            }
-
-            return $res;
         }
+        $start = self::createFromDuration(new DateTime(), $this->start->diff($this->end));
+        $end   = $start->withDuration($period->start->diff($period->end));
 
-        return $diff;
+        return $start->end->diff($end->end);
     }
 
     /**
@@ -741,7 +737,7 @@ final class Period
      * If no duration is provided the new Period will be created
      * using the current object duration
      *
-     * @param  \DateInterval|int|string $duration The duration. If an int is passed, it is
+     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
      *                                            interpreted as the duration expressed in seconds.
      *                                            If a string is passed, it must be parsable by
      *                                            `DateInterval::createFromDateString`
@@ -762,7 +758,7 @@ final class Period
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
-     * @param  \DateInterval|int|string $duration The duration. If an int is passed, it is
+     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
      *                                            interpreted as the duration expressed in seconds.
      *                                            If a string is passed, it must be parsable by
      *                                            `DateInterval::createFromDateString`
