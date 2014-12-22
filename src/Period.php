@@ -362,10 +362,9 @@ final class Period
                 - $period->end->getTimestamp()
                 + $period->start->getTimestamp();
         }
-        $start = self::createFromDuration(new DateTime(), $this->start->diff($this->end));
-        $end   = $start->withDuration($period->start->diff($period->end));
+        $normPeriod = $this->withDuration($period->start->diff($period->end));
 
-        return $start->end->diff($end->end);
+        return $this->end->diff($normPeriod->end);
     }
 
     /**
@@ -791,12 +790,9 @@ final class Period
      *
      * @return \League\Period\Period
      */
-    public function merge()
+    public function merge(Period $period)
     {
         $args = func_get_args();
-        if (! $args) {
-            throw new InvalidArgumentException('A Period object is missing');
-        }
         $res = clone $this;
         array_walk($args, function (Period $period) use (&$res) {
             $start = $period->getStart();
