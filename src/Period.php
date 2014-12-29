@@ -376,11 +376,11 @@ final class Period
      */
     public function compareDuration(Period $period)
     {
-        $normEnd = clone $this->start;
-        $normEnd->add($period->start->diff($period->end));
-        if ($this->end > $normEnd) {
+        $datetime = clone $this->start;
+        $datetime->add($period->start->diff($period->end));
+        if ($this->end > $datetime) {
             return 1;
-        } elseif ($normEnd < $this->end) {
+        } elseif ($this->end < $datetime) {
             return -1;
         }
 
