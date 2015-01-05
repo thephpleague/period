@@ -790,7 +790,8 @@ final class Period
     public function merge(Period $period)
     {
         $res = clone $this;
-        array_walk(func_get_args(), function (Period $period) use (&$res) {
+        $args = func_get_args();
+        array_walk($args, function (Period $period) use (&$res) {
             $start = $period->getStart();
             if ($res->getStart() > $start) {
                 $res = $res->startingOn($start);
