@@ -500,11 +500,10 @@ final class Period
      */
     public static function createFromWeek($year, $week)
     {
-        $start = new DateTime();
-        $start->setISODate(self::validateYear($year), self::validateRange($week, 1, 53));
-        $start->setTime(0, 0, 0);
-
-        return self::createFromDuration($start, '1 WEEK');
+        return self::createFromDuration(
+            self::validateYear($year).'W'.sprintf('%02d', self::validateRange($week, 1, 53)),
+            '1 WEEK'
+        );
     }
 
     /**
