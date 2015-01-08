@@ -9,12 +9,22 @@ Period
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/period.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/period)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
 
-This class is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and helps resolve many recurrent issues around Date range selection and usage.
+Period is PHP missing time range class. It is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges.
 
-This package is compliant with [PSR-2], and [PSR-4].
+Highlights
+-------
 
-[PSR-2]: http://www.php-fig.org/psr/psr-2/
-[PSR-4]: http://www.php-fig.org/psr/psr-4/
+- Treats time range as immutable value objects
+- Exposes many named constructors to ease time range creation
+- Covers all basic manipulations related to time range
+- Fully documented
+- Framework-agnostic, will work with any project
+- Composer ready, [PSR-2], and [PSR-4] compliant
+
+Documentation
+-------
+
+Full documentation can be found at [period.thephpleague.com](http://period.thephpleague.com).
 
 System Requirements
 -------
@@ -30,19 +40,10 @@ Install `Period` using Composer.
 $ composer require league/period
 ```
 
-This will edit (or create) your `composer.json` file and automatically choose the most recent version, for example: `~1.0`
-
-#### Going Solo
-
-You can also use `League\Period` without using Composer by downloading the library and using a [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
-
-Documentation
--------
-
-`League\Period` is [fully documented](http://period.thephpleague.com). Contribute to this documentation in the [gh-pages branch](https://github.com/thephpleague/period/tree/gh-pages).
-
 Testing
 -------
+
+Period has a [PHPUnit](https://phpunit.de/) test suite. To run the tests, run the following command from the project folder:
 
 ``` bash
 $ phpunit
@@ -51,10 +52,18 @@ $ phpunit
 Contributing
 -------
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 Credits
 -------
 
-- [ignace nyamagana butera](https://github.com/nyamsprod)
+- [Ignace Nyamagana Butera](https://github.com/nyamsprod)
 - [All Contributors](https://github.com/thephpleague/period/graphs/contributors)
+
+[PSR-2]: http://www.php-fig.org/psr/psr-2/
+[PSR-4]: http://www.php-fig.org/psr/psr-4/
+
+License
+-------
+
+The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
