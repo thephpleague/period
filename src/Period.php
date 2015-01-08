@@ -119,7 +119,7 @@ final class Period
      *                             represents the duration in seconds instead of a \DateInterval
      *                             object.
      *
-     * @return \DateInterval|double
+     * @return \DateInterval|int|double
      */
     public function getDuration($get_as_seconds = false)
     {
@@ -350,7 +350,7 @@ final class Period
      *                                              an intw hich represents the duration in seconds
      *                                              instead of a\DateInterval object
      *
-     * @return \DateInterval|double
+     * @return \DateInterval|int|double
      */
     public function durationDiff(Period $period, $get_as_seconds = false)
     {
