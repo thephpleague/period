@@ -119,7 +119,7 @@ final class Period
      *                             represents the duration in seconds instead of a \DateInterval
      *                             object.
      *
-     * @return \DateInterval|int|double
+     * @return \DateInterval|double
      */
     public function getDuration($get_as_seconds = false)
     {
@@ -350,7 +350,7 @@ final class Period
      *                                              an intw hich represents the duration in seconds
      *                                              instead of a\DateInterval object
      *
-     * @return \DateInterval|int
+     * @return \DateInterval|double
      */
     public function durationDiff(Period $period, $get_as_seconds = false)
     {
@@ -785,7 +785,7 @@ final class Period
      *
      * @return \League\Period\Period
      */
-    public function merge(Period $period)
+    public function merge()
     {
         $res = clone $this;
         $args = func_get_args();

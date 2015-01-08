@@ -621,8 +621,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period = Period::createFromYear(2013);
         $alt = Period::createFromDuration('2013-01-01', '1 YEAR');
-        $res = $alt->diff($period);
-        $this->assertCount(0, $res);
+        $this->assertCount(0, $alt->diff($period));
     }
 
     public function testDiffWithPeriodSharingOneEndpoints()
