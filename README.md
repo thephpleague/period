@@ -3,8 +3,9 @@ Period
 
 [![Author](http://img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square)](https://twitter.com/nyamsprod)
 [![Latest Version](https://img.shields.io/github/release/thephpleague/period.svg?style=flat-square)](https://github.com/thephpleague/period/releases)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)<br>
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/thephpleague/period/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/period)
+[![HHVM Status](https://img.shields.io/hhvm/league/period.svg?style=flat-square)](http://hhvm.h4cc.de/package/league/period)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/period.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/period/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/period.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/period)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
@@ -29,7 +30,7 @@ Full documentation can be found at [period.thephpleague.com](http://period.theph
 System Requirements
 -------
 
-You need **PHP >= 5.3.0** to use `Period` but the latest stable version of PHP is recommended.
+Period works on any [supported versions of PHP](http://php.net/supported-versions.php) but the latest stable version is recommended.
 
 Install
 -------
