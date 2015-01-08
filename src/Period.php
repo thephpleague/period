@@ -26,7 +26,7 @@ use OutOfRangeException;
 /**
  * A value object class to manipulate Time Range.
  */
-final class Period
+final class Period implements PeriodInterface
 {
     /**
      * DateTime Format to create ISO8601 Interval format
@@ -75,13 +75,7 @@ final class Period
     }
 
     /**
-     * Validate a DateTime.
-     *
-     * @param string|\DateTimeInterface|\DateTime $datetime
-     *
-     * @throws \RuntimException If The Data can not be converted into a proper DateTime object
-     *
-     * @return \DateTimeInterface|\DateTime
+     * @inheritdoc
      */
     private static function validateDateTime($datetime)
     {
@@ -93,9 +87,7 @@ final class Period
     }
 
     /**
-     * Returns the starting DateTime.
-     *
-     * @return \DateTimeInterface|\DateTime
+     * @inheritdoc
      */
     public function getStart()
     {
@@ -103,9 +95,7 @@ final class Period
     }
 
     /**
-     * Returns the ending DateTime.
-     *
-     * @return \DateTimeInterface|\DateTime
+     * @inheritdoc
      */
     public function getEnd()
     {
@@ -113,13 +103,7 @@ final class Period
     }
 
     /**
-     * Return the Period duration as a DateInterval object.
-     *
-     * @param bool $get_as_seconds If used and set to true, the method will return an int which
-     *                             represents the duration in seconds instead of a \DateInterval
-     *                             object.
-     *
-     * @return \DateInterval|int|double
+     * @inheritdoc
      */
     public function getDuration($get_as_seconds = false)
     {
@@ -131,14 +115,7 @@ final class Period
     }
 
     /**
-     * Return a list of Datetime objects included in the Period according to a given interval.
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @return \DatePeriod
+     * @inheritdoc
      */
     public function getRange($interval)
     {
@@ -146,16 +123,7 @@ final class Period
     }
 
     /**
-     * Validate a DateInterval.
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must bep arsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @throws \Exception If The Data can not be converted into a proper DateInterval object
-     *
-     * @return \DateInterval
+     * @inheritdoc
      */
     private static function validateDateInterval($interval)
     {
@@ -169,9 +137,7 @@ final class Period
     }
 
     /**
-     * String representation of an Period using ISO8601 Time interval format
-     *
-     * @return string
+     * @inheritdoc
      */
     public function __toString()
     {
@@ -183,37 +149,25 @@ final class Period
     }
 
     /**
-     * Tell whether both Period objects share the same endpoints.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function sameValueAs(Period $period)
+    public function sameValueAs(PeriodInterface $period)
     {
         return $this->start == $period->start && $this->end == $period->end;
     }
 
     /**
-     * Tell whether the current Period object abuts the specified Period
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function abuts(Period $period)
+    public function abuts(PeriodInterface $period)
     {
         return $this->start == $period->end || $this->end == $period->start;
     }
 
     /**
-     * Tell whether two Period objects overlaps.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function overlaps(Period $period)
+    public function overlaps(PeriodInterface $period)
     {
         if ($this->abuts($period)) {
             return false;
@@ -223,14 +177,7 @@ final class Period
     }
 
     /**
-     * Tell whether the current Period object is entirely after the specified index
-     * The index can be:
-     * - a DateTimeInterface object
-     * - a Period object
-     *
-     * @param \League\Period\Period|\DateTime $index
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isAfter($index)
     {
@@ -242,14 +189,7 @@ final class Period
     }
 
     /**
-     * Tell whether the current Period object is entirely before the specified index
-     * The index can be:
-     * - a DateTimeInterface object
-     * - a Period object
-     *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function isBefore($index)
     {
@@ -261,24 +201,7 @@ final class Period
     }
 
     /**
-     * Tells whether the specified index is fully contained within
-     * the current Period object.
-     * The index can be:
-     * - a DateTimeInterface object
-     * - a Period object
-     *
-     * <code>
-     * <?php
-     *   $obj = Period::createFromMonth(2014, 3);
-     *   $obj->contains('2014-03-30'); //return true
-     *   $obj->contains('2014-04-01'); //return false
-     *   $obj->contains(Period::createFromDuration('2014-03-14', '1 HOUR')); //return true
-     * ?>
-     * </code>
-     *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function contains($index)
     {
@@ -292,20 +215,9 @@ final class Period
     }
 
     /**
-     * Compute the difference between two overlapsing Period objects
-     * and return an array containing the difference expressed as Period objects
-     * The array will:
-     * - be empty if both objects have the same endpoints
-     * - contain one Period object if both objects share one endpoint
-     * - contain two Period objects if both objects share no endpoint
-     *
-     * @param \League\Period\Period $period
-     *
-     * @throws \LogicException
-     *
-     * @return \League\Period\Period[]
+     * @inheritdoc
      */
-    public function diff(Period $period)
+    public function diff(PeriodInterface $period)
     {
         if (! $this->overlaps($period)) {
             throw new LogicException('Both Period objects should overlaps');
@@ -322,14 +234,14 @@ final class Period
     }
 
     /**
-     * Create a new Period instance given two endpoints
+     * Create a new PeriodInterface instance given two endpoints
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
      * @param string|\DateTimeInterface|\DateTime $endpoint1 endpoint
      * @param string|\DateTimeInterface|\DateTime $endpoint2 endpoint
      *
-     * @return \League\Period\Period
+     * @return \League\Period\PeriodInterface
      */
     private static function createFromEndpoints($endpoint1, $endpoint2)
     {
@@ -343,16 +255,9 @@ final class Period
     }
 
     /**
-     * Returns the difference between two Period objects.
-     *
-     * @param \League\Period\Period $period
-     * @param bool                  $get_as_seconds If used and set to true, the method will return
-     *                                              an intw hich represents the duration in seconds
-     *                                              instead of a\DateInterval object
-     *
-     * @return \DateInterval|int|double
+     * @inheritdoc
      */
-    public function durationDiff(Period $period, $get_as_seconds = false)
+    public function durationDiff(PeriodInterface $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
             return $this->end->getTimestamp()
@@ -366,13 +271,9 @@ final class Period
     }
 
     /**
-     * Compare two Period objects according to their duration.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return int
+     * @inheritdoc
      */
-    public function compareDuration(Period $period)
+    public function compareDuration(PeriodInterface $period)
     {
         $datetime = clone $this->start;
         $datetime->add($period->start->diff($period->end));
@@ -386,37 +287,25 @@ final class Period
     }
 
     /**
-     * Tell whether the given object duration is less than the current Period object.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function durationGreaterThan(Period $period)
+    public function durationGreaterThan(PeriodInterface $period)
     {
         return 1 === $this->compareDuration($period);
     }
 
     /**
-     * Tell whether the given object duration is greater than the current Period object.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function durationLessThan(Period $period)
+    public function durationLessThan(PeriodInterface $period)
     {
         return -1 === $this->compareDuration($period);
     }
 
     /**
-     * Tell whether the given object duration is equals to the current Period object.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function sameDurationAs(Period $period)
+    public function sameDurationAs(PeriodInterface $period)
     {
         return 0 === $this->compareDuration($period);
     }
@@ -635,20 +524,7 @@ final class Period
     }
 
     /**
-     * Returns a new Period object with a new includedd starting endpoint.
-     *
-     * <code>
-     *<?php
-     * $period = Period::createFromSemester(2012, 1);
-     * $newRange = $period->startingOn('2012-02-01');
-     * $altRange = $period->startingOn(new DateTime('2012-02-01'));
-     *
-     * ?>
-     * </code>
-     *
-     * @param string|\DateTimeInterface|\DateTime $start starting included datetime endpoint
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function startingOn($start)
     {
@@ -656,20 +532,7 @@ final class Period
     }
 
     /**
-     * Returns a new Period object with a new excluded ending endpoint.
-     *
-     * <code>
-     *<?php
-     * $period = Period::createFromSemester(2012, 1);
-     * $newRange = $period->endingOn('2012-02-01');
-     * $altRange = $period->endingOn(new DateTime('2012-02-01'));
-     *
-     * ?>
-     * </code>
-     *
-     * @param string|\DateTimeInterface|\DateTime $end ending excluded datetime endpoint
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function endingOn($end)
     {
@@ -677,14 +540,7 @@ final class Period
     }
 
     /**
-     * Returns a new Period object with a new ending DateTime.
-     *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function withDuration($duration)
     {
@@ -692,14 +548,7 @@ final class Period
     }
 
     /**
-     * Add an interval to the current Period object
-     *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function add($duration)
     {
@@ -709,14 +558,7 @@ final class Period
     }
 
     /**
-     * Remove an interval to the current Period object.
-     *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function sub($duration)
     {
@@ -726,16 +568,7 @@ final class Period
     }
 
     /**
-     * return a new Period object adjacent to the current Period
-     * and starting with its ending endpoint.
-     * If no duration is provided the new Period will be created
-     * using the current object duration
-     *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function next($duration = null)
     {
@@ -747,16 +580,7 @@ final class Period
     }
 
     /**
-     * return a new Period object adjacent to the current Period
-     * and ending with its starting endpoint.
-     * If no duration is provided the new Period will have the
-     * same duration as the current one
-     *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function previous($duration = null)
     {
@@ -768,22 +592,7 @@ final class Period
     }
 
     /**
-     * Merge one or more Period objects to return a new Period object.
-     *
-     * <code>
-     * <?php
-     *  $period     = Period::createFromSemester(2012, 1);
-     *  $altPeriod  = Period::createFromYear(2014, 1);
-     *  $nextPeriod = Period::createFromQuarter(2013, 3);
-     *  $fullPeriod = $period->merge($altPeriod, $nextPeriod);
-     * ?>
-     * </code>
-     *
-     * The resultant object englobes the largest duration possible.
-     *
-     * @param \League\Period\Period $arg,... one or more Period objects
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
     public function merge()
     {
@@ -804,15 +613,9 @@ final class Period
     }
 
     /**
-     * Compute the intersection between two Period objects.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @throws \LogicException
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
-    public function intersect(Period $period)
+    public function intersect(PeriodInterface $period)
     {
         if (! $this->overlaps($period)) {
             throw new LogicException('Both Period objects should overlaps');
@@ -832,15 +635,9 @@ final class Period
     }
 
     /**
-     * Compute the gap between two Period objects.
-     *
-     * @param \League\Period\Period $period
-     *
-     * @throws \LogicException
-     *
-     * @return \League\Period\Period
+     * @inheritdoc
      */
-    public function gap(Period $period)
+    public function gap(PeriodInterface $period)
     {
         if ($this->overlaps($period)) {
             throw new LogicException('Both Period objects should not overlaps');
