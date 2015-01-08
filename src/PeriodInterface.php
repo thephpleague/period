@@ -20,11 +20,6 @@ namespace League\Period;
 interface PeriodInterface
 {
     /**
-     * DateTime Format to create ISO8601 Interval format
-     */
-    const ISO8601 = 'Y-m-d\TH:i:s\Z';
-
-    /**
      * Returns the starting DateTime.
      *
      * @return \DateTimeInterface|\DateTime
