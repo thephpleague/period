@@ -153,7 +153,7 @@ final class Period implements PeriodInterface
      */
     public function sameValueAs(PeriodInterface $period)
     {
-        return $this->start == $period->start && $this->end == $period->end;
+        return $this->start == $period->getStart() && $this->end == $period->getEnd();
     }
 
     /**
@@ -161,7 +161,7 @@ final class Period implements PeriodInterface
      */
     public function abuts(PeriodInterface $period)
     {
-        return $this->start == $period->end || $this->end == $period->start;
+        return $this->start == $period->getEnd() || $this->end == $period->getStart();
     }
 
     /**
@@ -173,7 +173,7 @@ final class Period implements PeriodInterface
             return false;
         }
 
-        return $this->start < $period->end && $this->end > $period->start;
+        return $this->start < $period->getEnd() && $this->end > $period->getStart();
     }
 
     /**
@@ -182,7 +182,7 @@ final class Period implements PeriodInterface
     public function isAfter($index)
     {
         if ($index instanceof Period) {
-            return $this->start >= $index->end;
+            return $this->start >= $index->getEnd();
         }
 
         return $this->start > self::validateDateTime($index);
@@ -194,7 +194,7 @@ final class Period implements PeriodInterface
     public function isBefore($index)
     {
         if ($index instanceof Period) {
-            return $this->end <= $index->start;
+            return $this->end <= $index->getStart();
         }
 
         return $this->end <= self::validateDateTime($index);
@@ -206,7 +206,7 @@ final class Period implements PeriodInterface
     public function contains($index)
     {
         if ($index instanceof Period) {
-            return $this->contains($index->start) && $this->contains($index->end);
+            return $this->contains($index->getStart()) && $this->contains($index->getEnd());
         }
 
         $datetime = self::validateDateTime($index);
@@ -224,8 +224,8 @@ final class Period implements PeriodInterface
         }
 
         $res = array(
-            self::createFromEndpoints($this->start, $period->start),
-            self::createFromEndpoints($this->end, $period->end),
+            self::createFromEndpoints($this->start, $period->getStart()),
+            self::createFromEndpoints($this->end, $period->getEnd()),
         );
 
         return array_values(array_filter($res, function (Period $period) {
@@ -260,14 +260,11 @@ final class Period implements PeriodInterface
     public function durationDiff(PeriodInterface $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
-            return $this->end->getTimestamp()
-                - $this->start->getTimestamp()
-                - $period->end->getTimestamp()
-                + $period->start->getTimestamp();
+            return $this->getDuration(true) - $period->getDuration(true);
         }
-        $normPeriod = $this->withDuration($period->start->diff($period->end));
+        $normPeriod = $this->withDuration($period->getDuration());
 
-        return $this->end->diff($normPeriod->end);
+        return $this->end->diff($normPeriod->getEnd());
     }
 
     /**
@@ -276,7 +273,7 @@ final class Period implements PeriodInterface
     public function compareDuration(PeriodInterface $period)
     {
         $datetime = clone $this->start;
-        $datetime->add($period->start->diff($period->end));
+        $datetime->add($period->getDuration());
         if ($this->end > $datetime) {
             return 1;
         } elseif ($this->end < $datetime) {
@@ -622,13 +619,13 @@ final class Period implements PeriodInterface
         }
 
         $start = $this->start;
-        if ($period->start > $start) {
-            $start = $period->start;
+        if ($period->getStart() > $start) {
+            $start = $period->getStart();
         }
 
         $end = $this->end;
-        if ($period->end < $end) {
-            $end = $period->end;
+        if ($period->getEnd() < $end) {
+            $end = $period->getEnd();
         }
 
         return new self($start, $end);
@@ -643,10 +640,10 @@ final class Period implements PeriodInterface
             throw new LogicException('Both Period objects should not overlaps');
         }
 
-        if ($period->start > $this->start) {
-            return new self($this->end, $period->start);
+        if ($period->getStart() > $this->start) {
+            return new self($this->end, $period->getStart());
         }
 
-        return new self($period->end, $this->start);
+        return new self($period->getEnd(), $this->start);
     }
 }
