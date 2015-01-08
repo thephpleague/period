@@ -153,7 +153,7 @@ final class Period
      *                                           If a string is passed, it must bep arsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
+     * @throws \Exception If The Data can not be converted into a proper DateInterval object
      *
      * @return \DateInterval
      */
@@ -161,9 +161,7 @@ final class Period
     {
         if ($interval instanceof DateInterval) {
             return $interval;
-        }
-        $res = filter_var($interval, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)));
-        if (false !== $res) {
+        } elseif (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
             return new DateInterval('PT'.$res.'S');
         }
 

@@ -62,6 +62,20 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($period->getEnd(), $end);
     }
 
+    public function testCreatFromDurationWithInteger()
+    {
+        $period = Period::createFromDuration('2014-01-01', 3600);
+        $this->assertEquals(new DateTime('2014-01-01 01:00:00'), $period->getEnd());
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testCreateFromDurationWithInvalidInteger()
+    {
+        Period::createFromDuration('2014-01-01', -1);
+    }
+
     /**
      * @expectedException \LogicException
      */
@@ -105,11 +119,27 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCreateFromWeekFailedWithInvalidYear()
+    {
+        Period::createFromWeek("toto", 5);
+    }
+
+    /**
      * @expectedException \OutOfRangeException
      */
-    public function testCreateFromWeekFailedWithUnknowWeek()
+    public function testCreateFromWeekFailedWithLowInvalidIndex()
     {
-        Period::createFromWeek(2014, -5);
+        Period::createFromWeek(2014, 0);
+    }
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testCreateFromWeekFailedWithHighInvalidIndex()
+    {
+        Period::createFromWeek(2014, 54);
     }
 
     public function testCreateFromMonth()
@@ -122,9 +152,18 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testCreateFromMonthFailedWithOutofRangeMonth()
+    public function testCreateFromMonthFailedWithHighInvalidIndex()
     {
-        Period::createFromMonth(2014, 32);
+        Period::createFromMonth(2014, 13);
+    }
+
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testCreateFromMonthFailedWithLowInvalidIndex()
+    {
+        Period::createFromMonth(2014, 0);
     }
 
     /**
@@ -132,7 +171,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromMonthFailedWithInvalidYear()
     {
-        Period::createFromMonth("toto", 32);
+        Period::createFromMonth("toto", 8);
     }
 
     public function testCreateFromQuarter()
@@ -145,9 +184,25 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testCreateFromQuarterFailedWithOutofRangeQuarter()
+    public function testCreateFromQuarterFailedWithHighInvalidIndex()
     {
-        Period::createFromQuarter(2014, 10);
+        Period::createFromQuarter(2014, 5);
+    }
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testCreateFromQuarterFailedWithLowInvalidIndex()
+    {
+        Period::createFromQuarter(2014, 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCreateFromQuarterFailedWithInvalidYear()
+    {
+        Period::createFromQuarter("toto", 2);
     }
 
     public function testCreateFromSemester()
@@ -160,9 +215,25 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testCreateFromSemesterFailedWithOutofRangeTrimester()
+    public function testCreateFromSemesterFailedWithLowInvalidIndex()
     {
-        Period::createFromSemester(2014, 32);
+        Period::createFromSemester(2014, 0);
+    }
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testCreateFromSemesterFailedWithHighInvalidIndex()
+    {
+        Period::createFromSemester(2014, 3);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCreateFromSemesterFailedWithInvalidYear()
+    {
+        Period::createFromSemester("toto", 1);
     }
 
     public function testCreateFromYear()
@@ -263,22 +334,38 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $period->withDuration('1 MONTH'));
     }
 
-    public function testOverlaps()
+    public function testOverlapsFalseWithAbutsPeriods()
     {
-        $period1 = Period::createFromMonth(2014, 3);
-        $period2 = Period::createFromMonth(2014, 4);
-        $period3 = Period::createFromDuration('2014-03-15', '3 WEEKS');
-
-        $this->assertFalse($period1->overlaps($period2));
-        $this->assertTrue($period1->overlaps($period3));
-        $this->assertTrue($period2->overlaps($period3));
+        $orig = Period::createFromMonth(2014, 3);
+        $alt = Period::createFromMonth(2014, 4);
+        $this->assertFalse($orig->overlaps($alt));
     }
 
-    public function testOverlapsComplete()
+    public function testOverlapsFalseWithGappingPeriod()
     {
-        $orig = Period::createFromDuration('NOW', '4HOURS');
-        $alt  = Period::createFromDuration('+2 HOURS', '1 HOURS');
+        $orig = Period::createFromMonth(2014, 3);
+        $alt = Period::createFromMonth(2013, 4);
+        $this->assertFalse($orig->overlaps($alt));
+    }
 
+    public function testOverlapsTrueWithPeriodWithoutSameEnding()
+    {
+        $orig = Period::createFromMonth(2014, 3);
+        $alt  = Period::createFromDuration('2014-03-15', '3 WEEKS');
+        $this->assertTrue($orig->overlaps($alt));
+    }
+
+    public function testOverlapsTrueWithPeriodsSharingSameEnding()
+    {
+        $orig = Period::createFromMonth(2014, 3);
+        $alt  = new Period('2014-03-01', '2014-04-01');
+        $this->assertTrue($orig->overlaps($alt));
+    }
+
+    public function testOverlapsTrueWithPeriodContainingAnotherPeriod()
+    {
+        $orig = Period::createFromMonth(2014, 3);
+        $alt  = Period::createFromDuration('2014-03-13', '2014-03-15');
         $this->assertTrue($orig->overlaps($alt));
         $this->assertTrue($alt->overlaps($orig));
     }
@@ -298,14 +385,32 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
         $alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
         $other = Period::createFromDuration('2013-01-01', '1 MONTH');
-        $same  = Period::createFromMonth(2012, 1);
 
         $this->assertTrue($orig->durationGreaterThan($alt));
         $this->assertFalse($orig->durationLessThan($alt));
         $this->assertTrue($alt->durationLessThan($other));
         $this->assertTrue($orig->sameDurationAs($other));
-        $this->assertFalse($orig->sameValueAs($other));
-        $this->assertTrue($orig->sameValueAs($same));
+    }
+
+    public function testSameValueAsTrue()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt  = Period::createFromMonth(2012, 1);
+        $this->assertTrue($orig->sameValueAs($alt));
+    }
+
+    public function testSameValueAsFalseWithSameStartingValue()
+    {
+        $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
+        $this->assertFalse($orig->sameValueAs($alt));
+    }
+
+    public function testSameValueAsFalseWithSameEndingValue()
+    {
+        $orig = Period::createFromDurationBeforeEnd('2012-01-01', '1 WEEK');
+        $alt  = Period::createFromDurationBeforeEnd('2012-01-01', '1 MONTH');
+        $this->assertFalse($orig->sameValueAs($alt));
     }
 
     public function testAdd()
@@ -336,7 +441,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testSubThrowsLogicException()
     {
-        $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $orig->sub('3 MONTHS');
     }
 
@@ -393,6 +498,13 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($orig->isBefore($beforeDateTime));
     }
 
+    public function testIsBeforePeriodWithAbutsPeriods()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt = $orig->next('1 HOUR');
+        $this->assertTrue($orig->isBefore($alt));
+    }
+
     public function testIsAfterDatetime()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
@@ -409,7 +521,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($orig->isAfter($orig->getStart()));
     }
 
-
     public function testIsBeforePeriod()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
@@ -423,6 +534,13 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $alt = Period::createFromDuration('2012-04-01', '2 MONTH');
         $this->assertFalse($orig->isAfter($alt));
+        $this->assertTrue($alt->isAfter($orig));
+    }
+
+    public function testIsAfterPeriodWithAbutsPeriod()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt = $orig->next('1 HOUR');
         $this->assertTrue($alt->isAfter($orig));
     }
 
@@ -470,10 +588,21 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \LogicException
      */
-    public function testGapThrowsException()
+    public function testGapThrowsExceptionWithOverlapsPeriod()
     {
         $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
         $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+
+        $orig->gap($alt);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testGapWithSameStartingPeriod()
+    {
+        $orig = Period::createFromDuration('2012-12-01', '5 MONTH');
+        $alt = Period::createFromDuration('2012-12-01', '2 MONTH');
 
         $orig->gap($alt);
     }
