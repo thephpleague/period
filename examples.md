@@ -9,6 +9,8 @@ permalink: examples/
 ## Accessing time range properties
 
 ~~~php
+date_default_timezone_set('UTC');
+
 use League\Period\Period;
 
 $period = Period::createFromDuration('2014-10-03 08:12:37', 3600);
@@ -16,6 +18,7 @@ $start = $period->getStart(); //return the following DateTime: DateTime('2014-10
 $end   = $period->getEnd(); //return the following DateTime: DateTime('2014-10-03 09:12:37');
 $duration  = $period->getDuration(); //return a DateInterval object
 $duration2 = $period->getDuration(true); //return the same interval expressed in seconds.
+echo $period; //displays '2014-10-03T08:12:37Z/014-10-03T09:12:37Z'
 ~~~
 
 Learn more about how this all works in the [Overview](/overview/).
@@ -28,7 +31,7 @@ A simple example on how to get all the days from a selected month.
 use League\Period\Period;
 
 $period = Period::createFromMonth(2014, 10);
-foreach ($period->getRange('1 DAY') as $day) {
+foreach ($period->getDatePeriod('1 DAY') as $day) {
     $day->format('Y-m-d');
 }
 ~~~
