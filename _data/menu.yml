@@ -1,10 +1,11 @@
 Getting Started:
     Introduction: '/'
     Installation: '/installation/'
-    Terminology: '/definitions/'
     Examples: '/examples/'
-API:
+Configuration:
+    Terminology: '/definitions/'
     Interfaces: '/interfaces/'
+Period API:
     Instantiation: '/instantiation/'
     Basic usage: '/overview/'
     Comparing: '/comparing/'
