@@ -4,7 +4,7 @@ Getting Started:
     Terminology: '/definitions/'
     Examples: '/examples/'
 API:
-    Contracts: '/interfaces/'
+    Interfaces: '/interfaces/'
     Instantiation: '/instantiation/'
     Basic usage: '/overview/'
     Comparing: '/comparing/'
