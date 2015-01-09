@@ -1,6 +1,19 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.5.0 - XXXX-XX-XX
+
+### Added
+- `TimeRangeInterface`
+- `PeriodInterface`
+- `TimeRanageInterface::getDatePeriod` method
+
+### Fixed
+- DateInterval when created from an integer.
+
+### Deprecated
+- `Period::getRange` you should use `TimeRanageInterface::getDatePeriod` instead
+
 ## 2.4.0 - 2014-12-18
 
 ### Added

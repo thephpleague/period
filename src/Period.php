@@ -5,7 +5,7 @@
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/thephpleague/period/
- * @version 2.4.0
+ * @version 2.5.0
  * @package League.Period
  *
  * For the full copyright and license information, please view the LICENSE
@@ -26,7 +26,7 @@ use OutOfRangeException;
 /**
  * A value object class to manipulate Time Range.
  */
-final class Period implements PeriodInterface
+final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInterface
 {
     /**
      * DateTime Format to create ISO8601 Interval format
@@ -50,12 +50,6 @@ final class Period implements PeriodInterface
     /**
      * Create a new instance.
      *
-     * <code>
-     * <?php
-     *  $period = new Period('2012-01-01', '2012-02-17');
-     * ?>
-     * </code>
-     *
      * @param string|\DateTimeInterface|\DateTime $start starting datetime endpoint
      * @param string|\DateTimeInterface|\DateTime $end   ending datetime endpoint
      *
@@ -75,7 +69,13 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * @inheritdoc
+     * Validate a DateTime.
+     *
+     * @param string|\DateTimeInterface|\DateTime $datetime
+     *
+     * @throws \RuntimException If The Data can not be converted into a proper DateTime object
+     *
+     * @return \DateTimeInterface|\DateTime
      */
     private static function validateDateTime($datetime)
     {
@@ -115,15 +115,44 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * @inheritdoc
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the TimeRangeInterface object.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 2.5
+     *
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
+     *
+     * @return \DatePeriod
      */
     public function getRange($interval)
+    {
+        return $this->getDatePeriod($interval);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDatePeriod($interval)
     {
         return new DatePeriod($this->start, self::validateDateInterval($interval), $this->end);
     }
 
     /**
-     * @inheritdoc
+     * Validate a DateInterval.
+     *
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must bep arsable by
+     *                                           `DateInterval::createFromDateString`
+     *
+     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
+     *
+     * @return \DateInterval
      */
     private static function validateDateInterval($interval)
     {
@@ -151,7 +180,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function sameValueAs(PeriodInterface $period)
+    public function sameValueAs(TimeRangeInterface $period)
     {
         return $this->start == $period->getStart() && $this->end == $period->getEnd();
     }
@@ -159,7 +188,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function abuts(PeriodInterface $period)
+    public function abuts(TimeRangeInterface $period)
     {
         return $this->start == $period->getEnd() || $this->end == $period->getStart();
     }
@@ -167,7 +196,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function overlaps(PeriodInterface $period)
+    public function overlaps(TimeRangeInterface $period)
     {
         if ($this->abuts($period)) {
             return false;
@@ -181,7 +210,7 @@ final class Period implements PeriodInterface
      */
     public function isAfter($index)
     {
-        if ($index instanceof Period) {
+        if ($index instanceof TimeRangeInterface) {
             return $this->start >= $index->getEnd();
         }
 
@@ -193,7 +222,7 @@ final class Period implements PeriodInterface
      */
     public function isBefore($index)
     {
-        if ($index instanceof Period) {
+        if ($index instanceof TimeRangeInterface) {
             return $this->end <= $index->getStart();
         }
 
@@ -205,7 +234,7 @@ final class Period implements PeriodInterface
      */
     public function contains($index)
     {
-        if ($index instanceof Period) {
+        if ($index instanceof TimeRangeInterface) {
             return $this->contains($index->getStart()) && $this->contains($index->getEnd());
         }
 
@@ -217,7 +246,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function diff(PeriodInterface $period)
+    public function diff(TimeRangeInterface $period)
     {
         if (! $this->overlaps($period)) {
             throw new LogicException('Both Period objects should overlaps');
@@ -228,20 +257,20 @@ final class Period implements PeriodInterface
             self::createFromEndpoints($this->end, $period->getEnd()),
         );
 
-        return array_values(array_filter($res, function (Period $period) {
+        return array_values(array_filter($res, function (TimeRangeInterface $period) {
             return $period->getStart() != $period->getEnd();
         }));
     }
 
     /**
-     * Create a new PeriodInterface instance given two endpoints
+     * Create a new Period instance given two endpoints
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
      * @param string|\DateTimeInterface|\DateTime $endpoint1 endpoint
      * @param string|\DateTimeInterface|\DateTime $endpoint2 endpoint
      *
-     * @return \League\Period\PeriodInterface
+     * @return \League\Period\Period
      */
     private static function createFromEndpoints($endpoint1, $endpoint2)
     {
@@ -257,7 +286,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function durationDiff(PeriodInterface $period, $get_as_seconds = false)
+    public function durationDiff(TimeRangeInterface $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
             return $this->getDuration(true) - $period->getDuration(true);
@@ -270,7 +299,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function compareDuration(PeriodInterface $period)
+    public function compareDuration(TimeRangeInterface $period)
     {
         $datetime = clone $this->start;
         $datetime->add($period->getDuration());
@@ -286,7 +315,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function durationGreaterThan(PeriodInterface $period)
+    public function durationGreaterThan(TimeRangeInterface $period)
     {
         return 1 === $this->compareDuration($period);
     }
@@ -294,7 +323,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function durationLessThan(PeriodInterface $period)
+    public function durationLessThan(TimeRangeInterface $period)
     {
         return -1 === $this->compareDuration($period);
     }
@@ -302,24 +331,13 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function sameDurationAs(PeriodInterface $period)
+    public function sameDurationAs(TimeRangeInterface $period)
     {
         return 0 === $this->compareDuration($period);
     }
 
     /**
      * Create a Period object from a starting point and an interval.
-     *
-     * <code>
-     *<?php
-     * $period = Period::createFromDuration('2012-01-01', '1 HOUR');
-     * $period = Period::createFromDuration(new DateTime('2012-01-01'), new DateInterval('PT1H'));
-     * $period = Period::createFromDuration(new DateTime('2012-01-01'), '1 HOUR');
-     * $period = Period::createFromDuration('2012-01-01', new DateInterval('PT1H'));
-     * $period = Period::createFromDuration('2012-01-01', 3600);
-     *
-     * ?>
-     * </code>
      *
      * @param string|\DateTimeInterface|\DateTime $start    start datetime endpoint
      * @param \DateInterval|int|string            $duration The duration. If an int is passed, it is
@@ -340,17 +358,6 @@ final class Period implements PeriodInterface
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
-     * <code>
-     *<?php
-     * $period = Period::createFromDurationBeforeEnd('2012-01-01', '1 HOUR');
-     * $period = Period::createFromDurationBeforeEnd(new DateTime('2012-01-01'), new DateInterval('PT1H'));
-     * $period = Period::createFromDurationBeforeEnd(new DateTime('2012-01-01'), '1 HOUR');
-     * $period = Period::createFromDurationBeforeEnd('2012-01-01', new DateInterval('PT1H'));
-     * $period = Period::createFromDurationBeforeEnd('2012-01-01', 3600);
-     *
-     * ?>
-     * </code>
-     *
      * @param string|\DateTimeInterface|\DateTime $end      end datetime endpoint
      * @param \DateInterval|int|string            $duration The duration. If an int is passed, it is
      *                                                      interpreted as the duration expressed in seconds.
@@ -369,13 +376,6 @@ final class Period implements PeriodInterface
 
     /**
      * Create a Period object from a Year and a Week.
-     *
-     * <code>
-     *<?php
-     * $period = Period::createFromWeek(2012, 3);
-     *
-     * ?>
-     * </code>
      *
      * @param int $year
      * @param int $week index from 1 to 53
@@ -435,13 +435,6 @@ final class Period implements PeriodInterface
     /**
      * Create a Period object from a Year and a Month.
      *
-     * <code>
-     *<?php
-     * $period = Period::createFromMonth(2012, 11);
-     *
-     * ?>
-     * </code>
-     *
      * @param int $year
      * @param int $month Month index from 1 to 12
      *
@@ -457,13 +450,6 @@ final class Period implements PeriodInterface
 
     /**
      * Create a Period object from a Year and a Quarter.
-     *
-     * <code>
-     *<?php
-     * $period = Period::createFromQuarter(2012, 2);
-     *
-     * ?>
-     * </code>
      *
      * @param int $year
      * @param int $quarter Quarter Index from 1 to 4
@@ -481,13 +467,6 @@ final class Period implements PeriodInterface
     /**
      * Create a Period object from a Year and a Quarter.
      *
-     * <code>
-     *<?php
-     * $period = Period::createFromBiennal(2012, 1);
-     *
-     * ?>
-     * </code>
-     *
      * @param int $year
      * @param int $semester Semester Index from 1 to 2
      *
@@ -503,13 +482,6 @@ final class Period implements PeriodInterface
 
     /**
      * Create a Period object from a Year and a Quarter.
-     *
-     * <code>
-     *<?php
-     * $period = Period::createFromYear(2012);
-     *
-     * ?>
-     * </code>
      *
      * @param int $year
      *
@@ -595,7 +567,7 @@ final class Period implements PeriodInterface
     {
         $res = clone $this;
         $args = func_get_args();
-        array_walk($args, function (Period $period) use (&$res) {
+        array_walk($args, function (TimeRangeInterface $period) use (&$res) {
             $start = $period->getStart();
             if ($res->getStart() > $start) {
                 $res = $res->startingOn($start);
@@ -612,7 +584,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function intersect(PeriodInterface $period)
+    public function intersect(TimeRangeInterface $period)
     {
         if (! $this->overlaps($period)) {
             throw new LogicException('Both Period objects should overlaps');
@@ -634,7 +606,7 @@ final class Period implements PeriodInterface
     /**
      * @inheritdoc
      */
-    public function gap(PeriodInterface $period)
+    public function gap(TimeRangeInterface $period)
     {
         if ($this->overlaps($period)) {
             throw new LogicException('Both Period objects should not overlaps');

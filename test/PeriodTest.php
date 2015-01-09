@@ -21,6 +21,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = new Period('2014-05-01', '2014-05-08');
         $this->assertEquals(new DateTime('2014-05-01'), $period->getStart());
         $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
+        $this->assertInstanceof('League\Period\TimeRangeInterface', $period);
+        $this->assertInstanceof('League\Period\TimeRangeComparisonInterface', $period);
+        $this->assertInstanceof('League\Period\TimeRangeMutationInterface', $period);
     }
 
     /**
