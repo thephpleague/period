@@ -8,7 +8,7 @@ permalink: modifying/
 
 The `Period` object:
 
-- implements the `League\Period\PeriodInterface`
+- implements the `League\Period\TimeRangeMutationInterface`
 - is an **immutable value object** so any change to its property returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
@@ -17,7 +17,7 @@ The `Period` object:
 
 ### Period::startingOn($start)
 
-Returns a new `PeriodInterface` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
+Returns a new `TimeRangeMutationInterface` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -31,7 +31,7 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 
 ### Period::endingOn($end)
 
-Returns a new `PeriodInterface` object with `$end` as the new **ending excluded endpoint** defined as a `DateTime` object.
+Returns a new `TimeRangeMutationInterface` object with `$end` as the new **ending excluded endpoint** defined as a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -49,7 +49,7 @@ The supplied `DateInterval` object can be added or substracted from the starting
 
 ### Period::withDuration($duration)
 
-Returns a new `PeriodInterface` object by updating its duration. Only the excluded endpoint is updated.
+Returns a new `TimeRangeMutationInterface` object by updating its duration. Only the excluded endpoint is updated.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -65,7 +65,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 ### Period::add($duration)
 
-Returns a new `PeriodInterface` object by adding an interval to the current ending excluded endpoint.
+Returns a new `TimeRangeMutationInterface` object by adding an interval to the current ending excluded endpoint.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -79,7 +79,7 @@ $newPeriod = $period->add('2 WEEKS');
 
 ### Period::sub($duration)
 
-Returns a new `PeriodInterface` object by substracting an interval to the current ending excluded endpoint.
+Returns a new `TimeRangeMutationInterface` object by substracting an interval to the current ending excluded endpoint.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -95,7 +95,7 @@ $newPeriod = $period->sub('2 WEEKS');
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Returns a new `PeriodInterface` object adjacent to the current `PeriodInterface` and starting with its ending endpoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
+Returns a new `TimeRangeMutationInterface` object adjacent to the current `TimeRangeMutationInterface` and starting with its ending endpoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
 
 ~~~php
 use League\Period\Period;
@@ -130,7 +130,7 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Complementary to `PeriodInterface::next`, the created `PeriodInterface` object is adjacent to the current `PeriodInterface` **but** its ending endpoint is equal to the starting endpoint of the current object.
+Complementary to `TimeRangeMutationInterface::next`, the created `TimeRangeMutationInterface` object is adjacent to the current `TimeRangeMutationInterface` **but** its ending endpoint is equal to the starting endpoint of the current object.
 
 ~~~php
 use League\Period\Period;
@@ -141,9 +141,9 @@ $newPeriod = $period->previous('1 WEEK');
 $period->durationGreaterThan($newPeriod); //return true
 ~~~
 
-The method must be used with the same arguments and warnings as `PeriodInterface::next`.
+The method must be used with the same arguments and warnings as `TimeRangeMutationInterface::next`.
 
-`PeriodInterface::next` and `PeriodInterface::previous` methods allow to easily create adjacent Periods as shown in the graph below
+`TimeRangeMutationInterface::next` and `TimeRangeMutationInterface::previous` methods allow to easily create adjacent Periods as shown in the graph below
 
 ![](/media/period-adjacents.png "$previous and $next are adjacent to the $period object")
 
@@ -159,7 +159,7 @@ $next    = $curent->next('1 MONTH');
 
 ### Period::merge(TimeRangeInterface $period[, TimeRangeInterface $...])
 
-Merges two or more `TimeRangeInterface` objects by returning a new `PeriodInterface` object which englobes all the submitted objects.
+Merges two or more `TimeRangeInterface` objects by returning a new `TimeRangeMutationInterface` object which englobes all the submitted objects.
 
 ~~~php
 use League\Period\Period;
@@ -174,7 +174,7 @@ $newPeriod = $period->merge($alt, $other);
 
 ### Period::intersect(TimeRangeInterface $period)
 
-An TimeRangeInterface overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a PeriodInterface object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
+An TimeRangeInterface overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a TimeRangeMutationInterface object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
 
 <p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 
@@ -192,7 +192,7 @@ $intersectPeriod = $period->insersect($anotherPeriod);
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
- A TimeRangeInterface has a gap with another TimeRangeInterface if there is a non-zero interval between them. This method returns the amount of the gap as a new PeriodInterface object only if they do actually have a gap between them. If they overlap a Exception is thrown.
+ A TimeRangeInterface has a gap with another TimeRangeInterface if there is a non-zero interval between them. This method returns the amount of the gap as a new TimeRangeMutationInterface object only if they do actually have a gap between them. If they overlap a Exception is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 

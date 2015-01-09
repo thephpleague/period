@@ -6,7 +6,7 @@ permalink: comparing/
 
 # Comparing
 
-You can compare different `Period` objects according to their endpoints or durations by using the `TimeRangeInterface` interface methods
+You can compare different `Period` objects according to their endpoints or durations by using the `TimeRangeComparisonInterface` interface methods
 
 ## Using endpoints
 
