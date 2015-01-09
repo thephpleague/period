@@ -21,7 +21,7 @@ $duration2 = $period->getDuration(true); //return the same interval expressed in
 echo $period; //displays '2014-10-03T08:12:37Z/014-10-03T09:12:37Z'
 ~~~
 
-Learn more about how this all works in the [Overview](/overview/).
+Learn more about how this all works in the [basic usage](/overview/).
 
 ## Iterate over a time range
 
