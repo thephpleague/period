@@ -4,8 +4,9 @@ Getting Started:
     Terminology: '/definitions/'
     Examples: '/examples/'
 API:
-    Overview: '/overview/'
+    Contracts: '/interfaces/'
     Instantiation: '/instantiation/'
+    Basic usage: '/overview/'
     Comparing: '/comparing/'
     Modifying: '/modifying/'
     Cheat Sheet: '/api/'

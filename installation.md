@@ -15,7 +15,7 @@ You need **PHP >= 5.3.0** to use `Period` but the latest stable version of PHP i
 `Period` is available on [Packagist](https://packagist.org/packages/league/period) and can be installed using [Composer](https://getcomposer.org/).
 
 ~~~bash
-composer require league/period
+$ composer require league/period
 ~~~
 
 ## Going Solo

@@ -52,7 +52,7 @@ $period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
 
 ## Period properties
 
-Learn more about how this all works in the [Overview](/overview/) section.
+Learn more about how this all works in the [Basic Usage](/overview/) section.
 
 ~~~php
 $period->getStart(); //the starting inclusive endpoint as a DateTime object
@@ -68,7 +68,7 @@ $period->getDuration(true); //the duration expressed in seconds
 ~~~
 
 ~~~php
-$period->getRange('1 HOUR'); //return a DatePeriod object
+$period->getDatePeriod('1 HOUR'); //return a DatePeriod object
 ~~~
 
 ~~~php

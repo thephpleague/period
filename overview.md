@@ -6,28 +6,9 @@ permalink: overview/
 
 # Overview
 
-## Instantiation
-
-### Period::__construct($start, $end)
-
-Both `$start` and `$end` parameters represent the period endpoints as `DateTime` objects. 
-
-- The `$start` endpoint represents **the starting included endpoint**.
-- The `$end` value represents **the ending excluded endpoint**. 
-
-`$end` **must be** greater or equal to `$start` or the instantiation will throw a `LogicException`. 
-
-~~~php
-use League\Period\Period;
-
-$period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
-~~~
-
-<p class="message-info">To ease instantiation the class comes with many <a href="/instantiation/">named constructors</a>.</p>
-
 ## Accessing properties
 
-Once you have a instantiated `Period` object you can access its properties using getter methods:
+Once you have a instantiated `Period` object you can access its properties using the following getter methods defined in the `TimeRangeInterface` interface :
 
 ### Period::getStart()
 
@@ -39,7 +20,7 @@ Returns the ending **excluded** endpoint as a `DateTime`.
 
 ### Period::getDuration($get_as_seconds = false)
 
-Returns the `Period` duration. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
+Returns the object duration. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
@@ -51,7 +32,9 @@ $duration = $period->getDuration(); //returns a DateInterval object
 $altduration = $period->getDuration(true); //returns the interval as expressed in seconds
 ~~~
 
-### Period::getRange($interval)
+### Period::getDatePeriod($interval)
+
+<p class="message-warning"><code>Period::getRange</code> is deprecated since version 2.5 and will be remove in the next major version. For background compatibility <code>Period::getRange</code> is now a alias of <code>Period::getDatePeriod</code></p>
 
 Returns a `DatePeriod` object that lists `DateTime` objects inside the period, separated by the given `$interval`, and expressed as a `DateInterval` object.
 

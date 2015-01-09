@@ -6,6 +6,23 @@ permalink: instantiation/
 
 # Instantiation
 
+To instantiate a `Period` object you can rely on its constructor or on several named constructors describe below.
+
+### Period::__construct($start, $end)
+
+Both `$start` and `$end` parameters represent the period endpoints as `DateTime` objects. 
+
+- The `$start` endpoint represents **the starting included endpoint**.
+- The `$end` value represents **the ending excluded endpoint**. 
+
+`$end` **must be** greater or equal to `$start` or the instantiation will throw a `LogicException`.
+
+~~~php
+use League\Period\Period;
+
+$period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
+~~~
+
 Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors.
 
 ### Period::createFromDuration($start, $duration)

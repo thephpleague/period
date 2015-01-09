@@ -4,15 +4,15 @@ title: Comparing Period objects
 permalink: comparing/
 ---
 
-# Comparing Period objects
+# Comparing
 
-The following methods help you compare different `Period` objects according to their endpoints or durations.
+You can compare different `Period` objects according to their endpoints or durations by using the `TimeRangeInterface` interface methods
 
 ## Using endpoints
 
-### Period::sameValueAs(Period $period)
+### Period::sameValueAs(TimeRangeInterface $period)
 
-Tells whether two `Period` objects shares the same endpoints.
+Tells whether two `TimeRangeInterface` objects shares the same endpoints.
 
 ~~~php
 use League\Period\Period;
@@ -25,9 +25,9 @@ $orig->sameValueAs($alt);   //return false
 $orig->sameValueAs($other); //return true
 ~~~
 
-### Period::overlaps(Period $period)
+### Period::overlaps(TimeRangeInterface $period)
 
-A `Period` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
+A `TimeRangeInterface` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
 
 ~~~php
 use League\Period\Period;
@@ -41,11 +41,11 @@ $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
 
-### Period::abuts(Period $period)
+### Period::abuts(TimeRangeInterface $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-A `Period` abuts if it starts immediately after, or ends immediately before this `Period` without overlap.
+A `TimeRangeInterface` abuts if it starts immediately after, or ends immediately before the submitted `TimeRangeInterface` without overlap.
 
 ![](/media/period-abuts.png "$period abuts $anotherPeriod")
 
@@ -60,9 +60,10 @@ $period->abuts($anotherPeriod); //return true
 
 ### Period::contains($index)
 
-A `Period` contains a `DateTime` if it is present in its datetime continuum.  
-A `Period` contains another `Period` object if the latter datetime continuum is completely contained within the `Period` datetime continuum.  
-This means that the `$index` argument can be a `Period` object or a `DateTime` object.
+The `$index` argument can be another `TimeRangeInterface` object or a `DateTime` object.
+
+- A `TimeRangeInterface` contains a `DateTime` if it is present in its datetime continuum.
+- A `TimeRangeInterface` contains another `TimeRangeInterface` object if the latter datetime continuum is completely contained within the `TimeRangeInterface` datetime continuum.
 
 ~~~php
 use League\Period\Period;
@@ -82,7 +83,9 @@ $alt->contains($period); //return false;
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-Tells whether the current `Period` object datetime continuum is entirely before the specified `$index`. The `index` can be another `Period` or `DateTime` object.
+The `$index` argument can be another `TimeRangeInterface` object or a `DateTime` object.
+
+Tells whether the current `TimeRangeInterface` object datetime continuum is entirely before the specified `$index`.
 
 ~~~php
 use League\Period\Period;
@@ -98,7 +101,9 @@ $alt->isBefore($period); //return false;
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-Tells whether the current `Period` object datetime continuum is entirely after the specified `$index`. The `index` can be another `Period` or a `DateTime` object.
+The `$index` argument can be another `TimeRangeInterface` object or a `DateTime` object.
+
+Tells whether the current `TimeRangeInterface` object datetime continuum is entirely after the specified `$index`.
 
 ~~~php
 use League\Period\Period;
@@ -110,16 +115,17 @@ $alt->isAfter($period); //returns true;
 $period->isAfter($alt); //return false;
 ~~~
 
-### Period::diff(Period $period)
+### Period::diff(TimeRangeInterface $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.4</p>
 
- This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.  
+ This method returns the difference between two `TimeRangeInterface` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
+
  The difference is expressed as an `array`. The returned array:
 
  - is empty if both objects share the same endpoints;
- - contains one `Period` object if both objects share only one endpoint;
- - contains two `Period` objects if no endpoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
+ - contains one `TimeRangeInterface` object if both objects share only one endpoint;
+ - contains two `TimeRangeInterface` objects if no endpoint are shared between objects. The first `TimeRangeInterface` datetime continuum is always entirely set before the second one;
 
 ![](/media/period-diff.png "The difference express as Period objects")
 
@@ -136,13 +142,13 @@ $diff[0]->isBefore($diff[1]); //return true;
 //this is always true when two Period objects are present
 ~~~
 
-<p class="message-info">Before getting the difference, make sure the <code>Period</code> objects, at least, overlap each other.</p>
+<p class="message-info">Before getting the difference, make sure the <code>TimeRangeInterface</code> objects, at least, overlap each other.</p>
 
 ## Using durations
 
-### Period::durationDiff(Period $period, $get_as_seconds = false)
+### Period::durationDiff(TimeRangeInterface $period, $get_as_seconds = false)
 
-Returns the difference between two `Period` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
+Returns the difference between two `TimeRangeInterface` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
@@ -155,9 +161,9 @@ $diff_as_seconds = $period->durationDiff($altPeriod, true);
 //$diff_as_seconds represents the interval expressed in seconds
 ~~~
 
-### Period::compareDuration(Period $period)
+### Period::compareDuration(TimeRangeInterface $period)
 
-Compare two `Period` objects according to their duration.
+Compare two `TimeRangeInterface` objects according to their duration.
 
 - Return `1` if the current object duration is greater than the submitted `$period` duration;
 - Return `-1` if the current object duration is less than the submitted `$period` duration;
@@ -165,9 +171,9 @@ Compare two `Period` objects according to their duration.
 
 To ease the method usage you can rely on the following alias methods which return boolean values:
 
-- **Period::durationGreaterThan(Period $period)** return `true` when `Period::compareDuration(Period $period)` returns `1`;
-- **Period::durationLessThan(Period $period)** return `true` when `Period::compareDuration(Period $period)` returns `-1`;
-- **Period::sameDurationAs(Period $period)** return `true` when `Period::compareDuration(Period $period)` returns `0`;
+- **Period::durationGreaterThan(TimeRangeInterface $period)** return `true` when `Period::compareDuration(TimeRangeInterface $period)` returns `1`;
+- **Period::durationLessThan(TimeRangeInterface $period)** return `true` when `Period::compareDuration(TimeRangeInterface $period)` returns `-1`;
+- **Period::sameDurationAs(TimeRangeInterface $period)** return `true` when `Period::compareDuration(TimeRangeInterface $period)` returns `0`;
 
 ~~~php
 $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
