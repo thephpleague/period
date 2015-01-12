@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Instantiation using named constructors
+title: Period instantiation using named constructors
 ---
 
 # Instantiation

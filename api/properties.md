@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Basic Usage
+title: the Period object implements a TimeRange interface
 ---
 
 # Accessing properties

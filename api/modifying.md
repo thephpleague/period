@@ -3,12 +3,9 @@ layout: default
 title: the Period object as an immutable value object
 ---
 
-# Modifying
+# Modifying TimeRange objects
 
-The `Period` object:
-
-- implements the `League\Period\TimeRangeObject`
-- is an **immutable value object** so any change to its property returns a new `Period` object.
+To manipulate `TimeRange` implemented objects according to their endpoints or durations you need a class that implements the `TimeRangeObject` interface like `Period. In addition, the `Period` is an **immutable value object** which means that any change to its property returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
@@ -191,7 +188,7 @@ $intersectPeriod = $period->insersect($anotherPeriod);
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
- A TimeRange has a gap with another TimeRange if there is a non-zero interval between them. This method returns the amount of the gap as a new TimeRangeObject object only if they do actually have a gap between them. If they overlap a Exception is thrown.
+ A `TimeRange` has a gap with another TimeRange if there is a non-zero interval between them. This method returns the amount of the gap as a new TimeRangeObject object only if they do actually have a gap between them. If they overlap a Exception is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 

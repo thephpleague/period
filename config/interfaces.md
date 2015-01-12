@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Interfaces
+title: TimeRange Interfaces
 ---
 
 # Interfaces

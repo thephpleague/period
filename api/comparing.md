@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Comparing Period objects
+title: Comparing objects which implement the TimeRange interface
 ---
 
 # Comparing TimeRange objects
