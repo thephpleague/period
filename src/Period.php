@@ -22,11 +22,13 @@ use DateTimeZone;
 use InvalidArgumentException;
 use LogicException;
 use OutOfRangeException;
+use League\Period\Interfaces\TimeRange;
+use League\Period\Interfaces\TimeRangeObject;
 
 /**
  * A value object class to manipulate Time Range.
  */
-final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInterface
+final class Period implements TimeRangeObject
 {
     /**
      * DateTime Format to create ISO8601 Interval format
@@ -116,7 +118,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
 
     /**
      * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the TimeRangeInterface object.
+     * recurring at regular intervals, over the TimeRange object.
      *
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
@@ -180,7 +182,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function sameValueAs(TimeRangeInterface $period)
+    public function sameValueAs(TimeRange $period)
     {
         return $this->start == $period->getStart() && $this->end == $period->getEnd();
     }
@@ -188,7 +190,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function abuts(TimeRangeInterface $period)
+    public function abuts(TimeRange $period)
     {
         return $this->start == $period->getEnd() || $this->end == $period->getStart();
     }
@@ -196,7 +198,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function overlaps(TimeRangeInterface $period)
+    public function overlaps(TimeRange $period)
     {
         if ($this->abuts($period)) {
             return false;
@@ -210,7 +212,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
      */
     public function isAfter($index)
     {
-        if ($index instanceof TimeRangeInterface) {
+        if ($index instanceof TimeRange) {
             return $this->start >= $index->getEnd();
         }
 
@@ -222,7 +224,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
      */
     public function isBefore($index)
     {
-        if ($index instanceof TimeRangeInterface) {
+        if ($index instanceof TimeRange) {
             return $this->end <= $index->getStart();
         }
 
@@ -234,7 +236,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
      */
     public function contains($index)
     {
-        if ($index instanceof TimeRangeInterface) {
+        if ($index instanceof TimeRange) {
             return $this->contains($index->getStart()) && $this->contains($index->getEnd());
         }
 
@@ -246,7 +248,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function diff(TimeRangeInterface $period)
+    public function diff(TimeRange $period)
     {
         if (! $this->overlaps($period)) {
             throw new LogicException('Both Period objects should overlaps');
@@ -257,7 +259,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
             self::createFromEndpoints($this->end, $period->getEnd()),
         );
 
-        return array_values(array_filter($res, function (TimeRangeInterface $period) {
+        return array_values(array_filter($res, function (TimeRange $period) {
             return $period->getStart() != $period->getEnd();
         }));
     }
@@ -286,7 +288,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function durationDiff(TimeRangeInterface $period, $get_as_seconds = false)
+    public function durationDiff(TimeRange $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
             return $this->getDuration(true) - $period->getDuration(true);
@@ -299,7 +301,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function compareDuration(TimeRangeInterface $period)
+    public function compareDuration(TimeRange $period)
     {
         $datetime = clone $this->start;
         $datetime->add($period->getDuration());
@@ -315,7 +317,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function durationGreaterThan(TimeRangeInterface $period)
+    public function durationGreaterThan(TimeRange $period)
     {
         return 1 === $this->compareDuration($period);
     }
@@ -323,7 +325,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function durationLessThan(TimeRangeInterface $period)
+    public function durationLessThan(TimeRange $period)
     {
         return -1 === $this->compareDuration($period);
     }
@@ -331,7 +333,7 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function sameDurationAs(TimeRangeInterface $period)
+    public function sameDurationAs(TimeRange $period)
     {
         return 0 === $this->compareDuration($period);
     }
@@ -565,9 +567,9 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
      */
     public function merge()
     {
-        $res = clone $this;
+        $res  = clone $this;
         $args = func_get_args();
-        array_walk($args, function (TimeRangeInterface $period) use (&$res) {
+        array_walk($args, function (TimeRange $period) use (&$res) {
             $start = $period->getStart();
             if ($res->getStart() > $start) {
                 $res = $res->startingOn($start);
@@ -584,36 +586,28 @@ final class Period implements TimeRangeComparisonInterface, TimeRangeMutationInt
     /**
      * @inheritdoc
      */
-    public function intersect(TimeRangeInterface $period)
+    public function intersect(TimeRange $period)
     {
-        if (! $this->overlaps($period)) {
-            throw new LogicException('Both Period objects should overlaps');
+        if ($this->abuts($period)) {
+            throw new LogicException('Both object should not abuts');
         }
+        $pStart = $period->getStart();
+        $pEnd   = $period->getEnd();
 
-        $start = $this->start;
-        if ($period->getStart() > $start) {
-            $start = $period->getStart();
-        }
-
-        $end = $this->end;
-        if ($period->getEnd() < $end) {
-            $end = $period->getEnd();
-        }
-
-        return new self($start, $end);
+        return new self(
+            ($pStart > $this->start) ? $pStart : $this->start,
+            ($pEnd < $this->end) ? $pEnd : $this->end
+        );
     }
 
     /**
      * @inheritdoc
      */
-    public function gap(TimeRangeInterface $period)
+    public function gap(TimeRange $period)
     {
-        if ($this->overlaps($period)) {
-            throw new LogicException('Both Period objects should not overlaps');
-        }
-
-        if ($period->getStart() > $this->start) {
-            return new self($this->end, $period->getStart());
+        $pStart = $period->getStart();
+        if ($pStart > $this->start) {
+            return new self($this->end, $pStart);
         }
 
         return new self($period->getEnd(), $this->start);

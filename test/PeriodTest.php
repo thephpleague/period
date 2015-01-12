@@ -21,9 +21,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = new Period('2014-05-01', '2014-05-08');
         $this->assertEquals(new DateTime('2014-05-01'), $period->getStart());
         $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
-        $this->assertInstanceof('League\Period\TimeRangeInterface', $period);
-        $this->assertInstanceof('League\Period\TimeRangeComparisonInterface', $period);
-        $this->assertInstanceof('League\Period\TimeRangeMutationInterface', $period);
+        $this->assertInstanceof('League\Period\Interfaces\TimeRange', $period);
+        $this->assertInstanceof('League\Period\Interfaces\TimeRangeInfo', $period);
+        $this->assertInstanceof('League\Period\Interfaces\TimeRangeObject', $period);
     }
 
     /**
@@ -547,14 +547,31 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($alt->isAfter($orig));
     }
 
-    public function testDurationDiff()
+    public function testDurationDiffWithDateInterval()
     {
-        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
+        $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
         $res = $orig->durationDiff($alt);
         $this->assertInstanceof('\DateInterval', $res);
+    }
+
+    public function testDurationDiffWithSeconds()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
+        $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
         $res = $orig->durationDiff($alt, true);
         $this->assertInternalType('integer', $res);
+        $this->assertSame(-3600, $res);
+    }
+
+    public function testDurationDiffPositionIrrelevant()
+    {
+        $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
+        $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
+        $fromOrig = $orig->durationDiff($alt);
+        $fromOrig->invert = 1;
+        $fromAlt = $alt->durationDiff($orig);
+        $this->assertEquals($fromOrig, $fromAlt);
     }
 
     public function testIntersect()
@@ -569,10 +586,20 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \LogicException
      */
-    public function testIntersectThrowsException()
+    public function testIntersectThrowsExceptionWithNoOverlappingTimeRange()
     {
         $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
         $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $orig->intersect($alt);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testIntersectThrowsExceptionWithAdjacentTimeRange()
+    {
+        $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
+        $alt = $orig->next();
         $orig->intersect($alt);
     }
 
@@ -608,6 +635,27 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $alt = Period::createFromDuration('2012-12-01', '2 MONTH');
 
         $orig->gap($alt);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testGapWithSameEndingPeriod()
+    {
+        $orig = Period::createFromDurationBeforeEnd('2012-12-01', '5 MONTH');
+        $alt = Period::createFromDurationBeforeEnd('2012-12-01', '2 MONTH');
+
+        $orig->gap($alt);
+    }
+
+    public function testGapWithAdjacentPeriod()
+    {
+        $orig = Period::createFromDurationBeforeEnd('2012-12-01', '5 MONTH');
+        $alt = $orig->next('1 MINUTE');
+
+        $res = $orig->gap($alt);
+        $this->assertInstanceof('\League\Period\Interfaces\TimeRangeObject', $res);
+        $this->assertSame(0, $res->getDuration(true));
     }
 
     /**
