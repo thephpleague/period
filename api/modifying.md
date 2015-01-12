@@ -5,7 +5,7 @@ title: the Period object as an immutable value object
 
 # Modifying TimeRange objects
 
-To manipulate `TimeRange` implemented objects according to their endpoints or durations you need a class that implements the `TimeRangeObject` interface like `Period`. In addition, the **`Period` is an immutable value object** which means that any change to its property returns a new `Period` object.
+To manipulate `TimeRange` implemented objects according to their endpoints or durations you need a class that implements the `TimeRangeObject` interface like `Period`. In addition, `Period` **is an immutable value object** which means that any change to its property returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
