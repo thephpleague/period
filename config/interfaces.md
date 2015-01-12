@@ -13,10 +13,10 @@ To enable a wider use of the package, the `League\Period\Period` class implement
 
 This is the main interface. All others interfaces just extends it.
 
-The `League\Period\Interfaces\TimeRange` defines a barebon time range. This interface includes methods to get the Time Range endpoints and duration. The interface methods are listed and completely covered in the [basic usage](/api/basic-usage/) section.
+The `League\Period\Interfaces\TimeRange` defines a barebone time range. This interface includes methods to get the Time Range endpoints and duration. The interface methods are listed and completely covered in the [basic usage](/api/basic-usage/) section.
 
 ~~~php
-function calculReportFor(League\Period\TimeRangeInterface $timerange)
+function calculReportFor(League\Period\Interfaces\TimeRange $timerange)
 {
     //your business logic will come here
     //the timerange calculation is already taken care by $timerange
@@ -27,17 +27,17 @@ In this example the developer only cares about the report calculation and does n
 
 ## TimeRangeInfo
 
-The `League\Period\Interfaces\TimeRangeInfo` extends `League\Period\Interfaces\TimeRange` by providing methods to allow comparing objects implementing the `League\Period\Interfaces\TimeRange`. These methods usually will return `true` or `false`.  The interface methods are listed and completely covered in the [comparing](/comparing/) section.
+The `League\Period\Interfaces\TimeRangeInfo` extends the `TimeRange` interface by providing methods to allow comparing objects implementing the `TimeRange` interface. These methods usually will return `true` or `false`.  The interface methods are listed and completely covered in the [comparing](/comparing/) section.
 
 ## TimeRangeObject
 
-The `League\Period\Interfaces\TimeRangeObject` extends `League\Period\Interfaces\TimeRangeInfo` by providing methods that modify objects implementing the `League\Period\Interfaces\TimeRange`. These methods will usually return a modify `League\Period\Interfaces\TimeRangeObject` with updated endpoints. The interface methods are listed and completely covered in the [modifying](/api/modifying/) section.
+The `League\Period\Interfaces\TimeRangeObject` extends the `TimeRangeInfo` by providing methods that modify objects implementing the `TimeRange` interface. These methods will usually return a modify `TimeRangeObject`. The interface methods are listed and completely covered in the [modifying](/api/modifying/) section.
 
 ~~~php
 
 namespace Agenda\Events;
 
-use League\Period\TimeRangeObject;
+use League\Period\Interfaces\TimeRangeObject;
 
 abstract class AbstractEvent
 {

@@ -128,4 +128,17 @@ $period = Period::createFromYear(1971);
 
 ### Period::createFromTimeRange(TimeRange $timerange)
 
-Returns a `Period` object created from an object implementing the `League\Period\Interfaces\TimeRange` interface.
+<p class="message-notice">Added to <code>Period</code> in version 2.5</p>
+
+Returns a new `Period` object from an object implementing the `TimeRange` interface.
+
+- The `$timerange` parameter is an object implementing the `League\Period\Interfaces\TimeRange` interface
+
+~~~php
+use League\Period\Period;
+use My\Awesome\TimeRangeClass;
+
+$timerange = new TimeRangeClass();
+$period = Period::createFromTimeRange($timerange);
+//works only of My\Awesome\TimeRangeClass implements League\Period\Interfaces\TimeRange
+~~~
