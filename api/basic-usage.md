@@ -1,14 +1,13 @@
 ---
 layout: default
-title: Overview
-permalink: overview/
+title: Basic Usage
 ---
 
-# Overview
+# Basic Usage
 
 ## Accessing properties
 
-Once you have a instantiated `Period` object you can access its properties using the following getter methods defined in the `TimeRangeInterface` interface :
+Once you have a instantiated `Period` object you can access its properties using the following getter methods defined in the `TimeRange` interface :
 
 ### Period::getStart()
 
@@ -42,7 +41,7 @@ Returns a `DatePeriod` object that lists `DateTime` objects inside the period, s
 use League\Period\Period;
 
 $period = new Period('2012-01-01', '2013-01-01');
-foreach ($period->getRange('1 MONTH') as $datetime) {
+foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
     echo $datetime->format('F, Y');
 }
 //will iterate 12 times
@@ -52,7 +51,7 @@ foreach ($period->getRange('1 MONTH') as $datetime) {
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals) 
+Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals)
 
 ~~~php
 date_default_timezone_set('Africa/Nairobi');

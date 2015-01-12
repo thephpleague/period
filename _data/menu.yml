@@ -3,11 +3,11 @@ Getting Started:
     Installation: '/installation/'
     Examples: '/examples/'
 Configuration:
-    Terminology: '/definitions/'
-    Interfaces: '/interfaces/'
+    Terminology: '/config/definitions/'
+    Interfaces: '/config/interfaces/'
 Period API:
-    Instantiation: '/instantiation/'
-    Basic usage: '/overview/'
-    Comparing: '/comparing/'
-    Modifying: '/modifying/'
+    Instantiation: '/api/instantiation/'
+    Basic usage: '/api/basic-usage/'
+    Comparing: '/api/comparing/'
+    Modifying: '/api/modifying/'
     Cheat Sheet: '/api/'

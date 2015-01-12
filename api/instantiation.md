@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Instantiation using named constructors
-permalink: instantiation/
 ---
 
 # Instantiation
@@ -126,3 +125,7 @@ use League\Period\Period;
 $period = Period::createFromYear(1971);
 //this period represents the year 1971
 ~~~
+
+### Period::createFromTimeRange(TimeRange $timerange)
+
+Returns a `Period` object created from an object implementing the `League\Period\Interfaces\TimeRange` interface.

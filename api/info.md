@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Comparing Period objects
-permalink: comparing/
 ---
 
 # Comparing
