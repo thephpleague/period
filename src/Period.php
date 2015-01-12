@@ -20,13 +20,13 @@ use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
-use LogicException;
-use OutOfRangeException;
 use League\Period\Interfaces\TimeRange;
 use League\Period\Interfaces\TimeRangeObject;
+use LogicException;
+use OutOfRangeException;
 
 /**
- * A value object class to manipulate Time Range.
+ * A immutable value object class to manipulate Time Range.
  */
 final class Period implements TimeRangeObject
 {
@@ -492,6 +492,18 @@ final class Period implements TimeRangeObject
     public static function createFromYear($year)
     {
         return self::createFromDuration(self::validateYear($year).'-01-01', '1 YEAR');
+    }
+
+    /**
+     * Create a Period object from a object implementing the TimeRange interface.
+     *
+     * @param \League\Period\Interfaces\TimeRange $timerange
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromTimeRange(TimeRange $timerange)
+    {
+        return new self($timerange->getStart(), $timerange->getEnd());
     }
 
     /**

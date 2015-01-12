@@ -254,6 +254,16 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         Period::createFromYear("toto");
     }
 
+    public function testCreateFromTimeRange()
+    {
+        $mock_timerange = $this->getMock('League\Period\Interfaces\TimeRange');
+        $mock_timerange->expects($this->any())->method('getStart')->will($this->returnValue(new DateTime('-1 MONTH')));
+        $mock_timerange->expects($this->any())->method('getEnd')->will($this->returnValue(new DateTime()));
+
+        $res = Period::createFromTimeRange($mock_timerange);
+        $this->assertInstanceof('League\Period\Period', $res);
+    }
+
     public function testGetRange()
     {
         $period = Period::createFromDuration(new DateTime(), "1 DAY");
