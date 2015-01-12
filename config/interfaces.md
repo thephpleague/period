@@ -13,7 +13,7 @@ To enable a wider use of the package, the `League\Period\Period` class implement
 
 This is the main interface. All others interfaces just extends it.
 
-The `League\Period\Interfaces\TimeRange` defines a barebone time range. This interface includes methods to get the Time Range endpoints and duration. The interface methods are listed and completely covered in the [basic usage](/api/basic-usage/) section.
+The `League\Period\Interfaces\TimeRange` defines a barebone time range. This interface includes methods to get the Time Range endpoints and duration. The interface methods are listed and completely covered in the [properties](/api/properties/) section.
 
 ~~~php
 function calculReportFor(League\Period\Interfaces\TimeRange $timerange)

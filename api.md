@@ -57,7 +57,7 @@ $period = Period::createFromTimeRange($foo);
 
 ## Period properties
 
-Learn more about how this all works in the [Basic Usage](/api/basic-usage/) section.
+Learn more about how this all works in the [Properties](/api/properties/) section.
 
 ~~~php
 $period->getStart(); //the starting inclusive endpoint as a DateTime object
