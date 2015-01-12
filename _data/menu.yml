@@ -7,7 +7,7 @@ Configuration:
     Interfaces: '/config/interfaces/'
 Period API:
     Instantiation: '/api/instantiation/'
-    Basic usage: '/api/basic-usage/'
+    Properties: '/api/properties/'
     Comparing: '/api/comparing/'
     Modifying: '/api/modifying/'
     Cheat Sheet: '/api/'

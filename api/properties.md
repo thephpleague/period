@@ -3,9 +3,7 @@ layout: default
 title: Basic Usage
 ---
 
-# Basic Usage
-
-## Accessing properties
+# Accessing properties
 
 Once you have a instantiated `Period` object you can access its properties using the following getter methods defined in the `TimeRange` interface :
 
