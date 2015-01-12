@@ -50,6 +50,11 @@ $period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
 //a 1 hour time range ending at '2014-01-01 08:00:25'
 ~~~
 
+~~~php
+$period = Period::createFromTimeRange($foo);
+//$foo is an object which implements the League\Period\TimeRange interface
+~~~
+
 ## Period properties
 
 Learn more about how this all works in the [Basic Usage](/api/basic-usage/) section.
