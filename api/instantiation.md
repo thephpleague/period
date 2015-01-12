@@ -9,10 +9,10 @@ To instantiate a `Period` object you can rely on its constructor or on several n
 
 ### Period::__construct($start, $end)
 
-Both `$start` and `$end` parameters represent the period endpoints as `DateTime` objects. 
+Both `$start` and `$end` parameters represent the period endpoints as `DateTime` objects.
 
 - The `$start` endpoint represents **the starting included endpoint**.
-- The `$end` value represents **the ending excluded endpoint**. 
+- The `$end` value represents **the ending excluded endpoint**.
 
 `$end` **must be** greater or equal to `$start` or the instantiation will throw a `LogicException`.
 
