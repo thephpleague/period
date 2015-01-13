@@ -85,7 +85,7 @@ final class Period implements TimeRangeObject
             return $datetime;
         }
 
-        return new DateTime((string) $datetime);
+        return new DateTime($datetime);
     }
 
     /**
@@ -164,7 +164,7 @@ final class Period implements TimeRangeObject
             return new DateInterval('PT'.$res.'S');
         }
 
-        return DateInterval::createFromDateString((string) $interval);
+        return DateInterval::createFromDateString($interval);
     }
 
     /**
@@ -254,10 +254,10 @@ final class Period implements TimeRangeObject
             throw new LogicException('Both Period objects should overlaps');
         }
 
-        $res = array(
+        $res = [
             self::createFromEndpoints($this->start, $period->getStart()),
             self::createFromEndpoints($this->end, $period->getEnd()),
-        );
+        ];
 
         return array_values(array_filter($res, function (TimeRange $period) {
             return $period->getStart() != $period->getEnd();
@@ -424,9 +424,7 @@ final class Period implements TimeRangeObject
      */
     private static function validateRange($value, $min, $max)
     {
-        $res = filter_var($value, FILTER_VALIDATE_INT, array(
-            'options' => array('min_range' => $min, 'max_range' => $max)
-        ));
+        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
         if (false === $res) {
             throw new OutOfRangeException("the submitted value is not contained within the valid range");
         }
