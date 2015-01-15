@@ -15,7 +15,7 @@
 namespace League\Period\Interfaces;
 
 /**
- * TimeRangeObject defines an interface for modifying a time range
+ * TimeRangeObject defines an interface to manipulate a time range
  *
  * @package league.period
  * @since   2.5.0

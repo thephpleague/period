@@ -1,6 +1,12 @@
 <?php
 
+namespace League\Period\Test;
+
+use DateInterval;
+use DateTime;
 use League\Period\Period;
+use PHPUnit_Framework_TestCase;
+use StdClass;
 
 class TimeRangeTest extends PHPUnit_Framework_TestCase
 {
@@ -26,7 +32,36 @@ class TimeRangeTest extends PHPUnit_Framework_TestCase
     public function testGetDatePeriod()
     {
         $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->getRange(3600); //TODO change to getDatePeriod on next MAJOR version
+        $range  = $period->getDatePeriod(3600);
+        $this->assertInstanceof('DatePeriod', $range);
+        $this->assertCount(24, iterator_to_array($range));
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetDatePeriodThrowsRuntimeException()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $period->getDatePeriod(new StdClass);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetDatePeriodThrowsException()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $period->getDatePeriod(-3600);
+    }
+
+    /**
+     * @deprecated to be remove in the next MAJOR VERSION
+     */
+    public function testGetRange()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->getRange(3600);
         $this->assertInstanceof('DatePeriod', $range);
         $this->assertCount(24, iterator_to_array($range));
     }

@@ -1,6 +1,13 @@
 <?php
 
+namespace League\Period\Test;
+
+use DateInterval;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeZone;
 use League\Period\Period;
+use PHPUnit_Framework_TestCase;
 
 class PeriodTest extends PHPUnit_Framework_TestCase
 {
@@ -35,7 +42,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = new Period($start, $end);
         $this->assertInstanceof('DateTimeInterface', $period->getStart());
         $this->assertInstanceof('DateTimeImmutable', $period->getStart());
-        $this->assertEquals($end, $period->getEnd());
+        $this->assertEquals($start, $period->getStart());
     }
 
     public function testCreateFromDurationWithDateTime()

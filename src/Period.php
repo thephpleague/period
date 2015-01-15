@@ -24,6 +24,7 @@ use League\Period\Interfaces\TimeRange;
 use League\Period\Interfaces\TimeRangeObject;
 use LogicException;
 use OutOfRangeException;
+use RuntimeException;
 
 /**
  * A immutable value object class to manipulate Time Range.
@@ -75,7 +76,7 @@ final class Period implements TimeRangeObject
      *
      * @param string|\DateTimeInterface|\DateTime $datetime
      *
-     * @throws \RuntimException If The Data can not be converted into a proper DateTime object
+     * @throws \RuntimeException If The Data can not be converted into a proper DateTime object
      *
      * @return \DateTimeInterface|\DateTime
      */
@@ -152,7 +153,8 @@ final class Period implements TimeRangeObject
      *                                           If a string is passed, it must bep arsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @throws \RuntimException If The Data can not be converted into a proper DateInterval object
+     * @throws \Exception If the integer generates a bad format
+     * @throws \RuntimException If the string can not be converted into a proper DateInterval object
      *
      * @return \DateInterval
      */
@@ -162,9 +164,11 @@ final class Period implements TimeRangeObject
             return $interval;
         } elseif (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
             return new DateInterval('PT'.$res.'S');
+        } elseif (false === ($res = @DateInterval::createFromDateString($interval))) {
+            throw new RuntimeException('The given $interval could not be converted into a DateInterval');
         }
 
-        return DateInterval::createFromDateString($interval);
+        return $res;
     }
 
     /**
@@ -254,10 +258,10 @@ final class Period implements TimeRangeObject
             throw new LogicException('Both Period objects should overlaps');
         }
 
-        $res = [
+        $res = array(
             self::createFromEndpoints($this->start, $period->getStart()),
             self::createFromEndpoints($this->end, $period->getEnd()),
-        ];
+        );
 
         return array_values(array_filter($res, function (TimeRange $period) {
             return $period->getStart() != $period->getEnd();
@@ -424,9 +428,13 @@ final class Period implements TimeRangeObject
      */
     private static function validateRange($value, $min, $max)
     {
-        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
+        $res = filter_var($value, FILTER_VALIDATE_INT, array(
+            'options' => array('min_range' => $min, 'max_range' => $max)
+        ));
         if (false === $res) {
-            throw new OutOfRangeException("the submitted value is not contained within the valid range");
+            throw new OutOfRangeException(
+                "the submitted value is not contained within the valid range"
+            );
         }
 
         return $res;
@@ -577,8 +585,11 @@ final class Period implements TimeRangeObject
      */
     public function merge()
     {
-        $res  = clone $this;
         $args = func_get_args();
+        if (! $args) {
+            throw new RuntimeException(__METHOD__.' is expecting at least one argument');
+        }
+        $res  = clone $this;
         array_walk($args, function (TimeRange $period) use (&$res) {
             $start = $period->getStart();
             if ($res->getStart() > $start) {

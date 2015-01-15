@@ -15,7 +15,7 @@
 namespace League\Period\Interfaces;
 
 /**
- * TimeRangeInfo defines an interface to information for a time range
+ * TimeRangeInfo defines an interface to compare a time range
  *
  * @package league.period
  * @since   2.5.0

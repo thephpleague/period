@@ -1,6 +1,10 @@
 <?php
 
+namespace League\Period\Test;
+
+use DateTime;
 use League\Period\Period;
+use PHPUnit_Framework_TestCase;
 
 class TimeRangeInfoTest extends PHPUnit_Framework_TestCase
 {

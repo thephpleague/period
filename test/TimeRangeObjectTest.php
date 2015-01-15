@@ -1,6 +1,11 @@
 <?php
 
+namespace League\Period\Test;
+
+use DateInterval;
+use DateTime;
 use League\Period\Period;
+use PHPUnit_Framework_TestCase;
 
 class TimeRangeObjectTest extends PHPUnit_Framework_TestCase
 {
@@ -66,6 +71,15 @@ class TimeRangeObjectTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $period->merge($altPeriod));
         $this->assertEquals($expected, $altPeriod->merge($period));
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testMergeThrowsException()
+    {
+        $period = Period::createFromMonth(2014, 3);
+        $period->merge();
     }
 
     public function testAdd()
