@@ -5,23 +5,16 @@ All Notable changes to `League\Period` will be documented in this file
 
 ### Added
 
-- Now Period implements the following Interfaces
-    - `TimeRange`
-    - `TimeRangeInfo`
-    - `TimeRangeObject`
-
 - `Period::getDatePeriod`
-- `Period::createFromTimeRange`
 
 ### Fixed
 - `DateInterval` validation when created from an integer.
 
 ### Deprecated
-- `Period::getRange` you should use `TimeRanageInterface::getDatePeriod` instead
+- `Period::getRange` you should use `Period::getDatePeriod` instead
 
 ### Remove
 - support for PHP 5.3
-
 
 ## 2.4.0 - 2014-12-18
 

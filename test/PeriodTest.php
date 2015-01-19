@@ -16,9 +16,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = new Period('2014-05-01', '2014-05-08');
         $this->assertEquals(new DateTime('2014-05-01'), $period->getStart());
         $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
-        $this->assertInstanceof('League\Period\Interfaces\TimeRange', $period);
-        $this->assertInstanceof('League\Period\Interfaces\TimeRangeInfo', $period);
-        $this->assertInstanceof('League\Period\Interfaces\TimeRangeObject', $period);
     }
 
     /**
@@ -250,15 +247,5 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromYearFailedWithInvalidYear()
     {
         Period::createFromYear("toto");
-    }
-
-    public function testCreateFromTimeRange()
-    {
-        $mock_timerange = $this->getMock('League\Period\Interfaces\TimeRange');
-        $mock_timerange->expects($this->any())->method('getStart')->will($this->returnValue(new DateTime('-1 MONTH')));
-        $mock_timerange->expects($this->any())->method('getEnd')->will($this->returnValue(new DateTime()));
-
-        $res = Period::createFromTimeRange($mock_timerange);
-        $this->assertInstanceof('League\Period\Period', $res);
     }
 }

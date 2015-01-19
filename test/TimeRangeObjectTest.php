@@ -254,7 +254,7 @@ class TimeRangeObjectTest extends PHPUnit_Framework_TestCase
         $alt = $orig->next('1 MINUTE');
 
         $res = $orig->gap($alt);
-        $this->assertInstanceof('\League\Period\Interfaces\TimeRangeObject', $res);
+        $this->assertInstanceof('\League\Period\Period', $res);
         $this->assertSame(0, $res->getDuration(true));
     }
 
