@@ -18,7 +18,7 @@ Period is PHP's missing Time Range API. It is based on [Resolving Feature Envy i
 - Exposes many named constructors to ease time range creation
 - Covers all basic manipulations related to time range
 - Fully documented
-- Framework-agnostic, will work with any project through interfaces
+- Framework-agnostic
 - Composer ready, [PSR-2], and [PSR-4] compliant
 
 Documentation
