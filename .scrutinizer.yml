@@ -1,4 +1,5 @@
 filter:
+    paths: [src/*]
     excluded_paths: [test/*]
 checks:
     php:
@@ -28,7 +29,7 @@ tools:
             paths: ['src']
     php_loc:
         enabled: true
-        excluded_dirs: [vendor, tests]
+        excluded_dirs: [vendor, test]
     php_cpd:
         enabled: true
-        excluded_dirs: [vendor, tests]
+        excluded_dirs: [vendor, test]
