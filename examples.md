@@ -1,10 +1,11 @@
 ---
 layout: default
 title: Examples
-permalink: examples/
 ---
 
 # Examples
+
+Of note, in your code, you will always have to typehint against the `League\Period\Period` class directly. Because `League\Period\Period` is a immutable value object class, the class does not provide an interface.
 
 ## Accessing time range properties
 

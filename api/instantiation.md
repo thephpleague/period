@@ -125,20 +125,3 @@ use League\Period\Period;
 $period = Period::createFromYear(1971);
 //this period represents the year 1971
 ~~~
-
-### Period::createFromTimeRange(TimeRange $timerange)
-
-<p class="message-notice">Added to <code>Period</code> in version 2.5</p>
-
-Returns a new `Period` object from an object implementing the `TimeRange` interface.
-
-- The `$timerange` parameter is an object implementing the `League\Period\Interfaces\TimeRange` interface
-
-~~~php
-use League\Period\Period;
-use My\Awesome\TimeRangeClass;
-
-$timerange = new TimeRangeClass();
-$period = Period::createFromTimeRange($timerange);
-//works only of My\Awesome\TimeRangeClass implements League\Period\Interfaces\TimeRange
-~~~

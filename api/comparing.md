@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Comparing objects which implement the TimeRange interface
+title: Comparing Period objects
 ---
 
-# Comparing TimeRange objects
+# Comparing Period objects
 
-You can compare different `TimeRange` implemented objects according to their endpoints or durations if you instantiate and work with a `TimeRangeInfo` implemented object like `Period.
+You can compare different `Period` objects according to their endpoints or durations.
 
 ## Using endpoints
 
@@ -13,9 +13,9 @@ You can compare different `TimeRange` implemented objects according to their end
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-The `$index` argument can be another `TimeRange` object or a `DateTime` object.
+The `$index` argument can be another `Period` object or a `DateTime` object.
 
-Tells whether the current `TimeRange` object datetime continuum is entirely before the specified `$index`.
+Tells whether the current `Period` object datetime continuum is entirely before the specified `$index`.
 
 ~~~php
 use League\Period\Period;
@@ -31,9 +31,9 @@ $alt->isBefore($period); //return false;
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-The `$index` argument can be another `TimeRange` object or a `DateTime` object.
+The `$index` argument can be another `Period` object or a `DateTime` object.
 
-Tells whether the current `TimeRange` object datetime continuum is entirely after the specified `$index`.
+Tells whether the current `Period` object datetime continuum is entirely after the specified `$index`.
 
 ~~~php
 use League\Period\Period;
@@ -45,11 +45,11 @@ $alt->isAfter($period); //returns true;
 $period->isAfter($alt); //return false;
 ~~~
 
-### Period::abuts(TimeRange $period)
+### Period::abuts(Period $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
-A `TimeRange` abuts if it starts immediately after, or ends immediately before the submitted `TimeRange` without overlapping.
+A `Period` abuts if it starts immediately after, or ends immediately before the submitted `Period` without overlapping.
 
 ![](/media/period-abuts.png "$period abuts $anotherPeriod")
 
@@ -62,9 +62,9 @@ $period->abuts($anotherPeriod); //return true
 //in this case $period->getEnd() == $anotherPeriod->getStart();
 ~~~
 
-### Period::overlaps(TimeRange $period)
+### Period::overlaps(Period $period)
 
-A `TimeRange` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
+A `Period` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
 
 ~~~php
 use League\Period\Period;
@@ -78,9 +78,9 @@ $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
 
-### Period::sameValueAs(TimeRange $period)
+### Period::sameValueAs(Period $period)
 
-Tells whether two `TimeRange` objects shares the same endpoints.
+Tells whether two `Period` objects shares the same endpoints.
 
 ~~~php
 use League\Period\Period;
@@ -95,10 +95,10 @@ $orig->sameValueAs($other); //return true
 
 ### Period::contains($index)
 
-The `$index` argument can be another `TimeRange` object or a `DateTime` object.
+The `$index` argument can be another `Period` object or a `DateTime` object.
 
-- A `TimeRange` contains a `DateTime` if it is present in its datetime continuum.
-- A `TimeRange` contains another `TimeRange` object if the latter datetime continuum is completely contained within the `TimeRange` datetime continuum.
+- A `Period` contains a `DateTime` if it is present in its datetime continuum.
+- A `Period` contains another `Period` object if the latter datetime continuum is completely contained within the `Period` datetime continuum.
 
 ~~~php
 use League\Period\Period;
@@ -116,9 +116,9 @@ $alt->contains($period); //return false;
 
 ## Using durations
 
-### Period::compareDuration(TimeRange $period)
+### Period::compareDuration(Period $period)
 
-Compare two `TimeRange` objects according to their duration.
+Compare two `Period` objects according to their duration.
 
 - Return `1` if the current object duration is greater than the submitted `$period` duration;
 - Return `-1` if the current object duration is less than the submitted `$period` duration;
@@ -126,17 +126,17 @@ Compare two `TimeRange` objects according to their duration.
 
 To ease the method usage you can rely on the following proxy methods which return boolean values:
 
-### Period::durationGreaterThan(TimeRange $period)
+### Period::durationGreaterThan(Period $period)
 
-Compare two `TimeRange` objects according to their duration. Returns `true` when `Period::compareDuration(TimeRange $period)` returns `1`
+Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `1`
 
-### Period::durationGreaterThan(TimeRange $period)
+### Period::durationGreaterThan(Period $period)
 
-Compare two `TimeRange` objects according to their duration. Returns `true` when `Period::compareDuration(TimeRange $period)` returns `-1`
+Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `-1`
 
-### Period::sameDurationAs(TimeRange $period)
+### Period::sameDurationAs(Period $period)
 
-Compare two `TimeRange` objects according to their duration. Returns `true` when `Period::compareDuration(TimeRange $period)` returns `0`
+Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `0`
 
 ~~~php
 $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');

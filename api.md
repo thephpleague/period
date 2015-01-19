@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Period cheat sheet
-permalink: api/
 ---
 
 # API Cheat Sheet
@@ -46,13 +45,8 @@ $period = Period::createFromDuration('2014-01-01 08:00:25', 3600);
 ~~~
 
 ~~~php
-$period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
+$period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', new DateInterval('PT1H'));
 //a 1 hour time range ending at '2014-01-01 08:00:25'
-~~~
-
-~~~php
-$period = Period::createFromTimeRange($foo);
-//$foo is an object which implements the League\Period\TimeRange interface
 ~~~
 
 ## Period properties

@@ -1,11 +1,11 @@
 ---
 layout: default
-title: the Period object implements a TimeRange interface
+title: Accessing Period object properties
 ---
 
 # Accessing properties
 
-Once you have a instantiated `Period` object you can access its properties using the following getter methods defined in the `TimeRange` interface :
+Once you have a instantiated `Period` object you can access its properties using the following getter methods:
 
 ### Period::getStart()
 

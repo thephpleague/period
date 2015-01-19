@@ -2,12 +2,10 @@ Getting Started:
     Introduction: '/'
     Installation: '/installation/'
     Examples: '/examples/'
-Configuration:
-    Terminology: '/config/definitions/'
-    Interfaces: '/config/interfaces/'
+    Terminology: '/definitions/'
 Period API:
+    The Complete API: '/api/'
     Instantiation: '/api/instantiation/'
     Properties: '/api/properties/'
     Comparing: '/api/comparing/'
     Modifying: '/api/modifying/'
-    Cheat Sheet: '/api/'

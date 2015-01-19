@@ -3,9 +3,9 @@ layout: default
 title: the Period object as an immutable value object
 ---
 
-# Modifying TimeRange objects
+# Modifying Period objects
 
-To manipulate `TimeRange` implemented objects according to their endpoints or durations you need a class that implements the `TimeRangeObject` interface like `Period`. In addition, `Period` **is an immutable value object** which means that any change to its property returns a new `Period` object.
+You can manipulate a `League\Period\Period` object according to their endpoints or durations. `League\Period\Period` **is an immutable value object** which means that any change to its property returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
@@ -13,7 +13,7 @@ To manipulate `TimeRange` implemented objects according to their endpoints or du
 
 ### Period::startingOn($start)
 
-Returns a new `TimeRangeObject` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
+Returns a new `Period` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -27,7 +27,7 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 
 ### Period::endingOn($end)
 
-Returns a new `TimeRangeObject` object with `$end` as the new **ending excluded endpoint** defined as a `DateTime` object.
+Returns a new `Period` object with `$end` as the new **ending excluded endpoint** defined as a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -45,7 +45,7 @@ The supplied `DateInterval` object can be added or substracted from the starting
 
 ### Period::withDuration($duration)
 
-Returns a new `TimeRangeObject` object by updating its duration. Only the excluded endpoint is updated.
+Returns a new `Period` object by updating its duration. Only the excluded endpoint is updated.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -61,7 +61,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 ### Period::add($duration)
 
-Returns a new `TimeRangeObject` object by adding an interval to the current ending excluded endpoint.
+Returns a new `Period` object by adding an interval to the current ending excluded endpoint.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -75,7 +75,7 @@ $newPeriod = $period->add('2 WEEKS');
 
 ### Period::sub($duration)
 
-Returns a new `TimeRangeObject` object by substracting an interval to the current ending excluded endpoint.
+Returns a new `Period` object by substracting an interval to the current ending excluded endpoint.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -91,7 +91,7 @@ $newPeriod = $period->sub('2 WEEKS');
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Returns a new `TimeRangeObject` object adjacent to the current `TimeRangeObject` and starting with its ending endpoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
+Returns a new `Period` object adjacent to the current `Period` and starting with its ending endpoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
 
 ~~~php
 use League\Period\Period;
@@ -126,7 +126,7 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Complementary to `TimeRangeObject::next`, the created `TimeRangeObject` object is adjacent to the current `TimeRangeObject` **but** its ending endpoint is equal to the starting endpoint of the current object.
+Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending endpoint is equal to the starting endpoint of the current object.
 
 ~~~php
 use League\Period\Period;
@@ -137,9 +137,9 @@ $newPeriod = $period->previous('1 WEEK');
 $period->durationGreaterThan($newPeriod); //return true
 ~~~
 
-The method must be used with the same arguments and warnings as `TimeRangeObject::next`.
+The method must be used with the same arguments and warnings as `Period::next`.
 
-`TimeRangeObject::next` and `TimeRangeObject::previous` methods allow to easily create adjacent Periods as shown in the graph below
+`Period::next` and `Period::previous` methods allow to easily create adjacent Periods as shown in the graph below
 
 ![](/media/period-adjacents.png "$previous and $next are adjacent to the $period object")
 
@@ -151,11 +151,11 @@ $prev    = $current->previous('1 MONTH');
 $next    = $curent->next('1 MONTH');
 ~~~
 
-## Using TimeRange implemented objects
+## Using another Period object
 
-### Period::merge(TimeRange $period[, TimeRange $...])
+### Period::merge(Period $period[, Period $...])
 
-Merges two or more `TimeRange` objects by returning a new `TimeRangeObject` object which englobes all the submitted objects.
+Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
 
 ~~~php
 use League\Period\Period;
@@ -168,9 +168,9 @@ $newPeriod = $period->merge($alt, $other);
 // $newPeriod->getEnd() equals $altPeriod->getEnd();
 ~~~
 
-### Period::intersect(TimeRange $period)
+### Period::intersect(Period $period)
 
-An TimeRange overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a TimeRangeObject object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
+An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
 
 <p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 
@@ -184,11 +184,11 @@ $anotherPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
 $intersectPeriod = $period->insersect($anotherPeriod);
 ~~~
 
-### Period::gap(TimeRange $period)
+### Period::gap(Period $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
- A `TimeRange` has a gap with another TimeRange if there is a non-zero interval between them. This method returns the amount of the gap as a new TimeRangeObject object only if they do actually have a gap between them. If they overlap a Exception is thrown.
+ A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a Exception is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 
@@ -202,17 +202,17 @@ $alt  = Period::createFromDuration(2013-01-15, '3 MONTHS');
 $gapPeriod = $period->gap($alt);
 ~~~
 
-### Period::diff(TimeRange $period)
+### Period::diff(Period $period)
 
 <p class="message-notice">Added to <code>Period</code> in version 2.4</p>
 
- This method returns the difference between two `TimeRange` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
+ This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
 
  The difference is expressed as an `array`. The returned array:
 
  - is empty if both objects share the same endpoints;
- - contains one `TimeRange` object if both objects share only one endpoint;
- - contains two `TimeRange` objects if no endpoint are shared between objects. The first `TimeRange` datetime continuum is always entirely set before the second one;
+ - contains one `Period` object if both objects share only one endpoint;
+ - contains two `Period` objects if no endpoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
 
 ![](/media/period-diff.png "The difference express as Period objects")
 
@@ -229,11 +229,11 @@ $diff[0]->isBefore($diff[1]); //return true;
 //this is always true when two Period objects are present
 ~~~
 
-<p class="message-info">Before getting the difference, make sure the <code>TimeRange</code> objects, at least, overlap each other.</p>
+<p class="message-info">Before getting the difference, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 
-### Period::durationDiff(TimeRange $period, $get_as_seconds = false)
+### Period::durationDiff(Period $period, $get_as_seconds = false)
 
-Returns the difference between two `TimeRange` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
+Returns the difference between two `Period` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
