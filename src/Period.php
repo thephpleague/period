@@ -437,13 +437,9 @@ final class Period
      */
     private static function validateRange($value, $min, $max)
     {
-        $res = filter_var($value, FILTER_VALIDATE_INT, array(
-            'options' => array('min_range' => $min, 'max_range' => $max)
-        ));
+        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
         if (false === $res) {
-            throw new OutOfRangeException(
-                "the submitted value is not contained within the valid range"
-            );
+            throw new OutOfRangeException("the submitted value is not contained within the valid range");
         }
 
         return $res;
@@ -719,10 +715,10 @@ final class Period
             throw new LogicException('Both Period objects should overlaps');
         }
 
-        $res = array(
+        $res = [
             self::createFromEndpoints($this->start, $period->start),
             self::createFromEndpoints($this->end, $period->end),
-        );
+        ];
 
         return array_values(array_filter($res, function (Period $period) {
             return $period->start != $period->end;
@@ -765,8 +761,7 @@ final class Period
         if ($get_as_seconds) {
             return $this->getDuration(true) - $period->getDuration(true);
         }
-        $normPeriod = $this->withDuration($period->getDuration());
 
-        return $this->end->diff($normPeriod->end);
+        return $this->end->diff($this->withDuration($period->getDuration())->end);
     }
 }
