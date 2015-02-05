@@ -170,7 +170,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testCreateFromDurationBeforeEndWithString()
     {
-        $end =  new DateTime('-1 DAY');
+        $end = new DateTime('-1 DAY');
         $ttl = new DateInterval('P2D');
         $start = clone $end;
         $start->sub($ttl);
