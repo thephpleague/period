@@ -106,7 +106,7 @@ final class Period
      *
      * @return \DateTimeInterface|\DateTime
      */
-    public function getStart()
+    public function getStartDate()
     {
         return clone $this->start;
     }
@@ -116,7 +116,7 @@ final class Period
      *
      * @return \DateTimeInterface|\DateTime
      */
-    public function getEnd()
+    public function getEndDate()
     {
         return clone $this->end;
     }
@@ -124,39 +124,21 @@ final class Period
     /**
      * Returns the Period duration as a DateInterval object.
      *
-     * @param bool $get_as_seconds If used and set to true, the method will return an int which
-     *                             represents the duration in seconds instead of a \DateInterval
-     *                             object.
-     *
-     * @return \DateInterval|int|double
+     * @return \DateInterval
      */
-    public function getDuration($get_as_seconds = false)
+    public function getDateInterval()
     {
-        if ($get_as_seconds) {
-            return $this->end->getTimestamp() - $this->start->getTimestamp();
-        }
-
         return $this->start->diff($this->end);
     }
 
     /**
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the Period object.
+     * Returns the Period duration as expressed in seconds
      *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 2.5
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @return \DatePeriod
+     * @return double
      */
-    public function getRange($interval)
+    public function getTimeDuration()
     {
-        return $this->getDatePeriod($interval);
+        return $this->end->getTimestamp() - $this->start->getTimestamp();
     }
 
     /**
@@ -302,7 +284,7 @@ final class Period
     public function compareDuration(Period $period)
     {
         $datetime = clone $this->start;
-        $datetime->add($period->getDuration());
+        $datetime->add($period->getDateInterval());
         if ($this->end > $datetime) {
             return 1;
         } elseif ($this->end < $datetime) {
@@ -601,7 +583,7 @@ final class Period
     public function next($duration = null)
     {
         if (is_null($duration)) {
-            $duration = $this->getDuration();
+            $duration = $this->getDateInterval();
         }
 
         return self::createFromDuration($this->end, $duration);
@@ -622,7 +604,7 @@ final class Period
     public function previous($duration = null)
     {
         if (is_null($duration)) {
-            $duration = $this->getDuration();
+            $duration = $this->getDateInterval();
         }
 
         return self::createFromDurationBeforeEnd($this->start, $duration);
@@ -754,14 +736,115 @@ final class Period
      *                                              an int which represents the duration in seconds
      *                                              instead of a\DateInterval object
      *
+     * @return double
+     */
+    public function timeDurationDiff(Period $period)
+    {
+        return $this->getTimeDuration() - $period->getTimeDuration();
+    }
+
+    /**
+     * Returns the difference between two Period objects
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return \DateInterval
+     */
+    public function dateIntervalDiff(Period $period)
+    {
+        return $this->end->diff($this->withDuration($period->getDateInterval())->end);
+    }
+
+    /**
+     * Returns the starting DateTime.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 2.5
+     *
+     * @return \DateTimeInterface|\DateTime
+     */
+    public function getStart()
+    {
+        return $this->getStartDate();
+    }
+
+    /**
+     * Returns the ending DateTime.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 2.5
+     *
+     * @return \DateTimeInterface|\DateTime
+     */
+    public function getEnd()
+    {
+        return $this->getEndDate();
+    }
+
+    /**
+     * Returns the Period duration as a DateInterval object.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 2.5
+     *
+     * @param bool $get_as_seconds If used and set to true, the method will return an int which
+     *                             represents the duration in seconds instead of a \DateInterval
+     *                             object.
+     *
+     * @return \DateInterval|int|double
+     */
+    public function getDuration($get_as_seconds = false)
+    {
+        if ($get_as_seconds) {
+            return $this->getTimeDuration();
+        }
+
+        return $this->getDateInterval();
+    }
+
+    /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the Period object.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 2.5
+     *
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
+     *
+     * @return \DatePeriod
+     */
+    public function getRange($interval)
+    {
+        return $this->getDatePeriod($interval);
+    }
+
+    /**
+     * Returns the difference between two Period objects.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 2.5
+     *
+     * @param \League\Period\Period $period
+     * @param bool                  $get_as_seconds If used and set to true, the method will return
+     *                                              an int which represents the duration in seconds
+     *                                              instead of a\DateInterval object
+     *
      * @return \DateInterval|int|double
      */
     public function durationDiff(Period $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
-            return $this->getDuration(true) - $period->getDuration(true);
+            return $this->timeDurationDiff($period);
         }
 
-        return $this->end->diff($this->withDuration($period->getDuration())->end);
+        return $this->dateIntervalDiff($period);
     }
 }
