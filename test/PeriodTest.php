@@ -80,8 +80,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $period = new Period('2014-05-01', '2014-05-08');
-        $this->assertEquals(new DateTime('2014-05-01'), $period->getStart());
-        $this->assertEquals(new DateTime('2014-05-08'), $period->getEnd());
+        $this->assertEquals(new DateTime('2014-05-01'), $period->getStartDate());
+        $this->assertEquals(new DateTime('2014-05-08'), $period->getEndDate());
     }
 
     /**
@@ -103,17 +103,17 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $start = new DateTimeImmutable('2014-05-01');
         $end = new DateTimeImmutable('2014-05-08');
         $period = new Period($start, $end);
-        $this->assertInstanceof('DateTimeInterface', $period->getStart());
-        $this->assertInstanceof('DateTimeImmutable', $period->getStart());
-        $this->assertEquals($start, $period->getStart());
+        $this->assertInstanceof('DateTimeInterface', $period->getStartDate());
+        $this->assertInstanceof('DateTimeImmutable', $period->getStartDate());
+        $this->assertEquals($start, $period->getStartDate());
     }
 
     public function testCreateFromDurationWithDateTime()
     {
         $start = new DateTime();
         $period = Period::createFromDuration($start, "1 DAY");
-        $this->assertEquals($period->getStart(), $start);
-        $this->assertEquals($period->getEnd(), $start->add(new DateInterval('P1D')));
+        $this->assertEquals($period->getStartDate(), $start);
+        $this->assertEquals($period->getEndDate(), $start->add(new DateInterval('P1D')));
     }
 
     public function testCreateFromDurationWithString()
@@ -123,14 +123,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $end = clone $start;
         $end->add($ttl);
         $period = Period::createFromDuration("-1 DAY", $ttl);
-        $this->assertEquals($period->getStart(), $start);
-        $this->assertEquals($period->getEnd(), $end);
+        $this->assertEquals($period->getStartDate(), $start);
+        $this->assertEquals($period->getEndDate(), $end);
     }
 
     public function testCreatFromDurationWithInteger()
     {
         $period = Period::createFromDuration('2014-01-01', 3600);
-        $this->assertEquals(new DateTime('2014-01-01 01:00:00'), $period->getEnd());
+        $this->assertEquals(new DateTime('2014-01-01 01:00:00'), $period->getEndDate());
     }
 
     /**
@@ -153,8 +153,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $end = new DateTime();
         $period = Period::createFromDurationBeforeEnd($end, "1 DAY");
-        $this->assertEquals($period->getEnd(), $end);
-        $this->assertEquals($period->getStart(), $end->sub(new DateInterval('P1D')));
+        $this->assertEquals($period->getEndDate(), $end);
+        $this->assertEquals($period->getStartDate(), $end->sub(new DateInterval('P1D')));
     }
 
     public function testCreateFromDurationBeforeEndWithString()
@@ -164,8 +164,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $start = clone $end;
         $start->sub($ttl);
         $period = Period::createFromDurationBeforeEnd("-1 DAY", $ttl);
-        $this->assertEquals($period->getStart(), $start);
-        $this->assertEquals($period->getEnd(), $end);
+        $this->assertEquals($period->getStartDate(), $start);
+        $this->assertEquals($period->getEndDate(), $end);
     }
 
     /**
@@ -179,8 +179,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromWeek()
     {
         $period = Period::createFromWeek(2014, 3);
-        $this->assertEquals($period->getStart(), new DateTime('2014-01-13'));
-        $this->assertEquals($period->getEnd(), new DateTime('2014-01-20'));
+        $this->assertEquals($period->getStartDate(), new DateTime('2014-01-13'));
+        $this->assertEquals($period->getEndDate(), new DateTime('2014-01-20'));
     }
 
     /**
@@ -210,8 +210,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromMonth()
     {
         $period = Period::createFromMonth(2014, 3);
-        $this->assertEquals($period->getStart(), new DateTime('2014-03-01'));
-        $this->assertEquals($period->getEnd(), new DateTime('2014-04-01'));
+        $this->assertEquals($period->getStartDate(), new DateTime('2014-03-01'));
+        $this->assertEquals($period->getEndDate(), new DateTime('2014-04-01'));
     }
 
     /**
@@ -241,8 +241,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromQuarter()
     {
         $period = Period::createFromQuarter(2014, 3);
-        $this->assertEquals($period->getStart(), new DateTime('2014-07-01'));
-        $this->assertEquals($period->getEnd(), new DateTime('2014-10-01'));
+        $this->assertEquals($period->getStartDate(), new DateTime('2014-07-01'));
+        $this->assertEquals($period->getEndDate(), new DateTime('2014-10-01'));
     }
 
     /**
@@ -272,8 +272,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromSemester()
     {
         $period = Period::createFromSemester(2014, 2);
-        $this->assertEquals($period->getStart(), new DateTime('2014-07-01'));
-        $this->assertEquals($period->getEnd(), new DateTime('2015-01-01'));
+        $this->assertEquals($period->getStartDate(), new DateTime('2014-07-01'));
+        $this->assertEquals($period->getEndDate(), new DateTime('2015-01-01'));
     }
 
     /**
@@ -303,8 +303,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromYear()
     {
         $period = Period::createFromYear(2014);
-        $this->assertEquals($period->getStart(), new DateTime('2014-01-01'));
-        $this->assertEquals($period->getEnd(), new DateTime('2015-01-01'));
+        $this->assertEquals($period->getStartDate(), new DateTime('2014-01-01'));
+        $this->assertEquals($period->getEndDate(), new DateTime('2015-01-01'));
     }
 
     /**
@@ -359,8 +359,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testIsAfterDatetimeAbuts()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $this->assertTrue($orig->isBefore($orig->getEnd()));
-        $this->assertFalse($orig->isAfter($orig->getStart()));
+        $this->assertTrue($orig->isBefore($orig->getEndDate()));
+        $this->assertFalse($orig->isAfter($orig->getStartDate()));
     }
 
     public function testIsAfterPeriodWithAbutsPeriod()
@@ -467,8 +467,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $expected  = new DateTime('2012-03-02');
         $period    = Period::createFromWeek(2014, 3);
         $newPeriod = $period->startingOn($expected);
-        $this->assertEquals($newPeriod->getStart(), $expected);
-        $this->assertEquals($period->getStart(), new DateTime('2014-01-13'));
+        $this->assertEquals($newPeriod->getStartDate(), $expected);
+        $this->assertEquals($period->getStartDate(), new DateTime('2014-01-13'));
     }
 
     /**
@@ -485,8 +485,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $expected  = new DateTime('2015-03-02');
         $period    = Period::createFromWeek(2014, 3);
         $newPeriod = $period->endingOn($expected);
-        $this->assertEquals($newPeriod->getEnd(), $expected);
-        $this->assertEquals($period->getEnd(), new DateTime('2014-01-20'));
+        $this->assertEquals($newPeriod->getEndDate(), $expected);
+        $this->assertEquals($period->getEndDate(), new DateTime('2014-01-20'));
     }
 
     /**
@@ -569,28 +569,28 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $next = $orig->next('1 WEEK');
-        $this->assertEquals($next->getStart(), $orig->getEnd());
+        $this->assertEquals($next->getStartDate(), $orig->getEndDate());
     }
 
     public function testNextWithoutDuration()
     {
         $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
         $period = $orig->next();
-        $this->assertEquals($period->getStart(), $orig->getEnd());
+        $this->assertEquals($period->getStartDate(), $orig->getEndDate());
     }
 
     public function testPrevious()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $prev = $orig->previous('1 MONTH');
-        $this->assertEquals($prev->getEnd(), $orig->getStart());
+        $this->assertEquals($prev->getEndDate(), $orig->getStartDate());
     }
 
     public function testPreviousWithoutDuration()
     {
         $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
         $period = $orig->previous();
-        $this->assertEquals($period->getEnd(), $orig->getStart());
+        $this->assertEquals($period->getEndDate(), $orig->getStartDate());
     }
 
     public function testPreviousNext()
@@ -662,8 +662,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $alt = Period::createFromDuration('2012-06-15', '3 MONTHS');
         $resOne = $orig->gap($alt);
         $this->assertInstanceof('\League\Period\Period', $resOne);
-        $this->assertEquals($orig->getEnd(), $resOne->getStart());
-        $this->assertEquals($alt->getStart(), $resOne->getEnd());
+        $this->assertEquals($orig->getEndDate(), $resOne->getStartDate());
+        $this->assertEquals($alt->getStartDate(), $resOne->getEndDate());
         $resTwo = $alt->gap($orig);
         $this->assertTrue($resOne->sameValueAs($resTwo));
     }
@@ -733,8 +733,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $res = $alt->diff($period);
         $this->assertCount(1, $res);
         $this->assertInstanceof('League\Period\Period', $res[0]);
-        $this->assertEquals(new Datetime('2013-04-01'), $res[0]->getStart());
-        $this->assertEquals(new Datetime('2014-01-01'), $res[0]->getEnd());
+        $this->assertEquals(new Datetime('2013-04-01'), $res[0]->getStartDate());
+        $this->assertEquals(new Datetime('2014-01-01'), $res[0]->getEndDate());
     }
 
     public function testDiffWithOverlapsPeriod()
