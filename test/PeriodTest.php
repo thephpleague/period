@@ -57,33 +57,22 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period->getDatePeriod(-3600);
     }
 
-    /**
-     * @deprecated to be remove in the next MAJOR VERSION
-     */
-    public function testGetRange()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->getRange(3600);
-        $this->assertInstanceof('DatePeriod', $range);
-        $this->assertCount(24, iterator_to_array($range));
-    }
-
-    public function testDurationAsDateInterval()
+    public function testGetDateInterval()
     {
         $period = Period::createFromMonth(2014, 3);
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
-        $res = $period->getDuration();
+        $res = $period->getDateInterval();
         $this->assertInstanceof('DateInterval', $res);
-        $this->assertEquals($start->diff($end), $period->getDuration());
+        $this->assertEquals($start->diff($end), $res);
     }
 
-    public function testDurationAsSeconds()
+    public function testGetTimeInterval()
     {
         $period = Period::createFromMonth(2014, 3);
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
-        $res = $period->getDuration(true);
+        $res = $period->geTimeInterval();
         $this->assertInternalType('integer', $res);
         $this->assertEquals($end->getTimestamp() - $start->getTimestamp(), $res);
     }
@@ -611,30 +600,30 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($period->sameValueAs($alt));
     }
 
-    public function testDurationDiffWithDateInterval()
+    public function testDateIntervalDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
         $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
-        $res = $orig->durationDiff($alt);
+        $res = $orig->dateIntervalDiff($alt);
         $this->assertInstanceof('\DateInterval', $res);
     }
 
-    public function testDurationDiffWithSeconds()
+    public function testTimeIntervalDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
         $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
-        $res = $orig->durationDiff($alt, true);
+        $res = $orig->timeIntervalDiff($alt);
         $this->assertInternalType('integer', $res);
         $this->assertSame(-3600, $res);
     }
 
-    public function testDurationDiffPositionIrrelevant()
+    public function testDateIntervalDiffPositionIrrelevant()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
         $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
-        $fromOrig = $orig->durationDiff($alt);
+        $fromOrig = $orig->dateIntervalDiff($alt);
         $fromOrig->invert = 1;
-        $fromAlt = $alt->durationDiff($orig);
+        $fromAlt = $alt->dateIntervalDiff($orig);
         $this->assertEquals($fromOrig, $fromAlt);
     }
 
@@ -719,7 +708,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
         $res = $orig->gap($alt);
         $this->assertInstanceof('\League\Period\Period', $res);
-        $this->assertSame(0, $res->getDuration(true));
+        $this->assertSame(0, $res->getTimeInterval());
     }
 
     /**
@@ -754,7 +743,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $alt = Period::createFromDuration('2013-01-01 11:00:00', '3 HOURS');
         $res = $alt->diff($period);
         $this->assertCount(2, $res);
-        $this->assertEquals(3600, $res[1]->getDuration(true));
-        $this->assertEquals(3600, $res[0]->getDuration(true));
+        $this->assertEquals(3600, $res[1]->getTimeInterval());
+        $this->assertEquals(3600, $res[0]->getTimeInterval());
     }
 }
