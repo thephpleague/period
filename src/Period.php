@@ -759,6 +759,7 @@ final class Period
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
      * @deprecated deprecated since version 2.5
+     * @codeCoverageIgnore
      *
      * @return \DateTimeInterface|\DateTime
      */
@@ -773,6 +774,7 @@ final class Period
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
      * @deprecated deprecated since version 2.5
+     * @codeCoverageIgnore
      *
      * @return \DateTimeInterface|\DateTime
      */
@@ -787,6 +789,7 @@ final class Period
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
      * @deprecated deprecated since version 2.5
+     * @codeCoverageIgnore
      *
      * @param bool $get_as_seconds If used and set to true, the method will return an int which
      *                             represents the duration in seconds instead of a \DateInterval
@@ -810,6 +813,7 @@ final class Period
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
      * @deprecated deprecated since version 2.5
+     * @codeCoverageIgnore
      *
      * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
@@ -829,6 +833,7 @@ final class Period
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
      * @deprecated deprecated since version 2.5
+     * @codeCoverageIgnore
      *
      * @param \League\Period\Period $period
      * @param bool                  $get_as_seconds If used and set to true, the method will return
