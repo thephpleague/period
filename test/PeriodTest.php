@@ -72,7 +72,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = Period::createFromMonth(2014, 3);
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
-        $res = $period->geTimeInterval();
+        $res = $period->getTimeInterval();
         $this->assertInternalType('integer', $res);
         $this->assertEquals($end->getTimestamp() - $start->getTimestamp(), $res);
     }
