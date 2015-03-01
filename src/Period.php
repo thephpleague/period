@@ -39,34 +39,34 @@ final class Period
      *
      * @var \DateTimeInterface|\DateTime
      */
-    private $start;
+    private $startDate;
 
     /**
      * Period ending excluded datetime endpoint.
      *
      * @var \DateTimeInterface|\DateTime
      */
-    private $end;
+    private $endDate;
 
     /**
      * Create a new instance.
      *
-     * @param string|\DateTimeInterface|\DateTime $start starting datetime endpoint
-     * @param string|\DateTimeInterface|\DateTime $end   ending datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $startDate starting datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDate   ending datetime endpoint
      *
-     * @throws \LogicException If $start is greater than $end
+     * @throws \LogicException If $startDate is greater than $endDate
      *
      * @return void
      */
-    public function __construct($start, $end)
+    public function __construct($startDate, $endDate)
     {
-        $start = self::validateDateTime($start);
-        $end   = self::validateDateTime($end);
-        if ($start > $end) {
+        $startDate = self::validateDateTime($startDate);
+        $endDate   = self::validateDateTime($endDate);
+        if ($startDate > $endDate) {
             throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
         }
-        $this->start = clone $start;
-        $this->end   = clone $end;
+        $this->startDate = clone $startDate;
+        $this->endDate   = clone $endDate;
     }
 
     /**
@@ -95,10 +95,10 @@ final class Period
     public function __toString()
     {
         $utc   = new DateTimeZone('UTC');
-        $start = clone $this->start;
-        $end   = clone $this->end;
+        $startDate = clone $this->startDate;
+        $endDate   = clone $this->endDate;
 
-        return $start->setTimeZone($utc)->format(self::ISO8601).'/'.$end->setTimeZone($utc)->format(self::ISO8601);
+        return $startDate->setTimeZone($utc)->format(self::ISO8601).'/'.$endDate->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
@@ -108,7 +108,7 @@ final class Period
      */
     public function getStartDate()
     {
-        return clone $this->start;
+        return clone $this->startDate;
     }
 
     /**
@@ -118,7 +118,17 @@ final class Period
      */
     public function getEndDate()
     {
-        return clone $this->end;
+        return clone $this->endDate;
+    }
+
+    /**
+     * Returns the Period duration as expressed in seconds
+     *
+     * @return double
+     */
+    public function getTimeInterval()
+    {
+        return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
 
     /**
@@ -128,17 +138,7 @@ final class Period
      */
     public function getDateInterval()
     {
-        return $this->start->diff($this->end);
-    }
-
-    /**
-     * Returns the Period duration as expressed in seconds
-     *
-     * @return double
-     */
-    public function getTimeDuration()
-    {
-        return $this->end->getTimestamp() - $this->start->getTimestamp();
+        return $this->startDate->diff($this->endDate);
     }
 
     /**
@@ -154,7 +154,7 @@ final class Period
      */
     public function getDatePeriod($interval)
     {
-        return new DatePeriod($this->start, self::validateDateInterval($interval), $this->end);
+        return new DatePeriod($this->startDate, self::validateDateInterval($interval), $this->endDate);
     }
 
     /**
@@ -192,7 +192,7 @@ final class Period
      */
     public function sameValueAs(Period $period)
     {
-        return $this->start == $period->start && $this->end == $period->end;
+        return $this->startDate == $period->startDate && $this->endDate == $period->endDate;
     }
 
     /**
@@ -204,7 +204,7 @@ final class Period
      */
     public function abuts(Period $period)
     {
-        return $this->start == $period->end || $this->end == $period->start;
+        return $this->startDate == $period->endDate || $this->endDate == $period->startDate;
     }
 
     /**
@@ -220,7 +220,7 @@ final class Period
             return false;
         }
 
-        return $this->start < $period->end && $this->end > $period->start;
+        return $this->startDate < $period->endDate && $this->endDate > $period->startDate;
     }
 
     /**
@@ -233,10 +233,10 @@ final class Period
     public function isAfter($index)
     {
         if ($index instanceof Period) {
-            return $this->start >= $index->end;
+            return $this->startDate >= $index->endDate;
         }
 
-        return $this->start > self::validateDateTime($index);
+        return $this->startDate > self::validateDateTime($index);
     }
 
     /**
@@ -249,10 +249,10 @@ final class Period
     public function isBefore($index)
     {
         if ($index instanceof Period) {
-            return $this->end <= $index->start;
+            return $this->endDate <= $index->startDate;
         }
 
-        return $this->end <= self::validateDateTime($index);
+        return $this->endDate <= self::validateDateTime($index);
     }
 
     /**
@@ -266,12 +266,12 @@ final class Period
     public function contains($index)
     {
         if ($index instanceof Period) {
-            return $this->contains($index->start) && $this->contains($index->end);
+            return $this->contains($index->startDate) && $this->contains($index->endDate);
         }
 
         $datetime = self::validateDateTime($index);
 
-        return $datetime >= $this->start && $datetime < $this->end;
+        return $datetime >= $this->startDate && $datetime < $this->endDate;
     }
 
     /**
@@ -283,11 +283,11 @@ final class Period
      */
     public function compareDuration(Period $period)
     {
-        $datetime = clone $this->start;
+        $datetime = clone $this->startDate;
         $datetime->add($period->getDateInterval());
-        if ($this->end > $datetime) {
+        if ($this->endDate > $datetime) {
             return 1;
-        } elseif ($this->end < $datetime) {
+        } elseif ($this->endDate < $datetime) {
             return -1;
         }
 
@@ -336,7 +336,7 @@ final class Period
     /**
      * Create a Period object from a starting point and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $start    start datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $startDate    start datetime endpoint
      * @param \DateInterval|int|string            $duration The duration. If an int is passed, it is
      *                                                      interpreted as the duration expressed in seconds.
      *                                                      If a string is passed, it must be parsable by
@@ -344,18 +344,18 @@ final class Period
      *
      * @return \League\Period\Period
      */
-    public static function createFromDuration($start, $duration)
+    public static function createFromDuration($startDate, $duration)
     {
-        $start = self::validateDateTime($start);
-        $end   = clone $start;
+        $startDate = self::validateDateTime($startDate);
+        $endDate   = clone $startDate;
 
-        return new self($start, $end->add(self::validateDateInterval($duration)));
+        return new self($startDate, $endDate->add(self::validateDateInterval($duration)));
     }
 
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $end      end datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDate      end datetime endpoint
      * @param \DateInterval|int|string            $duration The duration. If an int is passed, it is
      *                                                      interpreted as the duration expressed in seconds.
      *                                                      If a string is passed, it must be parsable by
@@ -363,12 +363,12 @@ final class Period
      *
      * @return \League\Period\Period
      */
-    public static function createFromDurationBeforeEnd($end, $duration)
+    public static function createFromDurationBeforeEnd($endDate, $duration)
     {
-        $end   = self::validateDateTime($end);
-        $start = clone $end;
+        $endDate   = self::validateDateTime($endDate);
+        $startDate = clone $endDate;
 
-        return new self($start->sub(self::validateDateInterval($duration)), $end);
+        return new self($startDate->sub(self::validateDateInterval($duration)), $endDate);
     }
 
     /**
@@ -490,29 +490,29 @@ final class Period
     /**
      * Returns a new Period object with a new includedd starting endpoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $start starting included datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $startDate starting included datetime endpoint
      *
-     * @throws \LogicException If $start does not permit the creation of a new object
+     * @throws \LogicException If $startDate does not permit the creation of a new object
      *
      * @return \League\Period\Period
      */
-    public function startingOn($start)
+    public function startingOn($startDate)
     {
-        return new self(self::validateDateTime($start), $this->end);
+        return new self(self::validateDateTime($startDate), $this->endDate);
     }
 
     /**
      * Returns a new Period object with a new excluded ending endpoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $end ending excluded datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDate ending excluded datetime endpoint
      *
-     * @throws \LogicException If $end does not permit the creation of a new object
+     * @throws \LogicException If $endDate does not permit the creation of a new object
      *
      * @return \League\Period\Period
      */
-    public function endingOn($end)
+    public function endingOn($endDate)
     {
-        return new self($this->start, self::validateDateTime($end));
+        return new self($this->startDate, self::validateDateTime($endDate));
     }
 
     /**
@@ -527,7 +527,7 @@ final class Period
      */
     public function withDuration($duration)
     {
-        return self::createFromDuration($this->start, $duration);
+        return self::createFromDuration($this->startDate, $duration);
     }
 
     /**
@@ -544,9 +544,9 @@ final class Period
      */
     public function add($duration)
     {
-        $end = clone $this->end;
+        $endDate = clone $this->endDate;
 
-        return new self($this->start, $end->add(self::validateDateInterval($duration)));
+        return new self($this->startDate, $endDate->add(self::validateDateInterval($duration)));
     }
 
     /**
@@ -563,9 +563,9 @@ final class Period
      */
     public function sub($duration)
     {
-        $end = clone $this->end;
+        $endDate = clone $this->endDate;
 
-        return new self($this->start, $end->sub(self::validateDateInterval($duration)));
+        return new self($this->startDate, $endDate->sub(self::validateDateInterval($duration)));
     }
 
     /**
@@ -586,7 +586,7 @@ final class Period
             $duration = $this->getDateInterval();
         }
 
-        return self::createFromDuration($this->end, $duration);
+        return self::createFromDuration($this->endDate, $duration);
     }
 
     /**
@@ -607,7 +607,7 @@ final class Period
             $duration = $this->getDateInterval();
         }
 
-        return self::createFromDurationBeforeEnd($this->start, $duration);
+        return self::createFromDurationBeforeEnd($this->startDate, $duration);
     }
 
     /**
@@ -625,13 +625,13 @@ final class Period
         if (! $args) {
             throw new RuntimeException(__METHOD__.' is expecting at least one argument');
         }
-        $res  = clone $this;
+        $res = clone $this;
         array_walk($args, function (Period $period) use (&$res) {
-            if ($res->start > $period->start) {
-                $res = $res->startingOn($period->start);
+            if ($res->startDate > $period->startDate) {
+                $res = $res->startingOn($period->startDate);
             }
-            if ($res->end < $period->end) {
-                $res = $res->endingOn($period->end);
+            if ($res->endDate < $period->endDate) {
+                $res = $res->endingOn($period->endDate);
             }
         });
 
@@ -654,8 +654,8 @@ final class Period
         }
 
         return new self(
-            ($period->start > $this->start) ? $period->start : $this->start,
-            ($period->end < $this->end) ? $period->end : $this->end
+            ($period->startDate > $this->startDate) ? $period->startDate : $this->startDate,
+            ($period->endDate < $this->endDate) ? $period->endDate : $this->endDate
         );
     }
 
@@ -670,11 +670,11 @@ final class Period
      */
     public function gap(Period $period)
     {
-        if ($period->start > $this->start) {
-            return new self($this->end, $period->start);
+        if ($period->startDate > $this->startDate) {
+            return new self($this->endDate, $period->startDate);
         }
 
-        return new self($period->end, $this->start);
+        return new self($period->endDate, $this->startDate);
     }
 
     /**
@@ -698,12 +698,12 @@ final class Period
         }
 
         $res = [
-            self::createFromEndpoints($this->start, $period->start),
-            self::createFromEndpoints($this->end, $period->end),
+            self::createFromEndpoints($this->startDate, $period->startDate),
+            self::createFromEndpoints($this->endDate, $period->endDate),
         ];
 
         return array_values(array_filter($res, function (Period $period) {
-            return $period->start != $period->end;
+            return $period->startDate != $period->endDate;
         }));
     }
 
@@ -712,39 +712,37 @@ final class Period
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
-     * @param string|\DateTimeInterface|\DateTime $endpoint1 endpoint
-     * @param string|\DateTimeInterface|\DateTime $endpoint2 endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDatepoint1 endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDatepoint2 endpoint
      *
      * @return \League\Period\Period
      */
-    private static function createFromEndpoints($endpoint1, $endpoint2)
+    private static function createFromEndpoints($endDatepoint1, $endDatepoint2)
     {
-        $start = self::validateDateTime($endpoint1);
-        $end   = self::validateDateTime($endpoint2);
-        if ($start > $end) {
-            return new self($end, $start);
+        $startDate = self::validateDateTime($endDatepoint1);
+        $endDate   = self::validateDateTime($endDatepoint2);
+        if ($startDate > $endDate) {
+            return new self($endDate, $startDate);
         }
 
-        return new self($start, $end);
+        return new self($startDate, $endDate);
     }
 
     /**
-     * Returns the difference between two Period objects.
+     * Returns the difference between two Period objects expressed in seconds
+     * 
      *
      * @param \League\Period\Period $period
-     * @param bool                  $get_as_seconds If used and set to true, the method will return
-     *                                              an int which represents the duration in seconds
-     *                                              instead of a\DateInterval object
      *
      * @return double
      */
-    public function timeDurationDiff(Period $period)
+    public function timeIntervalDiff(Period $period)
     {
-        return $this->getTimeDuration() - $period->getTimeDuration();
+        return $this->getTimeInterval() - $period->getTimeInterval();
     }
 
     /**
-     * Returns the difference between two Period objects
+     * Returns the difference between two Period objects expressed in \DateInterval
      *
      * @param \League\Period\Period $period
      *
@@ -752,7 +750,7 @@ final class Period
      */
     public function dateIntervalDiff(Period $period)
     {
-        return $this->end->diff($this->withDuration($period->getDateInterval())->end);
+        return $this->endDate->diff($this->withDuration($period->getDateInterval())->end);
     }
 
     /**
@@ -799,7 +797,7 @@ final class Period
     public function getDuration($get_as_seconds = false)
     {
         if ($get_as_seconds) {
-            return $this->getTimeDuration();
+            return $this->getTimeInterval();
         }
 
         return $this->getDateInterval();
@@ -842,7 +840,7 @@ final class Period
     public function durationDiff(Period $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
-            return $this->timeDurationDiff($period);
+            return $this->timeIntervalDiff($period);
         }
 
         return $this->dateIntervalDiff($period);
