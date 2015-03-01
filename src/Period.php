@@ -750,7 +750,7 @@ final class Period
      */
     public function dateIntervalDiff(Period $period)
     {
-        return $this->endDate->diff($this->withDuration($period->getDateInterval())->end);
+        return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
     }
 
     /**
