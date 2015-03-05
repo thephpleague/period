@@ -54,16 +54,16 @@ $period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', new DateInt
 Learn more about how this all works in the [Properties](/api/properties/) section.
 
 ~~~php
-$period->getStart(); //the starting inclusive endpoint as a DateTime object
+$period->getStartDate(); //the starting inclusive endpoint as a DateTime object
 ~~~
 
 ~~~php
-$period->getEnd();   //the ending exclusive endpoint as a DateTime object
+$period->getEndDate();   //the ending exclusive endpoint as a DateTime object
 ~~~
 
 ~~~php
-$period->getDuration();     //the duration as a DateInterval object
-$period->getDuration(true); //the duration expressed in seconds
+$period->getDateInterval();      //the duration as a DateInterval object
+$period->getTimestampInterval(); //the duration expressed in seconds
 ~~~
 
 ~~~php
@@ -131,6 +131,11 @@ $period->compareDuration($another_period);
 //returns  0 if $period == $another_period
 ~~~
 
+~~~php
+$period->dateIntervalDiff($another_period);     //the difference as a DateInterval object
+$period->timestampIntervalDiff($another_period); //the difference expressed in seconds
+~~~
+
 ## Modifying Period
 
 Learn more about how this all works in the [Modifying](/api/modifying/) section.
@@ -171,6 +176,11 @@ $new_period = $period->previous();
 $new_period = $period->previous('3 DAYS');
 ~~~
 
+~~~php
+$arr = $period->split('1 WEEK');
+//$arr is a array containing Periods objects
+~~~
+
 __Using `Period` objects__
 
 ~~~php
@@ -192,8 +202,4 @@ $arr = $period->diff($another_period);
 //$arr is a array containing up to two Period objects
 ~~~
 
-~~~php
-$period->durationDiff($another_period);       //the difference as a DateInterval object
-$period->durationDiff($another_period, true); //the difference expressed in seconds
-~~~
 

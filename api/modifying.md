@@ -151,6 +151,24 @@ $prev    = $current->previous('1 MONTH');
 $next    = $curent->next('1 MONTH');
 ~~~
 
+### Period::split($interval)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5</p>
+
+This methods split a given `Period` object in smaller `Period` objects according to the given `$interval`. All returned period must be contained or abutted to the provided `Period` object.
+
+- The first returned `Period` will always share the same starting endpoint date with the provided `Period` object.
+- The last returned `Period` will always share the same ending endpoint date with the provided `Period` object.
+- If the `$interval` is greater than the period interval the method will return an array with a single `Period` equals to the provided `Period`.
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromYear(2012);
+$period_list = $period->split('1 MONTH');
+count($period_list); //returns 12 with each Period object representing a full month of 2012
+~~~
+
 ## Using another Period object
 
 ### Period::merge(Period $period[, Period $...])
@@ -230,18 +248,3 @@ $diff[0]->isBefore($diff[1]); //return true;
 ~~~
 
 <p class="message-info">Before getting the difference, make sure the <code>Period</code> objects, at least, overlap each other.</p>
-
-### Period::durationDiff(Period $period, $get_as_seconds = false)
-
-Returns the difference between two `Period` durations. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
-
-~~~php
-use League\Period\Period;
-
-$period    = Period::createFromSemester(2012, 1);
-$altPeriod = Period::createFromWeek(2012, 4);
-$diff = $period->durationDiff($altPeriod);
-// $diff is a DateInterval object
-$diff_as_seconds = $period->durationDiff($altPeriod, true);
-//$diff_as_seconds represents the interval expressed in seconds
-~~~

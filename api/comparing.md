@@ -156,3 +156,26 @@ $orig->sameDurationAs($other);    //return true
 $orig->sameValueAs($other);       //return false
 //the duration between $orig and $other are equals but not the endpoints!!
 ~~~
+
+### Period::dateIntervalDiff(Period $period)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Period::durationDiff</code></p>
+
+Returns the difference between two `Period` durations as expressed as a `DateInterval` object.
+
+### Period::timestampIntervalDiff(Period $period)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Period::durationDiff</code></p>
+
+Returns the difference between two `Period` durations as expressed in seconds.
+
+~~~php
+use League\Period\Period;
+
+$period    = Period::createFromSemester(2012, 1);
+$altPeriod = Period::createFromWeek(2012, 4);
+$diff = $period->dateIntervalDiff($altPeriod);
+// $diff is a DateInterval object
+$diff_as_seconds = $period->timestampIntervalDiff($altPeriod);
+//$diff_as_seconds represents the interval expressed in seconds
+~~~

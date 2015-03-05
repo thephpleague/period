@@ -7,31 +7,45 @@ title: Accessing Period object properties
 
 Once you have a instantiated `Period` object you can access its properties using the following getter methods:
 
-### Period::getStart()
+<p class="message-warning">All deprecated methods will be removed in the next major version.</p>
+
+### Period::getStartDate()
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getStart</code></p>
 
 Returns the starting **included** endpoint as a `DateTime`.
 
-### Period::getEnd();
+### Period::getEndDate();
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getEnd</code></p>
 
 Returns the ending **excluded** endpoint as a `DateTime`.
 
-### Period::getDuration($get_as_seconds = false)
+### Period::getDateInterval()
 
-Returns the object duration. If the `$get_as_seconds` parameter is used and set to `true`, the method will return an integer which represents the duration in seconds instead of a `DateInterval` object.
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getDuration</code></p>
+
+Returns the object duration as expressed as a DateInterval object.
+
+### Period::getTimestampInterval()
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getDuration</code></p>
+
+Returns the object duration as expressed as a the difference between endpoint timestamp.
 
 ~~~php
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
-$period->getStart(); //returns DateTime('2012-04-01 08:30:25');
-$period->getEnd(); //returns DateTime('2013-09-04 12:35:21');
-$duration = $period->getDuration(); //returns a DateInterval object
-$altduration = $period->getDuration(true); //returns the interval as expressed in seconds
+$period->getStartDate(); //returns DateTime('2012-04-01 08:30:25');
+$period->getEndDate(); //returns DateTime('2013-09-04 12:35:21');
+$duration = $period->getDateInterval(); //returns a DateInterval object
+$altduration = $period->getTimestampInterval(); //returns the interval as expressed in seconds
 ~~~
 
 ### Period::getDatePeriod($interval)
 
-<p class="message-warning"><code>Period::getRange</code> is deprecated since version 2.5 and will be remove in the next major version. For background compatibility <code>Period::getRange</code> is now a alias of <code>Period::getDatePeriod</code></p>
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getRange</code></p>
 
 Returns a `DatePeriod` object that lists `DateTime` objects inside the period, separated by the given `$interval`, and expressed as a `DateInterval` object.
 
