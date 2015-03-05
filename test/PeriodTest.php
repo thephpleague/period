@@ -39,35 +39,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertCount(24, iterator_to_array($range));
     }
 
-    public function testSplit()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split(3600);
-        $this->assertInternalType('array', $range);
-        $this->assertCount(24, $range);
-        foreach ($range as $innerPeriod) {
-            $this->assertInstanceof('\League\Period\Period', $innerPeriod);
-        }
-        $bob = call_user_func_array([$period, 'merge'], $range);
-        $this->assertEquals($period, $bob);
-    }
-
-    public function testSplitWithLargeInterval()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split("2 DAY");
-        $this->assertCount(1, $range);
-        $this->assertEquals($period, $range[0]);
-    }
-
-    public function testSplitWithInconsistentInterval()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split("10 HOURS");
-        $this->assertCount(3, $range);
-        $this->assertEquals(14400, $range[2]->getTimestampInterval());
-    }
-
     /**
      * @expectedException \RuntimeException
      */
@@ -562,6 +533,35 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period = Period::createFromMonth(2014, 3);
         $period->merge();
+    }
+
+    public function testSplit()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split(3600);
+        $this->assertInternalType('array', $range);
+        $this->assertCount(24, $range);
+        foreach ($range as $innerPeriod) {
+            $this->assertInstanceof('\League\Period\Period', $innerPeriod);
+        }
+        $bob = call_user_func_array([$period, 'merge'], $range);
+        $this->assertEquals($period, $bob);
+    }
+
+    public function testSplitWithLargeInterval()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split("2 DAY");
+        $this->assertCount(1, $range);
+        $this->assertEquals($period, $range[0]);
+    }
+
+    public function testSplitWithInconsistentInterval()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split("10 HOURS");
+        $this->assertCount(3, $range);
+        $this->assertEquals(14400, $range[2]->getTimestampInterval());
     }
 
     public function testAdd()

@@ -158,29 +158,6 @@ final class Period
     }
 
     /**
-     * Split a Period by a given interval
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must bep arsable by
-     *                                           `DateInterval::createFromDateString`
-     * @return \League\Period\Period[]
-     */
-    public function split($interval)
-    {
-        $res = [];
-        foreach ($this->getDatePeriod($interval) as $startDate) {
-            $period = self::createFromDuration($startDate, $interval);
-            if ($period->contains($this->endDate)) {
-                $period = $period->endingOn($this->endDate);
-            }
-            $res[] = $period;
-        }
-
-        return $res;
-    }
-
-    /**
      * Validate a DateInterval.
      *
      * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
@@ -657,6 +634,29 @@ final class Period
                 $res = $res->endingOn($period->endDate);
             }
         });
+
+        return $res;
+    }
+
+    /**
+     * Split a Period by a given interval
+     *
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must bep arsable by
+     *                                           `DateInterval::createFromDateString`
+     * @return \League\Period\Period[]
+     */
+    public function split($interval)
+    {
+        $res = [];
+        foreach ($this->getDatePeriod($interval) as $startDate) {
+            $period = self::createFromDuration($startDate, $interval);
+            if ($period->contains($this->endDate)) {
+                $period = $period->endingOn($this->endDate);
+            }
+            $res[] = $period;
+        }
 
         return $res;
     }
