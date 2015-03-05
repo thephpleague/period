@@ -40,15 +40,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
-     */
-    public function testGetDatePeriodThrowsRuntimeException()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $period->getDatePeriod(new StdClass);
-    }
-
-    /**
      * @expectedException \Exception
      */
     public function testGetDatePeriodThrowsException()

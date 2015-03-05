@@ -35,14 +35,14 @@ final class Period
     const ISO8601 = 'Y-m-d\TH:i:s\Z';
 
     /**
-     * Period starting included datetime endpoint.
+     * Period starting included datepoint.
      *
      * @var \DateTimeInterface|\DateTime
      */
     private $startDate;
 
     /**
-     * Period ending excluded datetime endpoint.
+     * Period ending excluded datepoint.
      *
      * @var \DateTimeInterface|\DateTime
      */
@@ -51,12 +51,10 @@ final class Period
     /**
      * Create a new instance.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate starting datetime endpoint
-     * @param string|\DateTimeInterface|\DateTime $endDate   ending datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $startDate starting datepoint
+     * @param string|\DateTimeInterface|\DateTime $endDate   ending datepoint
      *
      * @throws \LogicException If $startDate is greater than $endDate
-     *
-     * @return void
      */
     public function __construct($startDate, $endDate)
     {
@@ -102,7 +100,7 @@ final class Period
     }
 
     /**
-     * Returns the starting DateTime.
+     * Returns the starting datepoint.
      *
      * @return \DateTimeInterface|\DateTime
      */
@@ -112,7 +110,7 @@ final class Period
     }
 
     /**
-     * Returns the ending DateTime.
+     * Returns the ending endpoint.
      *
      * @return \DateTimeInterface|\DateTime
      */
@@ -166,7 +164,6 @@ final class Period
      *                                           `DateInterval::createFromDateString`
      *
      * @throws \Exception If the integer generates a bad format
-     * @throws \RuntimException If the string can not be converted into a proper DateInterval object
      *
      * @return \DateInterval
      */
@@ -176,11 +173,9 @@ final class Period
             return $interval;
         } elseif (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
             return new DateInterval('PT'.$res.'S');
-        } elseif (false === ($res = @DateInterval::createFromDateString($interval))) {
-            throw new RuntimeException('The given $interval could not be converted into a DateInterval');
         }
 
-        return $res;
+        return DateInterval::createFromDateString($interval);
     }
 
     /**
@@ -336,11 +331,11 @@ final class Period
     /**
      * Create a Period object from a starting point and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate    start datetime endpoint
-     * @param \DateInterval|int|string            $interval The duration. If an int is passed, it is
-     *                                                      interpreted as the duration expressed in seconds.
-     *                                                      If a string is passed, it must be parsable by
-     *                                                      `DateInterval::createFromDateString`
+     * @param string|\DateTimeInterface|\DateTime $startDate start datepoint
+     * @param \DateInterval|int|string            $interval  The duration. If an int is passed, it is
+     *                                                       interpreted as the duration expressed in seconds.
+     *                                                       If a string is passed, it must be parsable by
+     *                                                       `DateInterval::createFromDateString`
      *
      * @return \League\Period\Period
      */
@@ -355,7 +350,7 @@ final class Period
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $endDate      end datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDate  end datepoint
      * @param \DateInterval|int|string            $interval The duration. If an int is passed, it is
      *                                                      interpreted as the duration expressed in seconds.
      *                                                      If a string is passed, it must be parsable by
@@ -488,9 +483,9 @@ final class Period
     }
 
     /**
-     * Returns a new Period object with a new includedd starting endpoint.
+     * Returns a new Period object with a new included starting datepoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate starting included datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $startDate datepoint
      *
      * @throws \LogicException If $startDate does not permit the creation of a new object
      *
@@ -502,9 +497,9 @@ final class Period
     }
 
     /**
-     * Returns a new Period object with a new excluded ending endpoint.
+     * Returns a new Period object with a new ending datepoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $endDate ending excluded datetime endpoint
+     * @param string|\DateTimeInterface|\DateTime $endDate datepoint
      *
      * @throws \LogicException If $endDate does not permit the creation of a new object
      *
@@ -516,7 +511,7 @@ final class Period
     }
 
     /**
-     * Returns a new Period object with a new excluded ending endpoint.
+     * Returns a new Period object with a new ending datepoint.
      *
      * @param \DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
@@ -575,9 +570,9 @@ final class Period
      * using the current object duration
      *
      * @param \DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
      * @return \League\Period\Period
      */
     public function next($interval = null)
@@ -595,10 +590,10 @@ final class Period
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
+     * @param \DateInterval|int|string $interval The duration. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
      * @return \League\Period\Period
      */
     public function previous($interval = null)
@@ -754,7 +749,6 @@ final class Period
     /**
      * Returns the difference between two Period objects expressed in seconds
      *
-     *
      * @param \League\Period\Period $period
      *
      * @return double
@@ -868,7 +862,7 @@ final class Period
     public function durationDiff(Period $period, $get_as_seconds = false)
     {
         if ($get_as_seconds) {
-            return $this->timeIntervalDiff($period);
+            return $this->timestampIntervalDiff($period);
         }
 
         return $this->dateIntervalDiff($period);

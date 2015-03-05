@@ -5,13 +5,24 @@ All Notable changes to `League\Period` will be documented in this file
 
 ### Added
 
+- `Period::split` to split a `Period` object into smaller `Period` objects
 - `Period::getDatePeriod`
+- `Period::getDateInterval`
+- `Period::getTimestampInterval`
+- `Period::getStartDate`
+- `Period::getEndDate`
+- `Period::dateIntervalDiff`
+- `Period::timstampIntervalDiff`
 
 ### Fixed
 - `DateInterval` validation when created from an integer.
 
 ### Deprecated
+- `Period::getStart` you should use `Period::getStartDate` instead
+- `Period::getEnd` you should use `Period::getEndDate` instead
 - `Period::getRange` you should use `Period::getDatePeriod` instead
+- `Period::duration` you should use `Period::getDateInterval` or `Period::getTimestampInterval` instead
+- `Period::durationDiff` you should use `Period::dateIntervalDiff` or `Period::timstampIntervalDiff` instead
 
 ### Remove
 - support for PHP 5.3
