@@ -39,6 +39,35 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertCount(24, iterator_to_array($range));
     }
 
+    public function testSplit()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split(3600);
+        $this->assertInternalType('array', $range);
+        $this->assertCount(24, $range);
+        foreach ($range as $innerPeriod) {
+            $this->assertInstanceof('\League\Period\Period', $innerPeriod);
+        }
+        $bob = call_user_func_array([$period, 'merge'], $range);
+        $this->assertEquals($period, $bob);
+    }
+
+    public function testSplitWithLargeInterval()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split("2 DAY");
+        $this->assertCount(1, $range);
+        $this->assertEquals($period, $range[0]);
+    }
+
+    public function testSplitWithInconsistentInterval()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split("10 HOURS");
+        $this->assertCount(3, $range);
+        $this->assertEquals(14400, $range[2]->getTimestampInterval());
+    }
+
     /**
      * @expectedException \RuntimeException
      */
@@ -72,7 +101,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = Period::createFromMonth(2014, 3);
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
-        $res = $period->getTimeInterval();
+        $res = $period->getTimestampInterval();
         $this->assertInternalType('integer', $res);
         $this->assertEquals($end->getTimestamp() - $start->getTimestamp(), $res);
     }
@@ -612,7 +641,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
         $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
-        $res = $orig->timeIntervalDiff($alt);
+        $res = $orig->timestampIntervalDiff($alt);
         $this->assertInternalType('integer', $res);
         $this->assertSame(-3600, $res);
     }
@@ -708,7 +737,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
         $res = $orig->gap($alt);
         $this->assertInstanceof('\League\Period\Period', $res);
-        $this->assertSame(0, $res->getTimeInterval());
+        $this->assertSame(0, $res->getTimestampInterval());
     }
 
     /**
@@ -743,7 +772,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $alt = Period::createFromDuration('2013-01-01 11:00:00', '3 HOURS');
         $res = $alt->diff($period);
         $this->assertCount(2, $res);
-        $this->assertEquals(3600, $res[1]->getTimeInterval());
-        $this->assertEquals(3600, $res[0]->getTimeInterval());
+        $this->assertEquals(3600, $res[1]->getTimestampInterval());
+        $this->assertEquals(3600, $res[0]->getTimestampInterval());
     }
 }
