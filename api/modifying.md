@@ -20,9 +20,9 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->startingOn('2014-02-01');
-$period->getStart(); //returns DateTime('2014-03-01');
-$newPeriod->getStart(); //returns DateTime('2014-02-01');
-// $period->getEnd() equals $newPeriod->getEnd();
+$period->getStartDate(); //returns DateTime('2014-03-01');
+$newPeriod->getStartDate(); //returns DateTime('2014-02-01');
+// $period->getEndDate() equals $newPeriod->getEndDate();
 ~~~
 
 ### Period::endingOn($end)
@@ -34,9 +34,9 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->EndingOn('2014-03-16');
-$period->getEnd(); //returns DateTime('2014-04-01');
-$newPeriod->getEnd(); //returns DateTime('2014-03-16');
-// $period->getStart() equals $newPeriod->getStart();
+$period->getEndDate(); //returns DateTime('2014-04-01');
+$newPeriod->getEndDate(); //returns DateTime('2014-03-16');
+// $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
 ## Using durations
@@ -54,9 +54,9 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->withDuration('2 WEEKS');
-$period->getEnd(); //returns DateTime('2014-04-01');
-$newPeriod->getEnd(); //returns DateTime('2014-03-16');
-// $period->getStart() equals $newPeriod->getStart();
+$period->getEndDate(); //returns DateTime('2014-04-01');
+$newPeriod->getEndDate(); //returns DateTime('2014-03-16');
+// $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
 ### Period::add($duration)
@@ -70,7 +70,7 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->add('2 WEEKS');
-// $period->getStart() equals $newPeriod->getStart();
+// $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
 ### Period::sub($duration)
@@ -84,7 +84,7 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->sub('2 WEEKS');
-// $period->getStart() equals $newPeriod->getStart();
+// $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
 ### Period::next($duration = null)
@@ -98,7 +98,7 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->next('1 MONTH');
-// $period->getEnd() equals $newPeriod->getStart();
+// $period->getEndDate() equals $newPeriod->getStartDate();
 ~~~
 
 <p class="message-warning">When no <code>$duration</code> is provided to the method the new <code>Period</code> duration may vary. See below for a concrete example</p>
@@ -133,7 +133,7 @@ use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
 $newPeriod = $period->previous('1 WEEK');
-// $period->getEnd() equals $newPeriod->Start();
+// $period->getEndDate() equals $newPeriod->Start();
 $period->durationGreaterThan($newPeriod); //return true
 ~~~
 
@@ -155,11 +155,12 @@ $next    = $curent->next('1 MONTH');
 
 <p class="message-notice">Added to <code>Period</code> in version 2.5</p>
 
-This methods split a given `Period` object in smaller `Period` objects according to the given `$interval`. All returned period must be contained or abutted to the provided `Period` object.
+This methods split a given `Period` object in smaller `Period` objects according to the given `$interval`. All returned objects must be contained or abutted to the parent `Period` object.
 
-- The first returned `Period` will always share the same starting datepoint date with the provided `Period` object.
-- The last returned `Period` will always share the same ending datepoint date with the provided `Period` object.
-- If the `$interval` is greater than the period interval the method will return an array with a single `Period` equals to the provided `Period`.
+- The first returned `Period` will always share the same starting datepoint with the parent object.
+- The last returned `Period` will always share the same ending datepoint with the parent object.
+- The last returned `Period` will have a duration equal or lesser than the submitted interval.
+- If `$interval` is greater than the parent `Period` interval, the method will return an array with a single `Period` whose datepoints equals those of the parent `Period`.
 
 ~~~php
 use League\Period\Period;
@@ -182,8 +183,8 @@ $period = Period::createFromSemester(2012, 1);
 $alt    = Period::createFromWeek(2013, 4);
 $other  = Period::createFromDuration('2012-03-07 08:10:27', 86000*3);
 $newPeriod = $period->merge($alt, $other);
-// $newPeriod->getStart() equals $period->getStart();
-// $newPeriod->getEnd() equals $altPeriod->getEnd();
+// $newPeriod->getStartDate() equals $period->getStartDate();
+// $newPeriod->getEndDate() equals $altPeriod->getEndDate();
 ~~~
 
 ### Period::intersect(Period $period)

@@ -59,7 +59,7 @@ use League\Period\Period;
 $period        = Period::createFromMonth(2014, 3);
 $anotherPeriod = Period::createFromMonth(2014, 4);
 $period->abuts($anotherPeriod); //return true
-//in this case $period->getEnd() == $anotherPeriod->getStart();
+//in this case $period->getEndDate() == $anotherPeriod->getStartDate();
 ~~~
 
 ### Period::overlaps(Period $period)
@@ -106,7 +106,7 @@ use League\Period\Period;
 //comparing a datetime
 $period = Period::createFromMonth(1983, 4);
 $period->contains('1983-04-15');      //returns true;
-$period->contains($period->getEnd()); //returns false;
+$period->contains($period->getEndDate()); //returns false;
 
 //comparing two Period objects
 $alt = Period::createFromDuration(1983-04-12, '12 DAYS');
