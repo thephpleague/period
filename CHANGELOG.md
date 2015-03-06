@@ -1,7 +1,7 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
-## 2.5.0 - XXXX-XX-XX
+## 2.5.0 - 2015-03-06
 
 ### Added
 
@@ -12,7 +12,7 @@ All Notable changes to `League\Period` will be documented in this file
 - `Period::getStartDate`
 - `Period::getEndDate`
 - `Period::dateIntervalDiff`
-- `Period::timstampIntervalDiff`
+- `Period::timestampIntervalDiff`
 
 ### Fixed
 - `DateInterval` validation when created from an integer.
@@ -22,7 +22,7 @@ All Notable changes to `League\Period` will be documented in this file
 - `Period::getEnd` you should use `Period::getEndDate` instead
 - `Period::getRange` you should use `Period::getDatePeriod` instead
 - `Period::duration` you should use `Period::getDateInterval` or `Period::getTimestampInterval` instead
-- `Period::durationDiff` you should use `Period::dateIntervalDiff` or `Period::timstampIntervalDiff` instead
+- `Period::durationDiff` you should use `Period::dateIntervalDiff` or `Period::timestampIntervalDiff` instead
 
 ### Remove
 - support for PHP 5.3
