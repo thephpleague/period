@@ -18,7 +18,6 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
-use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
 use LogicException;
@@ -59,13 +58,11 @@ final class Period
      */
     public function __construct($startDate, $endDate)
     {
-        $startDate = self::validateDateTime($startDate);
-        $endDate   = self::validateDateTime($endDate);
-        if ($startDate > $endDate) {
+        $this->startDate = self::validateDateTime($startDate);
+        $this->endDate   = self::validateDateTime($endDate);
+        if ($this->startDate > $this->endDate) {
             throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
         }
-        $this->startDate = $startDate;
-        $this->endDate   = $endDate;
     }
 
     /**
@@ -81,7 +78,7 @@ final class Period
     {
         if ($datetime instanceof DateTime) {
             return DateTimeImmutable::createFromMutable($datetime);
-        } elseif ($datetime instanceof DateTimeInterface) {
+        } elseif ($datetime instanceof DateTimeImmutable) {
             return $datetime;
         }
 
@@ -224,7 +221,7 @@ final class Period
     /**
      * Tells whether a Period is entirely after the specified index
      *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
+     * @param \League\Period\Period|\DateTimeInterface $index
      *
      * @return bool
      */
@@ -240,7 +237,7 @@ final class Period
     /**
      * Tells whether a Period is entirely before the specified index
      *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
+     * @param \League\Period\Period|\DateTimeInterface $index
      *
      * @return bool
      */
@@ -522,7 +519,7 @@ final class Period
      */
     public function withDuration($interval)
     {
-        return self::createFromDuration($this->startDate, $interval);
+        return new self($this->startDate, $this->startDate->add($interval));
     }
 
     /**
@@ -577,7 +574,7 @@ final class Period
             $interval = $this->getDateInterval();
         }
 
-        return self::createFromDuration($this->endDate, $interval);
+        return new self($this->endDate, $this->end->add($interval));
     }
 
     /**
@@ -598,7 +595,7 @@ final class Period
             $interval = $this->getDateInterval();
         }
 
-        return self::createFromDurationBeforeEnd($this->startDate, $interval);
+        return new self($this->startDate->sub($interval), $this->startDate);
     }
 
     /**
@@ -722,8 +719,8 @@ final class Period
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
-     * @param string|\DateTimeInterface|\DateTime $endPoint1 endpoint
-     * @param string|\DateTimeInterface|\DateTime $endPoint2 endpoint
+     * @param string|\DateTimeInterface $endPoint1 endpoint
+     * @param string|\DateTimeInterface $endPoint2 endpoint
      *
      * @return \League\Period\Period
      */

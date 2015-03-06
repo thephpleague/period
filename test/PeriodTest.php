@@ -72,8 +72,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period = new Period('2014-05-01', '2014-05-08');
         $start = $period->getStartDate();
-        $this->assertEquals(new DateTime('2014-05-01'), $start);
-        $this->assertEquals(new DateTime('2014-05-08'), $start);
+        $this->assertEquals(new DateTimeImmutable('2014-05-01'), $start);
+        $this->assertEquals(new DateTimeImmutable('2014-05-08'), $start);
         $this->assertInstanceof('DateTimeInterface', $start);
         $this->assertInstanceof('DateTimeImmutable', $start);
     }
@@ -89,9 +89,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @requires PHP 5.5
-     */
     public function testConstructorWithDateTimeInterface()
     {
         $start  = new DateTimeImmutable('2014-05-01');
@@ -106,8 +103,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $start = new DateTime();
         $period = Period::createFromDuration($start, "1 DAY");
-        $this->assertEquals($period->getStartDate(), $start);
-        $this->assertEquals($period->getEndDate(), $start->add(new DateInterval('P1D')));
+        $this->assertTrue($period->getStartDate() == $start);
+        $this->assertTrue($period->getEndDate() == $start->add(new DateInterval('P1D')));
     }
 
     public function testCreateFromDurationWithString()
@@ -117,14 +114,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $end = clone $start;
         $end->add($ttl);
         $period = Period::createFromDuration("-1 DAY", $ttl);
-        $this->assertEquals($period->getStartDate(), $start);
-        $this->assertEquals($period->getEndDate(), $end);
+        $this->assertTrue($period->getStartDate() == $start);
+        $this->assertTrue($period->getEndDate() == $end);
     }
 
     public function testCreatFromDurationWithInteger()
     {
         $period = Period::createFromDuration('2014-01-01', 3600);
-        $this->assertEquals(new DateTime('2014-01-01 01:00:00'), $period->getEndDate());
+        $this->assertEquals(new DateTimeImmutable('2014-01-01 01:00:00'), $period->getEndDate());
     }
 
     /**
@@ -147,8 +144,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $end = new DateTime();
         $period = Period::createFromDurationBeforeEnd($end, "1 DAY");
-        $this->assertEquals($period->getEndDate(), $end);
-        $this->assertEquals($period->getStartDate(), $end->sub(new DateInterval('P1D')));
+        $this->assertTrue($period->getEndDate() == $end);
+        $this->assertTrue($period->getStartDate() == $end->sub(new DateInterval('P1D')));
     }
 
     public function testCreateFromDurationBeforeEndWithString()
@@ -158,8 +155,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $start = clone $end;
         $start->sub($ttl);
         $period = Period::createFromDurationBeforeEnd("-1 DAY", $ttl);
-        $this->assertEquals($period->getStartDate(), $start);
-        $this->assertEquals($period->getEndDate(), $end);
+        $this->assertTrue($period->getStartDate() == $start);
+        $this->assertTrue($period->getEndDate() == $end);
     }
 
     /**
@@ -173,8 +170,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromWeek()
     {
         $period = Period::createFromWeek(2014, 3);
-        $this->assertEquals($period->getStartDate(), new DateTime('2014-01-13'));
-        $this->assertEquals($period->getEndDate(), new DateTime('2014-01-20'));
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-01-13'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2014-01-20'));
     }
 
     /**
@@ -204,8 +201,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromMonth()
     {
         $period = Period::createFromMonth(2014, 3);
-        $this->assertEquals($period->getStartDate(), new DateTime('2014-03-01'));
-        $this->assertEquals($period->getEndDate(), new DateTime('2014-04-01'));
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-03-01'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2014-04-01'));
     }
 
     /**
@@ -235,8 +232,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromQuarter()
     {
         $period = Period::createFromQuarter(2014, 3);
-        $this->assertEquals($period->getStartDate(), new DateTime('2014-07-01'));
-        $this->assertEquals($period->getEndDate(), new DateTime('2014-10-01'));
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-07-01'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2014-10-01'));
     }
 
     /**
@@ -266,8 +263,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromSemester()
     {
         $period = Period::createFromSemester(2014, 2);
-        $this->assertEquals($period->getStartDate(), new DateTime('2014-07-01'));
-        $this->assertEquals($period->getEndDate(), new DateTime('2015-01-01'));
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-07-01'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2015-01-01'));
     }
 
     /**
@@ -297,8 +294,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testCreateFromYear()
     {
         $period = Period::createFromYear(2014);
-        $this->assertEquals($period->getStartDate(), new DateTime('2014-01-01'));
-        $this->assertEquals($period->getEndDate(), new DateTime('2015-01-01'));
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-01-01'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2015-01-01'));
     }
 
     /**
@@ -398,7 +395,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testOverlapsFalseWithGappingPeriod()
     {
         $orig = Period::createFromMonth(2014, 3);
-        $alt = Period::createFromMonth(2013, 4);
+        $alt  = Period::createFromMonth(2013, 4);
         $this->assertFalse($orig->overlaps($alt));
     }
 
@@ -445,8 +442,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testSameValueAsFalseWithSameStartingValue()
     {
-        $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $alt  = Period::createFromDuration('2012-01-01', '1 WEEK');
         $this->assertFalse($orig->sameValueAs($alt));
     }
 
@@ -462,7 +459,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period    = Period::createFromWeek(2014, 3);
         $newPeriod = $period->startingOn($expected);
         $this->assertEquals($newPeriod->getStartDate(), $expected);
-        $this->assertEquals($period->getStartDate(), new DateTime('2014-01-13'));
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-01-13'));
     }
 
     /**
@@ -480,7 +477,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period    = Period::createFromWeek(2014, 3);
         $newPeriod = $period->endingOn($expected);
         $this->assertEquals($newPeriod->getEndDate(), $expected);
-        $this->assertEquals($period->getEndDate(), new DateTime('2014-01-20'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2014-01-20'));
     }
 
     /**
@@ -756,8 +753,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $res = $alt->diff($period);
         $this->assertCount(1, $res);
         $this->assertInstanceof('League\Period\Period', $res[0]);
-        $this->assertEquals(new Datetime('2013-04-01'), $res[0]->getStartDate());
-        $this->assertEquals(new Datetime('2014-01-01'), $res[0]->getEndDate());
+        $this->assertEquals(new DateTimeImmutable('2013-04-01'), $res[0]->getStartDate());
+        $this->assertEquals(new DateTimeImmutable('2014-01-01'), $res[0]->getEndDate());
     }
 
     public function testDiffWithOverlapsPeriod()
