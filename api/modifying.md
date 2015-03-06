@@ -5,15 +5,15 @@ title: the Period object as an immutable value object
 
 # Modifying Period objects
 
-You can manipulate a `League\Period\Period` object according to their endpoints or durations. `League\Period\Period` **is an immutable value object** which means that any change to its property returns a new `Period` object.
+You can manipulate a `League\Period\Period` object according to their datepoints or durations. `League\Period\Period` **is an immutable value object** which means that any change to its property returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
-## Using endpoints
+## Using datepoints
 
 ### Period::startingOn($start)
 
-Returns a new `Period` object with `$start` as the new **starting included endpoint** defined as a `DateTime` object.
+Returns a new `Period` object with `$start` as the new **starting included datepoint** defined as a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -27,7 +27,7 @@ $newPeriod->getStart(); //returns DateTime('2014-02-01');
 
 ### Period::endingOn($end)
 
-Returns a new `Period` object with `$end` as the new **ending excluded endpoint** defined as a `DateTime` object.
+Returns a new `Period` object with `$end` as the new **ending excluded datepoint** defined as a `DateTime` object.
 
 ~~~php
 use League\Period\Period;
@@ -41,11 +41,11 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 ## Using durations
 
-The supplied `DateInterval` object can be added or substracted from the starting and/or ending endpoint.
+The supplied `DateInterval` object can be added or substracted from the starting and/or ending datepoint.
 
 ### Period::withDuration($duration)
 
-Returns a new `Period` object by updating its duration. Only the excluded endpoint is updated.
+Returns a new `Period` object by updating its duration. Only the excluded datepoint is updated.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -61,7 +61,7 @@ $newPeriod->getEnd(); //returns DateTime('2014-03-16');
 
 ### Period::add($duration)
 
-Returns a new `Period` object by adding an interval to the current ending excluded endpoint.
+Returns a new `Period` object by adding an interval to the current ending excluded datepoint.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -75,7 +75,7 @@ $newPeriod = $period->add('2 WEEKS');
 
 ### Period::sub($duration)
 
-Returns a new `Period` object by substracting an interval to the current ending excluded endpoint.
+Returns a new `Period` object by substracting an interval to the current ending excluded datepoint.
 
 The `$duration` parameter is expressed as a `DateInterval` object.
 
@@ -91,7 +91,7 @@ $newPeriod = $period->sub('2 WEEKS');
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Returns a new `Period` object adjacent to the current `Period` and starting with its ending endpoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
+Returns a new `Period` object adjacent to the current `Period` and starting with its ending datepoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
 
 ~~~php
 use League\Period\Period;
@@ -117,7 +117,7 @@ echo $february; // 2012-02-01T00:00:00+0100/2012-03-01T00:00:00+0100
 echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
 // $march does not represents the full month
-// since the ending endpoint is excluded from the period!!
+// since the ending datepoint is excluded from the period!!
 ~~~
 
 <p class="message-info">To remove any ambiguity, it is recommended to always provide a <code>$duration</code> when using <code>Period::next</code></p>
@@ -126,7 +126,7 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
-Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending endpoint is equal to the starting endpoint of the current object.
+Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending datepoint is equal to the starting datepoint of the current object.
 
 ~~~php
 use League\Period\Period;
@@ -157,8 +157,8 @@ $next    = $curent->next('1 MONTH');
 
 This methods split a given `Period` object in smaller `Period` objects according to the given `$interval`. All returned period must be contained or abutted to the provided `Period` object.
 
-- The first returned `Period` will always share the same starting endpoint date with the provided `Period` object.
-- The last returned `Period` will always share the same ending endpoint date with the provided `Period` object.
+- The first returned `Period` will always share the same starting datepoint date with the provided `Period` object.
+- The last returned `Period` will always share the same ending datepoint date with the provided `Period` object.
 - If the `$interval` is greater than the period interval the method will return an array with a single `Period` equals to the provided `Period`.
 
 ~~~php
@@ -228,9 +228,9 @@ $gapPeriod = $period->gap($alt);
 
  The difference is expressed as an `array`. The returned array:
 
- - is empty if both objects share the same endpoints;
- - contains one `Period` object if both objects share only one endpoint;
- - contains two `Period` objects if no endpoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
+ - is empty if both objects share the same datepoints;
+ - contains one `Period` object if both objects share only one datepoint;
+ - contains two `Period` objects if no datepoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
 
 ![](/media/period-diff.png "The difference express as Period objects")
 

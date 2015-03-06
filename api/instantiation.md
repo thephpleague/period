@@ -9,10 +9,10 @@ To instantiate a `Period` object you can rely on its constructor or on several n
 
 ### Period::__construct($start, $end)
 
-Both `$start` and `$end` parameters represent the period endpoints as `DateTime` objects.
+Both `$start` and `$end` parameters represent the period datepoints as `DateTime` objects.
 
-- The `$start` endpoint represents **the starting included endpoint**.
-- The `$end` value represents **the ending excluded endpoint**.
+- The `$start` datepoint represents **the starting included datepoint**.
+- The `$end` value represents **the ending excluded datepoint**.
 
 `$end` **must be** greater or equal to `$start` or the instantiation will throw a `LogicException`.
 
@@ -28,7 +28,7 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 
 Returns a `Period` object which starts at `$start` with a duration equals to `$duration`.
 
-- The `$start` represents **the starting included endpoint** expressed as `DateTime` object.
+- The `$start` represents **the starting included datepoint** expressed as `DateTime` object.
 - The `$duration` parameter is a `DateInterval` object;
 
 ~~~php
@@ -45,7 +45,7 @@ $other  = Period::createFromDuration(new DateTime('2012-04-01 08:30:25'), 86400)
 
 Returns a `Period` object which ends at `$end` with a duration equals to `$duration`.
 
-- The `$end` represents **the ending excluded endpoint** expressed as `DateTime` object.
+- The `$end` represents **the ending excluded datepoint** expressed as `DateTime` object.
 - The `$duration` parameter is a `DateInterval` object;
 
 ~~~php
@@ -55,7 +55,6 @@ $period = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', '1 DAY');
 $alt    = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', new DateInterval('P1D'));
 $other  = Period::createFromDurationBeforeEnd(new DateTimeImmutable('2012-04-01 08:30:25'), 86400);
 ~~~
-
 
 ### Period::createFromWeek($year, $week)
 

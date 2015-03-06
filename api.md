@@ -184,9 +184,7 @@ $arr = $period->split('1 WEEK');
 __Using `Period` objects__
 
 ~~~php
-$new_period = $period->merge($another_period);
-//or
-$new_period = $period->merge($another_period, $alt_period, ...);
+$new_period = $period->merge(Period ...$periods);
 ~~~
 
 ~~~php

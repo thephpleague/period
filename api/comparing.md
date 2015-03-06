@@ -5,9 +5,9 @@ title: Comparing Period objects
 
 # Comparing Period objects
 
-You can compare different `Period` objects according to their endpoints or durations.
+You can compare different `Period` objects according to their datepoints or durations.
 
-## Using endpoints
+## Using datepoints
 
 ### Period::isBefore($index)
 
@@ -80,7 +80,7 @@ $alt->overlaps($other);  //return true
 
 ### Period::sameValueAs(Period $period)
 
-Tells whether two `Period` objects shares the same endpoints.
+Tells whether two `Period` objects shares the same datepoints.
 
 ~~~php
 use League\Period\Period;
@@ -154,7 +154,7 @@ $alt->durationGreaterThan($other); //return false
 $orig->compareDuration($other);   //return 0
 $orig->sameDurationAs($other);    //return true
 $orig->sameValueAs($other);       //return false
-//the duration between $orig and $other are equals but not the endpoints!!
+//the duration between $orig and $other are equals but not the datepoints!!
 ~~~
 
 ### Period::dateIntervalDiff(Period $period)

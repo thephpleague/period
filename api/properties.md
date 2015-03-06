@@ -11,27 +11,27 @@ Once you have a instantiated `Period` object you can access its properties using
 
 ### Period::getStartDate()
 
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getStart</code></p>
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace the deprecated <code>Perod::getStart</code></p>
 
-Returns the starting **included** endpoint as a `DateTime`.
+Returns the starting **included** datepoint as a `DateTime` object.
 
 ### Period::getEndDate();
 
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getEnd</code></p>
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace the deprecated <code>Perod::getEnd</code></p>
 
-Returns the ending **excluded** endpoint as a `DateTime`.
+Returns the ending **excluded** datepoint as a `DateTime` object.
 
 ### Period::getDateInterval()
 
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getDuration</code></p>
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace the deprecated <code>Perod::getDuration</code></p>
 
-Returns the object duration as expressed as a DateInterval object.
+Returns the object duration as expressed as a `DateInterval` object.
 
 ### Period::getTimestampInterval()
 
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getDuration</code></p>
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace the deprecated <code>Perod::getDuration</code></p>
 
-Returns the object duration as expressed as a the difference between endpoint timestamp.
+Returns the object duration as expressed as a the difference between datepoint timestamp.
 
 ~~~php
 use League\Period\Period;
@@ -45,9 +45,9 @@ $altduration = $period->getTimestampInterval(); //returns the interval as expres
 
 ### Period::getDatePeriod($interval)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Perod::getRange</code></p>
+<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace the deprecated <code>Perod::getRange</code></p>
 
-Returns a `DatePeriod` object that lists `DateTime` objects inside the period, separated by the given `$interval`, and expressed as a `DateInterval` object.
+Returns a `DatePeriod` object that lists `DateTime` objects inside the period, separated by the given `$interval` expressed as a `DateInterval` object.
 
 ~~~php
 use League\Period\Period;
