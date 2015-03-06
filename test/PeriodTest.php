@@ -73,7 +73,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = new Period('2014-05-01', '2014-05-08');
         $start = $period->getStartDate();
         $this->assertEquals(new DateTimeImmutable('2014-05-01'), $start);
-        $this->assertEquals(new DateTimeImmutable('2014-05-08'), $start);
+        $this->assertEquals(new DateTimeImmutable('2014-05-08'), $period->getEndDate());
         $this->assertInstanceof('DateTimeInterface', $start);
         $this->assertInstanceof('DateTimeImmutable', $start);
     }
@@ -458,7 +458,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $expected  = new DateTime('2012-03-02');
         $period    = Period::createFromWeek(2014, 3);
         $newPeriod = $period->startingOn($expected);
-        $this->assertEquals($newPeriod->getStartDate(), $expected);
+        $this->assertTrue($newPeriod->getStartDate() == $expected);
         $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-01-13'));
     }
 
@@ -476,7 +476,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $expected  = new DateTime('2015-03-02');
         $period    = Period::createFromWeek(2014, 3);
         $newPeriod = $period->endingOn($expected);
-        $this->assertEquals($newPeriod->getEndDate(), $expected);
+        $this->assertTrue($newPeriod->getEndDate() == $expected);
         $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2014-01-20'));
     }
 
@@ -515,15 +515,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $period->merge($altPeriod));
         $this->assertEquals($expected, $altPeriod->merge($period));
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testMergeThrowsException()
-    {
-        $period = Period::createFromMonth(2014, 3);
-        $period->merge();
     }
 
     public function testSplit()
