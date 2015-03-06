@@ -94,9 +94,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $start = new DateTimeImmutable('2014-05-01');
         $end = new DateTimeImmutable('2014-05-08');
         $period = new Period($start, $end);
-        $this->assertInstanceof('DateTimeInterface', $period->getStartDate());
-        $this->assertInstanceof('DateTimeImmutable', $period->getStartDate());
-        $this->assertEquals($start, $period->getStartDate());
+        $this->assertInstanceof('DateTime', $period->getStartDate());
+        $this->assertTrue($start == $period->getStartDate());
     }
 
     public function testCreateFromDurationWithDateTime()

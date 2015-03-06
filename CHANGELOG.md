@@ -1,6 +1,12 @@
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.5.1 - 2015-03-06
+
+### Fixed
+
+- `Period` always returns `DateTime` objects even when given `DateTimeImmutable` objects.
+
 ## 2.5.0 - 2015-03-06
 
 ### Added

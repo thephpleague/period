@@ -17,7 +17,7 @@ namespace League\Period;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use DateTimeInterface;
+use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
 use LogicException;
@@ -37,22 +37,22 @@ final class Period
     /**
      * Period starting included datepoint.
      *
-     * @var \DateTimeInterface|\DateTime
+     * @var \DateTimeImmutable|\DateTime
      */
     private $startDate;
 
     /**
      * Period ending excluded datepoint.
      *
-     * @var \DateTimeInterface|\DateTime
+     * @var \DateTimeImmutable|\DateTime
      */
     private $endDate;
 
     /**
      * Create a new instance.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate starting datepoint
-     * @param string|\DateTimeInterface|\DateTime $endDate   ending datepoint
+     * @param string|\DateTimeImmutable|\DateTime $startDate starting datepoint
+     * @param string|\DateTimeImmutable|\DateTime $endDate   ending datepoint
      *
      * @throws \LogicException If $startDate is greater than $endDate
      */
@@ -70,16 +70,18 @@ final class Period
     /**
      * Validate a DateTime.
      *
-     * @param string|\DateTimeInterface|\DateTime $datetime
+     * @param string|\DateTimeImmutable|\DateTime $datetime
      *
      * @throws \RuntimeException If The Data can not be converted into a proper DateTime object
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTime
      */
     private static function validateDateTime($datetime)
     {
-        if ($datetime instanceof DateTimeInterface || $datetime instanceof DateTime) {
+        if ($datetime instanceof DateTime) {
             return $datetime;
+        } elseif ($datetime instanceof DateTimeImmutable) {
+            return new DateTime($datetime->format('c'), $datetime->getTimeZone());
         }
 
         return new DateTime($datetime);
@@ -92,17 +94,18 @@ final class Period
      */
     public function __toString()
     {
-        $utc   = new DateTimeZone('UTC');
+        $utc       = new DateTimeZone('UTC');
         $startDate = clone $this->startDate;
         $endDate   = clone $this->endDate;
 
-        return $startDate->setTimeZone($utc)->format(self::ISO8601).'/'.$endDate->setTimeZone($utc)->format(self::ISO8601);
+        return $startDate->setTimeZone($utc)->format(self::ISO8601)
+            .'/'.$endDate->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
      * Returns the starting datepoint.
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTime
      */
     public function getStartDate()
     {
@@ -112,7 +115,7 @@ final class Period
     /**
      * Returns the ending endpoint.
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTime
      */
     public function getEndDate()
     {
@@ -221,7 +224,7 @@ final class Period
     /**
      * Tells whether a Period is entirely after the specified index
      *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
+     * @param \League\Period\Period|\DateTimeImmutable|\DateTime $index
      *
      * @return bool
      */
@@ -237,7 +240,7 @@ final class Period
     /**
      * Tells whether a Period is entirely before the specified index
      *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
+     * @param \League\Period\Period|\DateTimeImmutable|\DateTime $index
      *
      * @return bool
      */
@@ -254,7 +257,7 @@ final class Period
      * Tells whether the specified index is fully contained within
      * the current Period object.
      *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
+     * @param \League\Period\Period|\DateTimeImmutable|\DateTime $index
      *
      * @return bool
      */
@@ -331,7 +334,7 @@ final class Period
     /**
      * Create a Period object from a starting point and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate start datepoint
+     * @param string|\DateTimeImmutable|\DateTime $startDate start datepoint
      * @param \DateInterval|int|string            $interval  The duration. If an int is passed, it is
      *                                                       interpreted as the duration expressed in seconds.
      *                                                       If a string is passed, it must be parsable by
@@ -350,7 +353,7 @@ final class Period
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $endDate  end datepoint
+     * @param string|\DateTimeImmutable|\DateTime $endDate  end datepoint
      * @param \DateInterval|int|string            $interval The duration. If an int is passed, it is
      *                                                      interpreted as the duration expressed in seconds.
      *                                                      If a string is passed, it must be parsable by
@@ -432,10 +435,9 @@ final class Period
      */
     public static function createFromMonth($year, $month)
     {
-        $year  = self::validateYear($year);
         $month = self::validateRange($month, 1, 12);
 
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '1 MONTH');
+        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '1 MONTH');
     }
 
     /**
@@ -448,10 +450,9 @@ final class Period
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $year  = self::validateYear($year);
         $month = ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1;
 
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
+        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
     }
 
     /**
@@ -464,10 +465,9 @@ final class Period
      */
     public static function createFromSemester($year, $semester)
     {
-        $year  = self::validateYear($year);
         $month = ((self::validateRange($semester, 1, 2) - 1) * 6) + 1;
 
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
+        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
     }
 
     /**
@@ -485,7 +485,7 @@ final class Period
     /**
      * Returns a new Period object with a new included starting datepoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate datepoint
+     * @param string|\DateTimeImmutable|\DateTime $startDate datepoint
      *
      * @throws \LogicException If $startDate does not permit the creation of a new object
      *
@@ -499,7 +499,7 @@ final class Period
     /**
      * Returns a new Period object with a new ending datepoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $endDate datepoint
+     * @param string|\DateTimeImmutable|\DateTime $endDate datepoint
      *
      * @throws \LogicException If $endDate does not permit the creation of a new object
      *
@@ -730,15 +730,15 @@ final class Period
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
-     * @param string|\DateTimeInterface|\DateTime $endPoint1 endpoint
-     * @param string|\DateTimeInterface|\DateTime $endPoint2 endpoint
+     * @param string|\DateTimeImmutable|\DateTime $datePoint1 endpoint
+     * @param string|\DateTimeImmutable|\DateTime $datePoint2 endpoint
      *
      * @return \League\Period\Period
      */
-    private static function createFromEndpoints($endPoint1, $endPoint2)
+    private static function createFromEndpoints($datePoint1, $datePoint2)
     {
-        $startDate = self::validateDateTime($endPoint1);
-        $endDate   = self::validateDateTime($endPoint2);
+        $startDate = self::validateDateTime($datePoint1);
+        $endDate   = self::validateDateTime($datePoint2);
         if ($startDate > $endDate) {
             return new self($endDate, $startDate);
         }
@@ -778,7 +778,7 @@ final class Period
      * @deprecated deprecated since version 2.5
      * @codeCoverageIgnore
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTime
      */
     public function getStart()
     {
@@ -793,7 +793,7 @@ final class Period
      * @deprecated deprecated since version 2.5
      * @codeCoverageIgnore
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTime
      */
     public function getEnd()
     {
