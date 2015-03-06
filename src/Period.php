@@ -632,7 +632,7 @@ final class Period
         $res = [];
         foreach ($this->getDatePeriod($interval) as $startDate) {
             $endDate = $startDate->add($interval);
-            if ($endDate > $this->endDate)) {
+            if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
             }
             $res[] = new self($startDate, $endDate);
