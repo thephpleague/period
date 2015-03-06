@@ -58,8 +58,8 @@ final class Period
      */
     public function __construct($startDate, $endDate)
     {
-        $this->startDate = self::validateDateTime($startDate);
-        $this->endDate   = self::validateDateTime($endDate);
+        $this->startDate = self::validateDate($startDate);
+        $this->endDate   = self::validateDate($endDate);
         if ($this->startDate > $this->endDate) {
             throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
         }
@@ -74,7 +74,7 @@ final class Period
      *
      * @return \DateTimeImmutable
      */
-    private static function validateDateTime($datetime)
+    private static function validateDate($datetime)
     {
         if ($datetime instanceof DateTime) {
             return DateTimeImmutable::createFromMutable($datetime);
@@ -231,7 +231,7 @@ final class Period
             return $this->startDate >= $index->endDate;
         }
 
-        return $this->startDate > self::validateDateTime($index);
+        return $this->startDate > self::validateDate($index);
     }
 
     /**
@@ -247,7 +247,7 @@ final class Period
             return $this->endDate <= $index->startDate;
         }
 
-        return $this->endDate <= self::validateDateTime($index);
+        return $this->endDate <= self::validateDate($index);
     }
 
     /**
@@ -264,7 +264,7 @@ final class Period
             return $this->contains($index->startDate) && $this->contains($index->endDate);
         }
 
-        $datetime = self::validateDateTime($index);
+        $datetime = self::validateDate($index);
 
         return $datetime >= $this->startDate && $datetime < $this->endDate;
     }
@@ -340,9 +340,9 @@ final class Period
      */
     public static function createFromDuration($startDate, $interval)
     {
-        $startDate = self::validateDateTime($startDate);
+        $date = self::validateDate($startDate);
 
-        return new self($startDate, $startDate->add(self::validateDateInterval($interval)));
+        return new self($date, $date->add(self::validateDateInterval($interval)));
     }
 
     /**
@@ -358,9 +358,9 @@ final class Period
      */
     public static function createFromDurationBeforeEnd($endDate, $interval)
     {
-        $endDate = self::validateDateTime($endDate);
+        $date = self::validateDate($endDate);
 
-        return new self($endDate->sub(self::validateDateInterval($interval)), $endDate);
+        return new self($date->sub(self::validateDateInterval($interval)), $date);
     }
 
     /**
@@ -490,7 +490,7 @@ final class Period
      */
     public function startingOn($startDate)
     {
-        return new self(self::validateDateTime($startDate), $this->endDate);
+        return new self(self::validateDate($startDate), $this->endDate);
     }
 
     /**
@@ -504,7 +504,7 @@ final class Period
      */
     public function endingOn($endDate)
     {
-        return new self($this->startDate, self::validateDateTime($endDate));
+        return new self($this->startDate, self::validateDate($endDate));
     }
 
     /**
@@ -519,7 +519,7 @@ final class Period
      */
     public function withDuration($interval)
     {
-        return new self($this->startDate, $this->startDate->add($interval));
+        return new self($this->startDate, $this->startDate->add(self::validateDateInterval($interval)));
     }
 
     /**
@@ -574,7 +574,7 @@ final class Period
             $interval = $this->getDateInterval();
         }
 
-        return new self($this->endDate, $this->end->add($interval));
+        return new self($this->endDate, $this->endDate->add(self::validateDateInterval($interval)));
     }
 
     /**
@@ -595,7 +595,7 @@ final class Period
             $interval = $this->getDateInterval();
         }
 
-        return new self($this->startDate->sub($interval), $this->startDate);
+        return new self($this->startDate->sub(self::validateDateInterval($interval)), $this->startDate);
     }
 
     /**
@@ -726,8 +726,8 @@ final class Period
      */
     private static function createFromEndpoints($endPoint1, $endPoint2)
     {
-        $startDate = self::validateDateTime($endPoint1);
-        $endDate   = self::validateDateTime($endPoint2);
+        $startDate = self::validateDate($endPoint1);
+        $endDate   = self::validateDate($endPoint2);
         if ($startDate > $endDate) {
             return new self($endDate, $startDate);
         }
