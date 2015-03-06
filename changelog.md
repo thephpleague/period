@@ -7,6 +7,12 @@ title: Changelog
 #Changelog
 All Notable changes to `League\Period` will be documented in this file
 
+## 2.5.1
+
+### Fixed
+
+- `Period` always returns `DateTime` objects even when given `DateTimeImmutable` objects.
+
 ## 2.5.0
 
 ### Added
