@@ -17,6 +17,7 @@ namespace League\Period;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -63,8 +64,8 @@ final class Period
         if ($startDate > $endDate) {
             throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
         }
-        $this->startDate = clone $startDate;
-        $this->endDate   = clone $endDate;
+        $this->startDate = $startDate;
+        $this->endDate   = $endDate;
     }
 
     /**
@@ -74,15 +75,17 @@ final class Period
      *
      * @throws \RuntimeException If The Data can not be converted into a proper DateTime object
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTimeImmutable
      */
     private static function validateDateTime($datetime)
     {
-        if ($datetime instanceof DateTimeInterface || $datetime instanceof DateTime) {
+        if ($datetime instanceof DateTime) {
+            return DateTimeImmutable::createFromMutable($datetime);
+        } elseif ($datetime instanceof DateTimeInterface) {
             return $datetime;
         }
 
-        return new DateTime($datetime);
+        return new DateTimeImmutable($datetime);
     }
 
     /**
@@ -92,31 +95,31 @@ final class Period
      */
     public function __toString()
     {
-        $utc   = new DateTimeZone('UTC');
-        $startDate = clone $this->startDate;
-        $endDate   = clone $this->endDate;
+        $utc = new DateTimeZone('UTC');
 
-        return $startDate->setTimeZone($utc)->format(self::ISO8601).'/'.$endDate->setTimeZone($utc)->format(self::ISO8601);
+        return $this->startDate->setTimeZone($utc)->format(self::ISO8601)
+            .'/'
+            .$this->endDate->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
      * Returns the starting datepoint.
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTimeImmutable
      */
     public function getStartDate()
     {
-        return clone $this->startDate;
+        return $this->startDate;
     }
 
     /**
      * Returns the ending endpoint.
      *
-     * @return \DateTimeInterface|\DateTime
+     * @return \DateTimeImmutable
      */
     public function getEndDate()
     {
-        return clone $this->endDate;
+        return $this->endDate;
     }
 
     /**
@@ -254,7 +257,7 @@ final class Period
      * Tells whether the specified index is fully contained within
      * the current Period object.
      *
-     * @param \League\Period\Period|\DateTimeInterface|\DateTime $index
+     * @param \League\Period\Period|\DateTimeInterface $index
      *
      * @return bool
      */
@@ -278,8 +281,7 @@ final class Period
      */
     public function compareDuration(Period $period)
     {
-        $datetime = clone $this->startDate;
-        $datetime->add($period->getDateInterval());
+        $datetime = $this->startDate->add($period->getDateInterval());
         if ($this->endDate > $datetime) {
             return 1;
         } elseif ($this->endDate < $datetime) {
@@ -331,39 +333,37 @@ final class Period
     /**
      * Create a Period object from a starting point and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate start datepoint
-     * @param \DateInterval|int|string            $interval  The duration. If an int is passed, it is
-     *                                                       interpreted as the duration expressed in seconds.
-     *                                                       If a string is passed, it must be parsable by
-     *                                                       `DateInterval::createFromDateString`
+     * @param string|\DateTimeInterface $startDate start datepoint
+     * @param \DateInterval|int|string  $interval  The duration. If an int is passed, it is
+     *                                             interpreted as the duration expressed in seconds.
+     *                                             If a string is passed, it must be parsable by
+     *                                             `DateInterval::createFromDateString`
      *
      * @return \League\Period\Period
      */
     public static function createFromDuration($startDate, $interval)
     {
         $startDate = self::validateDateTime($startDate);
-        $endDate   = clone $startDate;
 
-        return new self($startDate, $endDate->add(self::validateDateInterval($interval)));
+        return new self($startDate, $startDate->add(self::validateDateInterval($interval)));
     }
 
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
-     * @param string|\DateTimeInterface|\DateTime $endDate  end datepoint
-     * @param \DateInterval|int|string            $interval The duration. If an int is passed, it is
-     *                                                      interpreted as the duration expressed in seconds.
-     *                                                      If a string is passed, it must be parsable by
-     *                                                      `DateInterval::createFromDateString`
+     * @param string|\DateTimeInterface $endDate  end datepoint
+     * @param \DateInterval|int|string  $interval The duration. If an int is passed, it is
+     *                                            interpreted as the duration expressed in seconds.
+     *                                            If a string is passed, it must be parsable by
+     *                                            `DateInterval::createFromDateString`
      *
      * @return \League\Period\Period
      */
     public static function createFromDurationBeforeEnd($endDate, $interval)
     {
-        $endDate   = self::validateDateTime($endDate);
-        $startDate = clone $endDate;
+        $endDate = self::validateDateTime($endDate);
 
-        return new self($startDate->sub(self::validateDateInterval($interval)), $endDate);
+        return new self($endDate->sub(self::validateDateInterval($interval)), $endDate);
     }
 
     /**
@@ -485,7 +485,7 @@ final class Period
     /**
      * Returns a new Period object with a new included starting datepoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $startDate datepoint
+     * @param string|\DateTimeInterface $startDate datepoint
      *
      * @throws \LogicException If $startDate does not permit the creation of a new object
      *
@@ -499,7 +499,7 @@ final class Period
     /**
      * Returns a new Period object with a new ending datepoint.
      *
-     * @param string|\DateTimeInterface|\DateTime $endDate datepoint
+     * @param string|\DateTimeInterface $endDate datepoint
      *
      * @throws \LogicException If $endDate does not permit the creation of a new object
      *
@@ -539,9 +539,7 @@ final class Period
      */
     public function add($interval)
     {
-        $endDate = clone $this->endDate;
-
-        return new self($this->startDate, $endDate->add(self::validateDateInterval($interval)));
+        return new self($this->startDate, $this->endDate->add(self::validateDateInterval($interval)));
     }
 
     /**
@@ -558,9 +556,7 @@ final class Period
      */
     public function sub($interval)
     {
-        $endDate = clone $this->endDate;
-
-        return new self($this->startDate, $endDate->sub(self::validateDateInterval($interval)));
+        return new self($this->startDate, $this->endDate->sub(self::validateDateInterval($interval)));
     }
 
     /**
@@ -614,14 +610,10 @@ final class Period
      *
      * @return \League\Period\Period
      */
-    public function merge()
+    public function merge(Period ...$periods)
     {
-        $args = func_get_args();
-        if (! $args) {
-            throw new RuntimeException(__METHOD__.' is expecting at least one argument');
-        }
         $res = clone $this;
-        array_walk($args, function (Period $period) use (&$res) {
+        array_walk($periods, function (Period $period) use (&$res) {
             if ($res->startDate > $period->startDate) {
                 $res = $res->startingOn($period->startDate);
             }
@@ -768,103 +760,5 @@ final class Period
     public function dateIntervalDiff(Period $period)
     {
         return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
-    }
-
-    /**
-     * Returns the starting DateTime.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 2.5
-     * @codeCoverageIgnore
-     *
-     * @return \DateTimeInterface|\DateTime
-     */
-    public function getStart()
-    {
-        return $this->getStartDate();
-    }
-
-    /**
-     * Returns the ending DateTime.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 2.5
-     * @codeCoverageIgnore
-     *
-     * @return \DateTimeInterface|\DateTime
-     */
-    public function getEnd()
-    {
-        return $this->getEndDate();
-    }
-
-    /**
-     * Returns the Period duration as a DateInterval object.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 2.5
-     * @codeCoverageIgnore
-     *
-     * @param bool $get_as_seconds If used and set to true, the method will return an int which
-     *                             represents the duration in seconds instead of a \DateInterval
-     *                             object.
-     *
-     * @return \DateInterval|int|double
-     */
-    public function getDuration($get_as_seconds = false)
-    {
-        if ($get_as_seconds) {
-            return $this->getTimestampInterval();
-        }
-
-        return $this->getDateInterval();
-    }
-
-    /**
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the Period object.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 2.5
-     * @codeCoverageIgnore
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @return \DatePeriod
-     */
-    public function getRange($interval)
-    {
-        return $this->getDatePeriod($interval);
-    }
-
-    /**
-     * Returns the difference between two Period objects.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 2.5
-     * @codeCoverageIgnore
-     *
-     * @param \League\Period\Period $period
-     * @param bool                  $get_as_seconds If used and set to true, the method will return
-     *                                              an int which represents the duration in seconds
-     *                                              instead of a\DateInterval object
-     *
-     * @return \DateInterval|int|double
-     */
-    public function durationDiff(Period $period, $get_as_seconds = false)
-    {
-        if ($get_as_seconds) {
-            return $this->timestampIntervalDiff($period);
-        }
-
-        return $this->dateIntervalDiff($period);
     }
 }

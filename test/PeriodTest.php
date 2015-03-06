@@ -71,8 +71,11 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $period = new Period('2014-05-01', '2014-05-08');
-        $this->assertEquals(new DateTime('2014-05-01'), $period->getStartDate());
-        $this->assertEquals(new DateTime('2014-05-08'), $period->getEndDate());
+        $start = $period->getStartDate();
+        $this->assertEquals(new DateTime('2014-05-01'), $start);
+        $this->assertEquals(new DateTime('2014-05-08'), $start);
+        $this->assertInstanceof('DateTimeInterface', $start);
+        $this->assertInstanceof('DateTimeImmutable', $start);
     }
 
     /**
@@ -91,11 +94,11 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorWithDateTimeInterface()
     {
-        $start = new DateTimeImmutable('2014-05-01');
-        $end = new DateTimeImmutable('2014-05-08');
+        $start  = new DateTimeImmutable('2014-05-01');
+        $end    = new DateTime('2014-05-08');
         $period = new Period($start, $end);
-        $this->assertInstanceof('DateTimeInterface', $period->getStartDate());
-        $this->assertInstanceof('DateTimeImmutable', $period->getStartDate());
+        $this->assertInstanceof('DateTimeInterface', $period->getEndDate());
+        $this->assertInstanceof('DateTimeImmutable', $period->getEndDate());
         $this->assertEquals($start, $period->getStartDate());
     }
 
