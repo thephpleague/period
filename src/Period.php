@@ -76,10 +76,10 @@ final class Period
      */
     private static function validateDate($datetime)
     {
-        if ($datetime instanceof DateTime) {
-            return DateTimeImmutable::createFromMutable($datetime);
-        } elseif ($datetime instanceof DateTimeImmutable) {
+        if ($datetime instanceof DateTimeImmutable) {
             return $datetime;
+        } elseif ($datetime instanceof DateTime) {
+            return DateTimeImmutable::createFromMutable($datetime);
         }
 
         return new DateTimeImmutable($datetime);
@@ -95,8 +95,7 @@ final class Period
         $utc = new DateTimeZone('UTC');
 
         return $this->startDate->setTimeZone($utc)->format(self::ISO8601)
-            .'/'
-            .$this->endDate->setTimeZone($utc)->format(self::ISO8601);
+            .'/'.$this->endDate->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
@@ -429,10 +428,9 @@ final class Period
      */
     public static function createFromMonth($year, $month)
     {
-        $year  = self::validateYear($year);
         $month = self::validateRange($month, 1, 12);
 
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '1 MONTH');
+        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '1 MONTH');
     }
 
     /**
@@ -445,10 +443,9 @@ final class Period
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $year  = self::validateYear($year);
         $month = ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1;
 
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
+        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
     }
 
     /**
@@ -461,10 +458,9 @@ final class Period
      */
     public static function createFromSemester($year, $semester)
     {
-        $year  = self::validateYear($year);
         $month = ((self::validateRange($semester, 1, 2) - 1) * 6) + 1;
 
-        return self::createFromDuration($year.'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
+        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
     }
 
     /**
@@ -635,11 +631,11 @@ final class Period
     {
         $res = [];
         foreach ($this->getDatePeriod($interval) as $startDate) {
-            $period = self::createFromDuration($startDate, $interval);
-            if ($period->contains($this->endDate)) {
-                $period = $period->endingOn($this->endDate);
+            $endDate = $startDate->add($interval));
+            if ($endDate > $this->endDate)) {
+                $endDate = $this->endDate;
             }
-            $res[] = $period;
+            $res[] = new self($startDate, $endDate);
         }
 
         return $res;
@@ -719,15 +715,15 @@ final class Period
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
-     * @param string|\DateTimeInterface $endPoint1 endpoint
-     * @param string|\DateTimeInterface $endPoint2 endpoint
+     * @param string|\DateTimeInterface $datePoint1 endpoint
+     * @param string|\DateTimeInterface $datePoint2 endpoint
      *
      * @return \League\Period\Period
      */
-    private static function createFromEndpoints($endPoint1, $endPoint2)
+    private static function createFromEndpoints($datePoint1, $datePoint2)
     {
-        $startDate = self::validateDate($endPoint1);
-        $endDate   = self::validateDate($endPoint2);
+        $startDate = self::validateDate($datePoint1);
+        $endDate   = self::validateDate($datePoint2);
         if ($startDate > $endDate) {
             return new self($endDate, $startDate);
         }
