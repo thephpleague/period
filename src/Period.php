@@ -630,6 +630,7 @@ final class Period
     public function split($interval)
     {
         $res = [];
+        $interval = self::validateDateInterval($interval);
         foreach ($this->getDatePeriod($interval) as $startDate) {
             $endDate = $startDate->add($interval);
             if ($endDate > $this->endDate) {
