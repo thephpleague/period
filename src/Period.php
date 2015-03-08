@@ -5,7 +5,7 @@
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/thephpleague/period/
- * @version 2.5.0
+ * @version 2.5.1
  * @package League.Period
  *
  * For the full copyright and license information, please view the LICENSE
@@ -37,14 +37,14 @@ final class Period
     /**
      * Period starting included datepoint.
      *
-     * @var \DateTimeImmutable|\DateTime
+     * @var \DateTime
      */
     private $startDate;
 
     /**
      * Period ending excluded datepoint.
      *
-     * @var \DateTimeImmutable|\DateTime
+     * @var \DateTime
      */
     private $endDate;
 
@@ -61,7 +61,7 @@ final class Period
         $startDate = self::validateDateTime($startDate);
         $endDate   = self::validateDateTime($endDate);
         if ($startDate > $endDate) {
-            throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
+            throw new LogicException('the ending datepoint must be greater or equal to the starting datepoint');
         }
         $this->startDate = clone $startDate;
         $this->endDate   = clone $endDate;
@@ -103,6 +103,19 @@ final class Period
     }
 
     /**
+     * implement JsonSerializable interface
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
+        ];
+    }
+
+    /**
      * Returns the starting datepoint.
      *
      * @return \DateTime
@@ -113,7 +126,7 @@ final class Period
     }
 
     /**
-     * Returns the ending endpoint.
+     * Returns the ending datepoint.
      *
      * @return \DateTime
      */
@@ -182,7 +195,7 @@ final class Period
     }
 
     /**
-     * Tells whether two Period share the same endpoints.
+     * Tells whether two Period share the same datepoints.
      *
      * @param \League\Period\Period $period
      *
@@ -351,7 +364,7 @@ final class Period
     }
 
     /**
-     * Create a Period object from a ending endpoint and an interval.
+     * Create a Period object from a ending datepoint and an interval.
      *
      * @param string|\DateTimeImmutable|\DateTime $endDate  end datepoint
      * @param \DateInterval|int|string            $interval The duration. If an int is passed, it is
@@ -435,9 +448,9 @@ final class Period
      */
     public static function createFromMonth($year, $month)
     {
-        $month = self::validateRange($month, 1, 12);
+        $month = sprintf('%02s', self::validateRange($month, 1, 12));
 
-        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '1 MONTH');
+        return self::createFromDuration(self::validateYear($year).'-'.$month.'-01', '1 MONTH');
     }
 
     /**
@@ -450,9 +463,9 @@ final class Period
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $month = ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1;
+        $month = sprintf('%02s', ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1);
 
-        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '3 MONTHS');
+        return self::createFromDuration(self::validateYear($year).'-'. $month.'-01', '3 MONTHS');
     }
 
     /**
@@ -465,9 +478,9 @@ final class Period
      */
     public static function createFromSemester($year, $semester)
     {
-        $month = ((self::validateRange($semester, 1, 2) - 1) * 6) + 1;
+        $month = sprintf('%02s', ((self::validateRange($semester, 1, 2) - 1) * 6) + 1);
 
-        return self::createFromDuration(self::validateYear($year).'-'.sprintf('%02s', $month).'-01', '6 MONTHS');
+        return self::createFromDuration(self::validateYear($year).'-'.$month.'-01', '6 MONTHS');
     }
 
     /**
@@ -565,7 +578,7 @@ final class Period
 
     /**
      * Returns a new Period object adjacent to the current Period
-     * and starting with its ending endpoint.
+     * and starting with its ending datepoint.
      * If no duration is provided the new Period will be created
      * using the current object duration
      *
@@ -586,7 +599,7 @@ final class Period
 
     /**
      * Returns a new Period object adjacent to the current Period
-     * and ending with its starting endpoint.
+     * and ending with its starting datepoint.
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
@@ -621,7 +634,7 @@ final class Period
             throw new RuntimeException(__METHOD__.' is expecting at least one argument');
         }
         $initiate = clone $this;
-        
+
         return array_reduce($periods, function (Period $carry, Period $period) {
             if ($carry->startDate > $period->startDate) {
                 $carry = $carry->startingOn($period->startDate);
@@ -635,7 +648,7 @@ final class Period
     }
 
     /**
-     * Split a Period by a given interval
+     * Split the current Period object into Period objects according to the given interval
      *
      * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
@@ -700,9 +713,9 @@ final class Period
      * Computes the difference between two overlapsing Period objects
      * and return an array containing the difference expressed as Period objects
      * The array will:
-     * - be empty if both objects have the same endpoints
-     * - contain one Period object if both objects share one endpoint
-     * - contain two Period objects if both objects share no endpoint
+     * - be empty if both objects have the same datepoints
+     * - contain one Period object if both objects share one datepoint
+     * - contain two Period objects if both objects share no datepoint
      *
      * @param \League\Period\Period $period
      *
@@ -717,8 +730,8 @@ final class Period
         }
 
         $res = [
-            self::createFromEndpoints($this->startDate, $period->startDate),
-            self::createFromEndpoints($this->endDate, $period->endDate),
+            self::createFromDatepoints($this->startDate, $period->startDate),
+            self::createFromDatepoints($this->endDate, $period->endDate),
         ];
 
         return array_values(array_filter($res, function (Period $period) {
@@ -727,16 +740,16 @@ final class Period
     }
 
     /**
-     * Create a new Period instance given two endpoints
-     * The endpoints will be used as to allow the creation of
+     * Create a new Period instance given two datepoints
+     * The datepoints will be used as to allow the creation of
      * a Period object
      *
-     * @param string|\DateTimeImmutable|\DateTime $datePoint1 endpoint
-     * @param string|\DateTimeImmutable|\DateTime $datePoint2 endpoint
+     * @param string|\DateTimeImmutable|\DateTime $datePoint1 datepoint
+     * @param string|\DateTimeImmutable|\DateTime $datePoint2 datepoint
      *
      * @return \League\Period\Period
      */
-    private static function createFromEndpoints($datePoint1, $datePoint2)
+    private static function createFromDatepoints($datePoint1, $datePoint2)
     {
         $startDate = self::validateDateTime($datePoint1);
         $endDate   = self::validateDateTime($datePoint2);
