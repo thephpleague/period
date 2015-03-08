@@ -616,21 +616,22 @@ final class Period
      */
     public function merge()
     {
-        $args = func_get_args();
-        if (! $args) {
+        $periods = func_get_args();
+        if (! $periods) {
             throw new RuntimeException(__METHOD__.' is expecting at least one argument');
         }
-        $res = clone $this;
-        array_walk($args, function (Period $period) use (&$res) {
-            if ($res->startDate > $period->startDate) {
-                $res = $res->startingOn($period->startDate);
+        $initiate = clone $this;
+        
+        return array_reduce($periods, function (Period $carry, Period $period) {
+            if ($carry->startDate > $period->startDate) {
+                $carry = $carry->startingOn($period->startDate);
             }
-            if ($res->endDate < $period->endDate) {
-                $res = $res->endingOn($period->endDate);
+            if ($carry->endDate < $period->endDate) {
+                $carry = $carry->endingOn($period->endDate);
             }
-        });
 
-        return $res;
+            return $carry;
+        }, $initiate);
     }
 
     /**
