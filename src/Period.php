@@ -58,8 +58,8 @@ final class Period
      */
     public function __construct($startDate, $endDate)
     {
-        $this->startDate = self::validateDate($startDate);
-        $this->endDate   = self::validateDate($endDate);
+        $this->startDate = self::validateDateTime($startDate);
+        $this->endDate   = self::validateDateTime($endDate);
         if ($this->startDate > $this->endDate) {
             throw new LogicException('the ending datepoint must be greater or equal to the starting datepoint');
         }
@@ -74,15 +74,193 @@ final class Period
      *
      * @return \DateTimeImmutable
      */
-    private static function validateDate($datetime)
+    private static function validateDateTime($datetime)
     {
         if ($datetime instanceof DateTimeImmutable) {
             return $datetime;
         } elseif ($datetime instanceof DateTime) {
-            return DateTimeImmutable::createFromMutable($datetime);
+            return new DateTimeImmutable($datetime->format('c'), $datetime->getTimeZone());
         }
 
         return new DateTimeImmutable($datetime);
+    }
+
+    /**
+     * Create a Period object from a starting point and an interval.
+     *
+     * @param string|\DateTimeInterface $startDate start datepoint
+     * @param \DateInterval|int|string  $interval  The duration. If an int is passed, it is
+     *                                             interpreted as the duration expressed in seconds.
+     *                                             If a string is passed, it must be parsable by
+     *                                             `DateInterval::createFromDateString`
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromDuration($startDate, $interval)
+    {
+        $date = self::validateDateTime($startDate);
+
+        return new self($date, $date->add(self::validateDateInterval($interval)));
+    }
+
+    /**
+     * Validate a DateInterval.
+     *
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
+     *
+     * @throws \Exception If the integer generates a bad format
+     *
+     * @return \DateInterval
+     */
+    private static function validateDateInterval($interval)
+    {
+        if ($interval instanceof DateInterval) {
+            return $interval;
+        } elseif (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
+            return new DateInterval('PT'.$res.'S');
+        }
+
+        return DateInterval::createFromDateString($interval);
+    }
+
+    /**
+     * Create a Period object from a ending datepoint and an interval.
+     *
+     * @param string|\DateTimeInterface $endDate  end datepoint
+     * @param \DateInterval|int|string  $interval The duration. If an int is passed, it is
+     *                                            interpreted as the duration expressed in seconds.
+     *                                            If a string is passed, it must be parsable by
+     *                                            `DateInterval::createFromDateString`
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromDurationBeforeEnd($endDate, $interval)
+    {
+        $date = self::validateDateTime($endDate);
+
+        return new self($date->sub(self::validateDateInterval($interval)), $date);
+    }
+
+    /**
+     * Create a Period object from a Year and a Week.
+     *
+     * @param int $year
+     * @param int $week index from 1 to 53
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromWeek($year, $week)
+    {
+        $startDate = new DateTimeImmutable(
+            self::validateYear($year).'W'.sprintf('%02d', self::validateRange($week, 1, 53))
+        );
+
+        return new self($startDate, $startDate->add(new DateInterval('P1W')));
+    }
+
+    /**
+     * Validate a year.
+     *
+     * @param int $year
+     *
+     * @throws \InvalidArgumentException If year is not a valid int
+     *
+     * @return int
+     */
+    private static function validateYear($year)
+    {
+        $year = filter_var($year, FILTER_VALIDATE_INT);
+        if (false === $year) {
+            throw new InvalidArgumentException("A Year must be a valid int");
+        }
+
+        return $year;
+    }
+
+    /**
+     * Validate a int according to a range.
+     *
+     * @param int $value the value to validate
+     * @param int $min   the minimun value
+     * @param int $max   the maximal value
+     *
+     * @return int
+     *
+     * @throws \OutOfRangeException If the value is not in the range
+     */
+    private static function validateRange($value, $min, $max)
+    {
+        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
+        if (false === $res) {
+            throw new OutOfRangeException("the submitted value is not contained within the valid range");
+        }
+
+        return $res;
+    }
+
+    /**
+     * Create a Period object from a Year and a Month.
+     *
+     * @param int $year
+     * @param int $month Month index from 1 to 12
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromMonth($year, $month)
+    {
+        $month = sprintf('%02s', self::validateRange($month, 1, 12));
+        $startDate = new DateTimeImmutable(self::validateYear($year).'-'.$month.'-01');
+
+        return new self($startDate, $startDate->add(new DateInterval('P1M')));
+    }
+
+    /**
+     * Create a Period object from a Year and a Quarter.
+     *
+     * @param int $year
+     * @param int $quarter Quarter Index from 1 to 4
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromQuarter($year, $quarter)
+    {
+        $month = sprintf('%02s', ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1);
+        $startDate = new DateTimeImmutable(self::validateYear($year).'-'.$month.'-01');
+
+        return new self($startDate, $startDate->add(new DateInterval('P3M')));
+    }
+
+    /**
+     * Create a Period object from a Year and a Quarter.
+     *
+     * @param int $year
+     * @param int $semester Semester Index from 1 to 2
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromSemester($year, $semester)
+    {
+        $month = sprintf('%02s', ((self::validateRange($semester, 1, 2) - 1) * 6) + 1);
+        $startDate = new DateTimeImmutable(self::validateYear($year).'-'.$month.'-01');
+
+        return new self($startDate, $startDate->add(new DateInterval('P6M')));
+    }
+
+    /**
+     * Create a Period object from a Year and a Quarter.
+     *
+     * @param int $year
+     *
+     * @return \League\Period\Period
+     */
+    public static function createFromYear($year)
+    {
+        $startDate = new DateTimeImmutable(self::validateYear($year).'-01-01');
+
+        return new self($startDate, $startDate->add(new DateInterval('P1Y')));
     }
 
     /**
@@ -155,29 +333,6 @@ final class Period
     }
 
     /**
-     * Validate a DateInterval.
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must bep arsable by
-     *                                           `DateInterval::createFromDateString`
-     *
-     * @throws \Exception If the integer generates a bad format
-     *
-     * @return \DateInterval
-     */
-    private static function validateDateInterval($interval)
-    {
-        if ($interval instanceof DateInterval) {
-            return $interval;
-        } elseif (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
-            return new DateInterval('PT'.$res.'S');
-        }
-
-        return DateInterval::createFromDateString($interval);
-    }
-
-    /**
      * Tells whether two Period share the same datepoints.
      *
      * @param \League\Period\Period $period
@@ -230,7 +385,7 @@ final class Period
             return $this->startDate >= $index->endDate;
         }
 
-        return $this->startDate > self::validateDate($index);
+        return $this->startDate > self::validateDateTime($index);
     }
 
     /**
@@ -246,7 +401,7 @@ final class Period
             return $this->endDate <= $index->startDate;
         }
 
-        return $this->endDate <= self::validateDate($index);
+        return $this->endDate <= self::validateDateTime($index);
     }
 
     /**
@@ -263,7 +418,7 @@ final class Period
             return $this->contains($index->startDate) && $this->contains($index->endDate);
         }
 
-        $datetime = self::validateDate($index);
+        $datetime = self::validateDateTime($index);
 
         return $datetime >= $this->startDate && $datetime < $this->endDate;
     }
@@ -327,155 +482,6 @@ final class Period
     }
 
     /**
-     * Create a Period object from a starting point and an interval.
-     *
-     * @param string|\DateTimeInterface $startDate start datepoint
-     * @param \DateInterval|int|string  $interval  The duration. If an int is passed, it is
-     *                                             interpreted as the duration expressed in seconds.
-     *                                             If a string is passed, it must be parsable by
-     *                                             `DateInterval::createFromDateString`
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromDuration($startDate, $interval)
-    {
-        $date = self::validateDate($startDate);
-
-        return new self($date, $date->add(self::validateDateInterval($interval)));
-    }
-
-    /**
-     * Create a Period object from a ending datepoint and an interval.
-     *
-     * @param string|\DateTimeInterface $endDate  end datepoint
-     * @param \DateInterval|int|string  $interval The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromDurationBeforeEnd($endDate, $interval)
-    {
-        $date = self::validateDate($endDate);
-
-        return new self($date->sub(self::validateDateInterval($interval)), $date);
-    }
-
-    /**
-     * Create a Period object from a Year and a Week.
-     *
-     * @param int $year
-     * @param int $week index from 1 to 53
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromWeek($year, $week)
-    {
-        return self::createFromDuration(
-            self::validateYear($year).'W'.sprintf('%02d', self::validateRange($week, 1, 53)),
-            '1 WEEK'
-        );
-    }
-
-    /**
-     * Validate a year.
-     *
-     * @param int $year
-     *
-     * @throws \InvalidArgumentException If year is not a valid int
-     *
-     * @return int
-     */
-    private static function validateYear($year)
-    {
-        $year = filter_var($year, FILTER_VALIDATE_INT);
-        if (false === $year) {
-            throw new InvalidArgumentException("A Year must be a valid int");
-        }
-
-        return $year;
-    }
-
-    /**
-     * Validate a int according to a range.
-     *
-     * @param int $value the value to validate
-     * @param int $min   the minimun value
-     * @param int $max   the maximal value
-     *
-     * @return int
-     *
-     * @throws \OutOfRangeException If the value is not in the range
-     */
-    private static function validateRange($value, $min, $max)
-    {
-        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
-        if (false === $res) {
-            throw new OutOfRangeException("the submitted value is not contained within the valid range");
-        }
-
-        return $res;
-    }
-
-    /**
-     * Create a Period object from a Year and a Month.
-     *
-     * @param int $year
-     * @param int $month Month index from 1 to 12
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromMonth($year, $month)
-    {
-        $month = sprintf('%02s', self::validateRange($month, 1, 12));
-
-        return self::createFromDuration(self::validateYear($year).'-'.$month.'-01', '1 MONTH');
-    }
-
-    /**
-     * Create a Period object from a Year and a Quarter.
-     *
-     * @param int $year
-     * @param int $quarter Quarter Index from 1 to 4
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromQuarter($year, $quarter)
-    {
-        $month = sprintf('%02s', ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1);
-
-        return self::createFromDuration(self::validateYear($year).'-'.$month.'-01', '3 MONTHS');
-    }
-
-    /**
-     * Create a Period object from a Year and a Quarter.
-     *
-     * @param int $year
-     * @param int $semester Semester Index from 1 to 2
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromSemester($year, $semester)
-    {
-        $month = sprintf('%02s', ((self::validateRange($semester, 1, 2) - 1) * 6) + 1);
-
-        return self::createFromDuration(self::validateYear($year).'-'.$month.'-01', '6 MONTHS');
-    }
-
-    /**
-     * Create a Period object from a Year and a Quarter.
-     *
-     * @param int $year
-     *
-     * @return \League\Period\Period
-     */
-    public static function createFromYear($year)
-    {
-        return self::createFromDuration(self::validateYear($year).'-01-01', '1 YEAR');
-    }
-
-    /**
      * Returns a new Period object with a new included starting datepoint.
      *
      * @param string|\DateTimeInterface $startDate datepoint
@@ -486,7 +492,7 @@ final class Period
      */
     public function startingOn($startDate)
     {
-        return new self(self::validateDate($startDate), $this->endDate);
+        return new self(self::validateDateTime($startDate), $this->endDate);
     }
 
     /**
@@ -500,7 +506,7 @@ final class Period
      */
     public function endingOn($endDate)
     {
-        return new self($this->startDate, self::validateDate($endDate));
+        return new self($this->startDate, self::validateDateTime($endDate));
     }
 
     /**
@@ -595,36 +601,11 @@ final class Period
     }
 
     /**
-     * Merges one or more Period objects to return a new Period object.
-     *
-     * The resultant object englobes the largest duration possible.
-     *
-     * @param \League\Period\Period $arg,... one or more Period objects
-     *
-     * @return \League\Period\Period
-     */
-    public function merge(Period ...$periods)
-    {
-        $initiate = clone $this;
-        
-        return array_reduce($periods, function (Period $carry, Period $period) {
-            if ($carry->startDate > $period->startDate) {
-                $carry = $carry->startingOn($period->startDate);
-            }
-            if ($carry->endDate < $period->endDate) {
-                $carry = $carry->endingOn($period->endDate);
-            }
-
-            return $carry;
-        }, $initiate);
-    }
-
-    /**
-     * Split a Period by a given interval
+     * Split the current object into Period objects according to the given interval
      *
      * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must bep arsable by
+     *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      * @return \League\Period\Period[]
      */
@@ -641,6 +622,37 @@ final class Period
         }
 
         return $res;
+    }
+
+    /**
+     * Merges one or more Period objects to return a new Period object.
+     *
+     * The resultant object englobes the largest duration possible.
+     *
+     * @param \League\Period\Period $arg,... one or more Period objects
+     *
+     * @throws \RuntimeException If no argument is passed to the function
+     *
+     * @return \League\Period\Period
+     */
+    public function merge()
+    {
+        $periods = func_get_args();
+        if (empty($periods)) {
+            throw new RuntimeException('At least on Period object must be given.');
+        }
+
+        $initiate = clone $this;
+        return array_reduce($periods, function (Period $carry, Period $period) {
+            if ($carry->startDate > $period->startDate) {
+                $carry = $carry->startingOn($period->startDate);
+            }
+            if ($carry->endDate < $period->endDate) {
+                $carry = $carry->endingOn($period->endDate);
+            }
+
+            return $carry;
+        }, $initiate);
     }
 
     /**
@@ -724,13 +736,13 @@ final class Period
      */
     private static function createFromDatepoints($datePoint1, $datePoint2)
     {
-        $startDate = self::validateDate($datePoint1);
-        $endDate   = self::validateDate($datePoint2);
-        if ($startDate > $endDate) {
-            return new self($endDate, $startDate);
+        $datePoint1 = self::validateDateTime($datePoint1);
+        $datePoint2 = self::validateDateTime($datePoint2);
+        if ($datePoint1 > $datePoint2) {
+            return new self($datePoint2, $datePoint1);
         }
 
-        return new self($startDate, $endDate);
+        return new self($datePoint1, $datePoint2);
     }
 
     /**
