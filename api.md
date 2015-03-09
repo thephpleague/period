@@ -178,13 +178,13 @@ $new_period = $period->previous('3 DAYS');
 
 ~~~php
 $arr = $period->split('1 WEEK');
-//$arr is a array containing Periods objects
+//$arr is a array containing at least one Period object
 ~~~
 
 __Using `Period` objects__
 
 ~~~php
-$new_period = $period->merge(Period ...$periods);
+$new_period = $period->merge(Period $period, Period ...$periods);
 ~~~
 
 ~~~php
