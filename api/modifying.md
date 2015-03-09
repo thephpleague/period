@@ -172,7 +172,7 @@ count($period_list); //returns 12 with each Period object representing a full mo
 
 ## Using another Period object
 
-### Period::merge(Period $period[, Period $...])
+### Period::merge(Period $period, Period ...$periods)
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
 
