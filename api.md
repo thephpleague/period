@@ -71,6 +71,11 @@ $period->getDatePeriod('1 HOUR'); //return a DatePeriod object
 ~~~
 
 ~~~php
+$arr = $period->split('1 WEEK');
+//$arr is a array containing at least one Period object
+~~~
+
+~~~php
 $period->__toString(); //return the ISO8601 representation of the Period
 ~~~
 
@@ -174,11 +179,6 @@ $new_period = $period->next(new DateInterval('P3D'));
 $new_period = $period->previous();
 //or
 $new_period = $period->previous('3 DAYS');
-~~~
-
-~~~php
-$arr = $period->split('1 WEEK');
-//$arr is a array containing at least one Period object
 ~~~
 
 __Using `Period` objects__

@@ -59,6 +59,25 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 //will iterate 12 times
 ~~~
 
+### Period::split($interval)
+
+<p class="message-notice">Added to <code>Period</code> in version 2.5</p>
+
+This methods split a given `Period` object in smaller `Period` objects according to the given `$interval`. All returned objects must be contained or abutted to the parent `Period` object.
+
+- The first returned `Period` will always share the same starting datepoint with the parent object.
+- The last returned `Period` will always share the same ending datepoint with the parent object.
+- The last returned `Period` will have a duration equal or lesser than the submitted interval.
+- If `$interval` is greater than the parent `Period` interval, the method will return an array with a single `Period` whose datepoints equals those of the parent `Period`.
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromYear(2012);
+$period_list = $period->split('1 MONTH');
+count($period_list); //returns 12 with each Period object representing a full month of 2012
+~~~
+
 ### Period::__toString()
 
 <p class="message-notice">Added to <code>Period</code> in version 2.1</p>
