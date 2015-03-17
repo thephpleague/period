@@ -68,13 +68,55 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($end->getTimestamp() - $start->getTimestamp(), $res);
     }
 
+    public function testSplit()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split(3600);
+        $this->assertInstanceof('\Generator', $range);
+        foreach ($range as $innerPeriod) {
+            $this->assertInstanceof('\League\Period\Period', $innerPeriod);
+        }
+    }
+
+    public function testSplitMustRecreateParentObject()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split(3600);
+        $total = null;
+        foreach ($range as $part) {
+            if (is_null($total)) {
+                $total = $part;
+                continue;
+            }
+            $total = $total->merge($part);
+        }
+        $this->assertEquals($period, $total);
+    }
+
+
+    public function testSplitWithLargeInterval()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split("2 DAY");
+        $this->assertEquals($period, $range->current());
+    }
+
+    public function testSplitWithInconsistentInterval()
+    {
+        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $range  = $period->split("10 HOURS");
+        foreach ($range as $part) {
+
+        }
+        $this->assertEquals(14400, $part->getTimestampInterval());
+    }
+
     public function testConstructor()
     {
         $period = new Period('2014-05-01', '2014-05-08');
         $start = $period->getStartDate();
         $this->assertEquals(new DateTimeImmutable('2014-05-01'), $start);
         $this->assertEquals(new DateTimeImmutable('2014-05-08'), $period->getEndDate());
-        $this->assertInstanceof('DateTimeInterface', $start);
         $this->assertInstanceof('DateTimeImmutable', $start);
     }
 
@@ -523,35 +565,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testMergeThrowsException()
     {
         Period::createFromMonth(2014, 3)->merge();
-    }
-
-    public function testSplit()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split(3600);
-        $this->assertInternalType('array', $range);
-        $this->assertCount(24, $range);
-        foreach ($range as $innerPeriod) {
-            $this->assertInstanceof('\League\Period\Period', $innerPeriod);
-        }
-        $bob = call_user_func_array([$period, 'merge'], $range);
-        $this->assertEquals($period, $bob);
-    }
-
-    public function testSplitWithLargeInterval()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split("2 DAY");
-        $this->assertCount(1, $range);
-        $this->assertEquals($period, $range[0]);
-    }
-
-    public function testSplitWithInconsistentInterval()
-    {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split("10 HOURS");
-        $this->assertCount(3, $range);
-        $this->assertEquals(14400, $range[2]->getTimestampInterval());
     }
 
     public function testAdd()

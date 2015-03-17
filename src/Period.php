@@ -58,8 +58,8 @@ final class Period
      */
     public function __construct($startDate, $endDate)
     {
-        $this->startDate = self::validateDateTime($startDate);
-        $this->endDate   = self::validateDateTime($endDate);
+        $this->startDate = self::validateDatePoint($startDate);
+        $this->endDate   = self::validateDatePoint($endDate);
         if ($this->startDate > $this->endDate) {
             throw new LogicException('the ending datepoint must be greater or equal to the starting datepoint');
         }
@@ -74,7 +74,7 @@ final class Period
      *
      * @return \DateTimeImmutable
      */
-    private static function validateDateTime($datetime)
+    private static function validateDatePoint($datetime)
     {
         if ($datetime instanceof DateTimeImmutable) {
             return $datetime;
@@ -98,7 +98,7 @@ final class Period
      */
     public static function createFromDuration($startDate, $interval)
     {
-        $date = self::validateDateTime($startDate);
+        $date = self::validateDatePoint($startDate);
 
         return new self($date, $date->add(self::validateDateInterval($interval)));
     }
@@ -139,7 +139,7 @@ final class Period
      */
     public static function createFromDurationBeforeEnd($endDate, $interval)
     {
-        $date = self::validateDateTime($endDate);
+        $date = self::validateDatePoint($endDate);
 
         return new self($date->sub(self::validateDateInterval($interval)), $date);
     }
@@ -333,6 +333,28 @@ final class Period
     }
 
     /**
+     * Split the current object into Period objects according to the given interval
+     *
+     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be parsable by
+     *                                           `DateInterval::createFromDateString`
+     * @return \Generator
+     */
+    public function split($interval)
+    {
+        $res = [];
+        $interval = self::validateDateInterval($interval);
+        foreach ($this->getDatePeriod($interval) as $startDate) {
+            $endDate = $startDate->add($interval);
+            if ($endDate > $this->endDate) {
+                $endDate = $this->endDate;
+            }
+            yield new self($startDate, $endDate);
+        }
+    }
+
+    /**
      * Tells whether two Period share the same datepoints.
      *
      * @param \League\Period\Period $period
@@ -385,7 +407,7 @@ final class Period
             return $this->startDate >= $index->endDate;
         }
 
-        return $this->startDate > self::validateDateTime($index);
+        return $this->startDate > self::validateDatePoint($index);
     }
 
     /**
@@ -401,7 +423,7 @@ final class Period
             return $this->endDate <= $index->startDate;
         }
 
-        return $this->endDate <= self::validateDateTime($index);
+        return $this->endDate <= self::validateDatePoint($index);
     }
 
     /**
@@ -418,7 +440,7 @@ final class Period
             return $this->contains($index->startDate) && $this->contains($index->endDate);
         }
 
-        $datetime = self::validateDateTime($index);
+        $datetime = self::validateDatePoint($index);
 
         return $datetime >= $this->startDate && $datetime < $this->endDate;
     }
@@ -482,6 +504,30 @@ final class Period
     }
 
     /**
+     * Returns the difference between two Period objects expressed in \DateInterval
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return \DateInterval
+     */
+    public function dateIntervalDiff(Period $period)
+    {
+        return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
+    }
+
+    /**
+     * Returns the difference between two Period objects expressed in seconds
+     *
+     * @param \League\Period\Period $period
+     *
+     * @return double
+     */
+    public function timestampIntervalDiff(Period $period)
+    {
+        return $this->getTimestampInterval() - $period->getTimestampInterval();
+    }
+
+    /**
      * Returns a new Period object with a new included starting datepoint.
      *
      * @param string|\DateTimeInterface $startDate datepoint
@@ -492,7 +538,7 @@ final class Period
      */
     public function startingOn($startDate)
     {
-        return new self(self::validateDateTime($startDate), $this->endDate);
+        return new self(self::validateDatePoint($startDate), $this->endDate);
     }
 
     /**
@@ -506,7 +552,7 @@ final class Period
      */
     public function endingOn($endDate)
     {
-        return new self($this->startDate, self::validateDateTime($endDate));
+        return new self($this->startDate, self::validateDatePoint($endDate));
     }
 
     /**
@@ -601,30 +647,6 @@ final class Period
     }
 
     /**
-     * Split the current object into Period objects according to the given interval
-     *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
-     * @return \League\Period\Period[]
-     */
-    public function split($interval)
-    {
-        $res = [];
-        $interval = self::validateDateInterval($interval);
-        foreach ($this->getDatePeriod($interval) as $startDate) {
-            $endDate = $startDate->add($interval);
-            if ($endDate > $this->endDate) {
-                $endDate = $this->endDate;
-            }
-            $res[] = new self($startDate, $endDate);
-        }
-
-        return $res;
-    }
-
-    /**
      * Merges one or more Period objects to return a new Period object.
      *
      * The resultant object englobes the largest duration possible.
@@ -639,7 +661,7 @@ final class Period
     {
         $periods = func_get_args();
         if (empty($periods)) {
-            throw new RuntimeException('At least on Period object must be given.');
+            throw new RuntimeException('At least one Period object must be given.');
         }
 
         $initiate = clone $this;
@@ -736,36 +758,12 @@ final class Period
      */
     private static function createFromDatepoints($datePoint1, $datePoint2)
     {
-        $datePoint1 = self::validateDateTime($datePoint1);
-        $datePoint2 = self::validateDateTime($datePoint2);
+        $datePoint1 = self::validateDatePoint($datePoint1);
+        $datePoint2 = self::validateDatePoint($datePoint2);
         if ($datePoint1 > $datePoint2) {
             return new self($datePoint2, $datePoint1);
         }
 
         return new self($datePoint1, $datePoint2);
-    }
-
-    /**
-     * Returns the difference between two Period objects expressed in seconds
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return double
-     */
-    public function timestampIntervalDiff(Period $period)
-    {
-        return $this->getTimestampInterval() - $period->getTimestampInterval();
-    }
-
-    /**
-     * Returns the difference between two Period objects expressed in \DateInterval
-     *
-     * @param \League\Period\Period $period
-     *
-     * @return \DateInterval
-     */
-    public function dateIntervalDiff(Period $period)
-    {
-        return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
     }
 }
