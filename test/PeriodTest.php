@@ -98,6 +98,10 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period = Period::createFromDuration(new DateTime(), "1 DAY");
         $range  = $period->split("2 DAY");
+        //HHVM bug fix
+        if (defined('HHVM_VERSION')) {
+            $range->next();
+        }
         $this->assertEquals($period, $range->current());
     }
 
