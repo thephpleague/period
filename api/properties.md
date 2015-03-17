@@ -75,7 +75,10 @@ use League\Period\Period;
 
 $period = Period::createFromYear(2012);
 $period_list = $period->split('1 MONTH');
-count($period_list); //returns 12 with each Period object representing a full month of 2012
+foreach ($period_list as $inner_periods) {
+	echo $inner_period; //returns the string representation of a Period object
+}
+//will iterate 12 times
 ~~~
 
 ### Period::__toString()
