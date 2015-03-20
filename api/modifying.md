@@ -199,5 +199,5 @@ use League\Period\Period;
 
 $orig = Period::createFromDuration(2012-01-01, '2 MONTHS');
 $alt  = Period::createFromDuration(2013-01-15, '3 MONTHS');
-$gapPeriod = $period->gap($alt);
+$gapPeriod = $orig->gap($alt);
 ~~~
