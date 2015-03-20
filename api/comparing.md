@@ -159,7 +159,7 @@ To ease the method usage you can rely on the following proxy methods which retur
 
 Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `1`
 
-### Period::durationGreaterThan(Period $period)
+### Period::durationLessThan(Period $period)
 
 Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `-1`
 
