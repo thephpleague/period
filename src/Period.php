@@ -20,6 +20,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
+use JsonSerializable;
 use LogicException;
 use OutOfRangeException;
 use RuntimeException;
@@ -27,7 +28,7 @@ use RuntimeException;
 /**
  * A immutable value object class to manipulate Time Range.
  */
-final class Period
+final class Period implements JsonSerializable
 {
     /**
      * Date Format to create ISO8601 Interval format
@@ -274,6 +275,19 @@ final class Period
 
         return $this->startDate->setTimeZone($utc)->format(self::ISO8601)
             .'/'.$this->endDate->setTimeZone($utc)->format(self::ISO8601);
+    }
+
+    /**
+     * implement JsonSerializable interface
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
+        ];
     }
 
     /**
