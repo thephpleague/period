@@ -28,13 +28,13 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         date_default_timezone_set('Africa/Nairobi');
         $period = new Period('2014-05-01', '2014-05-08');
-        $this->assertSame('2014-04-30T21:00:00Z/2014-05-07T21:00:00Z', (string) $period);
+        $this->assertSame('2014-04-30T21:00:00.000000Z/2014-05-07T21:00:00.000000Z', (string) $period);
     }
 
     public function testJsonSerialize()
     {
         $period = Period::createFromMonth(2015, 4);
-        $res = json_decode(json_encode($period), true);
+        $res    = json_decode(json_encode($period), true);
 
         $this->assertEquals(
             $period->getStartDate(),
@@ -69,7 +69,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = Period::createFromMonth(2014, 3);
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
-        $res = $period->getDateInterval();
+        $res    = $period->getDateInterval();
         $this->assertInstanceof('DateInterval', $res);
         $this->assertEquals($start->diff($end), $res);
     }
@@ -79,7 +79,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period = Period::createFromMonth(2014, 3);
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
-        $res = $period->getTimestampInterval();
+        $res    = $period->getTimestampInterval();
         $this->assertInternalType('integer', $res);
         $this->assertEquals($end->getTimestamp() - $start->getTimestamp(), $res);
     }

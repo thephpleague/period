@@ -33,7 +33,7 @@ final class Period implements JsonSerializable
     /**
      * Date Format to create ISO8601 Interval format
      */
-    const ISO8601 = 'Y-m-d\TH:i:s\Z';
+    const ISO8601 = 'Y-m-d\TH:i:s.u\Z';
 
     /**
      * Period starting included datepoint.
@@ -62,7 +62,9 @@ final class Period implements JsonSerializable
         $this->startDate = self::validateDatePoint($startDate);
         $this->endDate   = self::validateDatePoint($endDate);
         if ($this->startDate > $this->endDate) {
-            throw new LogicException('the ending datepoint must be greater or equal to the starting datepoint');
+            throw new LogicException(
+                'The ending datepoint must be greater or equal to the starting datepoint'
+            );
         }
     }
 
@@ -79,8 +81,15 @@ final class Period implements JsonSerializable
     {
         if ($datetime instanceof DateTimeImmutable) {
             return $datetime;
-        } elseif ($datetime instanceof DateTime) {
-            return new DateTimeImmutable($datetime->format('c'), $datetime->getTimeZone());
+        }
+
+        if ($datetime instanceof DateTime) {
+            $format = 'Y-m-d H:i:s.u';
+            return DateTimeImmutable::createFromFormat(
+                $format,
+                $datetime->format($format),
+                $datetime->getTimeZone()
+            );
         }
 
         return new DateTimeImmutable($datetime);
@@ -120,7 +129,9 @@ final class Period implements JsonSerializable
     {
         if ($interval instanceof DateInterval) {
             return $interval;
-        } elseif (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
+        }
+
+        if (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
             return new DateInterval('PT'.$res.'S');
         }
 
@@ -212,7 +223,7 @@ final class Period implements JsonSerializable
      */
     public static function createFromMonth($year, $month)
     {
-        $month = sprintf('%02s', self::validateRange($month, 1, 12));
+        $month     = sprintf('%02s', self::validateRange($month, 1, 12));
         $startDate = new DateTimeImmutable(self::validateYear($year).'-'.$month.'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')));
@@ -228,7 +239,7 @@ final class Period implements JsonSerializable
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $month = sprintf('%02s', ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1);
+        $month     = sprintf('%02s', ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1);
         $startDate = new DateTimeImmutable(self::validateYear($year).'-'.$month.'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P3M')));
@@ -244,7 +255,7 @@ final class Period implements JsonSerializable
      */
     public static function createFromSemester($year, $semester)
     {
-        $month = sprintf('%02s', ((self::validateRange($semester, 1, 2) - 1) * 6) + 1);
+        $month     = sprintf('%02s', ((self::validateRange($semester, 1, 2) - 1) * 6) + 1);
         $startDate = new DateTimeImmutable(self::validateYear($year).'-'.$month.'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P6M')));
@@ -357,13 +368,13 @@ final class Period implements JsonSerializable
      */
     public function split($interval)
     {
-        $res = [];
         $interval = self::validateDateInterval($interval);
         foreach ($this->getDatePeriod($interval) as $startDate) {
             $endDate = $startDate->add($interval);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
             }
+
             yield new self($startDate, $endDate);
         }
     }
@@ -471,7 +482,9 @@ final class Period implements JsonSerializable
         $datetime = $this->startDate->add($period->getDateInterval());
         if ($this->endDate > $datetime) {
             return 1;
-        } elseif ($this->endDate < $datetime) {
+        }
+
+        if ($this->endDate < $datetime) {
             return -1;
         }
 
@@ -678,17 +691,17 @@ final class Period implements JsonSerializable
             throw new RuntimeException('At least one Period object must be given.');
         }
 
-        $initiate = clone $this;
         return array_reduce($periods, function (Period $carry, Period $period) {
             if ($carry->startDate > $period->startDate) {
                 $carry = $carry->startingOn($period->startDate);
             }
+
             if ($carry->endDate < $period->endDate) {
                 $carry = $carry->endingOn($period->endDate);
             }
 
             return $carry;
-        }, $initiate);
+        }, $this);
     }
 
     /**
