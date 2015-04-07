@@ -574,15 +574,16 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $period    = Period::createFromMonth(2014, 3);
         $altPeriod = Period::createFromMonth(2014, 4);
         $expected  = Period::createFromDuration('2014-03-01', '2 MONTHS');
-
+        $res       = $expected->merge($period, $altPeriod);
         $this->assertEquals($expected, $period->merge($altPeriod));
         $this->assertEquals($expected, $altPeriod->merge($period));
+        $this->assertEquals($expected, $res);
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException PHPUnit_Framework_Error
      */
-    public function testMergeThrowsException()
+    public function testMergeFailed()
     {
         Period::createFromMonth(2014, 3)->merge();
     }

@@ -695,20 +695,13 @@ final class Period implements JsonSerializable
      *
      * The resultant object englobes the largest duration possible.
      *
-     * @param \League\Period\Period $arg,... one or more Period objects
-     *
-     * @throws \RuntimeException If no argument is passed to the function
+     * @param \League\Period\Period $period,... one or more Period objects
      *
      * @return \League\Period\Period
      */
-    public function merge()
+    public function merge(Period $period)
     {
-        $periods = func_get_args();
-        if (empty($periods)) {
-            throw new RuntimeException('At least one Period object must be given.');
-        }
-
-        return array_reduce($periods, function (Period $carry, Period $period) {
+        return array_reduce(func_get_args(), function (Period $carry, Period $period) {
             if ($carry->startDate > $period->startDate) {
                 $carry = $carry->startingOn($period->startDate);
             }
@@ -718,7 +711,7 @@ final class Period implements JsonSerializable
             }
 
             return $carry;
-        }, $this);
+        }, clone $this);
     }
 
     /**
