@@ -4,6 +4,7 @@
     "description" : "A time range immutable value object",
     "keywords": ["date", "time", "datetime", "range", "interval", "dateinterval", "dateperiod"],
     "license": "MIT",
+    "homepage": "http://period.thephpleague.com",
     "authors": [
         {
             "name" : "Ignace Nyamagana Butera",
@@ -17,7 +18,7 @@
         "issues": "https://github.com/thephpleague/period/issues"
     },
     "require": {
-        "php" : ">=5.4.0"
+        "php" : ">=5.5.0"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.*"
@@ -37,7 +38,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.5-dev"
+            "dev-master": "3.0-dev"
         }
     }
 }
