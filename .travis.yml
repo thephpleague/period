@@ -8,12 +8,12 @@ php:
   - hhvm
 
 matrix:
-allow_failures:
-  - php: hhvm
+  allow_failures:
+    - php: 7.0
 
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-source --dev
+  - travis_retry composer install --no-interaction --prefer-source
 
 script:
   - phpunit --coverage-text --coverage-clover=coverage.clover
