@@ -315,7 +315,6 @@ final class Period implements JsonSerializable
                 $this->endDate->getTimeZone()
             ),
         ];
-
     }
 
     /**
@@ -386,6 +385,7 @@ final class Period implements JsonSerializable
     public function split($interval)
     {
         $interval = self::validateDateInterval($interval);
+
         foreach ($this->getDatePeriod($interval) as $startDate) {
             $endDate = $startDate->add($interval);
             if ($endDate > $this->endDate) {
@@ -548,7 +548,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference between two Period objects expressed in \DateInterval
+     * Create a Period object from a Year and a Quarter.
      *
      * @param \League\Period\Period $period
      *
