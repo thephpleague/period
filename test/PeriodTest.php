@@ -34,16 +34,16 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testJsonSerialize()
     {
         $period = Period::createFromMonth(2015, 4);
-        $res    = json_decode(json_encode($period), true);
+        $res    = json_decode(json_encode($period));
 
         $this->assertEquals(
             $period->getStartDate(),
-            new DateTimeImmutable($res['startDate']['date'], new DateTimeZone($res['startDate']['timezone']))
+            new DateTimeImmutable($res->startDate->date, new DateTimeZone($res->startDate->timezone))
         );
 
         $this->assertEquals(
             $period->getEndDate(),
-            new DateTimeImmutable($res['endDate']['date'], new DateTimeZone($res['endDate']['timezone']))
+            new DateTimeImmutable($res->endDate->date, new DateTimeZone($res->endDate->timezone))
         );
     }
 

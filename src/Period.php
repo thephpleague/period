@@ -295,10 +295,27 @@ final class Period implements JsonSerializable
      */
     public function jsonSerialize()
     {
+        if (! defined('HHVM_VERSION')) {
+            return [
+                'startDate' => $this->startDate,
+                'endDate' => $this->endDate,
+            ];
+        }
+
+        $format = 'Y-m-d H:i:s.u';
         return [
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
+            'startDate' => DateTime::createFromFormat(
+                $format,
+                $this->startDate->format($format),
+                $this->startDate->getTimeZone()
+            ),
+            'endDate' => DateTime::createFromFormat(
+                $format,
+                $this->endDate->format($format),
+                $this->endDate->getTimeZone()
+            ),
         ];
+
     }
 
     /**
