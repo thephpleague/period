@@ -319,7 +319,7 @@ final class Period implements JsonSerializable
     /**
      * Returns the Period duration as expressed in seconds
      *
-     * @return double
+     * @return float
      */
     public function getTimestampInterval()
     {
@@ -543,7 +543,7 @@ final class Period implements JsonSerializable
      *
      * @param \League\Period\Period $period
      *
-     * @return double
+     * @return float
      */
     public function timestampIntervalDiff(Period $period)
     {

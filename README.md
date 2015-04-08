@@ -29,7 +29,7 @@ Full documentation can be found at [period.thephpleague.com](http://period.theph
 System Requirements
 -------
 
-Period works on any [supported versions of PHP](http://php.net/supported-versions.php) but the latest stable version is recommended.
+You need **PHP >= 5.5.0** or **HHVM >= 3.4** but the latest stable version is recommended.
 
 Install
 -------
