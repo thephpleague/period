@@ -53,7 +53,7 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 
 ### Period::split($interval)
 
-This method splits a given `Period` object in smaller `Period` objects according to the given `$interval`. THe result is returned using a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
+This method splits a given `Period` object in smaller `Period` objects according to the given `$interval`. The result is returned using a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
 
 <p class="message-warning"><strong>BC Break :</strong> In <code>version 2.X</code>, this method returned an <code>array</code></p>
 
@@ -104,12 +104,12 @@ $res = json_decode(json_encode($period), true);
 //      'startDate' => [
 //          'date' => '2014-05-01 00:00:00.000000',
 //          'timezone_type' => 3,
-//          'timezone' => 'Africa\Kinshasa',
+//          'timezone' => 'Africa/Kinshasa',
 //      ],
 //      'endDate' => [
 //          'date' => '2014-05-08 00:00:00.000000',
 //          'timezone_type' => 3,
-//          'timezone' => 'Africa\Kinshasa',
+//          'timezone' => 'Africa/Kinshasa',
 //      ],
 // ]
 ~~~

@@ -9,7 +9,7 @@ To instantiate a `Period` object you can rely on its constructor or on several n
 
 ### Period::__construct($start, $end)
 
-Both `$start` and `$end` parameters represent the period datepoints as `DateTime` objects.
+Both `$start` and `$end` parameters represent the period datepoints as `DateTimeImmutable` objects.
 
 - The `$start` datepoint represents **the starting included datepoint**.
 - The `$end` value represents **the ending excluded datepoint**.

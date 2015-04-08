@@ -54,11 +54,11 @@ $period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', new DateInt
 Learn more about how this all works in the [Properties](/api/properties/) section.
 
 ~~~php
-$period->getStartDate(); //the starting inclusive endpoint as a DateTime object
+$period->getStartDate(); //the starting inclusive endpoint as a DateTimeImmutable object
 ~~~
 
 ~~~php
-$period->getEndDate();   //the ending exclusive endpoint as a DateTime object
+$period->getEndDate();   //the ending exclusive endpoint as a DateTimeImmutable object
 ~~~
 
 ~~~php
