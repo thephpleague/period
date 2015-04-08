@@ -33,9 +33,6 @@
             "League\\Period\\Test\\": "test"
         }
     },
-    "replace": {
-        "bakame/period": "*"
-    },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0-dev"

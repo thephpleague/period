@@ -72,8 +72,6 @@ final class Period implements JsonSerializable
      *
      * @param string|\DateTimeInterface $datetime
      *
-     * @throws \RuntimeException If The Data can not be converted into a proper DateTimeImmutable object
-     *
      * @return \DateTimeImmutable
      */
     private static function validateDatePoint($datetime)
@@ -290,6 +288,7 @@ final class Period implements JsonSerializable
     public function jsonSerialize()
     {
         $format = 'Y-m-d H:i:s.u';
+
         return [
             'startDate' => new DateTime($this->startDate->format($format), $this->startDate->getTimeZone()),
             'endDate' => new DateTime($this->endDate->format($format), $this->endDate->getTimeZone()),
@@ -555,8 +554,6 @@ final class Period implements JsonSerializable
      *
      * @param string|\DateTimeInterface $startDate datepoint
      *
-     * @throws \LogicException If $startDate does not permit the creation of a new object
-     *
      * @return \League\Period\Period
      */
     public function startingOn($startDate)
@@ -568,8 +565,6 @@ final class Period implements JsonSerializable
      * Returns a new Period object with a new ending datepoint.
      *
      * @param string|\DateTimeInterface $endDate datepoint
-     *
-     * @throws \LogicException If $endDate does not permit the creation of a new object
      *
      * @return \League\Period\Period
      */
@@ -601,8 +596,6 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @throws \LogicException If The $interval does not permit the creation of a new object
-     *
      * @return \League\Period\Period
      */
     public function add($interval)
@@ -617,8 +610,6 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     *
-     * @throws \LogicException If The $interval does not permit the creation of a new object
      *
      * @return \League\Period\Period
      */
@@ -674,7 +665,7 @@ final class Period implements JsonSerializable
      *
      * The resultant object englobes the largest duration possible.
      *
-     * @param \League\Period\Period $period,... one or more Period objects
+     * @param \League\Period\Period ...$period one or more Period objects
      *
      * @return \League\Period\Period
      */
@@ -698,8 +689,6 @@ final class Period implements JsonSerializable
      *
      * @param \League\Period\Period $period
      *
-     * @throws \LogicException If Both objects do not overlaps
-     *
      * @return \League\Period\Period
      */
     public function intersect(Period $period)
@@ -718,8 +707,6 @@ final class Period implements JsonSerializable
      * Computes the gap between two Period objects.
      *
      * @param \League\Period\Period $period
-     *
-     * @throws \LogicException If Both objects overlaps
      *
      * @return \League\Period\Period
      */
@@ -741,8 +728,6 @@ final class Period implements JsonSerializable
      * - contain two Period objects if both objects share no datepoint
      *
      * @param \League\Period\Period $period
-     *
-     * @throws \LogicException if both object do not overlaps
      *
      * @return \League\Period\Period[]
      */
