@@ -7,7 +7,7 @@ title: Installation
 
 ## System Requirements
 
-`League\Period` works on any [supported versions of PHP](http://php.net/supported-versions.php) but the latest stable version is recommended.
+`League\Period` requires **PHP 5.5.0** or **HHVM 3.4.0** but the latest stable version is recommended.
 
 ## Composer
 

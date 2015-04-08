@@ -89,8 +89,6 @@ $newPeriod = $period->sub('2 WEEKS');
 
 ### Period::next($duration = null)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.1</p>
-
 Returns a new `Period` object adjacent to the current `Period` and starting with its ending datepoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
 
 ~~~php
@@ -123,8 +121,6 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 <p class="message-info">To remove any ambiguity, it is recommended to always provide a <code>$duration</code> when using <code>Period::next</code></p>
 
 ### Period::previous($duration = null)
-
-<p class="message-notice">Added to <code>Period</code> in version 2.1</p>
 
 Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending datepoint is equal to the starting datepoint of the current object.
 

@@ -41,8 +41,6 @@ $other  = Period::createFromDuration(new DateTime('2012-04-01 08:30:25'), 86400)
 
 ### Period::createFromDurationBeforeEnd($end, $duration)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.3</p>
-
 Returns a `Period` object which ends at `$end` with a duration equals to `$duration`.
 
 - The `$end` represents **the ending excluded datepoint** expressed as `DateTime` object.

@@ -3,9 +3,35 @@ layout: default
 title: Changelog
 ---
 
-
 #Changelog
+
 All Notable changes to `League\Period` will be documented in this file
+
+## 3.0.0
+
+### Added
+
+- `Period` implements the `JsonSerializable` interface
+
+### Fixed
+
+- `Period` always returns `DateTimeImmutable` objects
+- `Period::split` returns a `Generator`
+- `Period` now takes into account microseconds
+- `Period::merge` no longer throws `RuntimeException`
+
+### Deprecated
+
+- None
+
+### Removed
+
+- support for PHP 5.4
+- `Period::getStart`
+- `Period::getEnd`
+- `Period::getRange`
+- `Period::duration`
+- `Period::durationDiff`
 
 ## 2.5.1
 

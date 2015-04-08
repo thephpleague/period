@@ -11,8 +11,6 @@ You can compare different `Period` objects according to their datepoints or dura
 
 ### Period::isBefore($index)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
-
 The `$index` argument can be another `Period` object or a `DateTime` object.
 
 Tells whether the current `Period` object datetime continuum is entirely before the specified `$index`.
@@ -29,8 +27,6 @@ $alt->isBefore($period); //return false;
 
 ### Period::isAfter($index)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
-
 The `$index` argument can be another `Period` object or a `DateTime` object.
 
 Tells whether the current `Period` object datetime continuum is entirely after the specified `$index`.
@@ -46,8 +42,6 @@ $period->isAfter($alt); //return false;
 ~~~
 
 ### Period::abuts(Period $period)
-
-<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
 
 A `Period` abuts if it starts immediately after, or ends immediately before the submitted `Period` without overlapping.
 
@@ -115,8 +109,6 @@ $alt->contains($period); //return false;
 ~~~
 
 ### Period::diff(Period $period)
-
-<p class="message-notice">Added to <code>Period</code> in version 2.4</p>
 
  This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
 
@@ -188,13 +180,9 @@ $orig->sameValueAs($other);       //return false
 
 ### Period::dateIntervalDiff(Period $period)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Period::durationDiff</code></p>
-
 Returns the difference between two `Period` durations as expressed as a `DateInterval` object.
 
 ### Period::timestampIntervalDiff(Period $period)
-
-<p class="message-notice">Added to <code>Period</code> in version 2.5 and replace de deprecated <code>Period::durationDiff</code></p>
 
 Returns the difference between two `Period` durations as expressed in seconds.
 
