@@ -96,7 +96,7 @@ final class Period implements JsonSerializable
      *                                             If a string is passed, it must be parsable by
      *                                             `DateInterval::createFromDateString`
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromDuration($startDate, $interval)
     {
@@ -139,7 +139,7 @@ final class Period implements JsonSerializable
      *                                            If a string is passed, it must be parsable by
      *                                            `DateInterval::createFromDateString`
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromDurationBeforeEnd($endDate, $interval)
     {
@@ -154,7 +154,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $week index from 1 to 53
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromWeek($year, $week)
     {
@@ -211,7 +211,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $month Month index from 1 to 12
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromMonth($year, $month)
     {
@@ -227,7 +227,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $quarter Quarter Index from 1 to 4
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromQuarter($year, $quarter)
     {
@@ -243,7 +243,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $semester Semester Index from 1 to 2
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromSemester($year, $semester)
     {
@@ -258,7 +258,7 @@ final class Period implements JsonSerializable
      *
      * @param int $year
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public static function createFromYear($year)
     {
@@ -377,7 +377,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether two Period share the same datepoints.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return bool
      */
@@ -389,7 +389,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether two Period object abuts
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return bool
      */
@@ -401,7 +401,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether two Period objects overlaps.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return bool
      */
@@ -417,7 +417,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether a Period is entirely after the specified index
      *
-     * @param \League\Period\Period|\DateTimeInterface $index
+     * @param Period|\DateTimeInterface $index
      *
      * @return bool
      */
@@ -433,7 +433,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether a Period is entirely before the specified index
      *
-     * @param \League\Period\Period|\DateTimeInterface $index
+     * @param Period|\DateTimeInterface $index
      *
      * @return bool
      */
@@ -450,7 +450,7 @@ final class Period implements JsonSerializable
      * Tells whether the specified index is fully contained within
      * the current Period object.
      *
-     * @param \League\Period\Period|\DateTimeInterface $index
+     * @param Period|\DateTimeInterface $index
      *
      * @return bool
      */
@@ -468,7 +468,7 @@ final class Period implements JsonSerializable
     /**
      * Compares two Period objects according to their duration.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return int
      */
@@ -490,7 +490,7 @@ final class Period implements JsonSerializable
      * Tells whether the current Period object duration
      * is greater than the submitted one.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return bool
      */
@@ -503,7 +503,7 @@ final class Period implements JsonSerializable
      * Tells whether the current Period object duration
      * is less than the submitted one.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return bool
      */
@@ -516,7 +516,7 @@ final class Period implements JsonSerializable
      * Tells whether the current Period object duration
      * is equal to the submitted one
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return bool
      */
@@ -528,7 +528,7 @@ final class Period implements JsonSerializable
     /**
      * Create a Period object from a Year and a Quarter.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return \DateInterval
      */
@@ -540,7 +540,7 @@ final class Period implements JsonSerializable
     /**
      * Returns the difference between two Period objects expressed in seconds
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
      * @return float
      */
@@ -554,7 +554,7 @@ final class Period implements JsonSerializable
      *
      * @param string|\DateTimeInterface $startDate datepoint
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function startingOn($startDate)
     {
@@ -566,7 +566,7 @@ final class Period implements JsonSerializable
      *
      * @param string|\DateTimeInterface $endDate datepoint
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function endingOn($endDate)
     {
@@ -581,7 +581,7 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function withDuration($interval)
     {
@@ -596,7 +596,7 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function add($interval)
     {
@@ -611,7 +611,7 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function sub($interval)
     {
@@ -628,7 +628,7 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     * @return \League\Period\Period
+     * @return Period
      */
     public function next($interval = null)
     {
@@ -649,7 +649,7 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     * @return \League\Period\Period
+     * @return Period
      */
     public function previous($interval = null)
     {
@@ -665,9 +665,9 @@ final class Period implements JsonSerializable
      *
      * The resultant object englobes the largest duration possible.
      *
-     * @param \League\Period\Period ...$period one or more Period objects
+     * @param Period ...$period one or more Period objects
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function merge(Period $period)
     {
@@ -687,9 +687,9 @@ final class Period implements JsonSerializable
     /**
      * Computes the intersection between two Period objects.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function intersect(Period $period)
     {
@@ -706,9 +706,9 @@ final class Period implements JsonSerializable
     /**
      * Computes the gap between two Period objects.
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     public function gap(Period $period)
     {
@@ -727,9 +727,9 @@ final class Period implements JsonSerializable
      * - contain one Period object if both objects share one datepoint
      * - contain two Period objects if both objects share no datepoint
      *
-     * @param \League\Period\Period $period
+     * @param Period $period
      *
-     * @return \League\Period\Period[]
+     * @return Period[]
      */
     public function diff(Period $period)
     {
@@ -755,7 +755,7 @@ final class Period implements JsonSerializable
      * @param string|\DateTimeInterface $datePoint1 datepoint
      * @param string|\DateTimeInterface $datePoint2 datepoint
      *
-     * @return \League\Period\Period
+     * @return Period
      */
     private static function createFromDatepoints($datePoint1, $datePoint2)
     {
