@@ -23,7 +23,6 @@ use InvalidArgumentException;
 use JsonSerializable;
 use LogicException;
 use OutOfRangeException;
-use RuntimeException;
 
 /**
  * A immutable value object class to manipulate Time Range.
@@ -84,12 +83,7 @@ final class Period implements JsonSerializable
         }
 
         if ($datetime instanceof DateTime) {
-            $format = 'Y-m-d H:i:s.u';
-            return DateTimeImmutable::createFromFormat(
-                $format,
-                $datetime->format($format),
-                $datetime->getTimeZone()
-            );
+            return new DateTimeImmutable($datetime->format('Y-m-d H:i:s.u'), $datetime->getTimeZone());
         }
 
         return new DateTimeImmutable($datetime);
@@ -295,25 +289,10 @@ final class Period implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        if (! defined('HHVM_VERSION')) {
-            return [
-                'startDate' => $this->startDate,
-                'endDate' => $this->endDate,
-            ];
-        }
-
         $format = 'Y-m-d H:i:s.u';
         return [
-            'startDate' => DateTime::createFromFormat(
-                $format,
-                $this->startDate->format($format),
-                $this->startDate->getTimeZone()
-            ),
-            'endDate' => DateTime::createFromFormat(
-                $format,
-                $this->endDate->format($format),
-                $this->endDate->getTimeZone()
-            ),
+            'startDate' => new DateTime($this->startDate->format($format), $this->startDate->getTimeZone()),
+            'endDate' => new DateTime($this->endDate->format($format), $this->endDate->getTimeZone()),
         ];
     }
 

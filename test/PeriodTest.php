@@ -580,14 +580,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $res);
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function testMergeFailed()
-    {
-        Period::createFromMonth(2014, 3)->merge();
-    }
-
     public function testAdd()
     {
         $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
