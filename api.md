@@ -40,12 +40,12 @@ $period = Period::createFromWeek(2014, 1);     //the first week of 2014
 ~~~
 
 ~~~php
-$period = Period::createFromDuration('2014-01-01 08:00:25', 3600);
+$period = Period::createFromDuration('2014-01-01 08:00:25', new DateInterval('PT1H'));
 //a 1 hour time range starting at '2014-01-01 08:00:25'
 ~~~
 
 ~~~php
-$period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', new DateInterval('PT1H'));
+$period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
 //a 1 hour time range ending at '2014-01-01 08:00:25'
 ~~~
 
@@ -77,6 +77,11 @@ $arr = $period->split('1 WEEK'); //$arr is a Generator object
 ~~~php
 $period->__toString(); //return the ISO8601 representation of the Period
 ~~~
+
+~~~php
+$json = json_encode($period); //return the json representation of the Period
+~~~
+
 
 ## Comparing Periods
 
