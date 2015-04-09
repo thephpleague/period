@@ -694,7 +694,8 @@ final class Period implements JsonSerializable
      *
      * The resultant object englobes the largest duration possible.
      *
-     * @param Period ...$period one or more Period objects
+     * @param Period $period
+     * @param Period ...$periods one or more Period objects
      *
      * @return self A new instance
      */
