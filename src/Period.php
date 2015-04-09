@@ -18,6 +18,7 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -48,8 +49,6 @@ final class Period implements JsonSerializable
      */
     private $endDate;
 
-    private static $utc;
-
     /**
      * Create a new instance.
      *
@@ -66,9 +65,6 @@ final class Period implements JsonSerializable
             throw new LogicException(
                 'The ending datepoint must be greater or equal to the starting datepoint'
             );
-        }
-        if (! self::$utc) {
-            self::$utc = new DateTimeZone('UTC');
         }
     }
 
@@ -95,28 +91,28 @@ final class Period implements JsonSerializable
     /**
      * Compare DateTimeImmutable object including microseconds
      *
-     * @param  DateTimeImmutable $d1
-     * @param  DateTimeImmutable $d2
+     * @param  DateTimeImmutable $date1
+     * @param  DateTimeImmutable $date2
      *
      * @return int
      */
-    private static function compareDate(DateTimeImmutable $d1, DateTimeImmutable $d2)
+    private static function compareDate(DateTimeInterface $date1, DateTimeInterface $date2)
     {
-        if ($d1 > $d2) {
+        if ($date1 > $date2) {
             return 1;
         }
 
-        if ($d2 > $d1) {
+        if ($date2 > $date1) {
             return -1;
         }
 
-        $d1micro = $d1->setTimeZone(self::$utc)->format('u');
-        $d2micro = $d2->setTimeZone(self::$utc)->format('u');
-        if ($d1micro > $d2micro) {
+        $micro1 = $date1->format('u');
+        $micro2 = $date2->format('u');
+        if ($micro1 > $micro2) {
             return 1;
         }
 
-        if ($d1micro < $d2micro) {
+        if ($micro1 < $micro2) {
             return -1;
         }
 
@@ -308,8 +304,10 @@ final class Period implements JsonSerializable
      */
     public function __toString()
     {
-        return $this->startDate->setTimeZone(self::$utc)->format(self::ISO8601)
-            .'/'.$this->endDate->setTimeZone(self::$utc)->format(self::ISO8601);
+        $utc = new DateTimeZone('UTC');
+
+        return $this->startDate->setTimeZone($utc)->format(self::ISO8601)
+            .'/'.$this->endDate->setTimeZone($utc)->format(self::ISO8601);
     }
 
     /**
