@@ -352,8 +352,8 @@ final class Period implements JsonSerializable
      */
     public function getTimestampInterval()
     {
-        $end   = $this->endDate->getTimestamp() + (int) $this->endDate->format('u') * 1E-6;
-        $start = $this->startDate->getTimestamp() + (int) $this->startDate->format('u') * 1E-6;
+        $end   = $this->endDate->getTimestamp() + (int) $this->endDate->format('u') * 1e-6;
+        $start = $this->startDate->getTimestamp() + (int) $this->startDate->format('u') * 1e-6;
 
         return (float) sprintf('%f', $end - $start);
     }
@@ -514,23 +514,24 @@ final class Period implements JsonSerializable
      */
     public function compareDuration(Period $period)
     {
-        $res = explode('.', (string) $period->getTimestampInterval());
-        if (! isset($res[1]) || 0 == (int) $res[1]) {
+        $timestamp = explode('.', (string) $period->getTimestampInterval());
+        if (! isset($timestamp[1]) || 0 == (int) $timestamp[1]) {
             return self::compareDate($this->endDate, $this->startDate->add($period->getDateInterval()));
         }
 
-        $tmp   = $this->startDate->add(new DateInterval('PT'.$res[0].'S'));
-        $micro = (int) $res[1] + (int) $this->startDate->format('u');
-        if ($micro >= 1E6) {
-            $micro -= 1E6;
-            $tmp = $tmp->add(new DateInterval('PT1S'));
+        $micro = (int) $timestamp[1] + (int) $this->startDate->format('u');
+        if ($micro >= 1e6) {
+            $micro -= 1e6;
+            $timestamp[0]++;
         }
+
+        $dateEnd = $this->startDate->add(new DateInterval('PT'.$timestamp[0].'S'));
 
         return self::compareDate(
             $this->endDate,
-            new DateTimeImmutable(
-                $tmp->format('Y-m-d H:i:s').".".sprintf('%06d', $micro),
-                $tmp->getTimeZone()
+            new DateTime(
+                $dateEnd->format('Y-m-d H:i:s').".".sprintf('%06d', $micro),
+                $this->startDate->getTimeZone()
             )
         );
     }
