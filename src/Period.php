@@ -352,7 +352,10 @@ final class Period implements JsonSerializable
      */
     public function getTimestampInterval()
     {
-        return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
+        $end   = $this->endDate->getTimestamp() + (int) $this->endDate->format('u') * 1E-6;
+        $start = $this->startDate->getTimestamp() + (int) $this->startDate->format('u') * 1E-6;
+
+        return (float) sprintf('%f', $end - $start);
     }
 
     /**

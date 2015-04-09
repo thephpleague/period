@@ -80,7 +80,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $start  = new DateTime('2014-03-01');
         $end    = new DateTime('2014-04-01');
         $res    = $period->getTimestampInterval();
-        $this->assertInternalType('integer', $res);
+        $this->assertInternalType('float', $res);
         $this->assertEquals($end->getTimestamp() - $start->getTimestamp(), $res);
     }
 
@@ -158,6 +158,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
             '2014-05-01 00:00:00.234567'
         );
         $this->assertSame('234567', $period->getEndDate()->format('u'));
+        $this->assertEquals(0.111111, $period->getTimestampInterval());
+        $this->assertEquals(new DateInterval('PT0S'), $period->getDateInterval());
     }
 
     /**
@@ -678,8 +680,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
         $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
         $res = $orig->timestampIntervalDiff($alt);
-        $this->assertInternalType('integer', $res);
-        $this->assertSame(-3600, $res);
+        $this->assertInternalType('float', $res);
+        $this->assertSame(-3600.0, $res);
     }
 
     public function testDateIntervalDiffPositionIrrelevant()
@@ -695,9 +697,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testIntersect()
     {
         $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
-        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $alt  = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $res  = $orig->intersect($alt);
 
-        $res = $orig->intersect($alt);
         $this->assertInstanceof('\League\Period\Period', $res);
     }
 
@@ -773,7 +775,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
         $res = $orig->gap($alt);
         $this->assertInstanceof('\League\Period\Period', $res);
-        $this->assertSame(0, $res->getTimestampInterval());
+        $this->assertSame(0.0, $res->getTimestampInterval());
     }
 
     /**
