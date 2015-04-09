@@ -520,7 +520,7 @@ final class Period implements JsonSerializable
         }
 
         $tmp   = $this->startDate->add(new DateInterval('PT'.$res[0].'S'));
-        $micro = (int) $res[1] + (int) $tmp->format('u');
+        $micro = (int) $res[1] + (int) $this->startDate->format('u');
         if ($micro >= 1E6) {
             $micro -= 1E6;
             $tmp = $tmp->add(new DateInterval('PT1S'));
