@@ -500,7 +500,7 @@ final class Period implements JsonSerializable
         $datetime = self::validateDatePoint($index);
 
         return -1 < self::compareDate($datetime, $this->startDate)
-            && -1 == self::compareDate($datetime, $this->endDate);
+            && -1 === self::compareDate($datetime, $this->endDate);
     }
 
     /**
@@ -792,7 +792,7 @@ final class Period implements JsonSerializable
     {
         $datePoint1 = self::validateDatePoint($datePoint1);
         $datePoint2 = self::validateDatePoint($datePoint2);
-        if (1 == self::compareDate($datePoint1, $datePoint2)) {
+        if (1 === self::compareDate($datePoint1, $datePoint2)) {
             return new self($datePoint2, $datePoint1);
         }
 
