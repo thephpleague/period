@@ -48,6 +48,8 @@ final class Period implements JsonSerializable
      */
     private $endDate;
 
+    private static $utc;
+
     /**
      * Create a new instance.
      *
@@ -60,10 +62,13 @@ final class Period implements JsonSerializable
     {
         $this->startDate = self::validateDatePoint($startDate);
         $this->endDate   = self::validateDatePoint($endDate);
-        if ($this->startDate > $this->endDate) {
+        if (1 === self::compareDate($this->startDate, $this->endDate)) {
             throw new LogicException(
                 'The ending datepoint must be greater or equal to the starting datepoint'
             );
+        }
+        if (! self::$utc) {
+            self::$utc = new DateTimeZone('UTC');
         }
     }
 
@@ -88,6 +93,37 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Compare DateTimeImmutable object including microseconds
+     *
+     * @param  DateTimeImmutable $d1
+     * @param  DateTimeImmutable $d2
+     *
+     * @return int
+     */
+    private static function compareDate(DateTimeImmutable $d1, DateTimeImmutable $d2)
+    {
+        if ($d1 > $d2) {
+            return 1;
+        }
+
+        if ($d2 > $d1) {
+            return -1;
+        }
+
+        $d1micro = $d1->setTimeZone(self::$utc)->format('u');
+        $d2micro = $d2->setTimeZone(self::$utc)->format('u');
+        if ($d1micro > $d2micro) {
+            return 1;
+        }
+
+        if ($d1micro < $d2micro) {
+            return -1;
+        }
+
+        return 0;
+    }
+
+    /**
      * Create a Period object from a starting point and an interval.
      *
      * @param string|\DateTimeInterface $startDate start datepoint
@@ -96,7 +132,7 @@ final class Period implements JsonSerializable
      *                                             If a string is passed, it must be parsable by
      *                                             `DateInterval::createFromDateString`
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromDuration($startDate, $interval)
     {
@@ -112,8 +148,6 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     *
-     * @throws \Exception If the integer generates a bad format
      *
      * @return \DateInterval
      */
@@ -139,7 +173,7 @@ final class Period implements JsonSerializable
      *                                            If a string is passed, it must be parsable by
      *                                            `DateInterval::createFromDateString`
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromDurationBeforeEnd($endDate, $interval)
     {
@@ -154,7 +188,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $week index from 1 to 53
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromWeek($year, $week)
     {
@@ -170,9 +204,9 @@ final class Period implements JsonSerializable
      *
      * @param int $year
      *
-     * @throws \InvalidArgumentException If year is not a valid int
-     *
      * @return int
+     *
+     * @throws \InvalidArgumentException If year is not a valid int
      */
     private static function validateYear($year)
     {
@@ -211,7 +245,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $month Month index from 1 to 12
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromMonth($year, $month)
     {
@@ -227,7 +261,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $quarter Quarter Index from 1 to 4
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromQuarter($year, $quarter)
     {
@@ -243,7 +277,7 @@ final class Period implements JsonSerializable
      * @param int $year
      * @param int $semester Semester Index from 1 to 2
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromSemester($year, $semester)
     {
@@ -258,7 +292,7 @@ final class Period implements JsonSerializable
      *
      * @param int $year
      *
-     * @return Period
+     * @return self A new instance
      */
     public static function createFromYear($year)
     {
@@ -274,10 +308,8 @@ final class Period implements JsonSerializable
      */
     public function __toString()
     {
-        $utc = new DateTimeZone('UTC');
-
-        return $this->startDate->setTimeZone($utc)->format(self::ISO8601)
-            .'/'.$this->endDate->setTimeZone($utc)->format(self::ISO8601);
+        return $this->startDate->setTimeZone(self::$utc)->format(self::ISO8601)
+            .'/'.$this->endDate->setTimeZone(self::$utc)->format(self::ISO8601);
     }
 
     /**
@@ -358,7 +390,8 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     * @return \Generator
+     *
+     * @return \Generator containing Period objects
      */
     public function split($interval)
     {
@@ -383,7 +416,8 @@ final class Period implements JsonSerializable
      */
     public function sameValueAs(Period $period)
     {
-        return $this->startDate == $period->startDate && $this->endDate == $period->endDate;
+        return 0 === self::compareDate($this->startDate, $period->startDate)
+            && 0 === self::compareDate($this->endDate, $period->endDate);
     }
 
     /**
@@ -395,7 +429,8 @@ final class Period implements JsonSerializable
      */
     public function abuts(Period $period)
     {
-        return $this->startDate == $period->endDate || $this->endDate == $period->startDate;
+        return 0 === self::compareDate($this->startDate, $period->endDate)
+            || 0 === self::compareDate($this->endDate, $period->startDate);
     }
 
     /**
@@ -411,7 +446,8 @@ final class Period implements JsonSerializable
             return false;
         }
 
-        return $this->startDate < $period->endDate && $this->endDate > $period->startDate;
+        return -1 === self::compareDate($this->startDate, $period->endDate)
+            &&  1 === self::compareDate($this->endDate, $period->startDate);
     }
 
     /**
@@ -424,10 +460,10 @@ final class Period implements JsonSerializable
     public function isAfter($index)
     {
         if ($index instanceof Period) {
-            return $this->startDate >= $index->endDate;
+            return -1 < self::compareDate($this->startDate, $index->endDate);
         }
 
-        return $this->startDate > self::validateDatePoint($index);
+        return 1 === self::compareDate($this->startDate, self::validateDatePoint($index));
     }
 
     /**
@@ -440,10 +476,10 @@ final class Period implements JsonSerializable
     public function isBefore($index)
     {
         if ($index instanceof Period) {
-            return $this->endDate <= $index->startDate;
+            return 1 > self::compareDate($this->endDate, $index->startDate);
         }
 
-        return $this->endDate <= self::validateDatePoint($index);
+        return 1 > self::compareDate($this->endDate, self::validateDatePoint($index));
     }
 
     /**
@@ -462,7 +498,8 @@ final class Period implements JsonSerializable
 
         $datetime = self::validateDatePoint($index);
 
-        return $datetime >= $this->startDate && $datetime < $this->endDate;
+        return -1 < self::compareDate($datetime, $this->startDate)
+            && -1 == self::compareDate($datetime, $this->endDate);
     }
 
     /**
@@ -474,16 +511,7 @@ final class Period implements JsonSerializable
      */
     public function compareDuration(Period $period)
     {
-        $datetime = $this->startDate->add($period->getDateInterval());
-        if ($this->endDate > $datetime) {
-            return 1;
-        }
-
-        if ($this->endDate < $datetime) {
-            return -1;
-        }
-
-        return 0;
+        return self::compareDate($this->endDate, $this->startDate->add($period->getDateInterval()));
     }
 
     /**
@@ -554,7 +582,7 @@ final class Period implements JsonSerializable
      *
      * @param string|\DateTimeInterface $startDate datepoint
      *
-     * @return Period
+     * @return self A new instance
      */
     public function startingOn($startDate)
     {
@@ -566,7 +594,7 @@ final class Period implements JsonSerializable
      *
      * @param string|\DateTimeInterface $endDate datepoint
      *
-     * @return Period
+     * @return self A new instance
      */
     public function endingOn($endDate)
     {
@@ -581,7 +609,7 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @return Period
+     * @return self A new instance
      */
     public function withDuration($interval)
     {
@@ -596,7 +624,7 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @return Period
+     * @return self A new instance
      */
     public function add($interval)
     {
@@ -611,7 +639,7 @@ final class Period implements JsonSerializable
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
-     * @return Period
+     * @return self A new instance
      */
     public function sub($interval)
     {
@@ -628,7 +656,7 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     * @return Period
+     * @return self A new instance
      */
     public function next($interval = null)
     {
@@ -649,7 +677,7 @@ final class Period implements JsonSerializable
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
-     * @return Period
+     * @return self A new instance
      */
     public function previous($interval = null)
     {
@@ -667,7 +695,7 @@ final class Period implements JsonSerializable
      *
      * @param Period ...$period one or more Period objects
      *
-     * @return Period
+     * @return self A new instance
      */
     public function merge(Period $period)
     {
@@ -689,7 +717,7 @@ final class Period implements JsonSerializable
      *
      * @param Period $period
      *
-     * @return Period
+     * @return self A new instance
      */
     public function intersect(Period $period)
     {
@@ -708,7 +736,7 @@ final class Period implements JsonSerializable
      *
      * @param Period $period
      *
-     * @return Period
+     * @return self A new instance
      */
     public function gap(Period $period)
     {
@@ -730,6 +758,8 @@ final class Period implements JsonSerializable
      * @param Period $period
      *
      * @return Period[]
+     *
+     * @throws \LogicException If both object do not overlaps
      */
     public function diff(Period $period)
     {
@@ -755,7 +785,7 @@ final class Period implements JsonSerializable
      * @param string|\DateTimeInterface $datePoint1 datepoint
      * @param string|\DateTimeInterface $datePoint2 datepoint
      *
-     * @return Period
+     * @return self A new instance
      */
     private static function createFromDatepoints($datePoint1, $datePoint2)
     {

@@ -143,6 +143,26 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \LogicException
      */
+    public function testConstructorWithMicroSecondsFailed()
+    {
+        new Period(
+            '2014-05-01 00:00:00.123456',
+            '2014-05-01 00:00:00.012345'
+        );
+    }
+
+    public function testConstructorWithMicroSecondsSucceed()
+    {
+        $period = new Period(
+            '2014-05-01 00:00:00.123456',
+            '2014-05-01 00:00:00.234567'
+        );
+        $this->assertSame('234567', $period->getEndDate()->format('u'));
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
     public function testConstructorThrowException()
     {
         new Period(
@@ -171,9 +191,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testCreateFromDurationWithString()
     {
-        $start =  new DateTime('-1 DAY');
-        $ttl = new DateInterval('P2D');
-        $end = clone $start;
+        $start = new DateTime('-1 DAY');
+        $ttl   = new DateInterval('P2D');
+        $end   = clone $start;
         $end->add($ttl);
         $period = Period::createFromDuration("-1 DAY", $ttl);
         $this->assertTrue($period->getStartDate() == $start);
