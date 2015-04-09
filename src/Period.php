@@ -400,7 +400,7 @@ final class Period implements JsonSerializable
 
         foreach ($this->getDatePeriod($interval) as $startDate) {
             $endDate = $startDate->add($interval);
-            if ($endDate > $this->endDate) {
+            if (1 === self::compareDate($endDate, $this->endDate)) {
                 $endDate = $this->endDate;
             }
 
@@ -430,8 +430,10 @@ final class Period implements JsonSerializable
      */
     public function abuts(Period $period)
     {
-        return 0 === self::compareDate($this->startDate, $period->endDate)
-            || 0 === self::compareDate($this->endDate, $period->startDate);
+        return in_array(0, [
+            self::compareDate($this->startDate, $period->endDate),
+            self::compareDate($this->endDate, $period->startDate)
+        ]);
     }
 
     /**
@@ -512,7 +514,25 @@ final class Period implements JsonSerializable
      */
     public function compareDuration(Period $period)
     {
-        return self::compareDate($this->endDate, $this->startDate->add($period->getDateInterval()));
+        $res = explode('.', (string) $period->getTimestampInterval());
+        if (! isset($res[1]) || 0 == (int) $res[1]) {
+            return self::compareDate($this->endDate, $this->startDate->add($period->getDateInterval()));
+        }
+
+        $tmp   = $this->startDate->add(new DateInterval('PT'.$res[0].'S'));
+        $micro = (int) $res[1] + (int) $tmp->format('u');
+        if ($micro >= 1E6) {
+            $micro -= 1E6;
+            $tmp = $tmp->add(new DateInterval('PT1S'));
+        }
+
+        return self::compareDate(
+            $this->endDate,
+            new DateTimeImmutable(
+                $tmp->format('Y-m-d H:i:s').".".sprintf('%06d', $micro),
+                $tmp->getTimeZone()
+            )
+        );
     }
 
     /**
