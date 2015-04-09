@@ -89,10 +89,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Compare DateTimeImmutable object including microseconds
+     * Compare DateTimeInterface objects including microseconds
      *
-     * @param  DateTimeImmutable $date1
-     * @param  DateTimeImmutable $date2
+     * @param \DateTimeInterface $date1
+     * @param \DateTimeInterface $date2
      *
      * @return int
      */
@@ -102,7 +102,7 @@ final class Period implements JsonSerializable
             return 1;
         }
 
-        if ($date2 > $date1) {
+        if ($date1 < $date2) {
             return -1;
         }
 
@@ -698,11 +698,11 @@ final class Period implements JsonSerializable
     public function merge(Period $period)
     {
         return array_reduce(func_get_args(), function (Period $carry, Period $period) {
-            if ($carry->startDate > $period->startDate) {
+            if (1 === self::compareDate($carry->startDate, $period->startDate)) {
                 $carry = $carry->startingOn($period->startDate);
             }
 
-            if ($carry->endDate < $period->endDate) {
+            if (-1 === self::compareDate($carry->endDate, $period->endDate)) {
                 $carry = $carry->endingOn($period->endDate);
             }
 
@@ -724,8 +724,8 @@ final class Period implements JsonSerializable
         }
 
         return new self(
-            ($period->startDate > $this->startDate) ? $period->startDate : $this->startDate,
-            ($period->endDate < $this->endDate) ? $period->endDate : $this->endDate
+            (1 === self::compareDate($period->startDate, $this->startDate)) ? $period->startDate : $this->startDate,
+            (-1 === self::compareDate($period->endDate, $this->endDate)) ? $period->endDate : $this->endDate
         );
     }
 
@@ -738,7 +738,7 @@ final class Period implements JsonSerializable
      */
     public function gap(Period $period)
     {
-        if ($period->startDate > $this->startDate) {
+        if (1 === self::compareDate($period->startDate, $this->startDate)) {
             return new self($this->endDate, $period->startDate);
         }
 
@@ -771,7 +771,7 @@ final class Period implements JsonSerializable
         ];
 
         return array_values(array_filter($res, function (Period $period) {
-            return $period->startDate != $period->endDate;
+            return self::compareDate($period->startDate, $period->endDate);
         }));
     }
 
@@ -789,7 +789,7 @@ final class Period implements JsonSerializable
     {
         $datePoint1 = self::validateDatePoint($datePoint1);
         $datePoint2 = self::validateDatePoint($datePoint2);
-        if ($datePoint1 > $datePoint2) {
+        if (1 == self::compareDate($datePoint1, $datePoint2)) {
             return new self($datePoint2, $datePoint1);
         }
 

@@ -707,7 +707,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange()
     {
         $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
-        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $alt  = Period::createFromDuration('2012-01-01', '2 MONTH');
         $orig->intersect($alt);
     }
 
@@ -787,7 +787,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testDiffWithEqualsPeriod()
     {
         $period = Period::createFromYear(2013);
-        $alt = Period::createFromDuration('2013-01-01', '1 YEAR');
+        $alt    = Period::createFromDuration('2013-01-01', '1 YEAR');
         $this->assertCount(0, $alt->diff($period));
     }
 
