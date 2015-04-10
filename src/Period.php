@@ -297,12 +297,9 @@ final class Period implements JsonSerializable
             throw new InvalidArgumentException('The interval can not be negative');
         }
 
-        $timestamp = explode('.', (string) $microseconds);
-        if (! isset($timestamp[1])) {
-            $timestamp[1] = 0;
-        }
-        $seconds = (int) $timestamp[0];
-        $micro   = sprintf('%06d', $timestamp[1]) + $datetime->format('u');
+        $timestamp = explode('.', sprintf('%6f', $microseconds));
+        $seconds   = (int) $timestamp[0];
+        $micro     = $timestamp[1] + $datetime->format('u');
         if ($micro > 1e6) {
             $micro -= 1e6;
             $seconds++;
@@ -378,7 +375,6 @@ final class Period implements JsonSerializable
         $timestamp = explode('.', (string) sprintf('%6f', $microseconds));
         $seconds   = (int) $timestamp[0];
         $micro     = $datetime->format('u') - $timestamp[1];
-
         if (0 > $micro) {
             $micro += 1e6;
             $seconds++;

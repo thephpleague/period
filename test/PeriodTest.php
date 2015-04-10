@@ -49,22 +49,24 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     /**
      * @param  $interval
+     * @param  $count
      * @dataProvider provideGetDatePeriodData
      */
-    public function testGetDatePeriod($interval)
+    public function testGetDatePeriod($interval, $count)
     {
         $period = Period::createFromDuration(new DateTime(), "1 DAY");
         $range  = $period->getDatePeriod($interval);
         $this->assertInstanceof('Generator', $range);
-        $this->assertCount(24, iterator_to_array($range));
+        $this->assertCount($count, iterator_to_array($range));
     }
 
     public function provideGetDatePeriodData()
     {
         return [
-            'useDateInterval' => [new DateInterval('PT1H')],
-            'useString' => ["1 HOUR"],
-            'useInt' => [3600],
+            'useDateInterval' => [new DateInterval('PT1H'), 24],
+            'useString' => ["2 HOUR", 12],
+            'useInt' => [9600, 9],
+            'useFloat' => [14400.0, 6],
         ];
     }
 
@@ -661,7 +663,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
                 new Period('2012-01-01 00:00:00.123456', '2012-01-01 00:00:01.123456'),
                 new Period('2012-01-01 00:00:00.999999', '2012-01-01 00:00:01.000001'),
                 'durationGreaterThan',
-                false,
+                true,
             ],
             'testDurationGreaterThanReturnsTrueWithMicroseconds' => [
                 new Period('2012-01-01', '2012-01-01 00:00:00.234567'),
