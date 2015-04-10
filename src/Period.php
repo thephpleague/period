@@ -241,11 +241,11 @@ final class Period implements JsonSerializable
     /**
      * Create a Period object from a starting point and an interval.
      *
-     * @param string|\DateTimeInterface       $startDate start datepoint
-     * @param \DateInterval|int|float|string  $duration  The duration. If an numeric is passed, it is
-     *                                                   interpreted as the duration expressed in seconds.
-     *                                                   If a string is passed, it must be parsable by
-     *                                                   `DateInterval::createFromDateString`
+     * @param string|\DateTimeInterface  $startDate start datepoint
+     * @param \DateInterval|float|string $duration  The duration. If an numeric is passed, it is
+     *                                              interpreted as the duration expressed in seconds.
+     *                                              If a string is passed, it must be parsable by
+     *                                              `DateInterval::createFromDateString`
      *
      * @return self A new instance
      */
@@ -259,14 +259,14 @@ final class Period implements JsonSerializable
     /**
      * Add a duration to a DateTimeInterface object
      *
-     * @param \DateTimeImmutable              $datetime
-     * @param \DateInterval|int|float|string  $duration  The duration. If an numeric is passed, it is
-     *                                                   interpreted as the duration expressed in seconds.
-     *                                                   If a string is passed, it must be parsable by
-     *                                                   `DateInterval::createFromDateString`
+     * @param \DateTimeImmutable         $datetime
+     * @param \DateInterval|float|string $duration The duration. If an numeric is passed, it is
+     *                                             interpreted as the duration expressed in seconds.
+     *                                             If a string is passed, it must be parsable by
+     *                                             `DateInterval::createFromDateString`
      * @return \DateTimeImmutable
      */
-    private function durationAdd(DateTimeImmutable $datetime, $duration)
+    private static function durationAdd(DateTimeImmutable $datetime, $duration)
     {
         if ($duration instanceof DateInterval) {
             return $datetime->add($duration);
@@ -285,6 +285,7 @@ final class Period implements JsonSerializable
 
     /**
      * Add a timestamp with microseconds to a DateTimeInterface
+     *
      * @param DateTimeInterface $datetime
      * @param float             $microseconds
      *
@@ -318,11 +319,11 @@ final class Period implements JsonSerializable
     /**
      * Create a Period object from a ending datepoint and an interval.
      *
-     * @param string|\DateTimeInterface $endDate  end datepoint
-     * @param \DateInterval|int|string  $duration The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be parsable by
-     *                                            `DateInterval::createFromDateString`
+     * @param string|\DateTimeInterface  $endDate  end datepoint
+     * @param \DateInterval|float|string $duration The duration. If a numeric (float or int) is passed, it is
+     *                                             interpreted as the duration expressed in seconds.
+     *                                             If a string is passed, it must be parsable by
+     *                                             `DateInterval::createFromDateString`
      *
      * @return self A new instance
      */
@@ -336,14 +337,14 @@ final class Period implements JsonSerializable
     /**
      * Substract a duration to a DateTimeInterface object
      *
-     * @param \DateTimeImmutable              $datetime
-     * @param \DateInterval|int|float|string  $duration  The duration. If an numeric is passed, it is
-     *                                                   interpreted as the duration expressed in seconds.
-     *                                                   If a string is passed, it must be parsable by
-     *                                                   `DateInterval::createFromDateString`
+     * @param \DateTimeImmutable         $datetime
+     * @param \DateInterval|float|string $duration  The duration. If an numeric is passed, it is
+     *                                              interpreted as the duration expressed in seconds.
+     *                                              If a string is passed, it must be parsable by
+     *                                              `DateInterval::createFromDateString`
      * @return \DateTimeImmutable
      */
-    private function durationSub(DateTimeInterface $datetime, $duration)
+    private static function durationSub(DateTimeInterface $datetime, $duration)
     {
         if ($duration instanceof DateInterval) {
             return $datetime->sub($duration);
@@ -466,22 +467,26 @@ final class Period implements JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the Period object.
      *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     * @param \DateInterval|int|string $interval The interval. If int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
      *
      * @return \DatePeriod
      */
-    public function getDatePeriod($interval)
+    public function getDatePeriod($duration)
     {
-        return new DatePeriod($this->startDate, self::validateDateInterval($interval), $this->endDate);
+        $date = $this->startDate;
+        do {
+            yield $date;
+            $date = self::durationAdd($date, $duration);
+        } while (-1 === self::compareDate($date, $this->endDate));
     }
 
     /**
      * Validate a DateInterval.
      *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
+     * @param \DateInterval|int|string $interval The interval. If a int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
@@ -504,10 +509,10 @@ final class Period implements JsonSerializable
     /**
      * Split the current object into Period objects according to the given interval
      *
-     * @param \DateInterval|int|string $interval The interval. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be parsable by
-     *                                           `DateInterval::createFromDateString`
+     * @param \DateInterval|float|string $duration The interval. If a numeric (float or int) is passed, it is
+     *                                             interpreted as the duration expressed in seconds.
+     *                                             If a string is passed, it must be parsable by
+     *                                             `DateInterval::createFromDateString`
      *
      * @return \Generator containing Period objects
      */
@@ -726,7 +731,7 @@ final class Period implements JsonSerializable
     /**
      * Returns a new Period object with a new ending datepoint.
      *
-     * @param \DateInterval|int|string $interval The duration. If an int is passed, it is
+     * @param \DateInterval|float|int|string $duration The duration. If a numeric (float or int) is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
@@ -741,7 +746,7 @@ final class Period implements JsonSerializable
     /**
      * Returns a new Period object with an added interval
      *
-     * @param \DateInterval|int|string $interval The duration. If an int is passed, it is
+     * @param \DateInterval|float|string $float The duration. If a numeric (float or int) is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
@@ -756,7 +761,7 @@ final class Period implements JsonSerializable
     /**
      * Returns a new Period object with a Removed interval
      *
-     * @param \DateInterval|int|string $interval The duration. If an int is passed, it is
+     * @param \DateInterval|float|string $interval The duration. If a numeric (float or int) is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
@@ -774,7 +779,7 @@ final class Period implements JsonSerializable
      * If no duration is provided the new Period will be created
      * using the current object duration
      *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     * @param \DateInterval|float|string $duration The duration. If a numeric (float or int) is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`
@@ -795,7 +800,7 @@ final class Period implements JsonSerializable
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
-     * @param \DateInterval|int|string $duration The duration. If an int is passed, it is
+     * @param \DateInterval|float|string $duration The duration. If a numeric (float or int) is passed, it is
      *                                           interpreted as the duration expressed in seconds.
      *                                           If a string is passed, it must be parsable by
      *                                           `DateInterval::createFromDateString`

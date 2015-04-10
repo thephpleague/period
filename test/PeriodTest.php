@@ -55,7 +55,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         $period = Period::createFromDuration(new DateTime(), "1 DAY");
         $range  = $period->getDatePeriod($interval);
-        $this->assertInstanceof('DatePeriod', $range);
+        $this->assertInstanceof('Generator', $range);
         $this->assertCount(24, iterator_to_array($range));
     }
 
@@ -73,7 +73,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDatePeriodThrowsException()
     {
-        Period::createFromDuration(new DateTime(), "1 DAY")->getDatePeriod(-3600);
+        $res = Period::createFromDuration(new DateTime(), "1 DAY")->getDatePeriod(-3600);
+        iterator_to_array($res);
     }
 
     public function testGetDateInterval()
