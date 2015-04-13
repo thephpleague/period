@@ -32,7 +32,12 @@ final class Period implements JsonSerializable
     /**
      * Date Format to create ISO8601 Interval format
      */
-    const ISO8601 = 'Y-m-d\TH:i:s.u\Z';
+    const DATE_ISO8601 = 'Y-m-d\TH:i:s.u\Z';
+
+    /**
+     * Date Format for timezoneless DateTimeInterface
+     */
+    const DATE_LOCALE = 'Y-m-d H:i:s.u';
 
     /**
      * Period starting included datepoint.
@@ -81,7 +86,7 @@ final class Period implements JsonSerializable
         }
 
         if ($datetime instanceof DateTime) {
-            return new DateTimeImmutable($datetime->format('Y-m-d H:i:s.u'), $datetime->getTimeZone());
+            return new DateTimeImmutable($datetime->format(self::DATE_LOCALE), $datetime->getTimeZone());
         }
 
         return new DateTimeImmutable($datetime);
@@ -252,7 +257,7 @@ final class Period implements JsonSerializable
     {
         $date = self::validateDatePoint($startDate);
 
-        return new self($date, self::durationAdd($date, $duration));
+        return new self($date, self::addDuration($date, $duration));
     }
 
     /**
@@ -265,7 +270,7 @@ final class Period implements JsonSerializable
      *                                             `DateInterval::createFromDateString`
      * @return \DateTimeImmutable
      */
-    private static function durationAdd(DateTimeImmutable $datetime, $duration)
+    private static function addDuration(DateTimeImmutable $datetime, $duration)
     {
         if ($duration instanceof DateInterval) {
             return $datetime->add($duration);
@@ -327,7 +332,7 @@ final class Period implements JsonSerializable
     {
         $date = self::validateDatePoint($endDate);
 
-        return new self(self::durationSub($date, $duration), $date);
+        return new self(self::subDuration($date, $duration), $date);
     }
 
     /**
@@ -340,7 +345,7 @@ final class Period implements JsonSerializable
      *                                             `DateInterval::createFromDateString`
      * @return \DateTimeImmutable
      */
-    private static function durationSub(DateTimeInterface $datetime, $duration)
+    private static function subDuration(DateTimeInterface $datetime, $duration)
     {
         if ($duration instanceof DateInterval) {
             return $datetime->sub($duration);
@@ -396,8 +401,8 @@ final class Period implements JsonSerializable
     {
         $utc = new DateTimeZone('UTC');
 
-        return $this->startDate->setTimeZone($utc)->format(self::ISO8601)
-            .'/'.$this->endDate->setTimeZone($utc)->format(self::ISO8601);
+        return $this->startDate->setTimeZone($utc)->format(self::DATE_ISO8601)
+            .'/'.$this->endDate->setTimeZone($utc)->format(self::DATE_ISO8601);
     }
 
     /**
@@ -407,11 +412,9 @@ final class Period implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        $format = 'Y-m-d H:i:s.u';
-
         return [
-            'startDate' => new DateTime($this->startDate->format($format), $this->startDate->getTimeZone()),
-            'endDate' => new DateTime($this->endDate->format($format), $this->endDate->getTimeZone()),
+            'startDate' => new DateTime($this->startDate->format(self::DATE_LOCALE), $this->startDate->getTimeZone()),
+            'endDate' => new DateTime($this->endDate->format(self::DATE_LOCALE), $this->endDate->getTimeZone()),
         ];
     }
 
@@ -474,7 +477,7 @@ final class Period implements JsonSerializable
         $date = $this->startDate;
         do {
             yield $date;
-            $date = self::durationAdd($date, $duration);
+            $date = self::addDuration($date, $duration);
         } while (-1 === self::compareDate($date, $this->endDate));
     }
 
@@ -492,7 +495,7 @@ final class Period implements JsonSerializable
     {
         $startDate = $this->startDate;
         do {
-            $endDate = self::durationAdd($startDate, $duration);
+            $endDate = self::addDuration($startDate, $duration);
             if (1 === self::compareDate($endDate, $this->endDate)) {
                 $endDate = $this->endDate;
             }
@@ -712,7 +715,7 @@ final class Period implements JsonSerializable
      */
     public function withDuration($duration)
     {
-        return new self($this->startDate, self::durationAdd($this->startDate, $duration));
+        return new self($this->startDate, self::addDuration($this->startDate, $duration));
     }
 
     /**
@@ -727,7 +730,7 @@ final class Period implements JsonSerializable
      */
     public function add($duration)
     {
-        return new self($this->startDate, self::durationAdd($this->endDate, $duration));
+        return new self($this->startDate, self::addDuration($this->endDate, $duration));
     }
 
     /**
@@ -742,7 +745,7 @@ final class Period implements JsonSerializable
      */
     public function sub($duration)
     {
-        return new self($this->startDate, self::durationSub($this->endDate, $duration));
+        return new self($this->startDate, self::subDuration($this->endDate, $duration));
     }
 
     /**
@@ -763,7 +766,7 @@ final class Period implements JsonSerializable
             $duration = $this->getTimestampInterval();
         }
 
-        return new self($this->endDate, self::durationAdd($this->endDate, $duration));
+        return new self($this->endDate, self::addDuration($this->endDate, $duration));
     }
 
     /**
@@ -784,7 +787,7 @@ final class Period implements JsonSerializable
             $duration = $this->getTimestampInterval();
         }
 
-        return new self(self::durationSub($this->startDate, $duration), $this->startDate);
+        return new self(self::subDuration($this->startDate, $duration), $this->startDate);
     }
 
     /**
