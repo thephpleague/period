@@ -27,7 +27,7 @@ use OutOfRangeException;
 /**
  * A immutable value object class to manipulate Time Range.
  */
-final class Period implements JsonSerializable
+class Period implements JsonSerializable
 {
     /**
      * Date Format to create ISO8601 Interval format
@@ -44,14 +44,14 @@ final class Period implements JsonSerializable
      *
      * @var \DateTimeImmutable
      */
-    private $startDate;
+    protected $startDate;
 
     /**
      * Period ending excluded datepoint.
      *
      * @var \DateTimeImmutable
      */
-    private $endDate;
+    protected $endDate;
 
     /**
      * Create a new instance.
@@ -79,7 +79,7 @@ final class Period implements JsonSerializable
      *
      * @return \DateTimeImmutable
      */
-    private static function validateDatePoint($datetime)
+    protected static function validateDatePoint($datetime)
     {
         if ($datetime instanceof DateTimeImmutable) {
             return $datetime;
@@ -100,7 +100,7 @@ final class Period implements JsonSerializable
      *
      * @return int
      */
-    private static function compareDate(DateTimeInterface $date1, DateTimeInterface $date2)
+    protected static function compareDate(DateTimeInterface $date1, DateTimeInterface $date2)
     {
         if ($date1 > $date2) {
             return 1;
@@ -149,7 +149,7 @@ final class Period implements JsonSerializable
      *
      * @throws \InvalidArgumentException If year is not a valid int
      */
-    private static function validateYear($year)
+    protected static function validateYear($year)
     {
         $year = filter_var($year, FILTER_VALIDATE_INT);
         if (false === $year) {
@@ -170,7 +170,7 @@ final class Period implements JsonSerializable
      *
      * @throws \OutOfRangeException If the value is not in the range
      */
-    private static function validateRange($value, $min, $max)
+    protected static function validateRange($value, $min, $max)
     {
         $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
         if (false === $res) {
@@ -270,7 +270,7 @@ final class Period implements JsonSerializable
      *                                             `DateInterval::createFromDateString`
      * @return \DateTimeImmutable
      */
-    private static function addDuration(DateTimeImmutable $datetime, $duration)
+    protected static function addDuration(DateTimeImmutable $datetime, $duration)
     {
         if ($duration instanceof DateInterval) {
             return $datetime->add($duration);
@@ -286,12 +286,12 @@ final class Period implements JsonSerializable
     /**
      * Add a timestamp to a DateTimeInterface including microseconds
      *
-     * @param \DateTimeInterface $datetime
+     * @param \DateTimeImmutable $datetime
      * @param float              $seconds
      *
      * @return \DateTimeImmutable
      */
-    private static function addTimestamp(DateTimeInterface $datetime, $seconds)
+    protected static function addTimestamp(DateTimeImmutable $datetime, $seconds)
     {
         if (0 > $seconds) {
             throw new InvalidArgumentException('The interval can not be negative');
@@ -345,7 +345,7 @@ final class Period implements JsonSerializable
      *                                             `DateInterval::createFromDateString`
      * @return \DateTimeImmutable
      */
-    private static function subDuration(DateTimeInterface $datetime, $duration)
+    protected static function subDuration(DateTimeImmutable $datetime, $duration)
     {
         if ($duration instanceof DateInterval) {
             return $datetime->sub($duration);
@@ -361,12 +361,12 @@ final class Period implements JsonSerializable
     /**
      * Substract a timestamp to a DateTimeInterface including microseconds
      *
-     * @param \DateTimeInterface $datetime
+     * @param \DateTimeImmutable $datetime
      * @param float              $seconds
      *
      * @return \DateTimeImmutable
      */
-    private static function subTimestamp(DateTimeInterface $datetime, $seconds)
+    protected static function subTimestamp(DateTimeImmutable $datetime, $seconds)
     {
         if (0 > $seconds) {
             throw new InvalidArgumentException('The interval can not be negative');
@@ -688,7 +688,7 @@ final class Period implements JsonSerializable
      */
     public function startingOn($startDate)
     {
-        return new self(self::validateDatePoint($startDate), $this->endDate);
+        return new self($startDate, $this->endDate);
     }
 
     /**
@@ -700,7 +700,7 @@ final class Period implements JsonSerializable
      */
     public function endingOn($endDate)
     {
-        return new self($this->startDate, self::validateDatePoint($endDate));
+        return new self($this->startDate, $endDate);
     }
 
     /**
@@ -890,7 +890,7 @@ final class Period implements JsonSerializable
      *
      * @return self A new instance
      */
-    private static function createFromDatepoints($datePoint1, $datePoint2)
+    protected static function createFromDatepoints($datePoint1, $datePoint2)
     {
         $datePoint1 = self::validateDatePoint($datePoint1);
         $datePoint2 = self::validateDatePoint($datePoint2);
