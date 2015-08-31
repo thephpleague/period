@@ -7,10 +7,9 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 use League\Period\Period;
-use PHPUnit_Framework_TestCase;
-use StdClass;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class PeriodTest extends PHPUnit_Framework_TestCase
+class PeriodTest extends TestCase
 {
     private $timezone;
 
@@ -28,13 +27,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         date_default_timezone_set('Africa/Nairobi');
         $period = new Period('2014-05-01', '2014-05-08');
-        $this->assertSame('2014-04-30T21:00:00.000000Z/2014-05-07T21:00:00.000000Z', (string) $period);
+        $this->assertSame('2014-04-30T21:00:00Z/2014-05-07T21:00:00Z', (string) $period);
     }
 
     public function testJsonSerialize()
     {
         $period = Period::createFromMonth(2015, 4);
-        $res    = json_decode(json_encode($period));
+        $this->assertInstanceof('JsonSerializable', $period);
+        $res = json_decode(json_encode($period));
 
         $this->assertEquals(
             $period->getStartDate(),
@@ -54,9 +54,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDatePeriod($interval, $count)
     {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->getDatePeriod($interval);
-        $this->assertInstanceof('Generator', $range);
+        $period = Period::createFromDuration(new DateTime(), '1 DAY');
+        $range = $period->getDatePeriod($interval);
+        $this->assertInstanceof('DatePeriod', $range);
         $this->assertCount($count, iterator_to_array($range));
     }
 
@@ -64,7 +64,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     {
         return [
             'useDateInterval' => [new DateInterval('PT1H'), 24],
-            'useString' => ["2 HOUR", 12],
+            'useString' => ['2 HOUR', 12],
             'useInt' => [9600, 9],
             'useFloat' => [14400.0, 6],
         ];
@@ -75,8 +75,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDatePeriodThrowsException()
     {
-        $res = Period::createFromDuration(new DateTime(), "1 DAY")->getDatePeriod(-3600);
-        iterator_to_array($res);
+        Period::createFromDuration(new DateTime(), '1 DAY')->getDatePeriod(-3600);
     }
 
     public function testGetDateInterval()
@@ -88,13 +87,13 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testGetTimestampInterval()
     {
         $period = Period::createFromMonth(2014, 3);
-        $this->assertInternalType('float', $period->getTimestampInterval());
+        $this->assertInternalType('int', $period->getTimestampInterval());
     }
 
     public function testSplit()
     {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split(3600);
+        $period = Period::createFromDuration(new DateTime(), '1 DAY');
+        $range = $period->split(3600);
         $this->assertInstanceof('\Generator', $range);
         foreach ($range as $innerPeriod) {
             $this->assertInstanceof('\League\Period\Period', $innerPeriod);
@@ -103,7 +102,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testSplitMustRecreateParentObject()
     {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
+        $period = Period::createFromDuration(new DateTime(), '1 DAY');
         $range  = $period->split(3600);
         $total = null;
         foreach ($range as $part) {
@@ -119,8 +118,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testSplitWithLargeInterval()
     {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split("2 DAY");
+        $period = Period::createFromDuration(new DateTime(), '1 DAY');
+        $range  = $period->split('2 DAY');
         //HHVM bug fix
         if (defined('HHVM_VERSION')) {
             $range->next();
@@ -130,12 +129,10 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testSplitWithInconsistentInterval()
     {
-        $period = Period::createFromDuration(new DateTime(), "1 DAY");
-        $range  = $period->split("10 HOURS");
-        foreach ($range as $part) {
-
-        }
-        $this->assertEquals(14400, $part->getTimestampInterval());
+        $period = Period::createFromDuration(new DateTime(), '1 DAY');
+        $range = iterator_to_array($period->split('10 HOURS'));
+        $last = array_pop($range);
+        $this->assertEquals(14400, $last->getTimestampInterval());
     }
 
     public function testConstructor()
@@ -147,25 +144,9 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceof('DateTimeImmutable', $start);
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function testConstructorWithMicroSecondsFailed()
-    {
-        new Period(
-            '2014-05-01 00:00:00.123456',
-            '2014-05-01 00:00:00.012345'
-        );
-    }
-
     public function testConstructorWithMicroSecondsSucceed()
     {
-        $period = new Period(
-            '2014-05-01 00:00:00.123456',
-            '2014-05-01 00:00:00.234567'
-        );
-        $this->assertSame('234567', $period->getEndDate()->format('u'));
-        $this->assertEquals(0.111111, $period->getTimestampInterval());
+        $period = new Period('2014-05-01 00:00:00', '2014-05-01 00:00:00');
         $this->assertEquals(new DateInterval('PT0S'), $period->getDateInterval());
     }
 
@@ -182,19 +163,12 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithDateTimeInterface()
     {
-        $start  = new DateTimeImmutable('2014-05-01');
-        $end    = new DateTime('2014-05-08');
-        $period = new Period($start, $end);
-        $this->assertInstanceof('DateTimeInterface', $period->getEndDate());
+        $period = new Period('2014-05-01', new DateTime('2014-05-08'));
         $this->assertInstanceof('DateTimeImmutable', $period->getEndDate());
-        $this->assertEquals($start, $period->getStartDate());
+        $this->assertInstanceof('DateTimeImmutable', $period->getStartDate());
     }
 
     /**
-     * @param $startDate
-     * @param $endDate
-     * @param $duration
-     *
      * @dataProvider provideCreateFromDurationData
      */
     public function testCreateFromDuration($startDate, $endDate, $duration)
@@ -207,20 +181,17 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function provideCreateFromDurationData()
     {
         return [
-            "usingAString" => [
-                "2015-01-01", "2015-01-02", "+1 DAY"
+            'usingAString' => [
+                '2015-01-01', '2015-01-02', '+1 DAY',
             ],
-            "usingAnInt" => [
-                "2015-01-01 10:00:00", "2015-01-01 11:00:00", 3600
+            'usingAnInt' => [
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', 3600,
             ],
-            "usingADateInterval" => [
-                "2015-01-01 10:00:00", "2015-01-01 11:00:00", new DateInterval('PT1H')
+            'usingADateInterval' => [
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', new DateInterval('PT1H'),
             ],
-            "usingAFloat" => [
-                "2015-01-01 10:00:00.000000", "2015-01-01 11:00:00.500000", 3600.5
-            ],
-            "usingAFloatWithNoMicroseconds" => [
-                "2015-01-01 10:00:00", "2015-01-01 11:00:00", 3600.0
+            'usingAFloatWithNoMicroseconds' => [
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', 3600.0,
             ],
         ];
     }
@@ -234,26 +205,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateFromDurationWithInvalidFloat()
-    {
-        Period::createFromDuration('2014-01-01', -1.235);
-    }
-
-    /**
      * @expectedException \LogicException
      */
     public function testCreateFromDurationFailedWithOutofRangeInterval()
     {
-        Period::createFromDuration(new DateTime(), "-1 DAY");
+        Period::createFromDuration(new DateTime(), '-1 DAY');
     }
 
     /**
-     * @param $startDate
-     * @param $endDate
-     * @param $duration
-     *
      * @dataProvider provideCreateFromDurationBeforeEndData
      */
     public function testCreateFromDurationBeforeEnd($startDate, $endDate, $duration)
@@ -266,20 +225,14 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function provideCreateFromDurationBeforeEndData()
     {
         return [
-            "usingAString" => [
-                "2015-01-01", "2015-01-02", "+1 DAY"
+            'usingAString' => [
+                '2015-01-01', '2015-01-02', '+1 DAY',
             ],
-            "usingAnInt" => [
-                "2015-01-01 10:00:00", "2015-01-01 11:00:00", 3600
+            'usingAnInt' => [
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', 3600,
             ],
-            "usingADateInterval" => [
-                "2015-01-01 10:00:00", "2015-01-01 11:00:00", new DateInterval('PT1H')
-            ],
-            "usingAFloat" => [
-                "2015-01-01 10:00:00.000000", "2015-01-01 11:00:00.500000", 3600.5
-            ],
-            "usingAFloatInBothDate" => [
-                "2015-01-02 07:59:59.999400", "2015-01-02 08:00:00.000200", 0.000800
+            'usingADateInterval' => [
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', new DateInterval('PT1H'),
             ],
         ];
     }
@@ -289,15 +242,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromDurationBeforeEndFailedWithOutofRangeInterval()
     {
-        Period::createFromDurationBeforeEnd(new DateTime(), "-1 DAY");
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateFromDurationBeforeEndFailedWithOutofRangeFloat()
-    {
-        Period::createFromDurationBeforeEnd(new DateTime(), -.548624);
+        Period::createFromDurationBeforeEnd(new DateTime(), '-1 DAY');
     }
 
     public function testCreateFromWeek()
@@ -312,7 +257,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromWeekFailedWithInvalidYear()
     {
-        Period::createFromWeek("toto", 5);
+        Period::createFromWeek('toto', 5);
     }
 
     /**
@@ -359,7 +304,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromMonthFailedWithInvalidYear()
     {
-        Period::createFromMonth("120 toto", 8);
+        Period::createFromMonth('120 toto', 8);
     }
 
     public function testCreateFromQuarter()
@@ -390,7 +335,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromQuarterFailedWithInvalidYear()
     {
-        Period::createFromQuarter("toto", 2);
+        Period::createFromQuarter('toto', 2);
     }
 
     public function testCreateFromSemester()
@@ -421,7 +366,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromSemesterFailedWithInvalidYear()
     {
-        Period::createFromSemester("toto", 1);
+        Period::createFromSemester('toto', 1);
     }
 
     public function testCreateFromYear()
@@ -436,7 +381,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromYearFailedWithInvalidYear()
     {
-        Period::createFromYear("toto");
+        Period::createFromYear('toto');
     }
 
     public function testIsBeforeDatetime()
@@ -490,10 +435,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Period $period
-     * @param Period $arg
-     * @param bool $expected
-     *
      * @dataProvider provideAbutsData
      */
     public function testAbuts(Period $period, Period $arg, $expected)
@@ -518,10 +459,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Period $period
-     * @param Period $arg
-     * @param bool $expected
-     *
      * @dataProvider provideOverlapsData
      */
     public function testOverlaps(Period $period, Period $arg, $expected)
@@ -566,10 +503,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Period $period
-     * @param $arg
-     * @param bool $expected
-     *
      * @dataProvider provideContainsData
      */
     public function testContains(Period $period, $arg, $expected)
@@ -614,11 +547,6 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Period $period1
-     * @param Period $period2
-     * @param string $method
-     * @param bool $expected
-     *
      * @dataProvider provideCompareDurationData
      */
     public function testCompareDuration(Period $period1, Period $period2, $method, $expected)
@@ -635,91 +563,34 @@ class PeriodTest extends PHPUnit_Framework_TestCase
                 'durationLessThan',
                 true,
             ],
-            'testDurationLessThanWithMicroseconds' => [
-                new Period('2012-01-01', '2012-01-01 00:00:00.123456'),
-                new Period('2012-01-01', '2012-01-01 00:00:00.234567'),
-                'durationLessThan',
-                true,
-            ],
-            'testDurationLessThanFailedWithMicroseconds' => [
-                new Period('2012-01-01', '2012-01-01 00:00:00.234567'),
-                new Period('2012-01-01', '2012-01-01 00:00:00.123456'),
-                'durationLessThan',
-                false,
-            ],
             'testDurationGreaterThanReturnsTrue' => [
                 Period::createFromDuration('2012-01-01', '1 MONTH'),
                 Period::createFromDuration('2012-01-01', '1 WEEK'),
                 'durationGreaterThan',
                 true,
             ],
-            'testDurationGreaterThanReturnsFalseWithMicroseconds' => [
-                new Period('2012-01-01', '2012-01-01 00:00:00.123456'),
-                new Period('2012-01-01', '2012-01-01 00:00:00.234567'),
-                'durationGreaterThan',
-                false,
-            ],
-            'testDurationGreaterThanReturnsFalseWithMicroseconds2' => [
-                new Period('2012-01-01 00:00:00.123456', '2012-01-01 00:00:01.123456'),
-                new Period('2012-01-01 00:00:00.999999', '2012-01-01 00:00:01.000001'),
-                'durationGreaterThan',
-                true,
-            ],
-            'testDurationGreaterThanReturnsTrueWithMicroseconds' => [
-                new Period('2012-01-01', '2012-01-01 00:00:00.234567'),
-                new Period('2012-01-01', '2012-01-01 00:00:00.123456'),
-                'durationGreaterThan',
-                true,
-            ],
             'testSameDurationAsReturnsTrueWithMicroseconds' => [
-                new Period('2012-01-01 00:00:00.000111', '2012-01-03 00:00:00.958926'),
-                new Period('2012-02-02 00:00:00.000111', '2012-02-04 00:00:00.958926'),
+                new Period('2012-01-01 00:00:00', '2012-01-03 00:00:00'),
+                new Period('2012-02-02 00:00:00', '2012-02-04 00:00:00'),
                 'sameDurationAs',
                 true,
-            ],
-            'testSameDurationAsReturnsTrueWithMicroseconds2' => [
-                new Period('2012-01-01 08:03:33.999999', '2012-01-01 09:00:00.000111'),
-                new Period('2012-01-02 08:03:33.999999', '2012-01-02 09:00:00.000111'),
-                'sameDurationAs',
-                true,
-            ],
-        ];
-    }
-
-    /**
-     * @param  Period $period
-     * @param  Period $arg
-     * @param  string $method
-     * @param  bool $expected
-     *
-     * @dataProvider provideSameValueAsData
-     */
-    public function testSameValueAs(Period $period, Period $arg, $expected)
-    {
-        $this->assertSame($expected, $period->sameValueAs($arg));
-    }
-
-    public function provideSameValueAsData()
-    {
-        return [
-            'testSameValueAsReturnsFalseWithMicroseconds' => [
-                new Period('2012-02-01', '2012-02-01 00:00:00.234567'),
-                new Period('2012-02-01', '2012-02-01 00:00:00.234566'),
-                false,
             ],
             'testSameValueAsReturnsTrue' => [
                 Period::createFromDuration('2012-01-01', '1 MONTH'),
                 Period::createFromMonth(2012, 1),
+                'sameValueAs',
                 true,
             ],
             'testSameValueAsReturnsFalse' => [
                 Period::createFromDuration('2012-01-01', '1 MONTH'),
                 Period::createFromDuration('2012-01-01', '1 WEEK'),
+                'sameValueAs',
                 false,
             ],
             'testSameValueAsReturnsFalseArgumentOrderIndependent' => [
                 Period::createFromDurationBeforeEnd('2012-01-01', '1 WEEK'),
                 Period::createFromDurationBeforeEnd('2012-01-01', '1 MONTH'),
+                'sameValueAs',
                 false,
             ],
         ];
@@ -728,7 +599,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testStartingOn()
     {
         $expected  = new DateTime('2012-03-02');
-        $period    = Period::createFromWeek(2014, 3);
+        $period = Period::createFromWeek(2014, 3);
         $newPeriod = $period->startingOn($expected);
         $this->assertTrue($newPeriod->getStartDate() == $expected);
         $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2014-01-13'));
@@ -746,7 +617,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testEndingOn()
     {
         $expected  = new DateTime('2015-03-02');
-        $period    = Period::createFromWeek(2014, 3);
+        $period = Period::createFromWeek(2014, 3);
         $newPeriod = $period->endingOn($expected);
         $this->assertTrue($newPeriod->getEndDate() == $expected);
         $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2014-01-20'));
@@ -764,7 +635,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testWithDuration()
     {
         $expected = Period::createFromMonth(2014, 3);
-        $period   = Period::createFromDuration('2014-03-01', '2 Weeks');
+        $period = Period::createFromDuration('2014-03-01', '2 Weeks');
         $this->assertEquals($expected, $period->withDuration('1 MONTH'));
     }
 
@@ -781,18 +652,17 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testMerge()
     {
-        $period    = Period::createFromMonth(2014, 3);
+        $period = Period::createFromMonth(2014, 3);
         $altPeriod = Period::createFromMonth(2014, 4);
-        $expected  = Period::createFromDuration('2014-03-01', '2 MONTHS');
-        $res       = $expected->merge($period, $altPeriod);
+        $expected = Period::createFromDuration('2014-03-01', '2 MONTHS');
         $this->assertEquals($expected, $period->merge($altPeriod));
         $this->assertEquals($expected, $altPeriod->merge($period));
-        $this->assertEquals($expected, $res);
+        $this->assertEquals($expected, $expected->merge($period, $altPeriod));
     }
 
     public function testAdd()
     {
-        $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $period = $orig->add('1 MONTH');
         $this->assertTrue($period->durationGreaterThan($orig));
         $this->assertEquals($orig->getStartDate(), $period->getStartDate());
@@ -808,7 +678,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
 
     public function testSub()
     {
-        $orig   = Period::createFromDuration('2012-01-01', '1 MONTH');
+        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
         $period = $orig->sub('1 WEEK');
         $this->assertTrue($period->durationLessThan($orig));
     }
@@ -855,33 +725,30 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testDateIntervalDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
-        $alt  = Period::createFromDuration('2012-01-01', '2 HOUR');
+        $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
         $this->assertInstanceof('\DateInterval', $orig->dateIntervalDiff($alt));
     }
 
     public function testTimeIntervalDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
-        $alt  = Period::createFromDuration('2012-01-01', '2 HOUR');
-        $res  = $orig->timestampIntervalDiff($alt);
-        $this->assertInternalType('float', $res);
-        $this->assertSame(-3600.0, $res);
+        $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
+        $this->assertSame(-3600, $orig->timestampIntervalDiff($alt));
     }
 
     public function testDateIntervalDiffPositionIrrelevant()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
-        $alt  = Period::createFromDuration('2012-01-01', '2 HOUR');
+        $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
         $fromOrig = $orig->dateIntervalDiff($alt);
         $fromOrig->invert = 1;
-        $fromAlt = $alt->dateIntervalDiff($orig);
-        $this->assertEquals($fromOrig, $fromAlt);
+        $this->assertEquals($fromOrig, $alt->dateIntervalDiff($orig));
     }
 
     public function testIntersect()
     {
         $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
-        $alt  = Period::createFromDuration('2012-01-01', '2 MONTH');
+        $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
 
         $this->assertInstanceof('\League\Period\Period', $orig->intersect($alt));
     }
@@ -892,8 +759,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange()
     {
         $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
-        $alt  = Period::createFromDuration('2012-01-01', '2 MONTH');
-        $orig->intersect($alt);
+        $orig->intersect(Period::createFromDuration('2012-01-01', '2 MONTH'));
     }
 
     /**
@@ -908,8 +774,8 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testGap()
     {
         $orig = Period::createFromDuration('2011-12-01', '2 MONTHS');
-        $alt  = Period::createFromDuration('2012-06-15', '3 MONTHS');
-        $res  = $orig->gap($alt);
+        $alt = Period::createFromDuration('2012-06-15', '3 MONTHS');
+        $res = $orig->gap($alt);
         $this->assertInstanceof('\League\Period\Period', $res);
         $this->assertEquals($orig->getEndDate(), $res->getStartDate());
         $this->assertEquals($alt->getStartDate(), $res->getEndDate());
@@ -922,8 +788,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testGapThrowsExceptionWithOverlapsPeriod()
     {
         $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
-        $alt  = Period::createFromDuration('2012-01-01', '2 MONTH');
-        $orig->gap($alt);
+        $orig->gap(Period::createFromDuration('2012-01-01', '2 MONTH'));
     }
 
     /**
@@ -932,8 +797,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testGapWithSameStartingPeriod()
     {
         $orig = Period::createFromDuration('2012-12-01', '5 MONTH');
-        $alt  = Period::createFromDuration('2012-12-01', '2 MONTH');
-        $orig->gap($alt);
+        $orig->gap(Period::createFromDuration('2012-12-01', '2 MONTH'));
     }
 
     /**
@@ -942,8 +806,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testGapWithSameEndingPeriod()
     {
         $orig = Period::createFromDurationBeforeEnd('2012-12-01', '5 MONTH');
-        $alt  = Period::createFromDurationBeforeEnd('2012-12-01', '2 MONTH');
-        $orig->gap($alt);
+        $orig->gap(Period::createFromDurationBeforeEnd('2012-12-01', '2 MONTH'));
     }
 
     public function testGapWithAdjacentPeriod()
@@ -952,7 +815,7 @@ class PeriodTest extends PHPUnit_Framework_TestCase
         $alt  = $orig->next('1 MINUTE');
         $res  = $orig->gap($alt);
         $this->assertInstanceof('\League\Period\Period', $res);
-        $this->assertSame(0.0, $res->getTimestampInterval());
+        $this->assertSame(0, $res->getTimestampInterval());
     }
 
     /**
@@ -966,15 +829,15 @@ class PeriodTest extends PHPUnit_Framework_TestCase
     public function testDiffWithEqualsPeriod()
     {
         $period = Period::createFromYear(2013);
-        $alt    = Period::createFromDuration('2013-01-01', '1 YEAR');
+        $alt = Period::createFromDuration('2013-01-01', '1 YEAR');
         $this->assertCount(0, $alt->diff($period));
     }
 
     public function testDiffWithPeriodSharingOneEndpoints()
     {
         $period = Period::createFromYear(2013);
-        $alt    = Period::createFromDuration('2013-01-01', '3 MONTHS');
-        $res    = $alt->diff($period);
+        $alt = Period::createFromDuration('2013-01-01', '3 MONTHS');
+        $res = $alt->diff($period);
         $this->assertCount(1, $res);
         $this->assertInstanceof('League\Period\Period', $res[0]);
         $this->assertEquals(new DateTimeImmutable('2013-04-01'), $res[0]->getStartDate());
