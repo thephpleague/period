@@ -7,12 +7,12 @@ All Notable changes to `League\Period` will be documented in this file
 ### Added
 
 - `Period` implements the `JsonSerializable` interface
+- `Period` can now be extended
 
 ### Fixed
 
 - `Period` always returns `DateTimeImmutable` objects
 - `Period::split` returns a `Generator`
-- `Period` now takes into account microseconds when comparing `DateTimeInterface` objects
 - `Period::merge` no longer throws `RuntimeException`
 
 ### Deprecated
