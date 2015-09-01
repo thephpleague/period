@@ -17,7 +17,6 @@ All Notable changes to `League\Period` will be documented in this file
 
 - `Period` always returns `DateTimeImmutable` objects
 - `Period::split` returns a `Generator`
-- `Period` now takes into account microseconds
 - `Period::merge` no longer throws `RuntimeException`
 
 ### Deprecated

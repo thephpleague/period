@@ -149,7 +149,7 @@ $next    = $curent->next('1 MONTH');
 
 ## Using another Period object
 
-### Period::merge(Period $period, Period ...$periods)
+### Period::merge(Period ...$periods)
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
 

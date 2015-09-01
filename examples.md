@@ -15,8 +15,8 @@ date_default_timezone_set('UTC');
 use League\Period\Period;
 
 $period = Period::createFromDuration('2014-10-03 08:12:37', 3600);
-$start = $period->getStartDate(); //return the following DateTime: DateTime('2014-10-03 08:12:37');
-$end   = $period->getEndDate(); //return the following DateTime: DateTime('2014-10-03 09:12:37');
+$start = $period->getStartDate(); //return DateTimeImmutable('2014-10-03 08:12:37');
+$end   = $period->getEndDate(); //return DateTimeImmutable('2014-10-03 09:12:37');
 $duration  = $period->getDateInterval(); //return a DateInterval object
 $duration2 = $period->getTimestampInterval(); //return the same interval expressed in seconds.
 echo $period; //displays '2014-10-03T08:12:37Z/014-10-03T09:12:37Z'

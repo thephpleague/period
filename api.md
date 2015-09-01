@@ -71,7 +71,7 @@ $period->getDatePeriod('1 HOUR'); //return a DatePeriod object
 ~~~
 
 ~~~php
-$arr = $period->split('1 WEEK'); //$arr is a Generator object
+$arr = $period->split('1 WEEK'); /return a Generator object containing Period objects
 ~~~
 
 ~~~php

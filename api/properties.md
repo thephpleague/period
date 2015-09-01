@@ -75,9 +75,7 @@ foreach ($period_list as $inner_periods) {
 
 ### Period::__toString()
 
-Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals)
-
-<p class="message-notice">Starting with <code>version 3</code>, this method also returns the microseconds</p>
+Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals).
 
 ~~~php
 date_default_timezone_set('Africa/Nairobi');
@@ -85,7 +83,7 @@ date_default_timezone_set('Africa/Nairobi');
 use League\Period\Period;
 
 $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
-echo $period; // '2014-04-30T21:00:00.000000Z/2014-05-07T21:00:00.000000Z'
+echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
 ~~~
 
 ### Period::jsonSerialize()
@@ -102,16 +100,16 @@ $res = json_decode(json_encode($period), true);
 //  $res will be equivalent to:
 // [
 //      'startDate' => [
-//          'date' => '2014-05-01 00:00:00.000000',
+//          'date' => '2014-05-01 00:00:00',
 //          'timezone_type' => 3,
 //          'timezone' => 'Africa/Kinshasa',
 //      ],
 //      'endDate' => [
-//          'date' => '2014-05-08 00:00:00.000000',
+//          'date' => '2014-05-08 00:00:00',
 //          'timezone_type' => 3,
 //          'timezone' => 'Africa/Kinshasa',
 //      ],
 // ]
 ~~~
 
-<p class="message-notice">microseconds are missing prior to <a href="http://php.net/ChangeLog-5.php#5.5.14" target="_blank">version 5.5.14</a>.</p>
+<p class="message-notice">microseconds may appear starting with <a href="http://php.net/ChangeLog-5.php#5.5.14" target="_blank">version 5.5.14</a>.</p>
