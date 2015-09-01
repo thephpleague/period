@@ -1,15 +1,14 @@
 <?php
 
 /**
- * This file is part of the Period library.
+ * League.Period (http://period.thephpleague.com)
  *
- * @license http://opensource.org/licenses/MIT
- * @link https://github.com/thephpleague/period/
- * @version 3.0.0
- * @package League.Period
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @package   League.period
+ * @author    Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @copyright 2014-2015 Ignace Nyamagana Butera
+ * @license   https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
+ * @version   3.0.0
+ * @link      https://github.com/thephpleague/period/
  */
 namespace League\Period;
 
@@ -18,16 +17,18 @@ use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
-use Exception;
 use Generator;
 use InvalidArgumentException;
 use JsonSerializable;
 use LogicException;
 use OutOfRangeException;
-use RuntimeException;
 
 /**
  * A immutable value object class to manipulate Time Range.
+ *
+ * @package League.period
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @since   1.0.0
  */
 class Period implements JsonSerializable
 {
@@ -46,14 +47,14 @@ class Period implements JsonSerializable
      *
      * @var DateTimeImmutable
      */
-    private $startDate;
+    protected $startDate;
 
     /**
      * Period ending excluded date point.
      *
      * @var DateTimeImmutable
      */
-    private $endDate;
+    protected $endDate;
 
     /**
      * Create a Period object from a starting point and an interval.
@@ -116,7 +117,7 @@ class Period implements JsonSerializable
      *
      * @return int
      */
-    private static function validateYear($year)
+    protected static function validateYear($year)
     {
         $year = filter_var($year, FILTER_VALIDATE_INT);
         if (false === $year) {
@@ -137,7 +138,7 @@ class Period implements JsonSerializable
      *
      * @return int
      */
-    private static function validateRange($value, $min, $max)
+    protected static function validateRange($value, $min, $max)
     {
         $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
         if (false === $res) {
@@ -219,7 +220,7 @@ class Period implements JsonSerializable
      *
      * @return Period
      */
-    private static function createFromEndpoints($datePoint1, $datePoint2)
+    protected static function createFromEndpoints($datePoint1, $datePoint2)
     {
         $startDate = static::filterDatePoint($datePoint1);
         $endDate   = static::filterDatePoint($datePoint2);
@@ -254,11 +255,9 @@ class Period implements JsonSerializable
      *
      * @param string|DateTimeImmutable|DateTime $datetime
      *
-     * @throws RuntimeException If The Data can not be converted into a proper DateTime object
-     *
      * @return DateTimeImmutable
      */
-    private static function filterDatePoint($datetime)
+    protected static function filterDatePoint($datetime)
     {
         if ($datetime instanceof DateTimeImmutable) {
             return $datetime;
@@ -279,11 +278,9 @@ class Period implements JsonSerializable
      *                                          If a string is passed, it must be a format 
      *                                          supported by `DateInterval::createFromDateString`
      *
-     * @throws Exception If the integer generates a bad format
-     *
      * @return DateInterval
      */
-    private static function filterDateInterval($interval)
+    protected static function filterDateInterval($interval)
     {
         if ($interval instanceof DateInterval) {
             return $interval;
@@ -534,8 +531,6 @@ class Period implements JsonSerializable
      *
      * @param DateTimeImmutable|DateTime|string $startDate date point
      *
-     * @throws LogicException If $startDate does not permit the creation of a new object
-     *
      * @return static
      */
     public function startingOn($startDate)
@@ -547,8 +542,6 @@ class Period implements JsonSerializable
      * Returns a new Period object with a new ending date point.
      *
      * @param DateTimeImmutable|DateTime|string $endDate date point
-     *
-     * @throws LogicException If $endDate does not permit the creation of a new object
      *
      * @return static
      */
@@ -580,8 +573,6 @@ class Period implements JsonSerializable
      *                                          If a string is passed, it must be a format 
      *                                          supported by `DateInterval::createFromDateString`
      *
-     * @throws LogicException If The $interval does not permit the creation of a new object
-     *
      * @return static
      */
     public function add($interval)
@@ -596,8 +587,6 @@ class Period implements JsonSerializable
      *                                          interpreted as the duration expressed in seconds.
      *                                          If a string is passed, it must be a format 
      *                                          supported by `DateInterval::createFromDateString`
-     *
-     * @throws LogicException If The $interval does not permit the creation of a new object
      *
      * @return static
      */
@@ -722,8 +711,6 @@ class Period implements JsonSerializable
      * Computes the gap between two Period objects.
      *
      * @param Period $period
-     *
-     * @throws LogicException If Both objects overlaps
      *
      * @return static
      */
