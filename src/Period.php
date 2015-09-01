@@ -149,6 +149,23 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Create a Period object from a given duration contained in a year
+     *
+     * @param int $duration
+     * @param int $year
+     * @param int $index
+     *
+     * @return static
+     */
+    protected static function createFromInterval($duration, $year, $index)
+    {
+        $month = sprintf('%02s', ((static::validateRange($index, 1, 12 / $duration) - 1) * $duration) + 1);
+        $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
+
+        return new static($startDate, $startDate->add(new DateInterval('P'.$duration.'M')));
+    }
+
+    /**
      * Create a Period object from a Year and a Month.
      *
      * @param int $year
@@ -158,10 +175,7 @@ class Period implements JsonSerializable
      */
     public static function createFromMonth($year, $month)
     {
-        $month = sprintf('%02s', static::validateRange($month, 1, 12));
-        $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
-
-        return new static($startDate, $startDate->add(new DateInterval('P1M')));
+        return static::createFromInterval(1, $year, $month);
     }
 
     /**
@@ -174,10 +188,7 @@ class Period implements JsonSerializable
      */
     public static function createFromQuarter($year, $quarter)
     {
-        $month = sprintf('%02s', ((static::validateRange($quarter, 1, 4) - 1) * 3) + 1);
-        $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
-
-        return new static($startDate, $startDate->add(new DateInterval('P3M')));
+        return static::createFromInterval(3, $year, $quarter);
     }
 
     /**
@@ -190,10 +201,7 @@ class Period implements JsonSerializable
      */
     public static function createFromSemester($year, $semester)
     {
-        $month = sprintf('%02s', ((static::validateRange($semester, 1, 2) - 1) * 6) + 1);
-        $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
-
-        return new static($startDate, $startDate->add(new DateInterval('P6M')));
+        return static::createFromInterval(6, $year, $semester);
     }
 
     /**
@@ -205,9 +213,7 @@ class Period implements JsonSerializable
      */
     public static function createFromYear($year)
     {
-        $startDate = new DateTimeImmutable(static::validateYear($year).'-01-01');
-
-        return new static($startDate, $startDate->add(new DateInterval('P1Y')));
+        return static::createFromInterval(12, $year, 1);
     }
 
     /**
