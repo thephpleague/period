@@ -182,9 +182,7 @@ $intersectPeriod = $period->insersect($anotherPeriod);
 
 ### Period::gap(Period $period)
 
-<p class="message-notice">Added to <code>Period</code> in version 2.2</p>
-
- A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a Exception is thrown.
+A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a Exception is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 
