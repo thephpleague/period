@@ -1,5 +1,4 @@
 <?php
-
 /**
  * League.Period (http://period.thephpleague.com)
  *
@@ -652,7 +651,7 @@ class Period implements JsonSerializable
      *
      * @return static
      */
-    public function merge(Period $period)
+    public function merge(Period $arg)
     {
         $reducer = function (Period $carry, Period $period) {
             if ($carry->getStartDate() > $period->getStartDate()) {
@@ -681,8 +680,9 @@ class Period implements JsonSerializable
     public function split($interval)
     {
         $startDate = $this->startDate;
+        $interval = static::filterDateInterval($interval);
         do {
-            $endDate = $startDate->add(static::filterDateInterval($interval));
+            $endDate = $startDate->add($interval);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
             }
