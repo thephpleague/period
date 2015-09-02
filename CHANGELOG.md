@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Period` will be documented in this file
 
-## 3.X.X - XXXX-XX-XX
+## 3.0.0 - 2015-09-02
 
 ### Added
 

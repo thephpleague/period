@@ -156,7 +156,7 @@ class Period implements JsonSerializable
      *
      * @return static
      */
-    protected static function createFromInterval($duration, $year, $index)
+    protected static function createFromYearInterval($duration, $year, $index)
     {
         $month = sprintf('%02s', ((static::validateRange($index, 1, 12 / $duration) - 1) * $duration) + 1);
         $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
@@ -174,7 +174,7 @@ class Period implements JsonSerializable
      */
     public static function createFromMonth($year, $month)
     {
-        return static::createFromInterval(1, $year, $month);
+        return static::createFromYearInterval(1, $year, $month);
     }
 
     /**
@@ -187,7 +187,7 @@ class Period implements JsonSerializable
      */
     public static function createFromQuarter($year, $quarter)
     {
-        return static::createFromInterval(3, $year, $quarter);
+        return static::createFromYearInterval(3, $year, $quarter);
     }
 
     /**
@@ -200,7 +200,7 @@ class Period implements JsonSerializable
      */
     public static function createFromSemester($year, $semester)
     {
-        return static::createFromInterval(6, $year, $semester);
+        return static::createFromYearInterval(6, $year, $semester);
     }
 
     /**
@@ -212,7 +212,9 @@ class Period implements JsonSerializable
      */
     public static function createFromYear($year)
     {
-        return static::createFromInterval(12, $year, 1);
+        $startDate = new DateTimeImmutable(static::validateYear($year).'-01-01');
+
+        return new static($startDate, $startDate->add(new DateInterval('P1Y')));
     }
 
     /**
