@@ -43,7 +43,7 @@ $ composer require league/period
 Testing
 -------
 
-Period has a [PHPUnit](https://phpunit.de/) test suite. To run the tests, run the following command from the project folder:
+`League\Period` has a [PHPUnit](https://phpunit.de) test suite and a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/). To run the tests, run the following command from the project folder.
 
 ``` bash
 $ composer test
@@ -52,7 +52,7 @@ $ composer test
 Contributing
 -------
 
-Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md)for details.
 
 Security
 -------

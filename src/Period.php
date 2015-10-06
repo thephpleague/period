@@ -56,12 +56,51 @@ class Period implements JsonSerializable
     protected $endDate;
 
     /**
+     * Create a new instance.
+     *
+     * @param DateTimeImmutable|DateTime|string $startDate starting date point
+     * @param DateTimeImmutable|DateTime|string $endDate   ending date point
+     *
+     * @throws LogicException If $startDate is greater than $endDate
+     */
+    public function __construct($startDate, $endDate)
+    {
+        $startDate = static::filterDatePoint($startDate);
+        $endDate   = static::filterDatePoint($endDate);
+        if ($startDate > $endDate) {
+            throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
+        }
+        $this->startDate = $startDate;
+        $this->endDate   = $endDate;
+    }
+
+    /**
+     * Validate a DateTime.
+     *
+     * @param string|DateTimeImmutable|DateTime $datetime
+     *
+     * @return DateTimeImmutable
+     */
+    protected static function filterDatePoint($datetime)
+    {
+        if ($datetime instanceof DateTimeImmutable) {
+            return $datetime;
+        }
+
+        if ($datetime instanceof DateTime) {
+            return new DateTimeImmutable($datetime->format(static::DATE_LOCALE), $datetime->getTimeZone());
+        }
+
+        return new DateTimeImmutable($datetime);
+    }
+
+    /**
      * Create a Period object from a starting point and an interval.
      *
      * @param DateTimeImmutable|DateTime|string $startDate The start date point
      * @param DateInterval|int|string           $interval  The duration. If an int is passed, it is
      *                                                     interpreted as the duration expressed in seconds.
-     *                                                     If a string is passed, it must be a format 
+     *                                                     If a string is passed, it must be a format
      *                                                     supported by `DateInterval::createFromDateString`
      *
      * @return static
@@ -74,12 +113,35 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Validate a DateInterval.
+     *
+     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
+     *                                          interpreted as the duration expressed in seconds.
+     *                                          If a string is passed, it must be a format
+     *                                          supported by `DateInterval::createFromDateString`
+     *
+     * @return DateInterval
+     */
+    protected static function filterDateInterval($interval)
+    {
+        if ($interval instanceof DateInterval) {
+            return $interval;
+        }
+
+        if (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
+            return new DateInterval('PT'.$res.'S');
+        }
+
+        return DateInterval::createFromDateString($interval);
+    }
+
+    /**
      * Create a Period object from a ending endpoint and an interval.
      *
      * @param DateTimeImmutable|DateTime|string $endDate  The end date point
      * @param DateInterval|int|string           $interval The duration. If an int is passed, it is
      *                                                    interpreted as the duration expressed in seconds.
-     *                                                    If a string is passed, it must be a format 
+     *                                                    If a string is passed, it must be a format
      *                                                    supported by `DateInterval::createFromDateString`
      *
      * @return static
@@ -148,6 +210,19 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Create a Period object from a Year and a Month.
+     *
+     * @param int $year
+     * @param int $month Month index from 1 to 12
+     *
+     * @return static
+     */
+    public static function createFromMonth($year, $month)
+    {
+        return static::createFromYearInterval(1, $year, $month);
+    }
+
+    /**
      * Create a Period object from a given duration contained in a year
      *
      * @param int $duration
@@ -162,19 +237,6 @@ class Period implements JsonSerializable
         $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
 
         return new static($startDate, $startDate->add(new DateInterval('P'.$duration.'M')));
-    }
-
-    /**
-     * Create a Period object from a Year and a Month.
-     *
-     * @param int $year
-     * @param int $month Month index from 1 to 12
-     *
-     * @return static
-     */
-    public static function createFromMonth($year, $month)
-    {
-        return static::createFromYearInterval(1, $year, $month);
     }
 
     /**
@@ -215,89 +277,6 @@ class Period implements JsonSerializable
         $startDate = new DateTimeImmutable(static::validateYear($year).'-01-01');
 
         return new static($startDate, $startDate->add(new DateInterval('P1Y')));
-    }
-
-    /**
-     * Create a new Period instance given two endpoints
-     * The endpoints will be used as to allow the creation of
-     * a Period object
-     *
-     * @param DateTimeImmutable|DateTime|string $datePoint1 endpoint
-     * @param DateTimeImmutable|DateTime|string $datePoint2 endpoint
-     *
-     * @return Period
-     */
-    protected static function createFromEndpoints($datePoint1, $datePoint2)
-    {
-        $startDate = static::filterDatePoint($datePoint1);
-        $endDate   = static::filterDatePoint($datePoint2);
-        if ($startDate > $endDate) {
-            return new static($endDate, $startDate);
-        }
-
-        return new static($startDate, $endDate);
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param DateTimeImmutable|DateTime|string $startDate starting date point
-     * @param DateTimeImmutable|DateTime|string $endDate   ending date point
-     *
-     * @throws LogicException If $startDate is greater than $endDate
-     */
-    public function __construct($startDate, $endDate)
-    {
-        $startDate = static::filterDatePoint($startDate);
-        $endDate   = static::filterDatePoint($endDate);
-        if ($startDate > $endDate) {
-            throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
-        }
-        $this->startDate = $startDate;
-        $this->endDate   = $endDate;
-    }
-
-    /**
-     * Validate a DateTime.
-     *
-     * @param string|DateTimeImmutable|DateTime $datetime
-     *
-     * @return DateTimeImmutable
-     */
-    protected static function filterDatePoint($datetime)
-    {
-        if ($datetime instanceof DateTimeImmutable) {
-            return $datetime;
-        }
-
-        if ($datetime instanceof DateTime) {
-            return new DateTimeImmutable($datetime->format(static::DATE_LOCALE), $datetime->getTimeZone());
-        }
-
-        return new DateTimeImmutable($datetime);
-    }
-
-    /**
-     * Validate a DateInterval.
-     *
-     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format 
-     *                                          supported by `DateInterval::createFromDateString`
-     *
-     * @return DateInterval
-     */
-    protected static function filterDateInterval($interval)
-    {
-        if ($interval instanceof DateInterval) {
-            return $interval;
-        }
-
-        if (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
-            return new DateInterval('PT'.$res.'S');
-        }
-
-        return DateInterval::createFromDateString($interval);
     }
 
     /**
@@ -372,7 +351,7 @@ class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format 
+     *                                          If a string is passed, it must be a format
      *                                          supported by `DateInterval::createFromDateString`
      *
      * @return DatePeriod
@@ -562,7 +541,7 @@ class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format 
+     *                                          If a string is passed, it must be a format
      *                                          supported by `DateInterval::createFromDateString`
      *
      * @return static
@@ -577,7 +556,7 @@ class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format 
+     *                                          If a string is passed, it must be a format
      *                                          supported by `DateInterval::createFromDateString`
      *
      * @return static
@@ -592,7 +571,7 @@ class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format 
+     *                                          If a string is passed, it must be a format
      *                                          supported by `DateInterval::createFromDateString`
      *
      * @return static
@@ -610,7 +589,7 @@ class Period implements JsonSerializable
      *
      * @param  DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format 
+     *                                           If a string is passed, it must be a format
      *                                           supported by `DateInterval::createFromDateString`
      * @return static
      */
@@ -631,7 +610,7 @@ class Period implements JsonSerializable
      *
      * @param  DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format 
+     *                                           If a string is passed, it must be a format
      *                                           supported by `DateInterval::createFromDateString`
      * @return static
      */
@@ -675,7 +654,7 @@ class Period implements JsonSerializable
      *
      * @param  DateInterval|int|string $interval The duration. If an int is passed, it is
      *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format 
+     *                                           If a string is passed, it must be a format
      *                                           supported by `DateInterval::createFromDateString`
      * @return Generator
      */
@@ -732,6 +711,30 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Returns the difference between two Period objects expressed in seconds
+     *
+     * @param Period $period
+     *
+     * @return float
+     */
+    public function timestampIntervalDiff(Period $period)
+    {
+        return $this->getTimestampInterval() - $period->getTimestampInterval();
+    }
+
+    /**
+     * Returns the difference between two Period objects expressed in \DateInterval
+     *
+     * @param Period $period
+     *
+     * @return DateInterval
+     */
+    public function dateIntervalDiff(Period $period)
+    {
+        return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
+    }
+
+    /**
      * Computes the difference between two Period objects which overlap
      * and return an array containing the difference expressed as Period objects
      * The array will:
@@ -762,26 +765,23 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference between two Period objects expressed in seconds
+     * Create a new Period instance given two endpoints
+     * The endpoints will be used as to allow the creation of
+     * a Period object
      *
-     * @param Period $period
+     * @param DateTimeImmutable|DateTime|string $datePoint1 endpoint
+     * @param DateTimeImmutable|DateTime|string $datePoint2 endpoint
      *
-     * @return float
+     * @return Period
      */
-    public function timestampIntervalDiff(Period $period)
+    protected static function createFromEndpoints($datePoint1, $datePoint2)
     {
-        return $this->getTimestampInterval() - $period->getTimestampInterval();
-    }
+        $startDate = static::filterDatePoint($datePoint1);
+        $endDate   = static::filterDatePoint($datePoint2);
+        if ($startDate > $endDate) {
+            return new static($endDate, $startDate);
+        }
 
-    /**
-     * Returns the difference between two Period objects expressed in \DateInterval
-     *
-     * @param Period $period
-     *
-     * @return DateInterval
-     */
-    public function dateIntervalDiff(Period $period)
-    {
-        return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
+        return new static($startDate, $endDate);
     }
 }
