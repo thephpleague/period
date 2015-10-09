@@ -54,11 +54,11 @@ $period = Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
 Learn more about how this all works in the [Properties](/api/properties/) section.
 
 ~~~php
-$period->getStartDate(); //the starting inclusive endpoint as a DateTimeImmutable object
+$period->getStartDate(); //the starting inclusive datepoint as a DateTimeImmutable object
 ~~~
 
 ~~~php
-$period->getEndDate();   //the ending exclusive endpoint as a DateTimeImmutable object
+$period->getEndDate();   //the ending exclusive datepoint as a DateTimeImmutable object
 ~~~
 
 ~~~php
@@ -71,7 +71,7 @@ $period->getDatePeriod('1 HOUR'); //return a DatePeriod object
 ~~~
 
 ~~~php
-$arr = $period->split('1 WEEK'); /return a Generator object containing Period objects
+$period->split('1 WEEK'); //return a Generator object containing Period objects
 ~~~
 
 ~~~php
@@ -87,7 +87,7 @@ $json = json_encode($period); //return the json representation of the Period
 
 Learn more about how this all works in the [Comparing](/api/comparing/) section.
 
-__Comparing endpoints__
+__Comparing datepoints__
 
 ~~~php
 $period->contains($another_period); //return a boolean
@@ -154,7 +154,7 @@ $period->timestampIntervalDiff($another_period); //the difference expressed in s
 
 Learn more about how this all works in the [Modifying](/api/modifying/) section.
 
-__Using endpoints__
+__Using datepoints__
 
 ~~~php
 $new_period = $period->startingOn('2014-10-01');
