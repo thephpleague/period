@@ -11,13 +11,13 @@ Once you have a instantiated `Period` object you can access its properties using
 
 Returns the starting **included** datepoint as a `DateTimeImmutable` object.
 
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 2.X</code>, this method returned an <code>DateTime</code> object</p>
+<p class="message-warning"><strong>BC Break :</strong> In <code>version 2</code>, this method returned an <code>DateTime</code> object</p>
 
 ### Period::getEndDate();
 
 Returns the ending **excluded** datepoint as a `DateTimeImmutable` object.
 
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 2.X</code>, this method returned an <code>DateTime</code> object</p>
+<p class="message-warning"><strong>BC Break :</strong> In <code>version 2</code>, this method returned an <code>DateTime</code> object</p>
 
 ### Period::getDateInterval()
 
@@ -55,12 +55,12 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 
 This method splits a given `Period` object in smaller `Period` objects according to the given `$interval`. The result is returned using a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
 
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 2.X</code>, this method returned an <code>array</code></p>
+<p class="message-warning"><strong>BC Break :</strong> In <code>version 2</code>, this method returned an <code>array</code></p>
 
 - The first returned `Period` will always share the same starting datepoint with the parent object.
 - The last returned `Period` will always share the same ending datepoint with the parent object.
 - The last returned `Period` will have a duration equal or lesser than the submitted interval.
-- If `$interval` is greater than the parent `Period` interval, the method will return an array with a single `Period` whose datepoints equals those of the parent `Period`.
+- If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
 
 ~~~php
 use League\Period\Period;
