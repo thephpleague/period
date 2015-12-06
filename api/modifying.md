@@ -177,7 +177,7 @@ use League\Period\Period;
 
 $period        = Period::createFromDuration(2012-01-01, '2 MONTHS');
 $anotherPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
-$intersectPeriod = $period->insersect($anotherPeriod);
+$intersectPeriod = $period->intersect($anotherPeriod);
 ~~~
 
 ### Period::gap(Period $period)
