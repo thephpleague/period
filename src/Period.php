@@ -444,7 +444,8 @@ class Period implements JsonSerializable
     public function contains($index)
     {
         if ($index instanceof Period) {
-            return $this->contains($index->getStartDate()) && $this->contains($index->getEndDate());
+            return $this->contains($index->getStartDate())
+                && ($this->contains($index->getEndDate()) || $index->getEndDate() == $this->getEndDate());
         }
 
         $datetime = static::filterDatePoint($index);

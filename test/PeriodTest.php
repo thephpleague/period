@@ -543,6 +543,11 @@ class PeriodTest extends TestCase
                 Period::createFromSemester(2014, 1),
                 false,
             ],
+            'testContainsReturnsTrueWithPeriodObjectWhichShareTheSameEndDate' => [
+                Period::createFromYear(2015),
+                Period::createFromMonth(2015, 12),
+                true,
+            ],
         ];
     }
 

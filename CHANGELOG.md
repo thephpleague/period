@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Period` will be documented in this file
 
+## 3.0.1 - 2015-12-21
+
+### Added
+
+- None
+
+### Fixed
+
+- `Period::contains` see [issue #28](https://github.com/thephpleague/period/pull/28)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 3.0.0 - 2015-09-02
 
 ### Added
