@@ -449,7 +449,7 @@ class Period implements JsonSerializable
 
         $datetime = static::filterDatePoint($index);
 
-        return $datetime >= $this->startDate && $datetime < $this->endDate;
+        return $datetime >= $this->startDate && $datetime <= $this->endDate;
     }
 
     /**
