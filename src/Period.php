@@ -77,7 +77,7 @@ class Period implements JsonSerializable
     /**
      * Validate a DateTime.
      *
-     * @param string|DateTimeImmutable|DateTime $datetime
+     * @param DateTimeInterface|string $datetime
      *
      * @return DateTimeImmutable
      */
@@ -95,13 +95,27 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Create a Period object for a specific day
+     *
+     * @param DateTimeInterface|string $day
+     *
+     * @return static
+     */
+    public static function createFromDay($day)
+    {
+        $startDate = static::filterDatePoint($day)->setTime(0, 0, 0);
+
+        return new static($startDate, $startDate->add(new DateInterval('P1D')));
+    }
+
+    /**
      * Create a Period object from a starting point and an interval.
      *
-     * @param DateTimeImmutable|DateTime|string $startDate The start date point
-     * @param DateInterval|int|string           $interval  The duration. If an int is passed, it is
-     *                                                     interpreted as the duration expressed in seconds.
-     *                                                     If a string is passed, it must be a format
-     *                                                     supported by `DateInterval::createFromDateString`
+     * @param DateTimeInterface|string $startDate The start date point
+     * @param DateInterval|int|string  $interval  The duration. If an int is passed, it is
+     *                                            interpreted as the duration expressed in seconds.
+     *                                            If a string is passed, it must be a format
+     *                                            supported by `DateInterval::createFromDateString`
      *
      * @return static
      */
@@ -138,11 +152,11 @@ class Period implements JsonSerializable
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
-     * @param DateTimeImmutable|DateTime|string $endDate  The end date point
-     * @param DateInterval|int|string           $interval The duration. If an int is passed, it is
-     *                                                    interpreted as the duration expressed in seconds.
-     *                                                    If a string is passed, it must be a format
-     *                                                    supported by `DateInterval::createFromDateString`
+     * @param DateTimeInterface|string $endDate  The start date point
+     * @param DateInterval|int|string  $interval The duration. If an int is passed, it is
+     *                                           interpreted as the duration expressed in seconds.
+     *                                           If a string is passed, it must be a format
+     *                                           supported by `DateInterval::createFromDateString`
      *
      * @return static
      */
@@ -154,7 +168,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a Year and a Week.
+     * Create a Period object for a specific week
      *
      * @param int $year
      * @param int $week index from 1 to 53
@@ -210,7 +224,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a Year and a Month.
+     * Create a Period object for a specific month
      *
      * @param int $year
      * @param int $month Month index from 1 to 12
@@ -223,7 +237,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a given duration contained in a year
+     * Create a Period object for a specific interval in a given year
      *
      * @param int $duration
      * @param int $year
@@ -240,7 +254,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a Year and a Quarter.
+     * Create a Period object for a specific quarter
      *
      * @param int $year
      * @param int $quarter Quarter Index from 1 to 4
@@ -253,7 +267,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a Year and a Quarter.
+     * Create a Period object for a specific semester
      *
      * @param int $year
      * @param int $semester Semester Index from 1 to 2
@@ -266,7 +280,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a Year and a Quarter.
+     * Create a Period object for a specific Year
      *
      * @param int $year
      *
@@ -404,7 +418,7 @@ class Period implements JsonSerializable
     /**
      * Tells whether a Period is entirely after the specified index
      *
-     * @param Period|DateTimeImmutable|DateTime $index
+     * @param Period|DateTimeInterface|string $index
      *
      * @return bool
      */
@@ -420,7 +434,7 @@ class Period implements JsonSerializable
     /**
      * Tells whether a Period is entirely before the specified index
      *
-     * @param Period|DateTimeImmutable|DateTime $index
+     * @param Period|DateTimeInterface|string $index
      *
      * @return bool
      */
@@ -437,7 +451,7 @@ class Period implements JsonSerializable
      * Tells whether the specified index is fully contained within
      * the current Period object.
      *
-     * @param Period|DateTimeImmutable|DateTime $index
+     * @param Period|DateTimeInterface|string $index
      *
      * @return bool
      */
@@ -516,7 +530,7 @@ class Period implements JsonSerializable
     /**
      * Returns a new Period object with a new included starting date point.
      *
-     * @param DateTimeImmutable|DateTime|string $startDate date point
+     * @param DateTimeInterface|string $startDate date point
      *
      * @return static
      */
@@ -528,7 +542,7 @@ class Period implements JsonSerializable
     /**
      * Returns a new Period object with a new ending date point.
      *
-     * @param DateTimeImmutable|DateTime|string $endDate date point
+     * @param DateTimeInterface|string $endDate date point
      *
      * @return static
      */
@@ -770,8 +784,8 @@ class Period implements JsonSerializable
      * The endpoints will be used as to allow the creation of
      * a Period object
      *
-     * @param DateTimeImmutable|DateTime|string $datePoint1 endpoint
-     * @param DateTimeImmutable|DateTime|string $datePoint2 endpoint
+     * @param DateTimeInterface|string $datePoint1 endpoint
+     * @param DateTimeInterface|string $datePoint2 endpoint
      *
      * @return Period
      */

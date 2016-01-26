@@ -384,6 +384,13 @@ class PeriodTest extends TestCase
         Period::createFromYear('toto');
     }
 
+    public function testCreateFromDay()
+    {
+        $period = Period::createFromDay('2015-01-03 08:06:25.235');
+        $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2015-01-03'));
+        $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2015-01-04'));
+    }
+
     public function testIsBeforeDatetime()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
