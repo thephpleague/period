@@ -7,14 +7,24 @@ title: Period instantiation using named constructors
 
 To instantiate a `Period` object you can rely on its constructor or on several named constructors describe below.
 
-### Period::__construct($start, $end)
+## The default constructor
 
-Both `$start` and `$end` parameters represent the period datepoints as `DateTimeImmutable` objects.
+### Description
 
-- The `$start` datepoint represents **the starting included datepoint**.
-- The `$end` value represents **the ending excluded datepoint**.
+~~~php
+public Period::__construct(mixed $startDate, mixed $endDate)
+~~~
 
-`$end` **must be** greater or equal to `$start` or the instantiation will throw a `LogicException`.
+### Parameters
+
+Both `$startDate` and `$endDate` parameters represent the period datepoints.
+
+- The `$startDate` datepoint represents **the starting included datepoint**.
+- The `$endDate` datepoint represents **the ending excluded datepoint**.
+
+`$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `LogicException`.
+
+### Examples
 
 ~~~php
 use League\Period\Period;
@@ -22,44 +32,48 @@ use League\Period\Period;
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
 
-Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors.
+## Named constructors
 
-### Period::createFromDuration($start, $duration)
+Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors to return a new `Period` object.
 
-Returns a `Period` object which starts at `$start` with a duration equals to `$duration`.
+### Create a new instance representing a given day
 
-- The `$start` represents **the starting included datepoint** expressed as `DateTime` object.
-- The `$duration` parameter is a `DateInterval` object;
+<p class="message-notice">Since <code>version 3.1</code></p>
+
+#### Description
+
+~~~php
+public static Period::createFromDay(mixed $startDate): Period
+~~~
+
+#### Parameter
+
+The `$startDate` represents **the starting included datepoint**; The date is truncated so that the duration starts at midnight according to the date timezone.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
-$alt    = Period::createFromDuration('2012-04-01 08:30:25', new DateInterval('P1D'));
-$other  = Period::createFromDuration(new DateTime('2012-04-01 08:30:25'), 86400);
+$period = Period::createFromDay('2012-04-01 08:30:25');
+$alt    = Period::createFromDay('2012-04-01');
+$alt->sameValueAs($period); //return true;
 ~~~
 
-### Period::createFromDurationBeforeEnd($end, $duration)
+### Create a new instance representing a given week
 
-Returns a `Period` object which ends at `$end` with a duration equals to `$duration`.
-
-- The `$end` represents **the ending excluded datepoint** expressed as `DateTime` object.
-- The `$duration` parameter is a `DateInterval` object;
+#### Description
 
 ~~~php
-use League\Period\Period;
-
-$period = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', '1 DAY');
-$alt    = Period::createFromDurationBeforeEnd('2012-04-01 08:30:25', new DateInterval('P1D'));
-$other  = Period::createFromDurationBeforeEnd(new DateTimeImmutable('2012-04-01 08:30:25'), 86400);
+public static Period::createFromWeek(int $year, int $week): Period
 ~~~
 
-### Period::createFromWeek($year, $week)
+#### Parameters
 
-Returns a `Period` object with a duration of 1 week for a given year and week.
+- The `$year` parameter must be a valid year;
+- The `$week` parameter must be a valid week (between 1 and 53);
 
-- The `$year` parameter is a valid year;
-- The `$week` parameter is a selected week (between 1 and 53) according to the [ISO8601 date and time standard](http://en.wikipedia.org/wiki/ISO_week_date);
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -68,12 +82,22 @@ $period = Period::createFromWeek(2013, 23);
 //this period represents the 23rd week of 2013
 ~~~
 
-### Period::createFromMonth($year, $month)
+<p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
-Returns a `Period` object with a duration of 1 month for a given year and month.
+### Create a new instance representing a given month
 
-- The `$year` parameter is a valid year;
-- The `$month` parameter is a selected month (between 1 and 12);
+#### Description
+
+~~~php
+public static Period::createFromMonth(int $year, int $month): Period
+~~~
+
+#### Parameters
+
+- The `$year` parameter must be a valid year;
+- The `$month` parameter must be a valid month (between 1 and 12);
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -82,12 +106,20 @@ $period = Period::createFromMonth(2013, 7);
 //this period represents the month of July 2013
 ~~~
 
-### Period::createFromQuarter($year, $quarter)
+### Create a new instance representing a given quarter
 
-Returns a `Period` object with a duration of 3 months for a given year and quarter.
+#### Description
 
-- The `$year` parameter is a valid year;
-- The `$quarter` parameter is a selected quarter (between 1 and 4);
+~~~php
+public static Period::createFromQuarter(int $year, int $quarter): Period
+~~~
+
+#### Parameters
+
+- The `$year` parameter must be a valid year;
+- The `$quarter` parameter must be a valid quarter index (between 1 and 4);
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -96,29 +128,74 @@ $period = Period::createFromQuarter(2013, 2);
 //this period represents the second quarter of 2013
 ~~~
 
-### Period::createFromSemester($year, $semester)
+### Create a new instance representing a given semester
 
-Returns a `Period` object with a duration of 6 months for a given year and semester.
-
-- The `$year` parameter is a valid year;
-- The `$semester` parameter is a selected semester (between 1 and 2);
+#### Description
 
 ~~~php
-use League\Period\Period;
-
-$period = Period::createFromSemester(2013, 1);
-//this period represents the first semester of 2013
+public static Period::createFromSemester(int $year, int $semester): Period
 ~~~
 
-### Period::createFromYear($year)
+#### Parameters
 
-Returns a `Period` object with a duration of 1 year for a given year.
+- The `$year` parameter must be a valid year;
+- The `$semester` parameter must be a valid semester index (between 1 and 2);
 
-- The `$year` parameter is a valid year;
+#### Example
 
 ~~~php
 use League\Period\Period;
 
-$period = Period::createFromYear(1971);
-//this period represents the year 1971
+$period = Period::createFromSemester(2013, 2);
+//this period represents the second semester of 2013
+~~~
+
+### Create a new instance representing a given year
+
+#### Description
+
+~~~php
+public static Period::createFromYear(int $year): Period
+~~~
+
+#### Parameter
+
+The `$year` parameter must be a valid year;
+
+#### Example
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromSemester(2013);
+//this period represents a time range for 2013
+~~~
+
+### Create a new instance from a date and a duration
+
+#### Description
+
+~~~php
+public static Period::createFromDuration(mixed $startDate, mixed $duration): Period
+public static Period::createFromDurationBeforeEnd(mixed $endDate, mixed $duration): Period
+~~~
+
+- `createFromDuration` returns a `Period` object which starts at `$startDate`
+- `createFromDurationBeforeEnd` returns a `Period` object which ends at `$endDate`.
+
+Both created `Period` objects will have a duration equals to `$duration`.
+
+#### Parameters
+
+- Both `$startDate` and `$endDate` parameters represent a time range datepoints.
+- The `$duration` represents the time range duration.
+
+#### Example
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
+$alt    = Period::createFromDurationBeforeEnd('2012-04-02 08:30:25', new DateInterval('P1D'));
+$alt->sameValueAs($period); //returns true
 ~~~

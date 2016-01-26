@@ -1,9 +1,9 @@
 Getting Started:
     Introduction: '/'
-    Changelog: '/changelog/'
+    Terminology: '/definitions/'
     Installation: '/installation/'
     Examples: '/examples/'
-    Terminology: '/definitions/'
+    Changelog: '/changelog/'
 Period API:
     The Complete API: '/api/'
     Instantiation: '/api/instantiation/'

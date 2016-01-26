@@ -5,15 +5,25 @@ title: the Period object as an immutable value object
 
 # Modifying Period objects
 
-You can manipulate a `League\Period\Period` object according to their datepoints or durations. `League\Period\Period` **is an immutable value object** which means that any change to its property returns a new `Period` object.
+You can manipulate a `Period` object according to their datepoints or durations.
+
+`Period` **is an immutable value object** which means that any change returns a new `Period` object.
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>LogicException</code> exception.</p>
 
 ## Using datepoints
 
-### Period::startingOn($start)
+### Period::startingOn
 
-Returns a new `Period` object with `$start` as the new **starting included datepoint** defined as a `DateTime` object.
+#### Description
+
+~~~php
+public function startingOn(mixed $startDate): Period
+~~~
+
+Returns a new `Period` object with `$startDate` as the new **starting included datepoint**.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -25,9 +35,17 @@ $newPeriod->getStartDate(); //returns DateTime('2014-02-01');
 // $period->getEndDate() equals $newPeriod->getEndDate();
 ~~~
 
-### Period::endingOn($end)
+### Period::endingOn
 
-Returns a new `Period` object with `$end` as the new **ending excluded datepoint** defined as a `DateTime` object.
+#### Description
+
+~~~php
+public function endingOn(mixed $endDate): Period
+~~~
+
+Returns a new `Period` object with `$endDate` as the new **ending excluded datepoint**.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -41,13 +59,17 @@ $newPeriod->getEndDate(); //returns DateTime('2014-03-16');
 
 ## Using durations
 
-The supplied `DateInterval` object can be added or substracted from the starting and/or ending datepoint.
+### Period::withDuration
 
-### Period::withDuration($duration)
+#### Description
+
+~~~php
+public function withDuration(mixed $duration): Period
+~~~
 
 Returns a new `Period` object by updating its duration. Only the excluded datepoint is updated.
 
-The `$duration` parameter is expressed as a `DateInterval` object.
+### Example
 
 ~~~php
 use League\Period\Period;
@@ -59,11 +81,17 @@ $newPeriod->getEndDate(); //returns DateTime('2014-03-16');
 // $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
-### Period::add($duration)
+### Period::add
+
+#### Description
+
+~~~php
+public function add(mixed $duration): Period
+~~~
 
 Returns a new `Period` object by adding an interval to the current ending excluded datepoint.
 
-The `$duration` parameter is expressed as a `DateInterval` object.
+### Example
 
 ~~~php
 use League\Period\Period;
@@ -73,11 +101,17 @@ $newPeriod = $period->add('2 WEEKS');
 // $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
-### Period::sub($duration)
+### Period::sub
+
+#### Description
+
+~~~php
+public function sub(mixed $duration): Period
+~~~
 
 Returns a new `Period` object by substracting an interval to the current ending excluded datepoint.
 
-The `$duration` parameter is expressed as a `DateInterval` object.
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -87,9 +121,21 @@ $newPeriod = $period->sub('2 WEEKS');
 // $period->getStartDate() equals $newPeriod->getStartDate();
 ~~~
 
-### Period::next($duration = null)
+### Period::next
 
-Returns a new `Period` object adjacent to the current `Period` and starting with its ending datepoint. If no interval is provided, the new `Period` object will be created using the current `Period` duration.
+#### Description
+
+~~~php
+public function next(mixed $duration = null): Period
+~~~
+
+Returns a new `Period` object adjacent to the current `Period` and starting with its ending datepoint.
+
+#### Parameter
+
+If no interval is provided, the new `Period` object will be created using the current `Period` duration.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -120,9 +166,17 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 
 <p class="message-info">To remove any ambiguity, it is recommended to always provide a <code>$duration</code> when using <code>Period::next</code></p>
 
-### Period::previous($duration = null)
+### Period::previous
+
+#### Description
+
+~~~php
+public function previous(mixed $duration = null): Period
+~~~
 
 Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending datepoint is equal to the starting datepoint of the current object.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -149,9 +203,17 @@ $next    = $curent->next('1 MONTH');
 
 ## Using another Period object
 
-### Period::merge(Period ...$periods)
+### Period::merge
+
+#### Description
+
+~~~php
+public function merge(Period ...$period): Period
+~~~
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -164,13 +226,21 @@ $newPeriod = $period->merge($alt, $other);
 // $newPeriod->getEndDate() equals $altPeriod->getEndDate();
 ~~~
 
-### Period::intersect(Period $period)
+### Period::intersect
+
+#### Description
+
+~~~php
+public function intersect(Period $period): Period
+~~~
 
 An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
 
 <p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 
 ![](/media/period-intersect.png "$intersectPeriod represents the intersection Period between both Period object")
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -180,13 +250,21 @@ $anotherPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
 $intersectPeriod = $period->intersect($anotherPeriod);
 ~~~
 
-### Period::gap(Period $period)
+### Period::gap
+
+#### Description
+
+~~~php
+public function gap(Period $period): Period
+~~~
 
 A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a Exception is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 
 ![](/media/period-gap.png "$gapPeriod represents the gap Period between both Period objects")
+
+#### Example
 
 ~~~php
 use League\Period\Period;

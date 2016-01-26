@@ -15,12 +15,13 @@ title: Terminology
 
 Unless stated otherwise:
 
-- Whenever a `DateTimeImmutable` object is expected you can provide:
+- Whenever a datepoint is expected you can provide:
+    - a `DateTimeInterface` implementing object;
     - a `DateTimeImmutable` object;
     - a `DateTime` object;
     - a string parsable by the `DateTimeImmutable` constructor.
 
-- Whenever a `DateInterval` object is expected you can provide:
+- Whenever a duration is expected you can provide:
     - a `DateInterval` object;
     - a string parsable by the `DateInterval::createFromDateString` method.
     - an integer interpreted as the interval expressed in seconds.

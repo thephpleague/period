@@ -9,11 +9,21 @@ You can compare different `Period` objects according to their datepoints or dura
 
 ## Using datepoints
 
-### Period::isBefore($index)
+### Period::isBefore
 
-The `$index` argument can be another `Period` object or a `DateTime` object.
+#### Description
+
+~~~php
+public Period::isBefore(mixed $index): bool
+~~~
 
 Tells whether the current `Period` object datetime continuum is entirely before the specified `$index`.
+
+#### Parameter
+
+The `$index` argument can be another `Period` object or a datepoint.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -25,11 +35,21 @@ $period->isBefore($alt); //returns true;
 $alt->isBefore($period); //return false;
 ~~~
 
-### Period::isAfter($index)
+### Period::isAfter
 
-The `$index` argument can be another `Period` object or a `DateTime` object.
+#### Description
+
+~~~php
+public Period::isBefore(mixed $index): bool
+~~~
 
 Tells whether the current `Period` object datetime continuum is entirely after the specified `$index`.
+
+#### Parameter
+
+The `$index` argument can be another `Period` object or a datepoint.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -41,11 +61,19 @@ $alt->isAfter($period); //returns true;
 $period->isAfter($alt); //return false;
 ~~~
 
-### Period::abuts(Period $period)
+### Period::abuts
+
+#### Description
+
+~~~php
+public Period::abuts(Period $index): bool
+~~~
 
 A `Period` abuts if it starts immediately after, or ends immediately before the submitted `Period` without overlapping.
 
 ![](/media/period-abuts.png "$period abuts $anotherPeriod")
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -56,9 +84,17 @@ $period->abuts($anotherPeriod); //return true
 //in this case $period->getEndDate() == $anotherPeriod->getStartDate();
 ~~~
 
-### Period::overlaps(Period $period)
+### Period::overlaps
 
-A `Period` overlaps another if it shares some common part of the datetime continuum. This methods returns true if this is the case and the objects do not abut.
+#### Description
+
+~~~php
+public Period::overlaps(Period $period): bool
+~~~
+
+A `Period` overlaps another if they share some common part of their respective datetime continuum without abutting.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -72,9 +108,17 @@ $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
 
-### Period::sameValueAs(Period $period)
+### Period::sameValueAs
+
+#### Description
+
+~~~php
+public Period::sameValueAs(Period $period): bool
+~~~
 
 Tells whether two `Period` objects shares the same datepoints.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -87,12 +131,22 @@ $orig->sameValueAs($alt);   //return false
 $orig->sameValueAs($other); //return true
 ~~~
 
-### Period::contains($index)
+### Period::contains
 
-The `$index` argument can be another `Period` object or a `DateTime` object.
+#### Description
 
-- A `Period` contains a `DateTime` if it is present in its datetime continuum.
+~~~php
+public Period::contains(mixed $index): bool
+~~~
+
+- A `Period` contains a datepoint reference if this datepoint is present in its datetime continuum.
 - A `Period` contains another `Period` object if the latter datetime continuum is completely contained within the `Period` datetime continuum.
+
+#### Parameter
+
+The `$index` argument can be another `Period` object or a datepoint.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -108,17 +162,25 @@ $period->contains($alt); //return true;
 $alt->contains($period); //return false;
 ~~~
 
-### Period::diff(Period $period)
+### Period::diff
 
- This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
+#### Description
 
- The difference is expressed as an `array`. The returned array:
+~~~php
+public Period::diff(Period $period): array
+~~~
 
- - is empty if both objects share the same datepoints;
- - contains one `Period` object if both objects share only one datepoint;
- - contains two `Period` objects if no datepoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
+This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
+
+The difference is expressed as an `array`. The returned array:
+
+- is empty if both objects share the same datepoints;
+- contains one `Period` object if both objects share only one datepoint;
+- contains two `Period` objects if no datepoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
 
 ![](/media/period-diff.png "The difference express as Period objects")
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -137,27 +199,31 @@ $diff[0]->isBefore($diff[1]); //return true;
 
 ## Using durations
 
-### Period::compareDuration(Period $period)
+### Sorting objects
 
-Compare two `Period` objects according to their duration.
+#### Description
 
-- Return `1` if the current object duration is greater than the submitted `$period` duration;
-- Return `-1` if the current object duration is less than the submitted `$period` duration;
-- Return `0` if the current object duration is equal to the submitted `$period` duration;
+~~~php
+public Period::compareDuration(Period $period): int
+public Period::durationGreaterThan(Period $period): bool
+public Period::durationLessThan(Period $period): bool
+public Period::sameDurationAs(Period $period): bool
+~~~
 
-To ease the method usage you can rely on the following proxy methods which return boolean values:
+The method `Period::compareDuration` compares two `Period` objects according to their duration. The method returns:
 
-### Period::durationGreaterThan(Period $period)
+- `1` if the current object duration is greater than the submitted object duration;
+- `-1` if the current object duration is lesser than the submitted object duration;
+- `0` if the current object duration is equal to the submitted object duration;
 
-Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `1`
+To ease the method usage you can rely on the following proxy methods:
 
-### Period::durationLessThan(Period $period)
+- `Period::durationGreaterThan` returns `true` when `Period::compareDuration` returns `1`
+- `Period::durationLessThan` returns `true` when `Period::compareDuration` returns `-1`
+- `Period::sameDurationAs` returns `true` when `Period::compareDuration` returns `0`
 
-Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `-1`
 
-### Period::sameDurationAs(Period $period)
-
-Compare two `Period` objects according to their duration. Returns `true` when `Period::compareDuration(Period $period)` returns `0`
+#### Examples
 
 ~~~php
 $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
@@ -178,13 +244,18 @@ $orig->sameValueAs($other);       //return false
 //the duration between $orig and $other are equals but not the datepoints!!
 ~~~
 
-### Period::dateIntervalDiff(Period $period)
+### Returning the duration differences
 
-Returns the difference between two `Period` durations as expressed as a `DateInterval` object.
+#### Description
 
-### Period::timestampIntervalDiff(Period $period)
+~~~php
+public Period::dateIntervalDiff(Period $period): DateInterval
+public Period::timestampIntervalDiff(Period $period): float
+~~~
 
-Returns the difference between two `Period` durations as expressed in seconds.
+Return the duration difference between two Period objects using a `DateInterval` object or expressed in seconds.
+
+#### Examples
 
 ~~~php
 use League\Period\Period;

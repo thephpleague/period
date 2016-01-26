@@ -5,41 +5,42 @@ title: Accessing Period object properties
 
 # Accessing properties
 
-Once you have a instantiated `Period` object you can access its properties using the following getter methods:
+## Getter Period informations
 
-### Period::getStartDate()
+Once you have a instantiated `Period` object you can access the object datepoints and durations using the following getter methods:
 
-Returns the starting **included** datepoint as a `DateTimeImmutable` object.
+~~~php
+public function Period::getStartDate(void): DateTimeImmutable
+public function Period::getEndDate(void): DateTimeImmutable
+public function Period::getDateInterval(void): DateInterval
+public function Period::getTimestampInterval(void): float
+~~~
 
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 2</code>, this method returned an <code>DateTime</code> object</p>
-
-### Period::getEndDate();
-
-Returns the ending **excluded** datepoint as a `DateTimeImmutable` object.
-
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 2</code>, this method returned an <code>DateTime</code> object</p>
-
-### Period::getDateInterval()
-
-Returns the object duration as expressed as a `DateInterval` object.
-
-### Period::getTimestampInterval()
-
-Returns the object duration as expressed as a the difference between datepoint timestamp.
+<p class="message-warning"><strong>BC Break :</strong><code>getStartDate</code> and <code>getEndDate</code> now return a <code>DateTimeImmutable</code> object.</p>
 
 ~~~php
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
-$period->getStartDate(); //returns DateTime('2012-04-01 08:30:25');
-$period->getEndDate(); //returns DateTime('2013-09-04 12:35:21');
+$period->getStartDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
+$period->getEndDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
 $duration = $period->getDateInterval(); //returns a DateInterval object
 $altduration = $period->getTimestampInterval(); //returns the interval as expressed in seconds
 ~~~
 
-### Period::getDatePeriod($interval)
+## Iteration over a Period
 
-Returns a `DatePeriod` object that lists `DateTime` objects inside the period, separated by the given `$interval` expressed as a `DateInterval` object.
+### Period::getDatePeriod
+
+#### Description
+
+~~~php
+public function Period::getDatePeriod(mixed $duration): DatePeriod
+~~~
+
+Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -51,16 +52,24 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 //will iterate 12 times
 ~~~
 
-### Period::split($interval)
+### Period::split
 
-This method splits a given `Period` object in smaller `Period` objects according to the given `$interval`. The result is returned using a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
+<p class="message-warning"><strong>BC Break :</strong> In <code>version 3</code>, this method returned an <code>generator</code> instead of an <code>array</code>.</p>
 
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 2</code>, this method returned an <code>array</code></p>
+#### Description
+
+~~~php
+public function Period::split(mixed $duration): Generator
+~~~
+
+This method splits a given `Period` object in smaller `Period` objects according to the given `$interval`. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
 
 - The first returned `Period` will always share the same starting datepoint with the parent object.
 - The last returned `Period` will always share the same ending datepoint with the parent object.
 - The last returned `Period` will have a duration equal or lesser than the submitted interval.
 - If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
+
+#### Example
 
 ~~~php
 use League\Period\Period;
@@ -73,7 +82,13 @@ foreach ($period_list as $inner_periods) {
 //will iterate 12 times
 ~~~
 
-### Period::__toString()
+## Period representations
+
+### String representation
+
+~~~php
+public function Period::__toString(void): string
+~~~
 
 Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals).
 
@@ -86,7 +101,11 @@ $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
 ~~~
 
-### Period::jsonSerialize()
+### Array representation
+
+~~~php
+public function Period::jsonSerialize(void): array
+~~~
 
 Period implements the `JsonSerializable` interface and is directly usable with PHP `json_encode` function as shown below:
 

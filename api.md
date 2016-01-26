@@ -40,6 +40,10 @@ $period = Period::createFromWeek(2014, 1);     //the first week of 2014
 ~~~
 
 ~~~php
+$period = Period::createFromDay('NOW');        //the current day time range
+~~~
+
+~~~php
 $period = Period::createFromDuration('2014-01-01 08:00:25', new DateInterval('PT1H'));
 //a 1 hour time range starting at '2014-01-01 08:00:25'
 ~~~
@@ -193,7 +197,7 @@ $new_period = $period->previous('3 DAYS');
 __Using `Period` objects__
 
 ~~~php
-$new_period = $period->merge(Period $period, Period ...$periods);
+$new_period = $period->merge($another_period);
 ~~~
 
 ~~~php

@@ -47,10 +47,10 @@ use League\Period\Period;
 $period    = Period::createFromDuration('2014-01-01', '1 WEEK');
 $altPeriod = Period::createFromWeek(2014, 3);
 $period->sameDurationAs($altPeriod); //will return true because the duration are equals
-$period->sameValueAs($altPeriod); //will return false because the endpoints differ
+$period->sameValueAs($altPeriod); //will return false because the datepoints differ
 ~~~
 
-The class comes with other ways to [compare time ranges](/api/comparing/) based on their duration and/or their endpoints.
+The class comes with other ways to [compare time ranges](/api/comparing/) based on their duration and/or their datepoints.
 
 ## Modifying time ranges
 
