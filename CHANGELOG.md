@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Period` will be documented in this file
 
+## Next - 2016-xx-xx
+
+### Added
+
+- `Period::createFromDay`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 3.0.1 - 2015-12-21
 
 ### Added
