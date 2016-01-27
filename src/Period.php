@@ -385,7 +385,7 @@ class Period implements JsonSerializable
      */
     public function sameValueAs(Period $period)
     {
-        return $this->startDate == $period->startDate && $this->endDate == $period->endDate;
+        return $this->startDate == $period->getStartDate() && $this->endDate == $period->getEndDate();
     }
 
     /**
@@ -459,13 +459,28 @@ class Period implements JsonSerializable
     public function contains($index)
     {
         if ($index instanceof Period) {
-            return $this->contains($index->getStartDate())
-                && ($this->contains($index->getEndDate()) || $index->getEndDate() == $this->getEndDate());
+            return $this->containsPeriod($index);
         }
 
         $datetime = static::filterDatePoint($index);
 
         return $datetime >= $this->startDate && $datetime < $this->endDate;
+    }
+
+    /**
+     * Tells whether a Period object is fully contained within
+     * the current Period object.
+     *
+     * @param Period $period
+     *
+     * @return bool
+     */
+    protected function containsPeriod(Period $period)
+    {
+        $endDate = $period->getEndDate();
+
+        return $this->contains($period->getStartDate())
+            && ($endDate >= $this->startDate && $endDate <= $this->endDate);
     }
 
     /**
