@@ -190,10 +190,10 @@ class Period implements JsonSerializable
      */
     public static function createFromWeek($year, $week)
     {
-        return static::createFromDuration(
-            static::validateYear($year).'W'.sprintf('%02d', static::validateRange($week, 1, 53)),
-            '1 WEEK'
-        );
+        $week = static::validateYear($year).'W'.sprintf('%02d', static::validateRange($week, 1, 53));
+        $startDate = new DateTimeImmutable($week);
+
+        return new static($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
     /**
@@ -383,7 +383,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @param int $option can be set to DatePeriod::EXCLUDE_START_DATE
      *                    to exclude the start date from the set of
@@ -597,7 +597,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @return static
      */
@@ -616,7 +616,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @return static
      */
@@ -635,7 +635,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @return static
      */
@@ -657,7 +657,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @return static
      */
@@ -683,7 +683,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @return static
      */
@@ -732,7 +732,7 @@ class Period implements JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param mixed $interval The interval
+     * @param DateInterval|int|string $interval The interval
      *
      * @return Generator
      */
@@ -813,12 +813,16 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Computes the difference between two Period objects which overlap
-     * and return an array containing the difference expressed as Period objects
+     * Computes the difference between two overlapsing Period objects
+     *
+     * Returns an array containing the difference expressed as Period objects
      * The array will:
-     * - be empty if both objects have the same endpoints
-     * - contain one Period object if both objects share one endpoint
-     * - contain two Period objects if both objects share no endpoint
+     *
+     * <ul>
+     * <li>be empty if both objects have the same endpoints</li>
+     * <li>contain one Period object if both objects share one endpoint</li>
+     * <li>contain two Period objects if both objects share no endpoint</li>
+     * </ul>
      *
      * @param Period $period
      *
