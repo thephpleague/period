@@ -32,15 +32,24 @@ $altduration = $period->getTimestampInterval(); //returns the interval as expres
 
 ### Period::getDatePeriod
 
+<p class="message-notice">The <code>$option</code> parameter is new to <code>version 3.1</code>.</p>
+
 #### Description
 
 ~~~php
-public function Period::getDatePeriod(mixed $duration): DatePeriod
+public function Period::getDatePeriod(mixed $duration, int $option): DatePeriod
 ~~~
 
 Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 
-#### Example
+<p class="message-notice">When iterating over a <code>DatePeriod</code> object returns by the <code>Period::getDatePeriod</code> all the generated datepoints are <code>DateTimeImmutable</code> instances.</p>
+
+#### Parameters
+
+- `$duration` is a interval
+- `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the start date from the set of recurring dates within the period.
+
+#### Examples
 
 ~~~php
 use League\Period\Period;
@@ -51,6 +60,20 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 }
 //will iterate 12 times
 ~~~
+
+Using the `$option` parameter
+
+~~~php
+use League\Period\Period;
+
+$period = new Period('2012-01-01', '2013-01-01');
+$iterator = $period->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+foreach ($iterator as $datetime) {
+    echo $datetime->format('F, Y');
+}
+//will iterate 11 times
+~~~
+
 
 ### Period::split
 
