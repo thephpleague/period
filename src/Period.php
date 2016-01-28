@@ -59,8 +59,8 @@ class Period implements JsonSerializable
     /**
      * Create a new instance.
      *
-     * @param DateTimeImmutable|DateTime|string $startDate starting date point
-     * @param DateTimeImmutable|DateTime|string $endDate   ending date point
+     * @param DateTimeInterface|string $startDate starting date point
+     * @param DateTimeInterface|string $endDate   ending date point
      *
      * @throws LogicException If $startDate is greater than $endDate
      */
@@ -112,11 +112,15 @@ class Period implements JsonSerializable
     /**
      * Create a Period object from a starting point and an interval.
      *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
      * @param DateTimeInterface|string $startDate The start date point
-     * @param DateInterval|int|string  $interval  The duration. If an int is passed, it is
-     *                                            interpreted as the duration expressed in seconds.
-     *                                            If a string is passed, it must be a format
-     *                                            supported by `DateInterval::createFromDateString`
+     * @param mixed                    $interval  The interval
      *
      * @return static
      */
@@ -130,10 +134,14 @@ class Period implements JsonSerializable
     /**
      * Validate a DateInterval.
      *
-     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format
-     *                                          supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
      *
      * @return DateInterval
      */
@@ -153,11 +161,15 @@ class Period implements JsonSerializable
     /**
      * Create a Period object from a ending endpoint and an interval.
      *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
      * @param DateTimeInterface|string $endDate  The start date point
-     * @param DateInterval|int|string  $interval The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format
-     *                                           supported by `DateInterval::createFromDateString`
+     * @param mixed                    $interval The interval
      *
      * @return static
      */
@@ -364,16 +376,24 @@ class Period implements JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the Period object.
      *
-     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format
-     *                                          supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
+     *
+     * @param int $option can be set to DatePeriod::EXCLUDE_START_DATE
+     *                    to exclude the start date from the set of
+     *                    recurring dates within the period.
      *
      * @return DatePeriod
      */
-    public function getDatePeriod($interval)
+    public function getDatePeriod($interval, $option = 0)
     {
-        return new DatePeriod($this->startDate, static::filterDateInterval($interval), $this->endDate);
+        return new DatePeriod($this->startDate, static::filterDateInterval($interval), $this->endDate, $option);
     }
 
     /**
@@ -570,25 +590,33 @@ class Period implements JsonSerializable
     /**
      * Returns a new Period object with a new ending date point.
      *
-     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format
-     *                                          supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
      *
      * @return static
      */
     public function withDuration($interval)
     {
-        return static::createFromDuration($this->startDate, $interval);
+        return new static($this->startDate, $this->startDate->add(static::filterDateInterval($interval)));
     }
 
     /**
      * Returns a new Period object with an added interval
      *
-     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format
-     *                                          supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
      *
      * @return static
      */
@@ -600,10 +628,14 @@ class Period implements JsonSerializable
     /**
      * Returns a new Period object with a Removed interval
      *
-     * @param DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                          interpreted as the duration expressed in seconds.
-     *                                          If a string is passed, it must be a format
-     *                                          supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
      *
      * @return static
      */
@@ -618,10 +650,15 @@ class Period implements JsonSerializable
      * If no duration is provided the new Period will be created
      * using the current object duration
      *
-     * @param  DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format
-     *                                           supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
+     *
      * @return static
      */
     public function next($interval = null)
@@ -630,7 +667,7 @@ class Period implements JsonSerializable
             $interval = $this->getDateInterval();
         }
 
-        return static::createFromDuration($this->endDate, $interval);
+        return new static($this->endDate, $this->endDate->add(static::filterDateInterval($interval)));
     }
 
     /**
@@ -639,10 +676,15 @@ class Period implements JsonSerializable
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
-     * @param  DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format
-     *                                           supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
+     *
      * @return static
      */
     public function previous($interval = null)
@@ -651,7 +693,7 @@ class Period implements JsonSerializable
             $interval = $this->getDateInterval();
         }
 
-        return static::createFromDurationBeforeEnd($this->startDate, $interval);
+        return new static($this->startDate->sub(static::filterDateInterval($interval)), $this->startDate);
     }
 
     /**
@@ -683,10 +725,15 @@ class Period implements JsonSerializable
     /**
      * Split a Period by a given interval
      *
-     * @param  DateInterval|int|string $interval The duration. If an int is passed, it is
-     *                                           interpreted as the duration expressed in seconds.
-     *                                           If a string is passed, it must be a format
-     *                                           supported by `DateInterval::createFromDateString`
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param mixed $interval The interval
+     *
      * @return Generator
      */
     public function split($interval)

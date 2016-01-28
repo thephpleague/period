@@ -10,7 +10,8 @@ All Notable changes to `League\Period` will be documented in this file
 
 ### Fixed
 
-- None
+- `Period::getDatePeriod` adding the `$option` parameter
+- Bumped version requirement to PHP 5.5.9 because of a bug in `DatePeriod` constructor
 
 ### Deprecated
 

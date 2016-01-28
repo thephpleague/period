@@ -3,6 +3,7 @@
 namespace League\Period\Test;
 
 use DateInterval;
+use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -48,14 +49,12 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @param  $interval
-     * @param  $count
      * @dataProvider provideGetDatePeriodData
      */
-    public function testGetDatePeriod($interval, $count)
+    public function testGetDatePeriod($interval, $option, $count)
     {
         $period = Period::createFromDuration(new DateTime(), '1 DAY');
-        $range = $period->getDatePeriod($interval);
+        $range = $period->getDatePeriod($interval, $option);
         $this->assertInstanceof('DatePeriod', $range);
         $this->assertCount($count, iterator_to_array($range));
     }
@@ -63,10 +62,14 @@ class PeriodTest extends TestCase
     public function provideGetDatePeriodData()
     {
         return [
-            'useDateInterval' => [new DateInterval('PT1H'), 24],
-            'useString' => ['2 HOUR', 12],
-            'useInt' => [9600, 9],
-            'useFloat' => [14400.0, 6],
+            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
+            'useString' => ['2 HOUR', 0, 12],
+            'useInt' => [9600, 0, 9],
+            'useFloat' => [14400.0, 0, 6],
+            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
+            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
+            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
+            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
         ];
     }
 
