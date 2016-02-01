@@ -1,8 +1,8 @@
 #Changelog
 
-All Notable changes to `League\Period` will be documented in this file
+All Notable changes to `Period` will be documented in this file
 
-## Next - 2016-xx-xx
+## 3.1.0 - 2016-02-01
 
 ### Added
 
