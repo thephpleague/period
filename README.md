@@ -29,7 +29,7 @@ Full documentation can be found at [period.thephpleague.com](http://period.theph
 System Requirements
 -------
 
-You need **PHP >= 5.5.0** or **HHVM >= 3.4** but the latest stable version is recommended.
+You need **PHP >= 5.5.9** but the latest stable version of PHP or HHVM is recommended.
 
 Install
 -------
