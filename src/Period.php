@@ -89,14 +89,39 @@ class Period implements JsonSerializable
         }
 
         if ($datetime instanceof DateTime) {
-            return new DateTimeImmutable($datetime->format(static::DATE_LOCALE), $datetime->getTimeZone());
+            return static::convertDateTime($datetime);
         }
 
         return new DateTimeImmutable($datetime);
     }
 
     /**
+     * Convert a DateTime object into a DateTimeImmutable object
+     *
+     * @param DateTime $datetime
+     *
+     * @return DateTimeImmutable
+     */
+    protected static function convertDateTime(DateTime $datetime)
+    {
+        static $useFromMutable;
+
+        if (null === $useFromMutable) {
+            $useFromMutable = method_exists(new DateTimeImmutable(), 'createFromMutable');
+        }
+
+        if ($useFromMutable) {
+            return DateTimeImmutable::createFromMutable($datetime);
+        }
+
+        return new DateTimeImmutable($datetime->format(static::DATE_LOCALE), $datetime->getTimeZone());
+    }
+
+    /**
      * Create a Period object for a specific day
+     *
+     * The date is truncated so that the Time range starts at midnight according to the date timezone.
+     * The duration is equivalent to one full day.
      *
      * @param DateTimeInterface|string $day
      *
@@ -397,7 +422,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two Period share the same endpoints.
+     * Tells whether two Period share the same datepoints.
      *
      * @param Period $period
      *
@@ -819,7 +844,7 @@ class Period implements JsonSerializable
      * The array will:
      *
      * <ul>
-     * <li>be empty if both objects have the same endpoints</li>
+     * <li>be empty if both objects have the same datepoints</li>
      * <li>contain one Period object if both objects share one endpoint</li>
      * <li>contain two Period objects if both objects share no endpoint</li>
      * </ul>
@@ -837,8 +862,8 @@ class Period implements JsonSerializable
         }
 
         $res = [
-            static::createFromEndpoints($this->startDate, $period->getStartDate()),
-            static::createFromEndpoints($this->endDate, $period->getEndDate()),
+            static::createFromDatepoints($this->startDate, $period->getStartDate()),
+            static::createFromDatepoints($this->endDate, $period->getEndDate()),
         ];
 
         return array_values(array_filter($res, function (Period $period) {
@@ -847,8 +872,9 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a new Period instance given two endpoints
-     * The endpoints will be used as to allow the creation of
+     * Create a new instance given two datepoints
+     *
+     * The datepoints will be used as to allow the creation of
      * a Period object
      *
      * @param DateTimeInterface|string $datePoint1 endpoint
@@ -856,7 +882,7 @@ class Period implements JsonSerializable
      *
      * @return Period
      */
-    protected static function createFromEndpoints($datePoint1, $datePoint2)
+    protected static function createFromDatepoints($datePoint1, $datePoint2)
     {
         $startDate = static::filterDatePoint($datePoint1);
         $endDate   = static::filterDatePoint($datePoint2);

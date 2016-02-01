@@ -11,6 +11,7 @@ All Notable changes to `League\Period` will be documented in this file
 ### Fixed
 
 - `Period::getDatePeriod` adding the `$option` parameter
+- `DateTime` to `DateTimeImmutable` convertion improved for PHP 5.6+ version
 - Bumped version requirement to PHP 5.5.9 because of a bug in `DatePeriod` constructor
 
 ### Deprecated
