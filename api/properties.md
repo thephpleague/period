@@ -124,15 +124,18 @@ $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
 ~~~
 
-### Array representation
+### Json representation
+
+<p class="message-warning">Because <a href="https://github.com/facebook/hhvm/issues/5137" target="_blank">DateTimeImmutable can not be json encoded in HHVM</a>, <code>jsonSerialize</code> returns <code>DateTime</code> objects.</p>
 
 ~~~php
 public function Period::jsonSerialize(void): array
 ~~~
 
-Period implements the `JsonSerializable` interface and is directly usable with PHP `json_encode` function as shown below:
+`Period` implements the `JsonSerializable` interface and is directly usable with PHP `json_encode` function as shown below:
 
 ~~~php
+date_default_timezone_set('Africa/Kinshasa');
 
 use League\Period\Period;
 
