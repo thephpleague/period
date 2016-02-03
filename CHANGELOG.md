@@ -2,6 +2,24 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## Next - 2016-XX-XX
+
+### Added
+
+- `Period::toArray`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 3.1.0 - 2016-02-01
 
 ### Added

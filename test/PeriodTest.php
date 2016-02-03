@@ -48,6 +48,13 @@ class PeriodTest extends TestCase
         );
     }
 
+    public function testToArray()
+    {
+        $period = Period::createFromMonth(2015, 4);
+        $this->assertSame($period->getStartDate(), $period->toArray()['startDate']);
+        $this->assertSame($period->getEndDate(), $period->toArray()['endDate']);
+    }
+
     /**
      * @dataProvider provideGetDatePeriodData
      */

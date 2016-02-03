@@ -218,7 +218,7 @@ class Period implements JsonSerializable
         $week = static::validateYear($year).'W'.sprintf('%02d', static::validateRange($week, 1, 53));
         $startDate = new DateTimeImmutable($week);
 
-        return new static($startDate, $startDate->add(new DateInterval('P7D')));
+        return new static($startDate, $startDate->add(new DateInterval('P1W')));
     }
 
     /**
@@ -355,6 +355,16 @@ class Period implements JsonSerializable
             'startDate' => new DateTime($this->startDate->format(static::DATE_LOCALE), $this->startDate->getTimeZone()),
             'endDate' => new DateTime($this->endDate->format(static::DATE_LOCALE), $this->endDate->getTimeZone()),
         ];
+    }
+
+    /**
+     * Returns the Array representation of a Period object
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return ['startDate' => $this->startDate, 'endDate' => $this->endDate];
     }
 
     /**
