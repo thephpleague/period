@@ -128,6 +128,14 @@ $arr = $period->diff($another_period);
 //$arr is a array containing up to two Period objects
 ~~~
 
+~~~php
+$new_period = $period->intersect($another_period);
+~~~
+
+~~~php
+$new_period = $period->gap($another_period);
+~~~
+
 __Comparing durations__
 
 ~~~php
@@ -198,12 +206,4 @@ __Using `Period` objects__
 
 ~~~php
 $new_period = $period->merge($another_period);
-~~~
-
-~~~php
-$new_period = $period->intersect($another_period);
-~~~
-
-~~~php
-$new_period = $period->gap($another_period);
 ~~~

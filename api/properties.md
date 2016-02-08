@@ -77,7 +77,7 @@ foreach ($iterator as $datetime) {
 
 ### Period::split
 
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 3</code>, this method returned an <code>generator</code> instead of an <code>array</code>.</p>
+<p class="message-warning"><strong>BC Break :</strong> In <code>version 3</code>, this method returns an <code>generator</code> instead of an <code>array</code>.</p>
 
 #### Description
 
