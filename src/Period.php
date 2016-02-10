@@ -6,7 +6,7 @@
  * @author    Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @copyright 2014-2015 Ignace Nyamagana Butera
  * @license   https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
- * @version   3.1.0
+ * @version   3.1.1
  * @link      https://github.com/thephpleague/period/
  */
 namespace League\Period;
@@ -34,13 +34,17 @@ class Period implements JsonSerializable
 {
     /**
      * DateTime Format to create ISO8601 Interval format
+     *
+     * @internal
      */
     const DATE_ISO8601 = 'Y-m-d\TH:i:s\Z';
 
     /**
      * Date Format for timezoneless DateTimeInterface
+     *
+     * @internal
      */
-    const DATE_LOCALE = 'Y-m-d H:i:s';
+    const DATE_LOCALE = 'Y-m-d H:i:s.u';
 
     /**
      * Period starting included date point.
@@ -69,7 +73,9 @@ class Period implements JsonSerializable
         $startDate = static::filterDatePoint($startDate);
         $endDate   = static::filterDatePoint($endDate);
         if ($startDate > $endDate) {
-            throw new LogicException('the ending endpoint must be greater or equal to the starting endpoint');
+            throw new LogicException(
+                'The ending datepoint must be greater or equal to the starting datepoint'
+            );
         }
         $this->startDate = $startDate;
         $this->endDate   = $endDate;
@@ -184,7 +190,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object from a ending endpoint and an interval.
+     * Create a Period object from a ending datepoint and an interval.
      *
      * The interval can be
      * <ul>
@@ -347,24 +353,20 @@ class Period implements JsonSerializable
     /**
      * implement JsonSerializable interface
      *
-     * @return array
+     * @return DateTime[]
      */
     public function jsonSerialize()
     {
         return [
-            'startDate' => new DateTime($this->startDate->format(static::DATE_LOCALE), $this->startDate->getTimeZone()),
-            'endDate' => new DateTime($this->endDate->format(static::DATE_LOCALE), $this->endDate->getTimeZone()),
+            'startDate' => new DateTime(
+                $this->startDate->format(static::DATE_LOCALE),
+                $this->startDate->getTimeZone()
+            ),
+            'endDate' => new DateTime(
+                $this->endDate->format(static::DATE_LOCALE),
+                $this->endDate->getTimeZone()
+            ),
         ];
-    }
-
-    /**
-     * Returns the Array representation of a Period object
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return ['startDate' => $this->startDate, 'endDate' => $this->endDate];
     }
 
     /**
@@ -378,7 +380,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Returns the ending endpoint.
+     * Returns the ending datepoint.
      *
      * @return DateTimeImmutable
      */
@@ -390,7 +392,7 @@ class Period implements JsonSerializable
     /**
      * Returns the Period duration as expressed in seconds
      *
-     * @return int
+     * @return float
      */
     public function getTimestampInterval()
     {
@@ -517,9 +519,7 @@ class Period implements JsonSerializable
             return $this->containsPeriod($index);
         }
 
-        $datetime = static::filterDatePoint($index);
-
-        return $datetime >= $this->startDate && $datetime < $this->endDate;
+        return $this->containsDatePoint($index);
     }
 
     /**
@@ -536,6 +536,22 @@ class Period implements JsonSerializable
 
         return $this->contains($period->getStartDate())
             && ($endDate >= $this->startDate && $endDate <= $this->endDate);
+    }
+
+    /**
+     * Tells whether a datepoint is fully contained within
+     * the current Period object.
+     *
+     * @param DateTimeInterface|string $datepoint
+     *
+     * @return bool
+     */
+    protected function containsDatePoint($datepoint)
+    {
+        $datetime = static::filterDatePoint($datepoint);
+
+        return ($datetime >= $this->startDate && $datetime < $this->endDate)
+            || ($datetime == $this->startDate && $datetime == $this->endDate);
     }
 
     /**
@@ -681,7 +697,7 @@ class Period implements JsonSerializable
 
     /**
      * Returns a new Period object adjacent to the current Period
-     * and starting with its ending endpoint.
+     * and starting with its ending datepoint.
      * If no duration is provided the new Period will be created
      * using the current object duration
      *
@@ -707,7 +723,7 @@ class Period implements JsonSerializable
 
     /**
      * Returns a new Period object adjacent to the current Period
-     * and ending with its starting endpoint.
+     * and ending with its starting datepoint.
      * If no duration is provided the new Period will have the
      * same duration as the current one
      *
@@ -855,8 +871,8 @@ class Period implements JsonSerializable
      *
      * <ul>
      * <li>be empty if both objects have the same datepoints</li>
-     * <li>contain one Period object if both objects share one endpoint</li>
-     * <li>contain two Period objects if both objects share no endpoint</li>
+     * <li>contain one Period object if both objects share one datepoint</li>
+     * <li>contain two Period objects if both objects share no datepoint</li>
      * </ul>
      *
      * @param Period $period
@@ -887,8 +903,8 @@ class Period implements JsonSerializable
      * The datepoints will be used as to allow the creation of
      * a Period object
      *
-     * @param DateTimeInterface|string $datePoint1 endpoint
-     * @param DateTimeInterface|string $datePoint2 endpoint
+     * @param DateTimeInterface|string $datePoint1 datepoint
+     * @param DateTimeInterface|string $datePoint2 datepoint
      *
      * @return Period
      */

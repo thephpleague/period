@@ -2,15 +2,16 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - 2016-XX-XX
+## 3.1.1 - 2016-02-10
 
 ### Added
 
-- `Period::toArray`
+- None
 
 ### Fixed
 
-- None
+- `Period::contains` see [issue #31](https://github.com/thephpleague/period/issues/31)
+- microseconds are taken into account when converting `DateTimeInterface` objects.
 
 ### Deprecated
 

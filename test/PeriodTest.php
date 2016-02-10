@@ -48,13 +48,6 @@ class PeriodTest extends TestCase
         );
     }
 
-    public function testToArray()
-    {
-        $period = Period::createFromMonth(2015, 4);
-        $this->assertSame($period->getStartDate(), $period->toArray()['startDate']);
-        $this->assertSame($period->getEndDate(), $period->toArray()['endDate']);
-    }
-
     /**
      * @dataProvider provideGetDatePeriodData
      */
@@ -563,6 +556,11 @@ class PeriodTest extends TestCase
             'testContainsReturnsTrueWithPeriodObjectWhichShareTheSameEndDate' => [
                 Period::createFromYear(2015),
                 Period::createFromMonth(2015, 12),
+                true,
+            ],
+            'testContainsReturnsTrueWithAZeroDurationObject' => [
+                new Period('2012-03-12', '2012-03-12'),
+                '2012-03-12',
                 true,
             ],
         ];
