@@ -17,8 +17,6 @@ Unless stated otherwise:
 
 - Whenever a datepoint is expected you can provide:
     - a `DateTimeInterface` implementing object;
-    - a `DateTimeImmutable` object;
-    - a `DateTime` object;
     - a string parsable by the `DateTimeImmutable` constructor.
 
 - Whenever a duration is expected you can provide:
