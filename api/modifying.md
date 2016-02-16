@@ -18,6 +18,8 @@ You can manipulate a `Period` object according to their datepoints or durations.
 #### Description
 
 ~~~php
+<?php
+
 public function startingOn(mixed $startDate): Period
 ~~~
 
@@ -26,6 +28,8 @@ Returns a new `Period` object with `$startDate` as the new **starting included d
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -40,6 +44,8 @@ $newPeriod->getStartDate(); //returns DateTime('2014-02-01');
 #### Description
 
 ~~~php
+<?php
+
 public function endingOn(mixed $endDate): Period
 ~~~
 
@@ -48,6 +54,8 @@ Returns a new `Period` object with `$endDate` as the new **ending excluded datep
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -64,6 +72,8 @@ $newPeriod->getEndDate(); //returns DateTime('2014-03-16');
 #### Description
 
 ~~~php
+<?php
+
 public function withDuration(mixed $duration): Period
 ~~~
 
@@ -72,6 +82,8 @@ Returns a new `Period` object by updating its duration. Only the excluded datepo
 ### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -86,6 +98,8 @@ $newPeriod->getEndDate(); //returns DateTime('2014-03-16');
 #### Description
 
 ~~~php
+<?php
+
 public function add(mixed $duration): Period
 ~~~
 
@@ -94,6 +108,8 @@ Returns a new `Period` object by adding an interval to the current ending exclud
 ### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -106,6 +122,8 @@ $newPeriod = $period->add('2 WEEKS');
 #### Description
 
 ~~~php
+<?php
+
 public function sub(mixed $duration): Period
 ~~~
 
@@ -114,6 +132,8 @@ Returns a new `Period` object by substracting an interval to the current ending 
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -126,6 +146,8 @@ $newPeriod = $period->sub('2 WEEKS');
 #### Description
 
 ~~~php
+<?php
+
 public function next(mixed $duration = null): Period
 ~~~
 
@@ -138,6 +160,8 @@ If no interval is provided, the new `Period` object will be created using the cu
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -148,6 +172,8 @@ $newPeriod = $period->next('1 MONTH');
 <p class="message-warning">When no <code>$duration</code> is provided to the method the new <code>Period</code> duration may vary. See below for a concrete example</p>
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $january  = Period::createFromMonth(2012, 1); //January 2012
@@ -171,6 +197,8 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 #### Description
 
 ~~~php
+<?php
+
 public function previous(mixed $duration = null): Period
 ~~~
 
@@ -179,6 +207,8 @@ Complementary to `Period::next`, the created `Period` object is adjacent to the 
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
@@ -194,6 +224,8 @@ The method must be used with the same arguments and warnings as `Period::next`.
 ![](/media/period-adjacents.png "$previous and $next are adjacent to the $period object")
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $current = Period::createFromMonth(2012, 1);
@@ -208,6 +240,8 @@ $next    = $curent->next('1 MONTH');
 #### Description
 
 ~~~php
+<?php
+
 public function merge(Period ...$period): Period
 ~~~
 
@@ -216,6 +250,8 @@ Merges two or more `Period` objects by returning a new `Period` object which eng
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromSemester(2012, 1);

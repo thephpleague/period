@@ -10,6 +10,8 @@ Of note, in your code, you will always have to typehint against the `League\Peri
 ## Accessing time range properties
 
 ~~~php
+<?php
+
 date_default_timezone_set('UTC');
 
 use League\Period\Period;
@@ -29,6 +31,8 @@ Learn more about how this all works in the [basic usage](/api/properties/).
 A simple example on how to get all the days from a selected month.
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromMonth(2014, 10);
@@ -42,6 +46,8 @@ The `Period` object comes with many [named constructors](/api/instantiation/) to
 ## Comparing time ranges
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromDuration('2014-01-01', '1 WEEK');
@@ -55,6 +61,8 @@ The class comes with other ways to [compare time ranges](/api/comparing/) based 
 ## Modifying time ranges
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromDuration('2014-01-01', '1 WEEK');

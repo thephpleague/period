@@ -10,6 +10,8 @@ title: Accessing Period object properties
 Once you have a instantiated `Period` object you can access the object datepoints and durations using the following getter methods:
 
 ~~~php
+<?php
+
 public function Period::getStartDate(void): DateTimeImmutable
 public function Period::getEndDate(void): DateTimeImmutable
 public function Period::getDateInterval(void): DateInterval
@@ -19,6 +21,8 @@ public function Period::getTimestampInterval(void): float
 <p class="message-warning"><strong>BC Break :</strong><code>getStartDate</code> and <code>getEndDate</code> now return a <code>DateTimeImmutable</code> object.</p>
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
@@ -37,6 +41,8 @@ $altduration = $period->getTimestampInterval(); //returns the interval as expres
 #### Description
 
 ~~~php
+<?php
+
 public function Period::getDatePeriod(mixed $duration, int $option): DatePeriod
 ~~~
 
@@ -52,6 +58,8 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 #### Examples
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = new Period('2012-01-01', '2013-01-01');
@@ -64,6 +72,8 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 Using the `$option` parameter
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = new Period('2012-01-01', '2013-01-01');
@@ -82,6 +92,8 @@ foreach ($iterator as $datetime) {
 #### Description
 
 ~~~php
+<?php
+
 public function Period::split(mixed $duration): Generator
 ~~~
 
@@ -95,6 +107,8 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromYear(2012);
@@ -110,12 +124,16 @@ foreach ($period_list as $inner_periods) {
 ### String representation
 
 ~~~php
+<?php
+
 public function Period::__toString(void): string
 ~~~
 
 Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals).
 
 ~~~php
+<?php
+
 date_default_timezone_set('Africa/Nairobi');
 
 use League\Period\Period;
@@ -129,12 +147,16 @@ echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
 <p class="message-warning">Because <a href="https://github.com/facebook/hhvm/issues/5137" target="_blank">DateTimeImmutable can not be json encoded in HHVM</a>, <code>jsonSerialize</code> returns <code>DateTime</code> objects.</p>
 
 ~~~php
+<?php
+
 public function Period::jsonSerialize(void): array
 ~~~
 
 `Period` implements the `JsonSerializable` interface and is directly usable with PHP `json_encode` function as shown below:
 
 ~~~php
+<?php
+
 date_default_timezone_set('Africa/Kinshasa');
 
 use League\Period\Period;

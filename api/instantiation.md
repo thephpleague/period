@@ -12,6 +12,8 @@ To instantiate a `Period` object you can rely on its constructor or on several n
 ### Description
 
 ~~~php
+<?php
+
 public Period::__construct(mixed $startDate, mixed $endDate)
 ~~~
 
@@ -27,6 +29,8 @@ Both `$startDate` and `$endDate` parameters represent the period datepoints.
 ### Examples
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
@@ -43,6 +47,8 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromDay(mixed $startDate): Period
 ~~~
 
@@ -53,6 +59,8 @@ The `$startDate` represents **the starting included datepoint**; The date is tru
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromDay('2012-04-01 08:30:25');
@@ -65,6 +73,8 @@ $alt->sameValueAs($period); //return true;
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromWeek(int $year, int $week): Period
 ~~~
 
@@ -76,6 +86,8 @@ public static Period::createFromWeek(int $year, int $week): Period
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromWeek(2013, 23);
@@ -89,6 +101,8 @@ $period = Period::createFromWeek(2013, 23);
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromMonth(int $year, int $month): Period
 ~~~
 
@@ -100,6 +114,8 @@ public static Period::createFromMonth(int $year, int $month): Period
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromMonth(2013, 7);
@@ -111,6 +127,8 @@ $period = Period::createFromMonth(2013, 7);
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromQuarter(int $year, int $quarter): Period
 ~~~
 
@@ -122,6 +140,8 @@ public static Period::createFromQuarter(int $year, int $quarter): Period
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromQuarter(2013, 2);
@@ -133,6 +153,8 @@ $period = Period::createFromQuarter(2013, 2);
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromSemester(int $year, int $semester): Period
 ~~~
 
@@ -144,6 +166,8 @@ public static Period::createFromSemester(int $year, int $semester): Period
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromSemester(2013, 2);
@@ -155,6 +179,8 @@ $period = Period::createFromSemester(2013, 2);
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromYear(int $year): Period
 ~~~
 
@@ -165,6 +191,8 @@ The `$year` parameter must be a valid year;
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromSemester(2013);
@@ -176,6 +204,8 @@ $period = Period::createFromSemester(2013);
 #### Description
 
 ~~~php
+<?php
+
 public static Period::createFromDuration(mixed $startDate, mixed $duration): Period
 public static Period::createFromDurationBeforeEnd(mixed $endDate, mixed $duration): Period
 ~~~
@@ -193,6 +223,8 @@ Both created `Period` objects will have a duration equals to `$duration`.
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
