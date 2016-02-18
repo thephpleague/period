@@ -14,6 +14,8 @@ You can compare different `Period` objects according to their datepoints or dura
 #### Description
 
 ~~~php
+<?php
+
 public Period::isBefore(mixed $index): bool
 ~~~
 
@@ -26,6 +28,8 @@ The `$index` argument can be another `Period` object or a datepoint.
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 //comparing a datetime
@@ -40,6 +44,8 @@ $alt->isBefore($period); //return false;
 #### Description
 
 ~~~php
+<?php
+
 public Period::isBefore(mixed $index): bool
 ~~~
 
@@ -52,6 +58,8 @@ The `$index` argument can be another `Period` object or a datepoint.
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 //comparing a datetime
@@ -66,6 +74,8 @@ $period->isAfter($alt); //return false;
 #### Description
 
 ~~~php
+<?php
+
 public Period::abuts(Period $index): bool
 ~~~
 
@@ -76,6 +86,8 @@ A `Period` abuts if it starts immediately after, or ends immediately before the 
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period        = Period::createFromMonth(2014, 3);
@@ -89,6 +101,8 @@ $period->abuts($anotherPeriod); //return true
 #### Description
 
 ~~~php
+<?php
+
 public Period::overlaps(Period $period): bool
 ~~~
 
@@ -97,6 +111,8 @@ A `Period` overlaps another if they share some common part of their respective d
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $orig  = Period::createFromMonth(2014, 3);
@@ -113,6 +129,8 @@ $alt->overlaps($other);  //return true
 #### Description
 
 ~~~php
+<?php
+
 public Period::sameValueAs(Period $period): bool
 ~~~
 
@@ -121,6 +139,8 @@ Tells whether two `Period` objects shares the same datepoints.
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $orig  = Period::createFromMonth(2014, 3);
@@ -136,6 +156,8 @@ $orig->sameValueAs($other); //return true
 #### Description
 
 ~~~php
+<?php
+
 public Period::contains(mixed $index): bool
 ~~~
 
@@ -149,6 +171,8 @@ The `$index` argument can be another `Period` object or a datepoint.
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 //comparing a datetime
@@ -167,6 +191,8 @@ $alt->contains($period); //return false;
 #### Description
 
 ~~~php
+<?php
+
 public Period::diff(Period $period): array
 ~~~
 
@@ -183,6 +209,8 @@ The difference is expressed as an `array`. The returned array:
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $orig = Period::createFromDuration(2013-01-01, '1 MONTH');
@@ -202,6 +230,8 @@ $diff[0]->isBefore($diff[1]); //return true;
 #### Description
 
 ~~~php
+<?php
+
 public function intersect(Period $period): Period
 ~~~
 
@@ -214,6 +244,8 @@ An Period overlaps another if it shares some common part of the datetime continu
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period        = Period::createFromDuration(2012-01-01, '2 MONTHS');
@@ -226,6 +258,8 @@ $intersectPeriod = $period->intersect($anotherPeriod);
 #### Description
 
 ~~~php
+<?php
+
 public function gap(Period $period): Period
 ~~~
 
@@ -238,6 +272,8 @@ A `Period` has a gap with another Period if there is a non-zero interval between
 #### Example
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $orig = Period::createFromDuration(2012-01-01, '2 MONTHS');
@@ -252,6 +288,8 @@ $gapPeriod = $orig->gap($alt);
 #### Description
 
 ~~~php
+<?php
+
 public Period::compareDuration(Period $period): int
 public Period::durationGreaterThan(Period $period): bool
 public Period::durationLessThan(Period $period): bool
@@ -274,6 +312,8 @@ To ease the method usage you can rely on the following proxy methods:
 #### Examples
 
 ~~~php
+<?php
+
 $orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
 $alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
 $other = Period::createFromDuration('2013-01-01', '1 MONTH');
@@ -297,6 +337,8 @@ $orig->sameValueAs($other);       //return false
 #### Description
 
 ~~~php
+<?php
+
 public Period::dateIntervalDiff(Period $period): DateInterval
 public Period::timestampIntervalDiff(Period $period): float
 ~~~
@@ -306,6 +348,8 @@ Return the duration difference between two Period objects using a `DateInterval`
 #### Examples
 
 ~~~php
+<?php
+
 use League\Period\Period;
 
 $period    = Period::createFromSemester(2012, 1);

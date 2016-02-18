@@ -195,7 +195,7 @@ The `$year` parameter must be a valid year;
 
 use League\Period\Period;
 
-$period = Period::createFromSemester(2013);
+$period = Period::createFromYear(2013);
 //this period represents a time range for 2013
 ~~~
 
