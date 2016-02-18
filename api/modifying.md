@@ -20,7 +20,7 @@ You can manipulate a `Period` object according to their datepoints or durations.
 ~~~php
 <?php
 
-public function startingOn(mixed $startDate): Period
+public Period::startingOn(mixed $startDate): Period
 ~~~
 
 Returns a new `Period` object with `$startDate` as the new **starting included datepoint**.
@@ -46,7 +46,7 @@ $newPeriod->getStartDate(); //returns DateTime('2014-02-01');
 ~~~php
 <?php
 
-public function endingOn(mixed $endDate): Period
+public Period::endingOn(mixed $endDate): Period
 ~~~
 
 Returns a new `Period` object with `$endDate` as the new **ending excluded datepoint**.
@@ -74,7 +74,7 @@ $newPeriod->getEndDate(); //returns DateTime('2014-03-16');
 ~~~php
 <?php
 
-public function withDuration(mixed $duration): Period
+public Period::withDuration(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object by updating its duration. Only the excluded datepoint is updated.
@@ -100,7 +100,7 @@ $newPeriod->getEndDate(); //returns DateTime('2014-03-16');
 ~~~php
 <?php
 
-public function add(mixed $duration): Period
+public Period::add(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object by adding an interval to the current ending excluded datepoint.
@@ -124,7 +124,7 @@ $newPeriod = $period->add('2 WEEKS');
 ~~~php
 <?php
 
-public function sub(mixed $duration): Period
+public Period::sub(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object by substracting an interval to the current ending excluded datepoint.
@@ -148,7 +148,7 @@ $newPeriod = $period->sub('2 WEEKS');
 ~~~php
 <?php
 
-public function next(mixed $duration = null): Period
+public Period::next(mixed $duration = null): Period
 ~~~
 
 Returns a new `Period` object adjacent to the current `Period` and starting with its ending datepoint.
@@ -199,7 +199,7 @@ echo $march;    // 2012-03-01T00:00:00+0100/2012-03-30T00:00:00+0200
 ~~~php
 <?php
 
-public function previous(mixed $duration = null): Period
+public Period::previous(mixed $duration = null): Period
 ~~~
 
 Complementary to `Period::next`, the created `Period` object is adjacent to the current `Period` **but** its ending datepoint is equal to the starting datepoint of the current object.
@@ -242,7 +242,7 @@ $next    = $curent->next('1 MONTH');
 ~~~php
 <?php
 
-public function merge(Period ...$period): Period
+public Period::merge(Period ...$period): Period
 ~~~
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.

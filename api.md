@@ -5,6 +5,19 @@ title: Period cheat sheet
 
 # API Cheat Sheet
 
+## Arguments
+
+Unless stated otherwise:
+
+- Whenever a datepoint is expected you can provide:
+    - a `DateTimeInterface` implementing object;
+    - a string parsable by the `DateTime` constructor.
+
+- Whenever a duration is expected you can provide:
+    - a `DateInterval` object;
+    - a string parsable by the `DateInterval::createFromDateString` method.
+    - an integer interpreted as the interval expressed in seconds.
+
 ## Period instantiation
 
 Learn more about how this all works in the [Instantiaton](/api/instantiation/) section.
