@@ -124,6 +124,14 @@ class Period implements JsonSerializable
     }
 
     /**
+     * @inheritdoc
+     */
+    public static function __set_state(array $period)
+    {
+        return new static($period['startDate'], $period['endDate']);
+    }
+
+    /**
      * Create a Period object for a specific day
      *
      * The date is truncated so that the Time range starts at midnight according to the date timezone.
