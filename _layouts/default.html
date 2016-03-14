@@ -23,6 +23,23 @@
         <link rel="apple-touch-icon-precomposed" href="http://theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
     {% endif %}
     <link rel="stylesheet" href="http://theme.thephpleague.com/css/all.css?2">
+    <style>
+.header-permalink {
+    text-decoration: none;
+    color:transparent;
+    font-size:.8em;
+    vertical-align: super;
+}
+.header-permalink:hover,
+h1:hover .header-permalink,
+h2:hover .header-permalink,
+h3:hover .header-permalink,
+h4:hover .header-permalink,
+h5:hover .header-permalink {
+    color:#777;
+    text-decoration: none;
+}
+    </style>
 </head>
 <body>
 
@@ -82,6 +99,20 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://theme.thephpleague.com/js/scripts.js"></script>
+<script>
+(function (w) {
+  var d = w.document,
+      headerList = d.querySelector('article').querySelectorAll("h2[id], h3[id]");
+  for (var i = 0, header, link; header = headerList[i]; ++i) {
+    link = d.createElement("a");
+    link.className = "header-permalink";
+    link.title = "Permalink";
+    link.href = "#" + header.id;
+    link.innerHTML = "&#182;";
+    header.appendChild(link);
+  }
+})(window);
+</script>
 {% if site.data.project.google_analytics_tracking_id %}
     <script>
         (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
