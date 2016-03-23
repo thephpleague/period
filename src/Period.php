@@ -143,7 +143,12 @@ class Period implements JsonSerializable
      */
     public static function createFromDay($day)
     {
-        $startDate = static::filterDatePoint($day)->setTime(0, 0, 0);
+        $startDate = static::filterDatePoint($day);
+        $startDate = $startDate->createFromFormat(
+            static::DATE_LOCALE,
+            $startDate->format('Y-m-d').' 00:00:00.000000',
+            $startDate->getTimeZone()
+        );
 
         return new static($startDate, $startDate->add(new DateInterval('P1D')));
     }
@@ -821,14 +826,21 @@ class Period implements JsonSerializable
      */
     public function intersect(Period $period)
     {
-        if ($this->abuts($period)) {
-            throw new LogicException('Both object should not abuts');
+        if (! $this->overlaps($period)) {
+            throw new LogicException('Both Period objects must overlaps');
         }
 
-        return new static(
-            ($period->getStartDate() > $this->startDate) ? $period->getStartDate() : $this->startDate,
-            ($period->getEndDate() < $this->endDate) ? $period->getEndDate() : $this->endDate
-        );
+        $startDate = $period->getStartDate();
+        if ($startDate < $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = $period->getEndDate();
+        if ($endDate > $this->endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return new static($startDate, $endDate);
     }
 
     /**
