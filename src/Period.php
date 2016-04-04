@@ -137,6 +137,10 @@ class Period implements JsonSerializable
     {
         $startDate = static::filterDatePoint($day)->setTime(0, 0, 0);
 
+        if ($startDate->format('u') !== '000000') {
+            $startDate = new DateTimeImmutable($startDate->format(static::DATE_ISO8601));
+        }
+
         return new static($startDate, $startDate->add(new DateInterval('P1D')));
     }
 
