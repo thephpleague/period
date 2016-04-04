@@ -181,7 +181,7 @@ $period->contains('1983-04-15');      //returns true;
 $period->contains($period->getEndDate()); //returns false;
 
 //comparing two Period objects
-$alt = Period::createFromDuration(1983-04-12, '12 DAYS');
+$alt = Period::createFromDuration('1983-04-12', '12 DAYS');
 $period->contains($alt); //return true;
 $alt->contains($period); //return false;
 ~~~
@@ -213,8 +213,8 @@ The difference is expressed as an `array`. The returned array:
 
 use League\Period\Period;
 
-$orig = Period::createFromDuration(2013-01-01, '1 MONTH');
-$alt  = Period::createFromDuration(2013-01-15, '7 DAYS');
+$orig = Period::createFromDuration('2013-01-01', '1 MONTH');
+$alt  = Period::createFromDuration('2013-01-15', '7 DAYS');
 $diff = $period->diff($alt);
 // $diff is an array containing 2 Period objects
 // the first object is equal to new Period('2013-01-01', '2013-01-15');
@@ -248,8 +248,8 @@ An Period overlaps another if it shares some common part of the datetime continu
 
 use League\Period\Period;
 
-$period        = Period::createFromDuration(2012-01-01, '2 MONTHS');
-$anotherPeriod = Period::createFromDuration(2012-01-15, '3 MONTHS');
+$period        = Period::createFromDuration('2012-01-01', '2 MONTHS');
+$anotherPeriod = Period::createFromDuration('2012-01-15', '3 MONTHS');
 $intersectPeriod = $period->intersect($anotherPeriod);
 ~~~
 
@@ -276,8 +276,8 @@ A `Period` has a gap with another Period if there is a non-zero interval between
 
 use League\Period\Period;
 
-$orig = Period::createFromDuration(2012-01-01, '2 MONTHS');
-$alt  = Period::createFromDuration(2013-01-15, '3 MONTHS');
+$orig = Period::createFromDuration('2012-01-01', '2 MONTHS');
+$alt  = Period::createFromDuration('2013-01-15', '3 MONTHS');
 $gapPeriod = $orig->gap($alt);
 ~~~
 
