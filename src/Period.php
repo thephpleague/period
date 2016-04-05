@@ -47,6 +47,13 @@ class Period implements JsonSerializable
     const DATE_LOCALE = 'Y-m-d H:i:s.u';
 
     /**
+     * Date Format for timezoneless DateTimeInterface, without microseconds.
+     *
+     * @internal
+     */
+    const DATE_LOCALE_WITHOUT_MICROSECONDS = 'Y-m-d H:i:s';
+
+    /**
      * Period starting included date point.
      *
      * @var DateTimeImmutable
@@ -136,6 +143,13 @@ class Period implements JsonSerializable
     public static function createFromDay($day)
     {
         $startDate = static::filterDatePoint($day)->setTime(0, 0, 0);
+
+        if ($startDate->format('u') !== '000000') {
+            $startDate = new DateTimeImmutable(
+                $startDate->format(static::DATE_LOCALE_WITHOUT_MICROSECONDS),
+                $startDate->getTimezone()
+            );
+        }
 
         return new static($startDate, $startDate->add(new DateInterval('P1D')));
     }

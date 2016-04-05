@@ -394,6 +394,19 @@ class PeriodTest extends TestCase
         $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2015-01-04'));
     }
 
+    public function testCreateFromDayWithTimezone()
+    {
+        $period = Period::createFromDay('2008-07-01T22:35:17+08:00');
+        $this->assertEquals(
+            '+08:00',
+            $period->getStartDate()->format('P')
+        );
+        $this->assertEquals(
+            '+08:00',
+            $period->getEndDate()->format('P')
+        );
+    }
+
     public function testIsBeforeDatetime()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
