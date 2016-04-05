@@ -398,12 +398,12 @@ class PeriodTest extends TestCase
     {
         $period = Period::createFromDay('2008-07-01T22:35:17+08:00');
         $this->assertEquals(
-            new DateTimeZone('+08:00'),
-            $period->getStartDate()->getTimezone()
+            '+08:00',
+            $period->getStartDate()->getTimezone()->getName()
         );
         $this->assertEquals(
-            new DateTimeZone('+08:00'),
-            $period->getEndDate()->getTimezone()
+            '+08:00',
+            $period->getEndDate()->getTimezone()->getName()
         );
     }
 
