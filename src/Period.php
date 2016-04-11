@@ -827,8 +827,8 @@ class Period implements JsonSerializable
      */
     public function intersect(Period $period)
     {
-        if ($this->abuts($period)) {
-            throw new LogicException('Both object should not abuts');
+        if (! $this->overlaps($period)) {
+            throw new LogicException('Both object should at least overlaps');
         }
 
         return new static(
