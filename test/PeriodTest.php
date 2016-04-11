@@ -10,6 +10,20 @@ use DateTimeZone;
 use League\Period\Period;
 use PHPUnit_Framework_TestCase as TestCase;
 
+class ExtendedDate extends DateTimeImmutable
+{
+    public static function createFromFormat($format, $time, $timezone = null)
+    {
+        if (!is_object($timezone) || !$timezone instanceof DateTimeZone) {
+            $timezone = date_default_timezone_get();
+        }
+
+        $datetime = parent::createFromFormat($format, $time, $timezone);
+
+        return new self($datetime->format('Y-m-d H:i:s.u'), $timezone);
+    }
+}
+
 class PeriodTest extends TestCase
 {
     private $timezone;
@@ -392,6 +406,21 @@ class PeriodTest extends TestCase
         $period = Period::createFromDay('2015-01-03 08:06:25.235');
         $this->assertEquals($period->getStartDate(), new DateTimeImmutable('2015-01-03'));
         $this->assertEquals($period->getEndDate(), new DateTimeImmutable('2015-01-04'));
+    }
+
+    public function testCreateFromDayPreserveTimezone()
+    {
+        $period = Period::createFromDay('2008-07-01T22:35:17+08:00');
+        $this->assertEquals('+08:00', $period->getStartDate()->format('P'));
+        $this->assertEquals('+08:00', $period->getEndDate()->format('P'));
+    }
+
+    public function testCreateFromDayPreserveInstance()
+    {
+        $today = new ExtendedDate('NOW');
+        $period = Period::createFromDay($today);
+        $this->assertInstanceof(ExtendedDate::class, $period->getStartDate());
+        $this->assertInstanceof(ExtendedDate::class, $period->getEndDate());
     }
 
     public function testIsBeforeDatetime()

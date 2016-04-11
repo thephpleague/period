@@ -143,7 +143,13 @@ class Period implements JsonSerializable
      */
     public static function createFromDay($day)
     {
-        $startDate = static::filterDatePoint($day)->setTime(0, 0, 0);
+        $startDate = static::filterDatePoint($day);
+
+        $startDate = $startDate->createFromFormat(
+            static::DATE_LOCALE,
+            $startDate->format('Y-m-d').' 00:00:00.000000',
+            $startDate->getTimeZone()
+        );
 
         return new static($startDate, $startDate->add(new DateInterval('P1D')));
     }
