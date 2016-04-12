@@ -152,6 +152,13 @@ class PeriodTest extends TestCase
         $this->assertEquals(14400, $last->getTimestampInterval());
     }
 
+    public function testSetState()
+    {
+        $period = new Period('2014-05-01', '2014-05-08');
+        $generatedPeriod = eval('return '.var_export($period, true).';');
+        $this->assertTrue($generatedPeriod->sameValueAs($period));
+    }
+
     public function testConstructor()
     {
         $period = new Period('2014-05-01', '2014-05-08');
