@@ -2,6 +2,25 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## 3.2.0 - 2016-04-25
+
+### Added
+
+- `Period::__set_state`
+
+### Fixed
+
+- `Period::createFromDay` see [issue #36](https://github.com/thephpleague/period/issues/36)
+- `Period::intersect` see [issue #33](https://github.com/thephpleague/period/issues/33)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 3.1.1 - 2016-02-10
 
 ### Added

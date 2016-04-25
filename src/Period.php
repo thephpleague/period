@@ -6,7 +6,7 @@
  * @author    Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @copyright 2014-2015 Ignace Nyamagana Butera
  * @license   https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
- * @version   3.1.1
+ * @version   3.2.0
  * @link      https://github.com/thephpleague/period/
  */
 namespace League\Period;
