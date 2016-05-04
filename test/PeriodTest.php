@@ -7,6 +7,8 @@ use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
+use Generator;
+use JsonSerializable;
 use League\Period\Period;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -48,7 +50,7 @@ class PeriodTest extends TestCase
     public function testJsonSerialize()
     {
         $period = Period::createFromMonth(2015, 4);
-        $this->assertInstanceof('JsonSerializable', $period);
+        $this->assertInstanceof(JsonSerializable::class, $period);
         $res = json_decode(json_encode($period));
 
         $this->assertEquals(
@@ -69,7 +71,7 @@ class PeriodTest extends TestCase
     {
         $period = Period::createFromDuration(new DateTime(), '1 DAY');
         $range = $period->getDatePeriod($interval, $option);
-        $this->assertInstanceof('DatePeriod', $range);
+        $this->assertInstanceof(DatePeriod::class, $range);
         $this->assertCount($count, iterator_to_array($range));
     }
 
@@ -98,7 +100,7 @@ class PeriodTest extends TestCase
     public function testGetDateInterval()
     {
         $period = Period::createFromMonth(2014, 3);
-        $this->assertInstanceof('DateInterval', $period->getDateInterval());
+        $this->assertInstanceof(DateInterval::class, $period->getDateInterval());
     }
 
     public function testGetTimestampInterval()
@@ -111,9 +113,9 @@ class PeriodTest extends TestCase
     {
         $period = Period::createFromDuration(new DateTime(), '1 DAY');
         $range = $period->split(3600);
-        $this->assertInstanceof('\Generator', $range);
+        $this->assertInstanceof(Generator::class, $range);
         foreach ($range as $innerPeriod) {
-            $this->assertInstanceof('\League\Period\Period', $innerPeriod);
+            $this->assertInstanceof(Period::class, $innerPeriod);
         }
     }
 
@@ -165,7 +167,7 @@ class PeriodTest extends TestCase
         $start = $period->getStartDate();
         $this->assertEquals(new DateTimeImmutable('2014-05-01'), $start);
         $this->assertEquals(new DateTimeImmutable('2014-05-08'), $period->getEndDate());
-        $this->assertInstanceof('DateTimeImmutable', $start);
+        $this->assertInstanceof(DateTimeImmutable::class, $start);
     }
 
     public function testConstructorWithMicroSecondsSucceed()
@@ -188,8 +190,8 @@ class PeriodTest extends TestCase
     public function testConstructorWithDateTimeInterface()
     {
         $period = new Period('2014-05-01', new DateTime('2014-05-08'));
-        $this->assertInstanceof('DateTimeImmutable', $period->getEndDate());
-        $this->assertInstanceof('DateTimeImmutable', $period->getStartDate());
+        $this->assertInstanceof(DateTimeImmutable::class, $period->getEndDate());
+        $this->assertInstanceof(DateTimeImmutable::class, $period->getStartDate());
     }
 
     /**
@@ -782,7 +784,7 @@ class PeriodTest extends TestCase
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
         $alt = Period::createFromDuration('2012-01-01', '2 HOUR');
-        $this->assertInstanceof('\DateInterval', $orig->dateIntervalDiff($alt));
+        $this->assertInstanceof(DateInterval::class, $orig->dateIntervalDiff($alt));
     }
 
     public function testTimeIntervalDiff()
@@ -806,7 +808,7 @@ class PeriodTest extends TestCase
         $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
         $alt = Period::createFromDuration('2012-01-01', '2 MONTH');
 
-        $this->assertInstanceof('\League\Period\Period', $orig->intersect($alt));
+        $this->assertInstanceof(Period::class, $orig->intersect($alt));
     }
 
     /**
@@ -832,7 +834,7 @@ class PeriodTest extends TestCase
         $orig = Period::createFromDuration('2011-12-01', '2 MONTHS');
         $alt = Period::createFromDuration('2012-06-15', '3 MONTHS');
         $res = $orig->gap($alt);
-        $this->assertInstanceof('\League\Period\Period', $res);
+        $this->assertInstanceof(Period::class, $res);
         $this->assertEquals($orig->getEndDate(), $res->getStartDate());
         $this->assertEquals($alt->getStartDate(), $res->getEndDate());
         $this->assertTrue($res->sameValueAs($alt->gap($orig)));
@@ -870,7 +872,7 @@ class PeriodTest extends TestCase
         $orig = Period::createFromDurationBeforeEnd('2012-12-01', '5 MONTH');
         $alt  = $orig->next('1 MINUTE');
         $res  = $orig->gap($alt);
-        $this->assertInstanceof('\League\Period\Period', $res);
+        $this->assertInstanceof(Period::class, $res);
         $this->assertSame(0, $res->getTimestampInterval());
     }
 
@@ -895,7 +897,7 @@ class PeriodTest extends TestCase
         $alt = Period::createFromDuration('2013-01-01', '3 MONTHS');
         $res = $alt->diff($period);
         $this->assertCount(1, $res);
-        $this->assertInstanceof('League\Period\Period', $res[0]);
+        $this->assertInstanceof(Period::class, $res[0]);
         $this->assertEquals(new DateTimeImmutable('2013-04-01'), $res[0]->getStartDate());
         $this->assertEquals(new DateTimeImmutable('2014-01-01'), $res[0]->getEndDate());
     }
