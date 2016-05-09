@@ -2,11 +2,12 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## 3.2.0 - 2016-04-25
+## 3.2.0 - 2016-05-09
 
 ### Added
 
 - `Period::__set_state`
+- autoloader to use the library without composer
 
 ### Fixed
 

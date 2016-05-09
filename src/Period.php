@@ -120,7 +120,7 @@ class Period implements JsonSerializable
             return DateTimeImmutable::createFromMutable($datetime);
         }
 
-        return new DateTimeImmutable($datetime->format(static::DATE_LOCALE), $datetime->getTimeZone());
+        return new DateTimeImmutable($datetime->format(self::DATE_LOCALE), $datetime->getTimeZone());
     }
 
     /**
@@ -143,12 +143,12 @@ class Period implements JsonSerializable
      */
     public static function createFromDay($day)
     {
-        $startDate = static::filterDatePoint($day);
+        $date = static::filterDatePoint($day);
 
-        $startDate = $startDate->createFromFormat(
-            static::DATE_LOCALE,
-            $startDate->format('Y-m-d').' 00:00:00.000000',
-            $startDate->getTimeZone()
+        $startDate = $date->createFromFormat(
+            self::DATE_LOCALE,
+            $date->format('Y-m-d').' 00:00:00.000000',
+            $date->getTimeZone()
         );
 
         return new static($startDate, $startDate->add(new DateInterval('P1D')));
@@ -360,8 +360,8 @@ class Period implements JsonSerializable
     {
         $utc = new DateTimeZone('UTC');
 
-        return $this->startDate->setTimeZone($utc)->format(static::DATE_ISO8601)
-            .'/'.$this->endDate->setTimeZone($utc)->format(static::DATE_ISO8601);
+        return $this->startDate->setTimeZone($utc)->format(self::DATE_ISO8601)
+            .'/'.$this->endDate->setTimeZone($utc)->format(self::DATE_ISO8601);
     }
 
     /**
@@ -373,11 +373,11 @@ class Period implements JsonSerializable
     {
         return [
             'startDate' => new DateTime(
-                $this->startDate->format(static::DATE_LOCALE),
+                $this->startDate->format(self::DATE_LOCALE),
                 $this->startDate->getTimeZone()
             ),
             'endDate' => new DateTime(
-                $this->endDate->format(static::DATE_LOCALE),
+                $this->endDate->format(self::DATE_LOCALE),
                 $this->endDate->getTimeZone()
             ),
         ];
