@@ -156,7 +156,7 @@ class PeriodTest extends TestCase
 
     public function testSetState()
     {
-        if (defined('HHVM_VERSION')) {
+        if (!method_exists(DateTimeImmutable::class, '__set_state')) {
             $this->markTestSkipped('DateTimeImmutable::__set_state is not implemented in HHVM');
         }
         $period = new Period('2014-05-01', '2014-05-08');
@@ -422,6 +422,10 @@ class PeriodTest extends TestCase
 
     public function testCreateFromDayPreserveTimezone()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('DateTimeImmutable::createFromFormat is buggy in HHVM');
+        }
+
         $period = Period::createFromDay('2008-07-01T22:35:17+08:00');
         $this->assertEquals('+08:00', $period->getStartDate()->format('P'));
         $this->assertEquals('+08:00', $period->getEndDate()->format('P'));
