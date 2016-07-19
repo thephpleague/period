@@ -156,6 +156,9 @@ class PeriodTest extends TestCase
 
     public function testSetState()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('DateTimeImmutable::__set_state is not implemented in HHVM');
+        }
         $period = new Period('2014-05-01', '2014-05-08');
         $generatedPeriod = eval('return '.var_export($period, true).';');
         $this->assertTrue($generatedPeriod->sameValueAs($period));
