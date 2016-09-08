@@ -918,4 +918,34 @@ class PeriodTest extends TestCase
         $this->assertEquals(3600, $res[1]->getTimestampInterval());
         $this->assertEquals(3600, $res[0]->getTimestampInterval());
     }
+
+    public function testMove()
+    {
+        $period = new Period('2016-01-01 15:32:12', '2016-01-15 12:00:01');
+        $moved = $period->move(new DateInterval('P1D'));
+        $this->assertEquals(new Period('2016-01-02 15:32:12', '2016-01-16 12:00:01'), $moved);
+    }
+
+    public function testMoveSupportStringIntervals()
+    {
+        $period = new Period('2016-01-01 15:32:12', '2016-01-15 12:00:01');
+        $advanced = $period->move('1 DAY');
+        $this->assertEquals(new Period('2016-01-02 15:32:12', '2016-01-16 12:00:01'), $advanced);
+    }
+
+    public function testMoveWithInvertedInterval()
+    {
+        $period = new Period('2016-01-02 15:32:12', '2016-01-16 12:00:01');
+        $lessOneDay = new DateInterval('P1D');
+        $lessOneDay->invert = true;
+        $moved = $period->move($lessOneDay);
+        $this->assertEquals(new Period('2016-01-01 15:32:12', '2016-01-15 12:00:01'), $moved);
+    }
+
+    public function testMoveWithInvertedStringInterval()
+    {
+        $period = new Period('2016-01-02 15:32:12', '2016-01-16 12:00:01');
+        $moved = $period->move('- 1 day');
+        $this->assertEquals(new Period('2016-01-01 15:32:12', '2016-01-15 12:00:01'), $moved);
+    }
 }
