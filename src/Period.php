@@ -912,6 +912,19 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Returns a new Period instance where the start/end dates have moved forwards in time by the given DateInterval
+     *
+     * @param DateInterval|int|string $interval The interval
+     * @return Period
+     */
+    public function move($interval)
+    {
+        $interval = static::filterDateInterval($interval);
+
+        return new static($this->startDate->add($interval), $this->endDate->add($interval));
+    }
+
+    /**
      * Create a new instance given two datepoints
      *
      * The datepoints will be used as to allow the creation of
