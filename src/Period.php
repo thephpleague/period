@@ -6,7 +6,7 @@
  * @author    Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @copyright 2014-2015 Ignace Nyamagana Butera
  * @license   https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
- * @version   3.2.0
+ * @version   3.3.0
  * @link      https://github.com/thephpleague/period/
  */
 namespace League\Period;
@@ -71,14 +71,14 @@ class Period implements JsonSerializable
     public function __construct($startDate, $endDate)
     {
         $startDate = static::filterDatePoint($startDate);
-        $endDate   = static::filterDatePoint($endDate);
+        $endDate = static::filterDatePoint($endDate);
         if ($startDate > $endDate) {
             throw new LogicException(
                 'The ending datepoint must be greater or equal to the starting datepoint'
             );
         }
         $this->startDate = $startDate;
-        $this->endDate   = $endDate;
+        $this->endDate = $endDate;
     }
 
     /**
@@ -672,7 +672,73 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Returns a new Period object with a new starting date point
+     * moved forward or backward by the given interval
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return static
+     */
+    public function moveStartDate($interval)
+    {
+        return new static($this->startDate->add(static::filterDateInterval($interval)), $this->endDate);
+    }
+
+    /**
+     * Returns a new Period object with a new ending date point
+     * moved forward or backward by the given interval
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return static
+     */
+    public function moveEndDate($interval)
+    {
+        return new static($this->startDate, $this->endDate->add(static::filterDateInterval($interval)));
+    }
+
+    /**
+     * Returns a new Period object where the datepoints
+     * are moved forwards or backward simultaneously by the given DateInterval
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return static
+     */
+    public function move($interval)
+    {
+        $interval = static::filterDateInterval($interval);
+
+        return new static($this->startDate->add($interval), $this->endDate->add($interval));
+    }
+
+    /**
      * Returns a new Period object with an added interval
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 3.3.0
      *
      * The interval can be
      * <ul>
@@ -687,11 +753,15 @@ class Period implements JsonSerializable
      */
     public function add($interval)
     {
-        return new static($this->startDate, $this->endDate->add(static::filterDateInterval($interval)));
+        return $this->moveEndDate($interval);
     }
 
     /**
      * Returns a new Period object with a Removed interval
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 3.3.0
      *
      * The interval can be
      * <ul>
@@ -706,7 +776,10 @@ class Period implements JsonSerializable
      */
     public function sub($interval)
     {
-        return new static($this->startDate, $this->endDate->sub(static::filterDateInterval($interval)));
+        $interval = static::filterDateInterval($interval);
+        $interval->invert = 1;
+
+        return $this->moveEndDate($interval);
     }
 
     /**
@@ -897,7 +970,7 @@ class Period implements JsonSerializable
      */
     public function diff(Period $period)
     {
-        if (! $this->overlaps($period)) {
+        if (!$this->overlaps($period)) {
             throw new LogicException('Both Period objects should overlaps');
         }
 
@@ -906,22 +979,11 @@ class Period implements JsonSerializable
             static::createFromDatepoints($this->endDate, $period->getEndDate()),
         ];
 
-        return array_values(array_filter($res, function (Period $period) {
+        $filter = function (Period $period) {
             return $period->getStartDate() != $period->getEndDate();
-        }));
-    }
+        };
 
-    /**
-     * Returns a new Period instance where the start/end dates have moved forwards in time by the given DateInterval
-     *
-     * @param DateInterval|int|string $interval The interval
-     * @return Period
-     */
-    public function move($interval)
-    {
-        $interval = static::filterDateInterval($interval);
-
-        return new static($this->startDate->add($interval), $this->endDate->add($interval));
+        return array_values(array_filter($res, $filter));
     }
 
     /**
@@ -938,7 +1000,7 @@ class Period implements JsonSerializable
     protected static function createFromDatepoints($datePoint1, $datePoint2)
     {
         $startDate = static::filterDatePoint($datePoint1);
-        $endDate   = static::filterDatePoint($datePoint2);
+        $endDate = static::filterDatePoint($datePoint2);
         if ($startDate > $endDate) {
             return new static($endDate, $startDate);
         }
