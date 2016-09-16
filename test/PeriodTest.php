@@ -741,6 +741,32 @@ class PeriodTest extends TestCase
         Period::createFromDuration('2012-01-01', '1 MONTH')->add('-3 MONTHS');
     }
 
+    public function testMoveStartDateBackward()
+    {
+        $orig = Period::createFromMonth(2012, 1);
+        $period = $orig->moveStartDate('-1 MONTH');
+        $this->assertTrue($period->durationGreaterThan($orig));
+        $this->assertEquals($orig->getEndDate(), $period->getEndDate());
+        $this->assertNotEquals($orig->getStartDate(), $period->getStartDate());
+    }
+
+    public function testMoveStartDateForward()
+    {
+        $orig = Period::createFromMonth(2012, 1);
+        $period = $orig->moveStartDate('2 WEEKS');
+        $this->assertTrue($period->durationLessThan($orig));
+        $this->assertEquals($orig->getEndDate(), $period->getEndDate());
+        $this->assertNotEquals($orig->getStartDate(), $period->getStartDate());
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testMoveStartDateThrowsLogicException()
+    {
+        Period::createFromDuration('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
+    }
+
     public function testSub()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 MONTH');

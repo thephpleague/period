@@ -2,6 +2,27 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## Next
+
+### Added
+
+- `Period::move`
+- `Period::moveStartDate`
+- `Period::moveEndDate`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- `Period::add` you should use `Period::moveEndDate` instead
+- `Period::sub` you should use `Period::moveEndDate` instead
+
+### Removed
+
+- None
+
 ## 3.2.0 - 2016-05-09
 
 ### Added
