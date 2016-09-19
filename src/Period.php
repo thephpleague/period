@@ -297,18 +297,18 @@ class Period implements JsonSerializable
     /**
      * Create a Period object for a specific interval in a given year
      *
-     * @param int $duration
+     * @param int $interval
      * @param int $year
      * @param int $index
      *
      * @return static
      */
-    protected static function createFromYearInterval($duration, $year, $index)
+    protected static function createFromYearInterval($interval, $year, $index)
     {
-        $month = sprintf('%02s', ((static::validateRange($index, 1, 12 / $duration) - 1) * $duration) + 1);
+        $month = sprintf('%02s', ((static::validateRange($index, 1, 12 / $interval) - 1) * $interval) + 1);
         $startDate = new DateTimeImmutable(static::validateYear($year).'-'.$month.'-01');
 
-        return new static($startDate, $startDate->add(new DateInterval('P'.$duration.'M')));
+        return new static($startDate, $startDate->add(new DateInterval('P'.$interval.'M')));
     }
 
     /**
