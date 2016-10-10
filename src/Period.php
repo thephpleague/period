@@ -672,6 +672,25 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Returns a new Period object with a new starting date point.
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return static
+     */
+    public function withDurationBeforeEnd($interval)
+    {
+        return new static($this->endDate->sub(static::filterDateInterval($interval)), $this->endDate);
+    }
+
+    /**
      * Returns a new Period object with a new starting date point
      * moved forward or backward by the given interval
      *
@@ -776,10 +795,7 @@ class Period implements JsonSerializable
      */
     public function sub($interval)
     {
-        $interval = static::filterDateInterval($interval);
-        $interval->invert = 1;
-
-        return $this->moveEndDate($interval);
+        return new static($this->startDate, $this->endDate->sub(static::filterDateInterval($interval)));
     }
 
     /**

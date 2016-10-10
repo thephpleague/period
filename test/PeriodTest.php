@@ -715,6 +715,25 @@ class PeriodTest extends TestCase
         $period->withDuration($interval);
     }
 
+
+    public function testWithDurationBeforeEnd()
+    {
+        $expected = Period::createFromMonth(2014, 2);
+        $period = Period::createFromDurationBeforeEnd('2014-03-01', '2 Weeks');
+        $this->assertEquals($expected, $period->withDurationBeforeEnd('1 MONTH'));
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testWithDurationBeforeEndThrowsException()
+    {
+        $period = Period::createFromDurationBeforeEnd('2014-03-01', '2 Weeks');
+        $interval = new DateInterval('P1D');
+        $interval->invert = 1;
+        $period->withDurationBeforeEnd($interval);
+    }
+
     public function testMerge()
     {
         $period = Period::createFromMonth(2014, 3);

@@ -1,6 +1,24 @@
-#Changelog
+# Changelog
 
 All Notable changes to `Period` will be documented in this file
+
+## next
+
+### Added
+
+- `Period::withDurationBeforeEnd`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
 
 ## 3.3.0 - 2016-09-19
 
