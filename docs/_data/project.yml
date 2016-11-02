@@ -1,0 +1,4 @@
+title: Period
+tagline: "Time range API for PHP"
+description: "Period provides an immutable value object to ease working with Time Ranges"
+google_analytics_tracking_id: UA-46050814-11
