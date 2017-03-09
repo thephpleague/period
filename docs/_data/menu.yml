@@ -1,12 +1,11 @@
 Getting Started:
-    Introduction: '/'
-    Terminology: '/definitions/'
-    Installation: '/installation/'
     Examples: '/examples/'
-    Changelog: '/changelog/'
-Period API:
-    The Complete API: '/api/'
+    Installation: '/installation/'
+The API:
+    Overview: '/api/'
     Instantiation: '/api/instantiation/'
     Properties: '/api/properties/'
     Comparing: '/api/comparing/'
     Modifying: '/api/modifying/'
+Upgrading Guide:
+    Changelog: '/changelog/'
