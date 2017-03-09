@@ -64,8 +64,9 @@ layout: homepage
         <div class="content">
           <p><code>League\Period 3.0</code></p>
           <ul>
-            <li>Release Date: <strong>2015-09-02</strong></li>
             <li>Requires: <strong>PHP >= 5.5.0</strong></li>
+            <li>Release Date: <strong>2015-09-02</strong></li>
+            <li>Supported Until: <strong>TBD</strong></li>
           </ul>
           <p><a href="/api/">Full Documentation</a></p>
         </div>
@@ -76,11 +77,15 @@ layout: homepage
         <div class="content">
           <p><code>League\Period 2.0</code></p>
           <ul>
-            <li>Release Date: <strong>2014-10-15</strong></li>
             <li>Requires: <strong>PHP >= 5.3.0</strong></li>
+            <li>Release Date: <strong>2014-10-15</strong></li>
+            <li>Supported Until: <strong>2016-03-02</strong></li>
           </ul>
         </div>
       </div>
+
+      <p class="footnote">Once a new major version is released, the previous stable release remains supported for six (6) more months through patches and/or security fixes.</p>
+
     </div>
   </div>
 
