@@ -496,11 +496,14 @@ class Period implements JsonSerializable
      */
     public function isAfter($index)
     {
+        $utc = new DateTimeZone('UTC');
         if ($index instanceof Period) {
-            return $this->startDate >= $index->getEndDate();
+            $utcStartDate = $this->startDate->setTimezone($utc);
+            $utcIndexEndDate = $index->getEndDate()->setTimezone($utc);
+            return $utcStartDate >= $utcIndexEndDate;
         }
 
-        return $this->startDate > static::filterDatePoint($index);
+        return $this->startDate->setTimezone($utc) > static::filterDatePoint($index)->setTimezone($utc);
     }
 
     /**
@@ -512,11 +515,14 @@ class Period implements JsonSerializable
      */
     public function isBefore($index)
     {
+        $utc = new DateTimeZone('UTC');
         if ($index instanceof Period) {
-            return $this->endDate <= $index->getStartDate();
+            $utcEndDate = $this->endDate->setTimezone($utc);
+            $utcIndexStartDate = $index->getStartDate()->setTimezone($utc);
+            return $utcEndDate <= $utcIndexStartDate;
         }
 
-        return $this->endDate <= static::filterDatePoint($index);
+        return $this->endDate->setTimezone($utc) <= static::filterDatePoint($index)->setTimezone($utc);
     }
 
     /**
