@@ -888,7 +888,7 @@ class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The interval
      *
-     * @return Generator
+     * @return Generator|Period[]
      */
     public function split($interval)
     {
