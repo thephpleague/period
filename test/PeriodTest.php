@@ -148,7 +148,7 @@ class PeriodTest extends TestCase
 
     public function testSplitWithInconsistentInterval()
     {
-        $period = Period::createFromDuration(new DateTime(), '1 DAY');
+        $period = Period::createFromDuration('2010-01-01', '1 DAY');
         $range = iterator_to_array($period->split('10 HOURS'));
         $last = array_pop($range);
         $this->assertEquals(14400, $last->getTimestampInterval());
