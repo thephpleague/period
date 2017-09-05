@@ -877,7 +877,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Split a Period by a given interval
+     * Split a Period by a given interval (from start to end)
      *
      * The interval can be
      * <ul>
@@ -903,6 +903,35 @@ class Period implements JsonSerializable
 
             $startDate = $endDate;
         } while ($startDate < $this->endDate);
+    }
+
+    /**
+     * Split a Period by a given interval (from end to start)
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return Generator|Period[]
+     */
+    public function splitBackwards($interval)
+    {
+        $endDate = $this->endDate;
+        $interval = static::filterDateInterval($interval);
+        do {
+            $startDate = $endDate->sub($interval);
+            if ($startDate < $this->startDate) {
+                $startDate = $this->startDate;
+            }
+            yield new static($startDate, $endDate);
+
+            $endDate = $startDate;
+        } while ($endDate > $this->startDate);
     }
 
     /**
