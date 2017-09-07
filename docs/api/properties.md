@@ -97,7 +97,7 @@ foreach ($iterator as $datetime) {
 public Period::split(mixed $duration): Generator
 ~~~
 
-This method splits a given `Period` object in smaller `Period` objects according to the given `$interval`. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
+This method splits a given `Period` object in smaller `Period` objects according to the given `$interval` startinf from the object starting datepoint to its ending datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
 
 - The first returned `Period` will always share the same starting datepoint with the parent object.
 - The last returned `Period` will always share the same ending datepoint with the parent object.
@@ -117,6 +117,41 @@ foreach ($period_list as $inner_periods) {
     echo $inner_period; //returns the string representation of a Period object
 }
 //will iterate 12 times
+~~~
+
+### Period::splitBackwards
+
+<p class="message-notice">Added in <code>version 3.4.0</code></p>
+
+#### Description
+
+~~~php
+<?php
+
+public Period::splitBackwards(mixed $duration): Generator
+~~~
+
+This method splits a given `Period` object in smaller `Period` objects according to the given `$interval` starting from the object ending datepoint to its starting datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
+
+- The first returned `Period` will always share the same ending datepoint with the parent object.
+- The last returned `Period` will always share the same starting datepoint with the parent object.
+- The last returned `Period` will have a duration equal or lesser than the submitted interval.
+- If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
+
+#### Example
+
+~~~php
+<?php
+
+date_default_timezone_set('Africa/Kinshasa');
+
+use League\Period\Period;
+
+$period = Period::createFromYear(2012);
+$period_list = iterator_to_array($period->splitBackwards('5 MONTH'));
+echo $period_list[0]; // 2012-07-31T23:00:00Z/2012-12-31T23:00:00Z (5 months interval)
+echo $period_list[1]; // 2012-02-29T23:00:00Z/2012-07-31T23:00:00Z (5 months interval)
+echo $period_list[2]; // 2011-12-31T23:00:00Z/2012-02-29T23:00:00Z (2 months interval)
 ~~~
 
 ## Period representations

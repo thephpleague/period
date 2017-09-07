@@ -161,7 +161,7 @@ class PeriodTest extends TestCase
         $result = array_map(function (Period $range) {
             return [
                 'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
-                'end'   => $range->getEndDate()->format('Y-m-d H:i:s')
+                'end'   => $range->getEndDate()->format('Y-m-d H:i:s'),
             ];
         }, iterator_to_array($range));
         $expected = [
@@ -188,7 +188,7 @@ class PeriodTest extends TestCase
         $result = array_map(function (Period $range) {
             return [
                 'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
-                'end'   => $range->getEndDate()->format('Y-m-d H:i:s')
+                'end'   => $range->getEndDate()->format('Y-m-d H:i:s'),
             ];
         }, iterator_to_array($range));
         $expected = [

@@ -70,6 +70,7 @@ $period->getDateInterval();       //the duration as a DateInterval object
 $period->getTimestampInterval();  //the duration expressed in seconds
 $period->getDatePeriod('1 HOUR'); //return a DatePeriod object
 $period->split('1 WEEK');         //return a Generator object containing Period objects
+$period->splitBackwards('1 DAY'); //return a Generator object containing Period objects
 $period->__toString();            //return the ISO8601 representation of the Period
 $json = json_encode($period);     //return the json representation of the Period
 ~~~

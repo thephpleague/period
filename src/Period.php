@@ -877,7 +877,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Split a Period by a given interval (from start to end)
+     * Split a Period by a given interval (from startDate to endDate)
      *
      * The interval can be
      * <ul>
@@ -906,7 +906,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Split a Period by a given interval (from end to start)
+     * Split a Period by a given interval (from endDate to startDate)
      *
      * The interval can be
      * <ul>
