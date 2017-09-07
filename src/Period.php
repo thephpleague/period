@@ -93,213 +93,6 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific date
-     *
-     * The date is truncated so that the Time range starts at midnight according to the date timezone.
-     * The duration is equivalent to one full day.
-     *
-     * @param DateTimeInterface|string $datepoint
-     *
-     * @return static
-     */
-    public static function createFromDay($datepoint): self
-    {
-        return self::createFromFormat('Y-m-d 00:00:00', static::filterDatePoint($datepoint), new DateInterval('P1D'));
-    }
-
-    /**
-     * Returns a Period object from a format and a interval without the microseconds floating parts
-     *
-     * @param string            $format
-     * @param DateTimeImmutable $date
-     * @param DateInterval      $interval
-     *
-     * @return static
-     */
-    protected static function createFromFormat(string $format, DateTimeImmutable $date, DateInterval $interval): self
-    {
-        $startDate = $date->createFromFormat('Y-m-d H:i:s', $date->format($format), $date->getTimeZone());
-
-        return new static($startDate, $startDate->add($interval));
-    }
-
-    /**
-     * Create a Period object for a specific date and time which last 1 hour
-     *
-     * The date is truncated so that the Time range starts at midnight according to the date timezone.
-     * The duration is equivalent to one full day.
-     *
-     * @param DateTimeInterface|string $datepoint
-     *
-     * @return static
-     */
-    public static function createFromHour($datepoint): self
-    {
-        return self::createFromFormat('Y-m-d H:00:00', static::filterDatePoint($datepoint), new DateInterval('PT1H'));
-    }
-
-    /**
-     * Create a Period object for a specific date and time which last 1 minute
-     *
-     * The date is truncated so that the Time range starts at midnight according to the date timezone.
-     * The duration is equivalent to one full day.
-     *
-     * @param DateTimeInterface|string $datepoint
-     *
-     * @return static
-     */
-    public static function createFromMinute($datepoint): self
-    {
-        return self::createFromFormat('Y-m-d H:i:00', static::filterDatePoint($datepoint), new DateInterval('PT1M'));
-    }
-
-    /**
-     * Create a Period object for a specific date and time which last 1 second
-     *
-     * The date is truncated so that the Time range starts at midnight according to the date timezone.
-     * The duration is equivalent to one full day.
-     *
-     * @param DateTimeInterface|string $datepoint
-     *
-     * @return static
-     */
-    public static function createFromSecond($datepoint): self
-    {
-        return self::createFromFormat('Y-m-d H:i:s', static::filterDatePoint($datepoint), new DateInterval('PT1S'));
-    }
-
-    /**
-     * Create a Period object for a specific Year
-     *
-     * @param DateTimeInterface|string|int $year
-     *
-     * @return static
-     */
-    public static function createFromYear($year): self
-    {
-        if (is_int($year)) {
-            $year = $year.'-01-01';
-        }
-
-        return self::createFromFormat('Y-01-01 00:00:00', static::filterDatePoint($year), new DateInterval('P1Y'));
-    }
-
-    /**
-     * Create a Period object for a specific month
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $month Month index from 1 to 12
-     *
-     * @return static
-     */
-    public static function createFromMonth($year, int $month = null): self
-    {
-        if (1 == func_num_args()) {
-            return self::createFromFormat('Y-m-01 00:00:00', static::filterDatePoint($year), new DateInterval('P1M'));
-        }
-
-        $month = self::validateRange($month, 1, 12);
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0, 0);
-
-        return new static($startDate, $startDate->add(new DateInterval('P1M')));
-    }
-
-    /**
-     * Validate a int according to a range.
-     *
-     * @param int $value the value to validate
-     * @param int $min   the minimum value
-     * @param int $max   the maximal value
-     *
-     * @throws Exception If the value is not in the range
-     *
-     * @return int
-     */
-    protected static function validateRange(int $value, int $min, int $max): int
-    {
-        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
-        if (false === $res) {
-            throw new Exception('the submitted value is not contained within the valid range');
-        }
-
-        return $res;
-    }
-
-    /**
-     * Create a Period object for a specific week
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $week index from 1 to 53
-     *
-     * @return static
-     */
-    public static function createFromWeek($year, int $week = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = static::filterDatePoint($year);
-
-            return self::createFromFormat(
-                'Y-m-d 00:00:00',
-                $date->sub(new DateInterval('P'.($date->format('N') - 1).'D')),
-                new DateInterval('P1W')
-            );
-        }
-
-        $startDate = (new DateTimeImmutable())
-            ->setISODate($year, self::validateRange($week, 1, 53))
-            ->setTime(0, 0, 0)
-        ;
-
-        return new static($startDate, $startDate->add(new DateInterval('P1W')));
-    }
-
-    /**
-     * Create a Period object for a specific quarter
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $quarter Quarter Index from 1 to 4
-     *
-     * @return static
-     */
-    public static function createFromQuarter($year, int $quarter = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $month = (intdiv((int) $date->format('m'), 3) * 3) + 1;
-
-            return self::createFromFormat('Y-m-d 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1), new DateInterval('P3M'));
-        }
-
-        $month = ((static::validateRange($quarter, 1, 4) - 1) * 3) + 1;
-        $startDate = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
-
-        return new static($startDate, $startDate->add(new DateInterval('P3M')));
-    }
-
-    /**
-     * Create a Period object for a specific semester
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $semester Semester Index from 1 to 2
-     *
-     * @return static
-     */
-    public static function createFromSemester($year, int $semester = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $month = (intdiv((int) $date->format('m'), 6) * 6) + 1;
-
-            return self::createFromFormat('Y-m-d 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1), new DateInterval('P6M'));
-        }
-
-        $month = ((static::validateRange($semester, 1, 2) - 1) * 6) + 1;
-        $startDate = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
-
-        return new static($startDate, $startDate->add(new DateInterval('P6M')));
-    }
-
-    /**
      * Create a Period object from a starting point and an interval.
      *
      * The interval can be
@@ -346,6 +139,222 @@ class Period implements JsonSerializable
         }
 
         return DateInterval::createFromDateString($interval);
+    }
+
+    /**
+     * Create a Period object for a specific date
+     *
+     * The date is truncated so that the Time range starts at midnight according to the date timezone.
+     * The duration is equivalent to one full day.
+     *
+     * @param DateTimeInterface|string $datepoint
+     *
+     * @return static
+     */
+    public static function createFromDay($datepoint): self
+    {
+        $date = self::approximateDate('Y-m-d 00:00:00', static::filterDatePoint($datepoint));
+
+        return self::createFromDuration($date, new DateInterval('P1D'));
+    }
+
+    /**
+     * Returns a DateTimeInterface object whose value are
+     * approximated to the second
+     *
+     * @param  string            $format
+     * @param  DateTimeInterface $date
+     *
+     * @return DateTimeInterface
+     */
+    protected static function approximateDate(string $format, DateTimeInterface $date): DateTimeInterface
+    {
+        return $date->createFromFormat('Y-m-d H:i:s', $date->format($format), $date->getTimeZone());
+    }
+
+    /**
+     * Create a Period object for a specific date and time which last 1 hour
+     *
+     * The date is truncated so that the Time range starts at midnight according to the date timezone.
+     * The duration is equivalent to one full day.
+     *
+     * @param DateTimeInterface|string $datepoint
+     *
+     * @return static
+     */
+    public static function createFromHour($datepoint): self
+    {
+        $date = self::approximateDate('Y-m-d H:00:00', static::filterDatePoint($datepoint));
+
+        return self::createFromDuration($date, new DateInterval('PT1H'));
+    }
+
+    /**
+     * Create a Period object for a specific date and time which last 1 minute
+     *
+     * The date is truncated so that the Time range starts at midnight according to the date timezone.
+     * The duration is equivalent to one full day.
+     *
+     * @param DateTimeInterface|string $datepoint
+     *
+     * @return static
+     */
+    public static function createFromMinute($datepoint): self
+    {
+        $date = self::approximateDate('Y-m-d H:i:00', static::filterDatePoint($datepoint));
+
+        return self::createFromDuration($date, new DateInterval('PT1M'));
+    }
+
+    /**
+     * Create a Period object for a specific date and time which last 1 second
+     *
+     * The date is truncated so that the Time range starts at midnight according to the date timezone.
+     * The duration is equivalent to one full day.
+     *
+     * @param DateTimeInterface|string $datepoint
+     *
+     * @return static
+     */
+    public static function createFromSecond($datepoint): self
+    {
+        $date = self::approximateDate('Y-m-d H:i:s', static::filterDatePoint($datepoint));
+
+        return self::createFromDuration($date, new DateInterval('PT1S'));
+    }
+
+    /**
+     * Create a Period object for a specific Year
+     *
+     * @param DateTimeInterface|string|int $year
+     *
+     * @return static
+     */
+    public static function createFromYear($year): self
+    {
+        if (is_int($year)) {
+            $year = $year.'-01-01';
+        }
+
+        $date = self::approximateDate('Y-01-01 00:00:00', static::filterDatePoint($year));
+
+        return self::createFromDuration($date, new DateInterval('P1Y'));
+    }
+
+    /**
+     * Create a Period object for a specific month
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $month Month index from 1 to 12
+     *
+     * @return static
+     */
+    public static function createFromMonth($year, int $month = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = self::approximateDate('Y-m-01 00:00:00', static::filterDatePoint($year));
+
+            return self::createFromDuration($date, new DateInterval('P1M'));
+        }
+
+        $month = self::validateRange($month, 1, 12);
+        $date = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0, 0);
+
+        return self::createFromDuration($date, new DateInterval('P1M'));
+    }
+
+    /**
+     * Validate a int according to a range.
+     *
+     * @param int $value the value to validate
+     * @param int $min   the minimum value
+     * @param int $max   the maximal value
+     *
+     * @throws Exception If the value is not in the range
+     *
+     * @return int
+     */
+    protected static function validateRange(int $value, int $min, int $max): int
+    {
+        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
+        if (false === $res) {
+            throw new Exception('the submitted value is not contained within the valid range');
+        }
+
+        return $res;
+    }
+
+    /**
+     * Create a Period object for a specific week
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $week index from 1 to 53
+     *
+     * @return static
+     */
+    public static function createFromWeek($year, int $week = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = static::filterDatePoint($year);
+            $date = self::approximateDate('Y-m-d 00:00:00', $date->sub(new DateInterval('P'.($date->format('N') - 1).'D')));
+
+            return self::createFromDuration($date, new DateInterval('P1W'));
+        }
+
+        $date = (new DateTimeImmutable())
+            ->setISODate($year, self::validateRange($week, 1, 53))
+            ->setTime(0, 0, 0)
+        ;
+
+        return self::createFromDuration($date, new DateInterval('P1W'));
+    }
+
+    /**
+     * Create a Period object for a specific quarter
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $quarter Quarter Index from 1 to 4
+     *
+     * @return static
+     */
+    public static function createFromQuarter($year, int $quarter = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = self::filterDatePoint($year);
+            $month = (intdiv((int) $date->format('m'), 3) * 3) + 1;
+            $date = self::approximateDate('Y-m-d 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
+
+            return self::createFromDuration($date, new DateInterval('P3M'));
+        }
+
+        $month = ((static::validateRange($quarter, 1, 4) - 1) * 3) + 1;
+        $date = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
+
+        return self::createFromDuration($date, new DateInterval('P3M'));
+    }
+
+    /**
+     * Create a Period object for a specific semester
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $semester Semester Index from 1 to 2
+     *
+     * @return static
+     */
+    public static function createFromSemester($year, int $semester = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = self::filterDatePoint($year);
+            $month = (intdiv((int) $date->format('m'), 6) * 6) + 1;
+            $date = self::approximateDate('Y-m-d 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
+
+            return self::createFromDuration($date, new DateInterval('P6M'));
+        }
+
+        $month = ((static::validateRange($semester, 1, 2) - 1) * 6) + 1;
+        $date = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
+
+        return self::createFromDuration($date, new DateInterval('P6M'));
     }
 
     /**
