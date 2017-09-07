@@ -121,7 +121,7 @@ foreach ($period_list as $inner_periods) {
 
 ### Period::splitBackwards
 
-<p class="message-notice">Added in <code>version 3.4.0</code></p>
+<p class="message-notice">This method is introduced in version <code>3.4.0</code></p>
 
 #### Description
 

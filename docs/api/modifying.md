@@ -77,7 +77,7 @@ $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 public Period::withDuration(mixed $duration): Period
 ~~~
 
-Returns a new `Period` object by updating its duration. Only the excluded datepoint is updated.
+Returns a new `Period` object by updating its duration. Only the excluded ending datepoint is updated.
 
 ### Example
 
@@ -91,6 +91,34 @@ $newPeriod = $period->withDuration('2 WEEKS');
 $period->getEndDate();    //returns DateTimeImmutable('2014-04-01');
 $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 // $period->getStartDate() equals $newPeriod->getStartDate();
+~~~
+
+### Period::withDurationBeforeEnd
+
+<p class="message-notice">This method is introduced in version <code>3.4.0</code></p>
+
+#### Description
+
+~~~php
+<?php
+
+public Period::withDurationBeforeEnd(mixed $duration): Period
+~~~
+
+Returns a new `Period` object by updating its duration. Only the includate starting datepoint is updated.
+
+### Example
+
+~~~php
+<?php
+
+use League\Period\Period;
+
+$period    = Period::createFromMonth(2014, 3);
+$newPeriod = $period->withDurationBeforeEnd('2 WEEKS');
+$period->getStartDate();    //returns DateTimeImmutable('2014-03-01');
+$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-18');
+// $period->getEndDate() equals $newPeriod->getEndDate();
 ~~~
 
 ### Period::move
