@@ -154,6 +154,68 @@ class PeriodTest extends TestCase
         $this->assertEquals(14400, $last->getTimestampInterval());
     }
 
+    public function testSplitData()
+    {
+        $period = Period::createFromDuration(new DateTime('2015-01-01'), '3 days');
+        $range = $period->split('1 day');
+        $result = array_map(function (Period $range) {
+            return [
+                'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
+                'end'   => $range->getEndDate()->format('Y-m-d H:i:s')
+            ];
+        }, iterator_to_array($range));
+        $expected = [
+            [
+                'start' => '2015-01-01 00:00:00',
+                'end'   => '2015-01-02 00:00:00',
+            ],
+            [
+                'start' => '2015-01-02 00:00:00',
+                'end'   => '2015-01-03 00:00:00',
+            ],
+            [
+                'start' => '2015-01-03 00:00:00',
+                'end'   => '2015-01-04 00:00:00',
+            ],
+        ];
+        $this->assertSame($expected, $result);
+    }
+
+    public function testSplitDataBackwards()
+    {
+        $period = Period::createFromDuration(new DateTime('2015-01-01'), '3 days');
+        $range = $period->splitBackwards('1 day');
+        $result = array_map(function (Period $range) {
+            return [
+                'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
+                'end'   => $range->getEndDate()->format('Y-m-d H:i:s')
+            ];
+        }, iterator_to_array($range));
+        $expected = [
+            [
+                'start' => '2015-01-03 00:00:00',
+                'end'   => '2015-01-04 00:00:00',
+            ],
+            [
+                'start' => '2015-01-02 00:00:00',
+                'end'   => '2015-01-03 00:00:00',
+            ],
+            [
+                'start' => '2015-01-01 00:00:00',
+                'end'   => '2015-01-02 00:00:00',
+            ],
+        ];
+        $this->assertSame($expected, $result);
+    }
+
+    public function testSplitBackwardsWithInconsistentInterval()
+    {
+        $period = Period::createFromDuration('2010-01-01', '1 DAY');
+        $range = iterator_to_array($period->splitBackwards('10 HOURS'));
+        $last = array_pop($range);
+        $this->assertEquals(14400, $last->getTimestampInterval());
+    }
+
     public function testSetState()
     {
         if (!method_exists(DateTimeImmutable::class, '__set_state')) {
