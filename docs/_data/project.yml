@@ -11,7 +11,7 @@ releases:
     supported_until: 'TBD'
   current:
     version: '3.0'
-    requires: 'PHP >= 5.5.0'
+    requires: 'PHP >= 5.5.9'
     latest: '3.3.0 - 2016-09-19'
     supported_until: 'TBD'
     documentation_link: '/api'

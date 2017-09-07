@@ -115,9 +115,9 @@ Returns a new `Period` object by updating its duration. Only the includate start
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
-$newPeriod = $period->withDurationBeforeEnd('2 WEEKS');
+$newPeriod = $period->withDurationBeforeEnd('2 DAYS');
 $period->getStartDate();    //returns DateTimeImmutable('2014-03-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-18');
+$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-30');
 // $period->getEndDate() equals $newPeriod->getEndDate();
 ~~~
 
