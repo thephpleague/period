@@ -29,7 +29,7 @@ use JsonSerializable;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   1.0.0
  */
-class Period implements JsonSerializable
+final class Period implements JsonSerializable
 {
     /**
      * Period starting included date point.
@@ -142,6 +142,177 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Create a Period object from a ending datepoint and an interval.
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateTimeInterface|string $endDate  The start date point
+     * @param mixed                    $interval The interval
+     *
+     * @return static
+     */
+    public static function createFromDurationBeforeEnd($endDate, $interval): self
+    {
+        $endDate = static::filterDatePoint($endDate);
+
+        return new static($endDate->sub(static::filterDateInterval($interval)), $endDate);
+    }
+
+    /**
+     * Create a Period object for a specific Year
+     *
+     * @param DateTimeInterface|string|int $year
+     *
+     * @return static
+     */
+    public static function createFromYear($year): self
+    {
+        if (is_int($year)) {
+            return self::createFromDuration($year.'-01-01', new DateInterval('P1Y'));
+        }
+
+        $date = self::approximateDate('Y-01-01 00:00:00', static::filterDatePoint($year));
+
+        return self::createFromDuration($date, new DateInterval('P1Y'));
+    }
+
+    /**
+     * Returns a DateTimeInterface object whose value are
+     * approximated to the second
+     *
+     * @param string            $format
+     * @param DateTimeInterface $date
+     *
+     * @return DateTimeInterface
+     */
+    protected static function approximateDate(string $format, DateTimeInterface $date): DateTimeInterface
+    {
+        return $date->createFromFormat('Y-m-d H:i:s', $date->format($format), $date->getTimeZone());
+    }
+
+    /**
+     * Create a Period object for a specific semester
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $semester Semester Index from 1 to 2
+     *
+     * @return static
+     */
+    public static function createFromSemester($year, int $semester = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = self::filterDatePoint($year);
+            $month = (intdiv((int) $date->format('m'), 6) * 6) + 1;
+            $date = self::approximateDate('Y-m-01 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
+
+            return self::createFromDuration($date, new DateInterval('P6M'));
+        }
+
+        $month = ((static::validateRange($semester, 1, 2) - 1) * 6) + 1;
+        $date = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
+
+        return self::createFromDuration($date, new DateInterval('P6M'));
+    }
+
+    /**
+     * Validate a int according to a range.
+     *
+     * @param int $value the value to validate
+     * @param int $min   the minimum value
+     * @param int $max   the maximal value
+     *
+     * @throws Exception If the value is not in the range
+     *
+     * @return int
+     */
+    protected static function validateRange(int $value, int $min, int $max): int
+    {
+        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
+        if (false === $res) {
+            throw new Exception('the submitted value is not contained within the valid range');
+        }
+
+        return $res;
+    }
+
+    /**
+     * Create a Period object for a specific quarter
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $quarter Quarter Index from 1 to 4
+     *
+     * @return static
+     */
+    public static function createFromQuarter($year, int $quarter = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = self::filterDatePoint($year);
+            $month = (intdiv((int) $date->format('m'), 3) * 3) + 1;
+            $date = self::approximateDate('Y-m-01 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
+
+            return self::createFromDuration($date, new DateInterval('P3M'));
+        }
+
+        $month = ((static::validateRange($quarter, 1, 4) - 1) * 3) + 1;
+        $date = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
+
+        return self::createFromDuration($date, new DateInterval('P3M'));
+    }
+
+    /**
+     * Create a Period object for a specific month
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $month Month index from 1 to 12
+     *
+     * @return static
+     */
+    public static function createFromMonth($year, int $month = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = self::approximateDate('Y-m-01 00:00:00', static::filterDatePoint($year));
+
+            return self::createFromDuration($date, new DateInterval('P1M'));
+        }
+
+        $date = date_create()
+            ->setDate($year, self::validateRange($month, 1, 12), 1)
+            ->setTime(0, 0, 0);
+
+        return self::createFromDuration($date, new DateInterval('P1M'));
+    }
+
+    /**
+     * Create a Period object for a specific week
+     *
+     * @param DateTimeInterface|string|int $year
+     * @param int                          $week index from 1 to 53
+     *
+     * @return static
+     */
+    public static function createFromWeek($year, int $week = null): self
+    {
+        if (1 == func_num_args()) {
+            $date = static::filterDatePoint($year);
+            $date = self::approximateDate('Y-m-d 00:00:00', $date->sub(new DateInterval('P'.($date->format('N') - 1).'D')));
+
+            return self::createFromDuration($date, new DateInterval('P1W'));
+        }
+
+        $date = (new DateTimeImmutable())
+            ->setISODate($year, self::validateRange($week, 1, 53))
+            ->setTime(0, 0, 0)
+        ;
+
+        return self::createFromDuration($date, new DateInterval('P1W'));
+    }
+
+    /**
      * Create a Period object for a specific date
      *
      * The date is truncated so that the Time range starts at midnight according to the date timezone.
@@ -156,20 +327,6 @@ class Period implements JsonSerializable
         $date = self::approximateDate('Y-m-d 00:00:00', static::filterDatePoint($datepoint));
 
         return self::createFromDuration($date, new DateInterval('P1D'));
-    }
-
-    /**
-     * Returns a DateTimeInterface object whose value are
-     * approximated to the second
-     *
-     * @param  string            $format
-     * @param  DateTimeInterface $date
-     *
-     * @return DateTimeInterface
-     */
-    protected static function approximateDate(string $format, DateTimeInterface $date): DateTimeInterface
-    {
-        return $date->createFromFormat('Y-m-d H:i:s', $date->format($format), $date->getTimeZone());
     }
 
     /**
@@ -224,188 +381,10 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific Year
+     * Returns the Period starting datepoint.
      *
-     * @param DateTimeInterface|string|int $year
-     *
-     * @return static
-     */
-    public static function createFromYear($year): self
-    {
-        if (is_int($year)) {
-            $year = $year.'-01-01';
-        }
-
-        $date = self::approximateDate('Y-01-01 00:00:00', static::filterDatePoint($year));
-
-        return self::createFromDuration($date, new DateInterval('P1Y'));
-    }
-
-    /**
-     * Create a Period object for a specific month
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $month Month index from 1 to 12
-     *
-     * @return static
-     */
-    public static function createFromMonth($year, int $month = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = self::approximateDate('Y-m-01 00:00:00', static::filterDatePoint($year));
-
-            return self::createFromDuration($date, new DateInterval('P1M'));
-        }
-
-        $month = self::validateRange($month, 1, 12);
-        $date = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0, 0);
-
-        return self::createFromDuration($date, new DateInterval('P1M'));
-    }
-
-    /**
-     * Validate a int according to a range.
-     *
-     * @param int $value the value to validate
-     * @param int $min   the minimum value
-     * @param int $max   the maximal value
-     *
-     * @throws Exception If the value is not in the range
-     *
-     * @return int
-     */
-    protected static function validateRange(int $value, int $min, int $max): int
-    {
-        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
-        if (false === $res) {
-            throw new Exception('the submitted value is not contained within the valid range');
-        }
-
-        return $res;
-    }
-
-    /**
-     * Create a Period object for a specific week
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $week index from 1 to 53
-     *
-     * @return static
-     */
-    public static function createFromWeek($year, int $week = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = static::filterDatePoint($year);
-            $date = self::approximateDate('Y-m-d 00:00:00', $date->sub(new DateInterval('P'.($date->format('N') - 1).'D')));
-
-            return self::createFromDuration($date, new DateInterval('P1W'));
-        }
-
-        $date = (new DateTimeImmutable())
-            ->setISODate($year, self::validateRange($week, 1, 53))
-            ->setTime(0, 0, 0)
-        ;
-
-        return self::createFromDuration($date, new DateInterval('P1W'));
-    }
-
-    /**
-     * Create a Period object for a specific quarter
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $quarter Quarter Index from 1 to 4
-     *
-     * @return static
-     */
-    public static function createFromQuarter($year, int $quarter = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $month = (intdiv((int) $date->format('m'), 3) * 3) + 1;
-            $date = self::approximateDate('Y-m-d 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
-
-            return self::createFromDuration($date, new DateInterval('P3M'));
-        }
-
-        $month = ((static::validateRange($quarter, 1, 4) - 1) * 3) + 1;
-        $date = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
-
-        return self::createFromDuration($date, new DateInterval('P3M'));
-    }
-
-    /**
-     * Create a Period object for a specific semester
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $semester Semester Index from 1 to 2
-     *
-     * @return static
-     */
-    public static function createFromSemester($year, int $semester = null): self
-    {
-        if (1 == func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $month = (intdiv((int) $date->format('m'), 6) * 6) + 1;
-            $date = self::approximateDate('Y-m-d 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
-
-            return self::createFromDuration($date, new DateInterval('P6M'));
-        }
-
-        $month = ((static::validateRange($semester, 1, 2) - 1) * 6) + 1;
-        $date = new DateTimeImmutable($year.'-'.$month.'-01 00:00:00');
-
-        return self::createFromDuration($date, new DateInterval('P6M'));
-    }
-
-    /**
-     * Create a Period object from a ending datepoint and an interval.
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateTimeInterface|string $endDate  The start date point
-     * @param mixed                    $interval The interval
-     *
-     * @return static
-     */
-    public static function createFromDurationBeforeEnd($endDate, $interval): self
-    {
-        $endDate = static::filterDatePoint($endDate);
-
-        return new static($endDate->sub(static::filterDateInterval($interval)), $endDate);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function __toString(): string
-    {
-        $period = $this->jsonSerialize();
-
-        return $period['startDate'].'/'.$period['endDate'];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function jsonSerialize(): array
-    {
-        static $iso8601_format = 'Y-m-d\TH:i:s.u\Z';
-        static $utc;
-        $utc = $utc ?? new DateTimeZone('UTC');
-
-        return [
-            'startDate' => $this->startDate->setTimeZone($utc)->format($iso8601_format),
-            'endDate' => $this->endDate->setTimeZone($utc)->format($iso8601_format),
-        ];
-    }
-
-    /**
-     * Returns the starting date point.
+     * The starting datepoint is included in the specified period.
+     * The starting datepoint is always less than or equal to the ending datepoint.
      *
      * @return DateTimeImmutable
      */
@@ -415,7 +394,10 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Returns the ending datepoint.
+     * Returns the Period ending datepoint.
+     *
+     * The ending datepoint is excluded from the specified period.
+     * The ending datepoint is always greater than or equal to the starting datepoint.
      *
      * @return DateTimeImmutable
      */
@@ -469,6 +451,107 @@ class Period implements JsonSerializable
     }
 
     /**
+     * Allows splitting a Period in smaller Period object according
+     * to a given interval.
+     *
+     * The returned iterable Period set is ordered so that:
+     * <ul>
+     * <li>The first returned Period MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned Period MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned Period MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned Period except for the first one MUST start immediately after the previously returned Period</li>
+     * </ul>
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return Generator
+     */
+    public function split($interval): Generator
+    {
+        $startDate = $this->startDate;
+        $interval = static::filterDateInterval($interval);
+        do {
+            $endDate = $startDate->add($interval);
+            if ($endDate > $this->endDate) {
+                $endDate = $this->endDate;
+            }
+            yield new static($startDate, $endDate);
+
+            $startDate = $endDate;
+        } while ($startDate < $this->endDate);
+    }
+
+    /**
+     * Allows splitting a Period in smaller Period object according
+     * to a given interval.
+     *
+     * The returned iterable Period set is ordered so that:
+     * <ul>
+     * <li>The first returned Period MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned Period MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned Period MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned Period except for the first one MUST end immediately before the previously returned Period</li>
+     * </ul>
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return Generator
+     */
+    public function splitBackwards($interval): Generator
+    {
+        $endDate = $this->endDate;
+        $interval = static::filterDateInterval($interval);
+        do {
+            $startDate = $endDate->sub($interval);
+            if ($startDate < $this->startDate) {
+                $startDate = $this->startDate;
+            }
+            yield new static($startDate, $endDate);
+
+            $endDate = $startDate;
+        } while ($endDate > $this->startDate);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __toString(): string
+    {
+        $period = $this->jsonSerialize();
+
+        return $period['startDate'].'/'.$period['endDate'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize(): array
+    {
+        static $iso8601_format = 'Y-m-d\TH:i:s.u\Z';
+        static $utc;
+        $utc = $utc ?? new DateTimeZone('UTC');
+
+        return [
+            'startDate' => $this->startDate->setTimeZone($utc)->format($iso8601_format),
+            'endDate' => $this->endDate->setTimeZone($utc)->format($iso8601_format),
+        ];
+    }
+
+    /**
      * Tells whether two Period share the same datepoints.
      *
      * @param Period $period
@@ -477,8 +560,8 @@ class Period implements JsonSerializable
      */
     public function sameValueAs(Period $period): bool
     {
-        return $this->startDate == $period->getStartDate()
-            && $this->endDate == $period->getEndDate();
+        return $this->startDate == $period->startDate
+            && $this->endDate == $period->endDate;
     }
 
     /**
@@ -490,12 +573,12 @@ class Period implements JsonSerializable
      */
     public function abuts(Period $period): bool
     {
-        return $this->startDate == $period->getEndDate()
-            || $this->endDate == $period->getStartDate();
+        return $this->startDate == $period->endDate
+            || $this->endDate == $period->startDate;
     }
 
     /**
-     * Tells whether two Period objects overlaps.
+     * Tells whether two Period objects overlaps
      *
      * @param Period $period
      *
@@ -504,12 +587,19 @@ class Period implements JsonSerializable
     public function overlaps(Period $period): bool
     {
         return !$this->abuts($period)
-            && $this->startDate < $period->getEndDate()
-            && $this->endDate > $period->getStartDate();
+            && $this->startDate < $period->endDate
+            && $this->endDate > $period->startDate;
     }
 
     /**
      * Tells whether a Period is entirely after the specified index
+     *
+     * The specified index can be
+     * <ul>
+     * <li>a Period</li>
+     * <li>a DateTimeInterface</li>
+     * <li>a string in a format supported by DateTimeImmutable::__construct</li>
+     * </ul>
      *
      * @param Period|DateTimeInterface|string $index
      *
@@ -518,7 +608,7 @@ class Period implements JsonSerializable
     public function isAfter($index): bool
     {
         if ($index instanceof Period) {
-            return $this->startDate >= $index->getEndDate();
+            return $this->startDate >= $index->endDate;
         }
 
         return $this->startDate > static::filterDatePoint($index);
@@ -527,6 +617,13 @@ class Period implements JsonSerializable
     /**
      * Tells whether a Period is entirely before the specified index
      *
+     * The specified index can be
+     * <ul>
+     * <li>a Period</li>
+     * <li>a DateTimeInterface</li>
+     * <li>a string in a format supported by DateTimeImmutable::__construct</li>
+     * </ul>
+     *
      * @param Period|DateTimeInterface|string $index
      *
      * @return bool
@@ -534,7 +631,7 @@ class Period implements JsonSerializable
     public function isBefore($index): bool
     {
         if ($index instanceof Period) {
-            return $this->endDate <= $index->getStartDate();
+            return $this->endDate <= $index->startDate;
         }
 
         return $this->endDate <= static::filterDatePoint($index);
@@ -543,6 +640,13 @@ class Period implements JsonSerializable
     /**
      * Tells whether the specified index is fully contained within
      * the current Period object.
+     *
+     * The specified index can be
+     * <ul>
+     * <li>a Period</li>
+     * <li>a DateTimeInterface</li>
+     * <li>a string in a format supported by DateTimeImmutable::__construct</li>
+     * </ul>
      *
      * @param Period|DateTimeInterface|string $index
      *
@@ -567,10 +671,8 @@ class Period implements JsonSerializable
      */
     protected function containsPeriod(Period $period): bool
     {
-        $endDate = $period->getEndDate();
-
-        return $this->contains($period->getStartDate())
-            && ($endDate >= $this->startDate && $endDate <= $this->endDate);
+        return $this->contains($period->startDate)
+            && ($period->endDate >= $this->startDate && $period->endDate <= $this->endDate);
     }
 
     /**
@@ -765,54 +867,6 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new Period object adjacent to the current Period
-     * and starting with its ending datepoint.
-     * If no duration is provided the new Period will be created
-     * using the current object duration
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $interval The interval
-     *
-     * @return static
-     */
-    public function next($interval = null): self
-    {
-        $interval = $interval ?? $this->getDateInterval();
-
-        return new static($this->endDate, $this->endDate->add(static::filterDateInterval($interval)));
-    }
-
-    /**
-     * Returns a new Period object adjacent to the current Period
-     * and ending with its starting datepoint.
-     * If no duration is provided the new Period will have the
-     * same duration as the current one
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $interval The interval
-     *
-     * @return static
-     */
-    public function previous($interval = null): self
-    {
-        $interval = $interval ?? $this->getDateInterval();
-
-        return new static($this->startDate->sub(static::filterDateInterval($interval)), $this->startDate);
-    }
-
-    /**
      * Merges one or more Period objects to return a new Period object.
      *
      * The resultant object represents the largest duration possible.
@@ -837,44 +891,15 @@ class Period implements JsonSerializable
      */
     protected function reducer(Period $carry, Period $period): Period
     {
-        if ($carry->getStartDate() > $period->getStartDate()) {
-            $carry = $carry->startingOn($period->getStartDate());
+        if ($carry->startDate > $period->startDate) {
+            $carry = $carry->startingOn($period->startDate);
         }
 
-        if ($carry->getEndDate() < $period->getEndDate()) {
-            $carry = $carry->endingOn($period->getEndDate());
+        if ($carry->endDate < $period->endDate) {
+            $carry = $carry->endingOn($period->endDate);
         }
 
         return $carry;
-    }
-
-    /**
-     * Split a Period by a given interval
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $interval The interval
-     *
-     * @return Generator
-     */
-    public function split($interval): Generator
-    {
-        $startDate = $this->startDate;
-        $interval = static::filterDateInterval($interval);
-        do {
-            $endDate = $startDate->add($interval);
-            if ($endDate > $this->endDate) {
-                $endDate = $this->endDate;
-            }
-            yield new static($startDate, $endDate);
-
-            $startDate = $endDate;
-        } while ($startDate < $this->endDate);
     }
 
     /**
@@ -888,13 +913,13 @@ class Period implements JsonSerializable
      */
     public function intersect(Period $period): self
     {
-        if (! $this->overlaps($period)) {
+        if (!$this->overlaps($period)) {
             throw new Exception('Both object should at least overlaps');
         }
 
         return new static(
-            ($period->getStartDate() > $this->startDate) ? $period->getStartDate() : $this->startDate,
-            ($period->getEndDate() < $this->endDate) ? $period->getEndDate() : $this->endDate
+            ($period->startDate > $this->startDate) ? $period->startDate : $this->startDate,
+            ($period->endDate < $this->endDate) ? $period->endDate : $this->endDate
         );
     }
 
@@ -907,11 +932,11 @@ class Period implements JsonSerializable
      */
     public function gap(Period $period): self
     {
-        if ($period->getStartDate() > $this->startDate) {
-            return new static($this->endDate, $period->getStartDate());
+        if ($period->startDate > $this->startDate) {
+            return new static($this->endDate, $period->startDate);
         }
 
-        return new static($period->getEndDate(), $this->startDate);
+        return new static($period->endDate, $this->startDate);
     }
 
     /**
@@ -927,7 +952,7 @@ class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference between two Period objects expressed in \DateInterval
+     * Returns the difference between two Period objects expressed in DateInterval
      *
      * @param Period $period
      *
@@ -935,7 +960,7 @@ class Period implements JsonSerializable
      */
     public function dateIntervalDiff(Period $period): DateInterval
     {
-        return $this->getEndDate()->diff($this->withDuration($period->getDateInterval())->getEndDate());
+        return $this->endDate->diff($this->withDuration($period->getDateInterval())->endDate);
     }
 
     /**
@@ -963,12 +988,12 @@ class Period implements JsonSerializable
         }
 
         $res = [
-            static::createFromDatepoints($this->getStartDate(), $period->getStartDate()),
-            static::createFromDatepoints($this->getEndDate(), $period->getEndDate()),
+            static::createFromDatepoints($this->startDate, $period->startDate),
+            static::createFromDatepoints($this->endDate, $period->endDate),
         ];
 
         $filter = function (Period $period) {
-            return $period->getStartDate() != $period->getEndDate();
+            return $period->startDate != $period->endDate;
         };
 
         return array_values(array_filter($res, $filter));

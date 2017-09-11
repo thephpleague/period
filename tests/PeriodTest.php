@@ -140,6 +140,41 @@ class PeriodTest extends TestCase
         $this->assertEquals(14400, $last->getTimestampInterval());
     }
 
+    public function testSplitDataBackwards()
+    {
+        $period = Period::createFromDuration(date_create('2015-01-01'), '3 days');
+        $range = $period->splitBackwards('1 day');
+        $result = array_map(function (Period $range) {
+            return [
+                'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
+                'end'   => $range->getEndDate()->format('Y-m-d H:i:s'),
+            ];
+        }, iterator_to_array($range));
+        $expected = [
+            [
+                'start' => '2015-01-03 00:00:00',
+                'end'   => '2015-01-04 00:00:00',
+            ],
+            [
+                'start' => '2015-01-02 00:00:00',
+                'end'   => '2015-01-03 00:00:00',
+            ],
+            [
+                'start' => '2015-01-01 00:00:00',
+                'end'   => '2015-01-02 00:00:00',
+            ],
+        ];
+        $this->assertSame($expected, $result);
+    }
+
+    public function testSplitBackwardsWithInconsistentInterval()
+    {
+        $period = Period::createFromDuration('2010-01-01', '1 DAY');
+        $range = iterator_to_array($period->splitBackwards('10 HOURS'));
+        $last = array_pop($range);
+        $this->assertEquals(14400, $last->getTimestampInterval());
+    }
+
     public function testSetState()
     {
         $period = new Period('2014-05-01', '2014-05-08');
@@ -461,13 +496,6 @@ class PeriodTest extends TestCase
         $this->assertFalse($orig->isAfter($orig->getStartDate()));
     }
 
-    public function testIsAfterPeriodWithAbutsPeriod()
-    {
-        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $alt = $orig->next('1 HOUR');
-        $this->assertTrue($alt->isAfter($orig));
-    }
-
     /**
      * @dataProvider provideAbutsData
      * @param Period $period
@@ -779,37 +807,6 @@ class PeriodTest extends TestCase
         Period::createFromDuration('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
-    public function testNext()
-    {
-        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $next = $orig->next('1 WEEK');
-        $this->assertEquals($next->getStartDate(), $orig->getEndDate());
-    }
-
-    public function testNextWithoutDuration()
-    {
-        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $this->assertEquals($orig->next()->getStartDate(), $orig->getEndDate());
-    }
-
-    public function testPrevious()
-    {
-        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $this->assertEquals($orig->previous('1 MONTH')->getEndDate(), $orig->getStartDate());
-    }
-
-    public function testPreviousWithoutDuration()
-    {
-        $orig = Period::createFromDuration('2012-01-01', '1 MONTH');
-        $this->assertEquals($orig->previous()->getEndDate(), $orig->getStartDate());
-    }
-
-    public function testPreviousNext()
-    {
-        $period = Period::createFromWeek(2014, 13);
-        $this->assertTrue($period->sameValueAs($period->next('3 MONTH')->previous('1 WEEK')));
-    }
-
     public function testDateIntervalDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');
@@ -848,13 +845,6 @@ class PeriodTest extends TestCase
         $orig->intersect(Period::createFromDuration('2012-01-01', '2 MONTH'));
     }
 
-    public function testIntersectThrowsExceptionWithAdjacentTimeRange()
-    {
-        $this->expectException(Exception::class);
-        $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
-        $orig->intersect($orig->next());
-    }
-
     public function testGap()
     {
         $orig = Period::createFromDuration('2011-12-01', '2 MONTHS');
@@ -890,10 +880,10 @@ class PeriodTest extends TestCase
     public function testGapWithAdjacentPeriod()
     {
         $orig = Period::createFromDurationBeforeEnd('2012-12-01', '5 MONTH');
-        $alt  = $orig->next('1 MINUTE');
-        $res  = $orig->gap($alt);
-        $this->assertInstanceof(Period::class, $res);
-        $this->assertEquals(0, $res->getTimestampInterval());
+        $alt  = Period::createFromDuration($orig->getEndDate(), '1 MINUTE');
+        $gap  = $orig->gap($alt);
+        $this->assertInstanceof(Period::class, $gap);
+        $this->assertEquals(0, $gap->getTimestampInterval());
     }
 
     public function testDiffThrowsException()
