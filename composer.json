@@ -18,11 +18,11 @@
         "issues": "https://github.com/thephpleague/period/issues"
     },
     "require": {
-        "php" : ">=5.5.9"
+        "php" : ">=7.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit" : "^4.0",
-        "friendsofphp/php-cs-fixer": "^1.10"
+        "phpunit/phpunit" : "^6.2",
+        "friendsofphp/php-cs-fixer": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -31,16 +31,17 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "League\\Period\\Test\\": "test"
+            "League\\Period\\Test\\": "tests"
         }
     },
     "scripts": {
-        "test": "phpunit --coverage-text;",
-        "phpunit": "phpunit --coverage-text"
+        "test": "phpunit --coverage-text; php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
+        "phpunit": "phpunit",
+        "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.2-dev"
+            "dev-master": "4.0-dev"
         }
     }
 }
