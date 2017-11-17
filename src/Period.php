@@ -901,6 +901,7 @@ final class Period implements JsonSerializable
     }
 
     /**
+
      * Returns a Period whose endpoints are the larget possible
      * between 2 instance of Period objects
      *
@@ -909,7 +910,7 @@ final class Period implements JsonSerializable
      *
      * @return self
      */
-    protected function reducer(Period $carry, Period $period): Period
+    protected function reducer(Period $carry, Period $period): self
     {
         if ($carry->getStartDate() > $period->getStartDate()) {
             $carry = $carry->startingOn($period->getStartDate());

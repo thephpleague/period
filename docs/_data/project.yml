@@ -1,0 +1,36 @@
+title: Period
+tagline: "Time range API for PHP"
+description: "Period provides an immutable value object to ease working with Time Ranges"
+google_analytics_tracking_id: UA-46050814-11
+repository: 'period'
+releases:
+  next:
+    version: '4.0'
+    requires: 'PHP >= 7.1.0'
+    latest: 'TBD'
+    supported_until: 'TBD'
+  current:
+    version: '3.0'
+    requires: 'PHP >= 5.5.9'
+    latest: '3.3.0 - 2016-09-19'
+    supported_until: 'TBD'
+    documentation_link: '/api'
+  legacy:
+    version: '2.0'
+    requires: 'PHP >= 5.3.0'
+    latest: '2.5.1 - 2015-03-09'
+    supported_until: '2015-09-09'
+author:
+    name: 'Ignace Nyamagana Butera'
+    twitter_account: 'nyamsprod'
+# Homepage specific
+
+highlights:
+  description: "`Period` is PHP's Time Range class. It is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges."
+  features:
+    - Treats Time Range as immutable value objects
+    - Exposes many named constructors to ease time range creation
+    - Covers all basic manipulations related to time range
+    - Framework-agnostic
+composer: '$ composer require league/period'
+support: 'Once a new major version is released, the previous stable release remains supported for six more months through patches and security fixes.'
