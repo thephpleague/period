@@ -35,9 +35,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit --coverage-text; php-cs-fixer fix -v --diff --dry-run;",
-        "phpunit": "phpunit",
-        "phpcs": "php-cs-fixer fix -v --diff --dry-run;"
+        "test": "phpunit --coverage-text;",
+        "phpunit": "phpunit --coverage-text"
     },
     "extra": {
         "branch-alias": {

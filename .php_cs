@@ -1,15 +1,6 @@
 <?php
 
-$header = <<<'EOF'
-This file is part of League\Period, a Time range immutable value object
-
-@copyright 2015 Ignace Nyamagana Butera. All rights reserved
-@license MIT See LICENSE.md at the root of the project for more info
-EOF;
-
-Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
-
-return Symfony\CS\Config\Config::create()
+return Symfony\CS\Config::create()
     ->level(Symfony\CS\FixerInterface::PSR2_LEVEL)
     ->fixers([
         'ordered_use',
