@@ -87,6 +87,25 @@ class PeriodTest extends TestCase
         ];
     }
 
+    public function testCreateFromDatePeriod()
+    {
+        $datePeriod = new DatePeriod(
+            date_create('2016-05-16T00:00:00Z'),
+            new DateInterval('P1D'),
+            date_create('2016-05-20T00:00:00Z')
+        );
+        $period = Period::createFromDatePeriod($datePeriod);
+        $this->assertEquals($datePeriod->getStartDate(), $period->getStartDate());
+        $this->assertEquals($datePeriod->getEndDate(), $period->getEndDate());
+    }
+
+    public function testCreateFromDatePeriodThrowsException()
+    {
+        $this->expectException(Exception::class);
+        $datePeriod = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
+        Period::createFromDatePeriod($datePeriod);
+    }
+
     public function testGetDateInterval()
     {
         $period = Period::createFromMonth(2014, 3);

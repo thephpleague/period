@@ -164,6 +164,24 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Create a Period object from a DatePeriod
+     *
+     * @param DatePeriod $datePeriod
+     *
+     * @throws Exception If the submitted DatePeriod lacks an End DateTimeInterface
+     *
+     * @return self
+     */
+    public static function createFromDatePeriod(DatePeriod $datePeriod): self
+    {
+        if (null !== ($endDate = $datePeriod->getEndDate())) {
+            return new self($datePeriod->getStartDate(), $endDate);
+        }
+
+        throw new Exception('The submitted DatePeriod object does not contain an end date');
+    }
+
+    /**
      * Create a Period object for a specific Year
      *
      * @param DateTimeInterface|string|int $year
@@ -537,7 +555,7 @@ final class Period implements JsonSerializable
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         $period = $this->jsonSerialize();
 
@@ -552,7 +570,7 @@ final class Period implements JsonSerializable
      *
      * @return string[]
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         static $iso8601_format = 'Y-m-d\TH:i:s.u\Z';
         static $utc;

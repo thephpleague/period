@@ -2,6 +2,39 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## Next - TBD
+
+### Added
+
+- `Period::createFromDatePeriod`
+- `Period::createFromHour`
+- `Period::createFromMinute`
+- `Period::createFromSecond`
+- `Exception` class
+
+### Fixed
+
+- The `Period` class is now final
+- `Period::JsonSerialize` now returns datepoint in JavaScript compatible date notation
+- The following methods now accepts as its sole argument a `DateTimeInterface` object.
+    - `Period::createFromYear`
+    - `Period::createFromMonth`
+    - `Period::createFromDay`
+    - `Period::createFromSemester`
+    - `Period::createFromQuarter`
+    - `Period::createFromWeek`
+
+### Deprecated
+
+- None
+
+### Removed
+
+- `Period::next`
+- `Period::previous`
+- `Period::add`
+- `Period::sub`
+
 ## 3.4.0 - 2017-11-17
 
 ### Added
