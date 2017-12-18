@@ -1,11 +1,26 @@
-Getting Started:
-    Examples: '/examples/'
-    Installation: '/installation/'
-The API:
-    Overview: '/api/'
-    Instantiation: '/api/instantiation/'
-    Properties: '/api/properties/'
-    Comparing: '/api/comparing/'
-    Modifying: '/api/modifying/'
-Upgrading Guide:
-    Changelog: '/changelog/'
+version:
+    '4.0':
+        Getting Started:
+            Overview: '/4.0/'
+            Installation: '/4.0/installation/'
+        The API:
+            Definitions: '/4.0/definitions/'
+            Instantiation: '/4.0/instantiation/'
+            Properties: '/4.0/properties/'
+            Comparing: '/4.0/comparing/'
+            Modifying: '/4.0/modifying/'
+    '3.0':
+        Getting Started:
+            Overview: '/3.0/'
+            Installation: '/3.0/installation/'
+        The API:
+            Definitions: '/3.0/definitions/'
+            Instantiation: '/3.0/api/instantiation/'
+            Properties: '/3.0/api/properties/'
+            Comparing: '/3.0/api/comparing/'
+            Modifying: '/3.0/api/modifying/'
+upgrading:
+    'Upgrading Guide':
+        Introduction: '/upgrading/'
+        Changelog: '/upgrading/changelog/'
+        3.x to 4.x: '/upgrading/4.0/'

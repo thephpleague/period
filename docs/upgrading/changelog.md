@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Changelog
+redirect_from: /changelog/
 ---
 
 # Changelog
@@ -8,6 +9,6 @@ title: Changelog
 All Notable changes to `Period` will be documented in this file
 
 {% for release in site.github.releases %}
-## [{{ release.name }}]({{ release.html_url }}) - {{ release.published_at | date: "%Y-%m-%d" }}
-{{ release.body | markdownify }}
+## {{ release.name }} - {{ release.published_at | date: "%Y-%m-%d" }}
+{{ release.body | replace:'```':'~~~' | markdownify }}
 {% endfor %}

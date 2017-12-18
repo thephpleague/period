@@ -4,32 +4,43 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% if page.url == '/' %}
+    {% assign version = page.url | remove_first: "/" | split: "/"" | first %}
+
+    {% if version == '' or version == 'upgrading' %}
+        {% assign version = site.data.project.releases.current.version %}
+    {% endif %}
+
+    {% capture version_home %}/{{ version }}/{% endcapture %}
+
+    {% if page.url == '/'  or page.url == version_home %}
         <title>{{ site.data.project.title }} - {{ site.data.project.tagline }}</title>
     {% else %}
         <title>{{ page.title }} - {{ site.data.project.title }}</title>
     {% endif %}
+
     {% if site.data.project.description %}
         <meta name="description" content="{{ site.data.project.description }}">
     {% endif %}
+
     {% if site.data.images.favicon %}
         <link rel="icon" type="image/x-icon" href="{{ site.data.images.favicon }}" />
     {% else %}
-        <link rel="icon" type="image/x-icon" href="http://theme.thephpleague.com/img/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
     {% endif %}
+
     {% if site.data.images.apple_touch %}
         <link rel="apple-touch-icon-precomposed" href="{{ site.data.images.apple_touch }}">
     {% else %}
-        <link rel="apple-touch-icon-precomposed" href="http://theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
     {% endif %}
-    <link rel="stylesheet" href="http://theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="/custom.css?2">
+    <link rel="stylesheet" href="//theme.thephpleague.com/css/all.css?2">
+    <link rel="stylesheet" href="/custom.css?12">
 </head>
 <body>
 
 <section class="all_packages">
-    <a href="http://thephpleague.com/">
-        <img src="http://theme.thephpleague.com/img/loep_logo.png" width="195" height="200" alt="The League of Extraordinary Packages">
+    <a href="//thephpleague.com/">
+        <img src="//theme.thephpleague.com/img/loep_logo.png" width="195" height="200" alt="The League of Extraordinary Packages">
     </a>
     <h2>Our Packages:</h2>
     <ul>
@@ -47,7 +58,7 @@
         <span class="name">{{ site.data.project.title }}</span>
         <span class="tagline">{{ site.data.project.tagline }}</span>
     </a>
-    <a href="http://thephpleague.com/" class="league">
+    <a href="//thephpleague.com/" class="league">
         Presented by The League of Extraordinary Packages
     </a>
 </header>
@@ -60,7 +71,26 @@
 
 <main>
     <menu>
-        {% for section in site.data.menu %}
+        <div class="tool">
+        <select class="versions">
+            {% for v in site.data.menu.version %}
+                <option data-url="/{{ v[0] }}/" {% if version == v[0] %}selected="selected"{% endif %}>Version: {{ v[0] }}</option>
+            {% endfor %}
+        </select>
+        </div>
+
+        {% for section in site.data.menu.version[version] %}
+            <h2>{{ section[0] }}</h2>
+            <ul>
+                {% for link in section[1] %}
+                    <li {% if page.url == link[1] %}class="selected"{% endif %}>
+                        <a href="{{ link[1] }}">{{ link[0] }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+        {% for section in site.data.menu.upgrading %}
             <h2>{{ section[0] }}</h2>
             <ul>
                 {% for link in section[1] %}
@@ -72,17 +102,29 @@
         {% endfor %}
     </menu>
     <article>
+    {% if version == site.data.project.releases.next.version %}
+        <p class="message-notice">This is the documentation for the upcoming <code>version {{ version }}</code>. This is a work in progress</p>
+    {% endif %}
+
+    {% if version == site.data.project.releases.previous.version %}
+        <p class="message-notice">This is the documentation for <code>version {{ version }}</code> which will be supported until <strong>{{ site.data.project.releases.previous.supported_until }}</strong>. Please consider upgrading your code to <a href="{{ site.data.project.releases.current.documentation_link }}">the latest stable version</a></p>
+    {% endif %}
+
+    {% if version == site.data.project.releases.legacy.version %}
+        <p class="message-notice">This is the documentation for the unsupported <code>version {{ version }}</code>. Please consider upgrading your code to <a href="{{ site.data.project.releases.current.documentation_link }}">the latest stable version</a></p>
+    {% endif %}
+
         {{ content }}
     </article>
 </main>
 
 <footer>
-    <span>&copy; Copyright <a href="http://thephpleague.com">The League of Extraordinary Packages</a>.</span>
-    <span>Site design by <a href="http://reinink.ca">Jonathan Reinink</a>.</span>
+    <span>&copy; Copyright <a href="//thephpleague.com">The League of Extraordinary Packages</a>.</span>
+    <span>Site design by <a href="//reinink.ca">Jonathan Reinink</a>.</span>
 </footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://theme.thephpleague.com/js/scripts.js"></script>
+<script src="//theme.thephpleague.com/js/scripts.js"></script>
 <script src="/custom.js"></script>
 
 {% if site.data.project.google_analytics_tracking_id %}

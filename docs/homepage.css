@@ -116,8 +116,7 @@ blockquote {
     background:#eff0f1;
 }
 
-.highlights .description,
-.highlights .description a {
+.highlights .description {
     color:#666;
     font:normal 18px/1.5 "Museo 300";
     text-align: left;

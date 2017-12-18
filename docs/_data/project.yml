@@ -9,12 +9,13 @@ releases:
     requires: 'PHP >= 7.1.0'
     latest: 'TBD'
     supported_until: 'TBD'
+    documentation_link: '/4.0/'
   current:
     version: '3.0'
     requires: 'PHP >= 5.5.9'
     latest: '3.3.0 - 2016-09-19'
     supported_until: 'TBD'
-    documentation_link: '/api'
+    documentation_link: '/3.0/'
   legacy:
     version: '2.0'
     requires: 'PHP >= 5.3.0'
@@ -24,7 +25,6 @@ author:
     name: 'Ignace Nyamagana Butera'
     twitter_account: 'nyamsprod'
 # Homepage specific
-
 highlights:
   description: "`Period` is PHP's Time Range class. It is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges."
   features:
