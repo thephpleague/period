@@ -19,7 +19,6 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Generator;
 use JsonSerializable;
 
 /**
@@ -48,7 +47,7 @@ final class Period implements JsonSerializable
     /**
      * @inheritdoc
      */
-    public static function __set_state(array $period): self
+    public static function __set_state(array $period)
     {
         return new self($period['startDate'], $period['endDate']);
     }
@@ -223,7 +222,7 @@ final class Period implements JsonSerializable
      *
      * @return self
      */
-    public static function createFromSemester($year, int $semester = null): self
+    public static function createFromSemester($year, ?int $semester = null): self
     {
         if (1 == func_num_args()) {
             $date = self::filterDatePoint($year);
@@ -268,7 +267,7 @@ final class Period implements JsonSerializable
      *
      * @return self
      */
-    public static function createFromQuarter($year, int $quarter = null): self
+    public static function createFromQuarter($year, ?int $quarter = null): self
     {
         if (1 == func_num_args()) {
             $date = self::filterDatePoint($year);
@@ -292,7 +291,7 @@ final class Period implements JsonSerializable
      *
      * @return self
      */
-    public static function createFromMonth($year, int $month = null): self
+    public static function createFromMonth($year, ?int $month = null): self
     {
         if (1 == func_num_args()) {
             $startDate = self::approximateDate('Y-m-01 00:00:00', self::filterDatePoint($year));
@@ -313,7 +312,7 @@ final class Period implements JsonSerializable
      *
      * @return self
      */
-    public static function createFromWeek($year, int $week = null): self
+    public static function createFromWeek($year, ?int $week = null): self
     {
         if (1 == func_num_args()) {
             $date = self::filterDatePoint($year);
@@ -466,7 +465,7 @@ final class Period implements JsonSerializable
      *
      * @return DatePeriod
      */
-    public function getDatePeriod($interval, int $option = 0): DatePeriod
+    public function getDatePeriod($interval, ?int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDateInterval($interval), $this->endDate, $option);
     }
@@ -492,9 +491,9 @@ final class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The interval
      *
-     * @return Generator
+     * @return iterable
      */
-    public function split($interval): Generator
+    public function split($interval): iterable
     {
         $startDate = $this->startDate;
         $interval = self::filterDateInterval($interval);
@@ -530,9 +529,9 @@ final class Period implements JsonSerializable
      *
      * @param DateInterval|int|string $interval The interval
      *
-     * @return Generator
+     * @return iterable
      */
-    public function splitBackwards($interval): Generator
+    public function splitBackwards($interval): iterable
     {
         $endDate = $this->endDate;
         $interval = self::filterDateInterval($interval);

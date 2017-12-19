@@ -6,7 +6,6 @@ use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use DateTimeZone;
-use Generator;
 use JsonSerializable;
 use League\Period\Exception;
 use League\Period\Period;
@@ -122,7 +121,6 @@ class PeriodTest extends TestCase
     {
         $period = Period::createFromDuration(date_create('2012-01-12'), '1 DAY');
         $range = $period->split(3600);
-        $this->assertInstanceof(Generator::class, $range);
         foreach ($range as $innerPeriod) {
             $this->assertInstanceof(Period::class, $innerPeriod);
         }

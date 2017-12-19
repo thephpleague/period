@@ -34,6 +34,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::previous`
 - `Period::add`
 - `Period::sub`
+- Support for PHP 7.0
 
 ## 3.4.0 - 2017-11-17
 
