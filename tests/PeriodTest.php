@@ -606,6 +606,16 @@ class PeriodTest extends TestCase
                 date_create('2014-03-12'),
                 true,
             ],
+            'testContainsReturnsTrueWithAFirstDate' => [
+                Period::createFromMonth(2014, 3),
+                date_create('2014-03-31'),
+                true,
+            ],
+            'testContainsReturnsTrueWithALastDate' => [
+                Period::createFromMonth(2014, 3),
+                date_create('2014-03-12'),
+                true,
+            ],
             'testContainsReturnsTrueWithPeriodObject' => [
                 Period::createFromSemester(2014, 1),
                 Period::createFromQuarter(2014, 1),
