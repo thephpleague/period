@@ -46,7 +46,7 @@ A simple example on how to get all the days from a selected month.
 
 use League\Period\Period;
 
-$period = Period::createFromMonth(2014, 10);
+$period = Period::createFromMonth('2014-10-12');
 foreach ($period->getDatePeriod('1 DAY') as $day) {
     $day->format('Y-m-d');
 }

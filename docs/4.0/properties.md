@@ -18,8 +18,6 @@ public Period::getDateInterval(void): DateInterval
 public Period::getTimestampInterval(void): float
 ~~~
 
-<p class="message-warning"><strong>BC Break :</strong><code>getStartDate</code> and <code>getEndDate</code> now return a <code>DateTimeImmutable</code> object.</p>
-
 ~~~php
 <?php
 
@@ -35,8 +33,6 @@ $altduration = $period->getTimestampInterval(); //returns the interval as expres
 ## Iteration over a Period
 
 ### Period::getDatePeriod
-
-<p class="message-notice">The <code>$option</code> parameter is new to <code>version 3.1</code>.</p>
 
 #### Description
 
@@ -84,10 +80,7 @@ foreach ($iterator as $datetime) {
 //will iterate 11 times
 ~~~
 
-
 ### Period::split
-
-<p class="message-warning"><strong>BC Break :</strong> In <code>version 3</code>, this method returns an <code>generator</code> instead of an <code>array</code>.</p>
 
 #### Description
 
@@ -120,8 +113,6 @@ foreach ($period_list as $inner_periods) {
 ~~~
 
 ### Period::splitBackwards
-
-<p class="message-notice">This method is introduced in version <code>3.4.0</code></p>
 
 #### Description
 
@@ -179,8 +170,6 @@ echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
 
 ### Json representation
 
-<p class="message-warning">Because <a href="https://github.com/facebook/hhvm/issues/5137" target="_blank">DateTimeImmutable can not be json encoded in HHVM</a>, <code>jsonSerialize</code> returns <code>DateTime</code> objects.</p>
-
 ~~~php
 <?php
 
@@ -201,17 +190,9 @@ $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 $res = json_decode(json_encode($period), true);
 //  $res will be equivalent to:
 // [
-//      'startDate' => [
-//          'date' => '2014-05-01 00:00:00',
-//          'timezone_type' => 3,
-//          'timezone' => 'Africa/Kinshasa',
-//      ],
-//      'endDate' => [
-//          'date' => '2014-05-08 00:00:00',
-//          'timezone_type' => 3,
-//          'timezone' => 'Africa/Kinshasa',
-//      ],
+//      'startDate' => '2014-04-30T21:00:00.000000Z,
+//      'endDate' => '2014-05-08 00:00:00.000000Z',
 // ]
 ~~~
 
-<p class="message-notice">microseconds may appear starting with <a href="http://php.net/ChangeLog-5.php#5.5.14" target="_blank">version 5.5.14</a>.</p>
+This format can directly be used in PHP to Javascript data conversion.

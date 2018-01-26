@@ -88,7 +88,7 @@ final class Period implements JsonSerializable
             return DateTimeImmutable::createFromMutable($datepoint);
         }
 
-        return date_create_immutable($datepoint);
+        return new DateTimeImmutable($datepoint);
     }
 
     /**
@@ -190,7 +190,7 @@ final class Period implements JsonSerializable
     public static function createFromYear($year): self
     {
         if (is_int($year)) {
-            $startDate = date_create_immutable($year.'-01-01');
+            $startDate = new DateTimeImmutable($year.'-01-01');
 
             return new self($startDate, $startDate->add(new DateInterval('P1Y')));
         }
@@ -233,7 +233,7 @@ final class Period implements JsonSerializable
         }
 
         $month = ((self::validateRange($semester, 1, 2) - 1) * 6) + 1;
-        $startDate = date_create_immutable($year.'-'.sprintf("%'.02d", $month).'-01');
+        $startDate = new DateTimeImmutable($year.'-'.sprintf("%'.02d", $month).'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P6M')));
     }
@@ -278,7 +278,7 @@ final class Period implements JsonSerializable
         }
 
         $month = ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1;
-        $startDate = date_create_immutable($year.'-'.sprintf("%'.02d", $month).'-01');
+        $startDate = new DateTimeImmutable($year.'-'.sprintf("%'.02d", $month).'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P3M')));
     }
@@ -299,7 +299,7 @@ final class Period implements JsonSerializable
             return new self($startDate, $startDate->add(new DateInterval('P1M')));
         }
 
-        $startDate = date_create_immutable($year.'-'.sprintf("%'.02d", self::validateRange($month, 1, 12)).'-01');
+        $startDate = new DateTimeImmutable($year.'-'.sprintf("%'.02d", self::validateRange($month, 1, 12)).'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')));
     }
@@ -324,7 +324,7 @@ final class Period implements JsonSerializable
             return new self($startDate, $startDate->add(new DateInterval('P1W')));
         }
 
-        $startDate = date_create_immutable()
+        $startDate = new DateTimeImmutable()
             ->setISODate($year, self::validateRange($week, 1, 53))
             ->setTime(0, 0, 0)
         ;
