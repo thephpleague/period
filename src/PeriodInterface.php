@@ -91,7 +91,7 @@ interface PeriodInterface extends JsonSerializable
      *
      * @param DateInterval $interval The interval
      *
-     * @return Generator
+     * @return iterable
      */
     public function split(DateInterval $interval): iterable;
 
@@ -109,7 +109,7 @@ interface PeriodInterface extends JsonSerializable
      *
      * @param DateInterval $interval The interval
      *
-     * @return Generator
+     * @return iterable
      */
     public function splitBackwards(DateInterval $interval): iterable;
 

@@ -503,7 +503,7 @@ final class Period implements PeriodInterface
     /**
      * {@inheritdoc}
      */
-    public function compareDuration(Period $period): int
+    public function compareDuration(PeriodInterface $period): int
     {
         return $this->endDate <=> $this->startDate->add($period->getDateInterval());
     }
@@ -516,7 +516,7 @@ final class Period implements PeriodInterface
      *
      * @return bool
      */
-    public function durationGreaterThan(Period $period): bool
+    public function durationGreaterThan(PeriodInterface $period): bool
     {
         return 1 == $this->compareDuration($period);
     }
@@ -529,7 +529,7 @@ final class Period implements PeriodInterface
      *
      * @return bool
      */
-    public function durationLessThan(Period $period): bool
+    public function durationLessThan(PeriodInterface $period): bool
     {
         return -1 == $this->compareDuration($period);
     }
@@ -542,7 +542,7 @@ final class Period implements PeriodInterface
      *
      * @return bool
      */
-    public function sameDurationAs(Period $period): bool
+    public function sameDurationAs(PeriodInterface $period): bool
     {
         return 0 == $this->compareDuration($period);
     }
@@ -550,7 +550,7 @@ final class Period implements PeriodInterface
     /**
      * {@inheritdoc}
      */
-    public function sameValueAs(Period $period): bool
+    public function sameValueAs(PeriodInterface $period): bool
     {
         return $this->startDate == $period->getStartDate()
             && $this->endDate == $period->getEndDate();
@@ -559,7 +559,7 @@ final class Period implements PeriodInterface
     /**
      * {@inheritdoc}
      */
-    public function abuts(Period $period): bool
+    public function abuts(PeriodInterface $period): bool
     {
         return $this->startDate == $period->getEndDate()
             || $this->endDate == $period->getStartDate();
@@ -568,7 +568,7 @@ final class Period implements PeriodInterface
     /**
      * {@inheritdoc}
      */
-    public function overlaps(Period $period): bool
+    public function overlaps(PeriodInterface $period): bool
     {
         return !$this->abuts($period)
             && $this->startDate < $period->getEndDate()
@@ -580,7 +580,7 @@ final class Period implements PeriodInterface
      */
     public function isAfter($index): bool
     {
-        if ($index instanceof Period) {
+        if ($index instanceof PeriodInterface) {
             return $this->startDate >= $index->getEndDate();
         }
 
@@ -592,7 +592,7 @@ final class Period implements PeriodInterface
      */
     public function isBefore($index): bool
     {
-        if ($index instanceof Period) {
+        if ($index instanceof PeriodInterface) {
             return $this->endDate <= $index->getStartDate();
         }
 
@@ -604,7 +604,7 @@ final class Period implements PeriodInterface
      */
     public function contains($index): bool
     {
-        if ($index instanceof Period) {
+        if ($index instanceof PeriodInterface) {
             return $this->containsPeriod($index);
         }
 
@@ -615,11 +615,11 @@ final class Period implements PeriodInterface
      * Tells whether a Period object is fully contained within
      * the current Period object.
      *
-     * @param Period $period
+     * @param PeriodInterface $period
      *
      * @return bool
      */
-    private function containsPeriod(Period $period): bool
+    private function containsPeriod(PeriodInterface $period): bool
     {
         return $this->contains($period->getStartDate())
             && ($period->getEndDate() >= $this->startDate && $period->getEndDate() <= $this->endDate);
@@ -774,7 +774,7 @@ final class Period implements PeriodInterface
      *
      * @return self
      */
-    public function merge(Period ...$periods): self
+    public function merge(PeriodInterface ...$periods): PeriodInterface
     {
         return array_reduce($periods, [$this, 'reducer'], $this);
     }
@@ -789,7 +789,7 @@ final class Period implements PeriodInterface
      *
      * @return self
      */
-    private function reducer(Period $carry, Period $period): self
+    private function reducer(PeriodInterface $carry, PeriodInterface $period): PeriodInterface
     {
         if ($carry->getStartDate() > $period->getStartDate()) {
             $carry = $carry->startingOn($period->getStartDate());
@@ -846,7 +846,7 @@ final class Period implements PeriodInterface
      *
      * @return float
      */
-    public function timestampIntervalDiff(Period $period): float
+    public function timestampIntervalDiff(PeriodInterface $period): float
     {
         return $this->getTimestampInterval() - $period->getTimestampInterval();
     }
@@ -858,7 +858,7 @@ final class Period implements PeriodInterface
      *
      * @return DateInterval
      */
-    public function dateIntervalDiff(Period $period): DateInterval
+    public function dateIntervalDiff(PeriodInterface $period): DateInterval
     {
         return $this->endDate->diff($this->startDate->add($period->getDateInterval()));
     }
@@ -881,7 +881,7 @@ final class Period implements PeriodInterface
      *
      * @return Period[]
      */
-    public function diff(Period $period): array
+    public function diff(PeriodInterface $period): array
     {
         if (!$this->overlaps($period)) {
             throw new Exception('Both Period objects must overlaps');
@@ -892,7 +892,7 @@ final class Period implements PeriodInterface
             self::createFromDatepoints($this->endDate, $period->getEndDate()),
         ];
 
-        $filter = function (Period $period) {
+        $filter = function (PeriodInterface $period) {
             return $period->getStartDate() != $period->getEndDate();
         };
 
