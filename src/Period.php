@@ -19,7 +19,6 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use JsonSerializable;
 
 /**
  * A immutable value object class to manipulate Time Range.
@@ -28,7 +27,7 @@ use JsonSerializable;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   1.0.0
  */
-final class Period implements JsonSerializable
+final class Period implements PeriodInterface
 {
     /**
      * Period starting included date point.
@@ -401,12 +400,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the Period starting datepoint.
-     *
-     * The starting datepoint is included in the specified period.
-     * The starting datepoint is always less than or equal to the ending datepoint.
-     *
-     * @return DateTimeImmutable
+     * {@inheritdoc}
      */
     public function getStartDate(): DateTimeImmutable
     {
@@ -414,12 +408,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the Period ending datepoint.
-     *
-     * The ending datepoint is excluded from the specified period.
-     * The ending datepoint is always greater than or equal to the starting datepoint.
-     *
-     * @return DateTimeImmutable
+     * {@inheritdoc}
      */
     public function getEndDate(): DateTimeImmutable
     {
@@ -427,9 +416,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the Period duration as expressed in seconds
-     *
-     * @return float
+     * {@inheritdoc}
      */
     public function getTimestampInterval(): float
     {
@@ -437,9 +424,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the Period duration as a DateInterval object.
-     *
-     * @return DateInterval
+     * {@inheritdoc}
      */
     public function getDateInterval(): DateInterval
     {
@@ -447,23 +432,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the Period object.
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $interval The interval
-     *
-     * @param int $option can be set to DatePeriod::EXCLUDE_START_DATE
-     *                    to exclude the start date from the set of
-     *                    recurring dates within the period.
-     *
-     * @return DatePeriod
+     * {@inheritdoc}
      */
     public function getDatePeriod($interval, ?int $option = 0): DatePeriod
     {
@@ -471,27 +440,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Allows splitting a Period in smaller Period object according
-     * to a given interval.
-     *
-     * The returned iterable Period set is ordered so that:
-     * <ul>
-     * <li>The first returned Period MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned Period MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned Period MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned Period except for the first one MUST start immediately after the previously returned Period</li>
-     * </ul>
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $interval The interval
-     *
-     * @return iterable
+     * {@inheritdoc}
      */
     public function split($interval): iterable
     {
@@ -509,27 +458,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Allows splitting a Period in smaller Period object according
-     * to a given interval.
-     *
-     * The returned iterable Period set is ordered so that:
-     * <ul>
-     * <li>The first returned Period MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned Period MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned Period MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned Period except for the first one MUST end immediately before the previously returned Period</li>
-     * </ul>
-     *
-     * The interval can be
-     * <ul>
-     * <li>a DateInterval object</li>
-     * <li>an int interpreted as the duration expressed in seconds.</li>
-     * <li>a string in a format supported by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $interval The interval
-     *
-     * @return iterable
+     * {@inheritdoc}
      */
     public function splitBackwards($interval): iterable
     {
@@ -547,12 +476,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the string representation of a Period object
-     * as a string in the ISO8601 interval format
-     *
-     * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -562,12 +486,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the Json representation of a Period object using
-     * the JSON representation of dates as returned by Javascript Date.toJSON() method
-     *
-     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
-     *
-     * @return string[]
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
@@ -582,18 +501,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Compares two Period objects according to their duration.
-     *
-     * Returns:
-     * <ul>
-     * <li> -1 if the current Period duration is lesser than the submitted Period duration
-     * <li> 1 if the current Period duration is greater than the submitted Period duration
-     * <li> 0 if both Period have the same duration
-     * </ul>
-     *
-     * @param Period $period
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function compareDuration(Period $period): int
     {
@@ -640,11 +548,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two Period share the same datepoints.
-     *
-     * @param Period $period
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function sameValueAs(Period $period): bool
     {
@@ -653,11 +557,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two Period object abuts
-     *
-     * @param Period $period
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function abuts(Period $period): bool
     {
@@ -666,11 +566,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two Period objects overlaps
-     *
-     * @param Period $period
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function overlaps(Period $period): bool
     {
@@ -680,18 +576,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether a Period is entirely after the specified index
-     *
-     * The specified index can be
-     * <ul>
-     * <li>a Period</li>
-     * <li>a DateTimeInterface</li>
-     * <li>a string in a format supported by DateTimeImmutable::__construct</li>
-     * </ul>
-     *
-     * @param Period|DateTimeInterface|string $index
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isAfter($index): bool
     {
@@ -703,18 +588,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether a Period is entirely before the specified index
-     *
-     * The specified index can be
-     * <ul>
-     * <li>a Period</li>
-     * <li>a DateTimeInterface</li>
-     * <li>a string in a format supported by DateTimeImmutable::__construct</li>
-     * </ul>
-     *
-     * @param Period|DateTimeInterface|string $index
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isBefore($index): bool
     {
@@ -726,19 +600,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the specified index is fully contained within
-     * the current Period object.
-     *
-     * The specified index can be
-     * <ul>
-     * <li>a Period</li>
-     * <li>a DateTimeInterface</li>
-     * <li>a string in a format supported by DateTimeImmutable::__construct</li>
-     * </ul>
-     *
-     * @param Period|DateTimeInterface|string $index
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function contains($index): bool
     {

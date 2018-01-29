@@ -7,7 +7,7 @@ title: Installation
 
 ## System Requirements
 
-`Period` requires **PHP 5.5.9** but the latest stable version of PHP or HHVM is recommended.
+`Period` requires **PHP 7.2.0** but the latest stable version of PHP.
 
 ## Composer
 
