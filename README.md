@@ -6,7 +6,6 @@ Period
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://img.shields.io/travis/thephpleague/period/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/period)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/period.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/period/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/period.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/period)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
 
 `Period` is PHP's missing time range API. It is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges.

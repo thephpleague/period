@@ -323,7 +323,7 @@ final class Period implements PeriodInterface
             return new self($startDate, $startDate->add(new DateInterval('P1W')));
         }
 
-        $startDate = new DateTimeImmutable()
+        $startDate = (new DateTimeImmutable())
             ->setISODate($year, self::validateRange($week, 1, 53))
             ->setTime(0, 0, 0)
         ;
