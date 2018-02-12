@@ -781,7 +781,7 @@ final class Period implements PeriodInterface
 
     /**
 
-     * Returns a Period whose endpoints are the larget possible
+     * Returns a Period whose endpoints are the largest possible
      * between 2 instance of Period objects
      *
      * @param Period $carry
