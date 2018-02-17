@@ -223,7 +223,7 @@ final class Period implements PeriodInterface
      */
     public static function createFromSemester($year, ?int $semester = null): self
     {
-        if (1 == func_num_args()) {
+        if (1 === func_num_args()) {
             $date = self::filterDatePoint($year);
             $month = (intdiv((int) $date->format('m'), 6) * 6) + 1;
             $startDate = self::approximateDate('Y-m-01 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
@@ -268,7 +268,7 @@ final class Period implements PeriodInterface
      */
     public static function createFromQuarter($year, ?int $quarter = null): self
     {
-        if (1 == func_num_args()) {
+        if (1 === func_num_args()) {
             $date = self::filterDatePoint($year);
             $month = (intdiv((int) $date->format('m'), 3) * 3) + 1;
             $startDate = self::approximateDate('Y-m-01 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
@@ -292,7 +292,7 @@ final class Period implements PeriodInterface
      */
     public static function createFromMonth($year, ?int $month = null): self
     {
-        if (1 == func_num_args()) {
+        if (1 === func_num_args()) {
             $startDate = self::approximateDate('Y-m-01 00:00:00', self::filterDatePoint($year));
 
             return new self($startDate, $startDate->add(new DateInterval('P1M')));
@@ -313,7 +313,7 @@ final class Period implements PeriodInterface
      */
     public static function createFromWeek($year, ?int $week = null): self
     {
-        if (1 == func_num_args()) {
+        if (1 === func_num_args()) {
             $date = self::filterDatePoint($year);
             $startDate = self::approximateDate(
                 'Y-m-d 00:00:00',
@@ -518,7 +518,7 @@ final class Period implements PeriodInterface
      */
     public function durationGreaterThan(PeriodInterface $period): bool
     {
-        return 1 == $this->compareDuration($period);
+        return 1 === $this->compareDuration($period);
     }
 
     /**
@@ -531,7 +531,7 @@ final class Period implements PeriodInterface
      */
     public function durationLessThan(PeriodInterface $period): bool
     {
-        return -1 == $this->compareDuration($period);
+        return -1 === $this->compareDuration($period);
     }
 
     /**
@@ -544,7 +544,7 @@ final class Period implements PeriodInterface
      */
     public function sameDurationAs(PeriodInterface $period): bool
     {
-        return 0 == $this->compareDuration($period);
+        return 0 === $this->compareDuration($period);
     }
 
     /**
