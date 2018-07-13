@@ -1,13 +1,15 @@
 <?php
+
 /**
- * League.Period (http://period.thephpleague.com)
+ * League.Uri (https://period.thephpleague.com).
  *
- * @package   League.period
- * @author    Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @copyright 2014-2015 Ignace Nyamagana Butera
- * @license   https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
- * @version   4.0.0
- * @link      https://github.com/thephpleague/period/
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
+ * @version 4.0.0
+ * @link    https://github.com/thephpleague/period
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace League\Period;
@@ -139,7 +141,7 @@ interface PeriodInterface extends JsonSerializable
     public function sameValueAs(PeriodInterface $period): bool;
 
     /**
-     * Tells whether two PeriodInterface object abuts
+     * Tells whether two PeriodInterface object abuts.
      *
      * @param PeriodInterface $period
      *
@@ -148,7 +150,7 @@ interface PeriodInterface extends JsonSerializable
     public function abuts(PeriodInterface $period): bool;
 
     /**
-     * Tells whether two PeriodInterface objects overlaps
+     * Tells whether two PeriodInterface objects overlaps.
      *
      * @param PeriodInterface $period
      *
@@ -157,7 +159,7 @@ interface PeriodInterface extends JsonSerializable
     public function overlaps(PeriodInterface $period): bool;
 
     /**
-     * Tells whether a PeriodInterface is entirely after the specified index
+     * Tells whether a PeriodInterface is entirely after the specified index.
      *
      * @param PeriodInterface|DateTimeInterface $index
      *
@@ -166,7 +168,7 @@ interface PeriodInterface extends JsonSerializable
     public function isAfter($index): bool;
 
     /**
-     * Tells whether a PeriodInterface is entirely before the specified index
+     * Tells whether a PeriodInterface is entirely before the specified index.
      *
      * @param PeriodInterface|DateTimeInterface $index
      *
@@ -186,7 +188,7 @@ interface PeriodInterface extends JsonSerializable
 
     /**
      * Returns the string representation of a Period object
-     * as a string in the ISO8601 interval format
+     * as a string in the ISO8601 interval format.
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
@@ -196,7 +198,7 @@ interface PeriodInterface extends JsonSerializable
 
     /**
      * Returns the Json representation of a Period object using
-     * the JSON representation of dates as returned by Javascript Date.toJSON() method
+     * the JSON representation of dates as returned by Javascript Date.toJSON() method.
      *
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      *

@@ -1,0 +1,6 @@
+includes:
+- vendor/phpstan/phpstan-strict-rules/rules.neon
+parameters:
+	ignoreErrors:
+		- '#Instanceof between DateTimeInterface and DateTimeInterface will always evaluate to true.#'
+	reportUnmatchedIgnoredErrors: true

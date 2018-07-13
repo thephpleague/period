@@ -1,5 +1,17 @@
 <?php
 
+$header = <<<EOF
+League.Uri (https://period.thephpleague.com)
+
+@author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+@license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
+@version 4.0.0
+@link    https://github.com/thephpleague/period
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+EOF;
+
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/src')
     ->in(__DIR__.'/tests')
@@ -10,6 +22,12 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'none'],
+        'header_comment' => [
+            'commentType' => 'PHPDoc',
+            'header' => $header,
+            'location' => 'after_open',
+            'separate' => 'both',
+        ],
         'new_with_braces' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_phpdoc' => true,
@@ -24,6 +42,7 @@ return PhpCsFixer\Config::create()
         'phpdoc_order' => true,
         'phpdoc_scalar' => true,
         'phpdoc_to_comment' => true,
+        'phpdoc_summary' => true,
         'psr0' => true,
         'psr4' => true,
         'return_type_declaration' => ['space_before' => 'none'],

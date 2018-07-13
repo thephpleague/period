@@ -1,14 +1,17 @@
 <?php
+
 /**
- * League.Period (http://period.thephpleague.com)
+ * League.Uri (https://period.thephpleague.com).
  *
- * @package   League.period
- * @author    Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @copyright 2014-2015 Ignace Nyamagana Butera
- * @license   https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
- * @version   4.0.0
- * @link      https://github.com/thephpleague/period/
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
+ * @version 4.0.0
+ * @link    https://github.com/thephpleague/period
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
 declare(strict_types=1);
 
 namespace League\Period;
@@ -19,6 +22,18 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use TypeError;
+use const FILTER_VALIDATE_INT;
+use function array_filter;
+use function array_reduce;
+use function array_values;
+use function filter_var;
+use function func_num_args;
+use function get_class;
+use function gettype;
+use function intdiv;
+use function is_object;
+use function sprintf;
 
 /**
  * A immutable value object class to manipulate Time Range.
@@ -29,6 +44,8 @@ use DateTimeZone;
  */
 final class Period implements PeriodInterface
 {
+    private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+
     /**
      * Period starting included date point.
      *
@@ -54,8 +71,8 @@ final class Period implements PeriodInterface
     /**
      * Create a new instance.
      *
-     * @param DateTimeInterface|string $startDate starting included date point
-     * @param DateTimeInterface|string $endDate   ending excluded date point
+     * @param mixed $startDate starting included date point
+     * @param mixed $endDate   ending excluded date point
      *
      * @throws Exception If $startDate is greater than $endDate
      */
@@ -73,7 +90,7 @@ final class Period implements PeriodInterface
     /**
      * Validate the DateTimeInterface.
      *
-     * @param DateTimeInterface|string $datepoint
+     * @param mixed $datepoint
      *
      * @return DateTimeImmutable
      */
@@ -87,11 +104,18 @@ final class Period implements PeriodInterface
             return DateTimeImmutable::createFromMutable($datepoint);
         }
 
-        return new DateTimeImmutable($datepoint);
+        if (is_scalar($datepoint) || method_exists($datepoint, '__toString')) {
+            return new DateTimeImmutable((string) $datepoint);
+        }
+
+        throw new TypeError(sprintf(
+            'The datepoint must a scalar or a DateTimeInteface object %s given',
+            is_object($datepoint) ? get_class($datepoint) : gettype($datepoint)
+        ));
     }
 
     /**
-     * Create a Period object from a DatePeriod
+     * Create a Period object from a DatePeriod.
      *
      * @param DatePeriod $datePeriod
      *
@@ -101,7 +125,8 @@ final class Period implements PeriodInterface
      */
     public static function createFromDatePeriod(DatePeriod $datePeriod): self
     {
-        if (null !== ($endDate = $datePeriod->getEndDate())) {
+        $endDate = $datePeriod->getEndDate();
+        if ($endDate instanceof DateTimeInterface) {
             return new self($datePeriod->getStartDate(), $endDate);
         }
 
@@ -154,7 +179,14 @@ final class Period implements PeriodInterface
             return new DateInterval('PT'.$res.'S');
         }
 
-        return DateInterval::createFromDateString($interval);
+        if (is_scalar($interval) || method_exists($interval, '__toString')) {
+            return DateInterval::createFromDateString((string) $interval);
+        }
+
+        throw new TypeError(sprintf(
+            'The interval must a scalar or a DateInterval object %s given',
+            is_object($interval) ? get_class($interval) : gettype($interval)
+        ));
     }
 
     /**
@@ -180,59 +212,56 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * Create a Period object for a specific Year
+     * Create a Period object for a specific Year.
      *
-     * @param DateTimeInterface|string|int $year
+     * @param mixed $year
      *
      * @return self
      */
     public static function createFromYear($year): self
     {
-        if (is_int($year)) {
-            $startDate = new DateTimeImmutable($year.'-01-01');
+        $intYear = filter_var($year, FILTER_VALIDATE_INT);
+        if (false !== $intYear) {
+            $startDate = new DateTimeImmutable($intYear.'-01-01 00:00:00');
 
             return new self($startDate, $startDate->add(new DateInterval('P1Y')));
         }
 
-        $startDate = self::approximateDate('Y-01-01 00:00:00', self::filterDatePoint($year));
+        $datepoint = self::filterDatePoint($year);
+        $startDate = $datepoint->setDate((int) $datepoint->format('Y'), 1, 1)->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1Y')));
     }
 
     /**
-     * Returns a DateTimeInterface object whose value are
-     * approximated to the second
+     * Create a Period object for a specific semester in a given year.
      *
-     * @param string            $format
-     * @param DateTimeImmutable $datepoint
-     *
-     * @return DateTimeImmutable
-     */
-    private static function approximateDate(string $format, DateTimeImmutable $datepoint): DateTimeImmutable
-    {
-        return $datepoint::createFromFormat('Y-m-d H:i:s', $datepoint->format($format), $datepoint->getTimeZone());
-    }
-
-    /**
-     * Create a Period object for a specific semester in a given year
-     *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $semester Semester Index from 1 to 2
+     * @param mixed $year
+     * @param int   $semester Semester Index from 1 to 2
      *
      * @return self
      */
     public static function createFromSemester($year, ?int $semester = null): self
     {
         if (1 === func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $month = (intdiv((int) $date->format('m'), 6) * 6) + 1;
-            $startDate = self::approximateDate('Y-m-01 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
+            $datepoint = self::filterDatePoint($year);
+            $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
+            $startDate = $datepoint->setDate((int) $datepoint->format('Y'), $month, 1)->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P6M')));
         }
 
+        $intYear = filter_var($year, FILTER_VALIDATE_INT);
+        if (false === $intYear) {
+            throw new TypeError(sprintf('The year value must be an integer %s given', gettype($year)));
+        }
+
+        if (null === $semester) {
+            throw new Exception('The semester value is missing');
+        }
+
         $month = ((self::validateRange($semester, 1, 2) - 1) * 6) + 1;
-        $startDate = new DateTimeImmutable($year.'-'.sprintf("%'.02d", $month).'-01');
+        $startDate = new DateTimeImmutable($intYear.'-'.sprintf("%'.02d", $month).'-01');
 
         return new self($startDate, $startDate->add(new DateInterval('P6M')));
     }
@@ -250,89 +279,119 @@ final class Period implements PeriodInterface
      */
     private static function validateRange(int $value, int $min, int $max): int
     {
-        $res = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]);
-        if (false !== $res) {
-            return $res;
+        if ($value >= $min && $value <= $max) {
+            return $value;
         }
 
         throw new Exception('the submitted value is not contained within the valid range');
     }
 
     /**
-     * Create a Period object for a specific quarter in a given year
+     * Create a Period object for a specific quarter in a given year.
      *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $quarter Quarter Index from 1 to 4
+     * @param mixed $year
+     * @param int   $quarter Quarter Index from 1 to 4
      *
      * @return self
      */
     public static function createFromQuarter($year, ?int $quarter = null): self
     {
         if (1 === func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $month = (intdiv((int) $date->format('m'), 3) * 3) + 1;
-            $startDate = self::approximateDate('Y-m-01 00:00:00', $date->setDate((int) $date->format('Y'), $month, 1));
+            $datepoint = self::filterDatePoint($year);
+            $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
+            $startDate = $datepoint->setDate((int) $datepoint->format('Y'), $month, 1)->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P3M')));
         }
 
+        $intYear = filter_var($year, FILTER_VALIDATE_INT);
+        if (false === $intYear) {
+            throw new TypeError(sprintf('The year value must be an integer %s given', gettype($year)));
+        }
+
+        if (null === $quarter) {
+            throw new Exception('The quarter value is missing');
+        }
+
         $month = ((self::validateRange($quarter, 1, 4) - 1) * 3) + 1;
-        $startDate = new DateTimeImmutable($year.'-'.sprintf("%'.02d", $month).'-01');
+        $startDate = (new DateTimeImmutable())->setDate($intYear, $month, 1)->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P3M')));
     }
 
     /**
-     * Create a Period object for a specific year and month
+     * Create a Period object for a specific year and month.
      *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $month Month index from 1 to 12
+     * @param mixed $year
+     * @param int   $month Month index from 1 to 12
      *
      * @return self
      */
     public static function createFromMonth($year, ?int $month = null): self
     {
         if (1 === func_num_args()) {
-            $startDate = self::approximateDate('Y-m-01 00:00:00', self::filterDatePoint($year));
+            $datepoint = self::filterDatePoint($year);
+            $startDate = $datepoint
+                ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1)
+                ->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P1M')));
         }
 
-        $startDate = new DateTimeImmutable($year.'-'.sprintf("%'.02d", self::validateRange($month, 1, 12)).'-01');
+        $intYear = filter_var($year, FILTER_VALIDATE_INT);
+        if (false === $intYear) {
+            throw new TypeError(sprintf('The year value must be an integer %s given', gettype($year)));
+        }
+
+        if (null === $month) {
+            throw new Exception('The month value is missing');
+        }
+
+        $startDate = (new DateTimeImmutable())
+            ->setDate($intYear, self::validateRange($month, 1, 12), 1)
+            ->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')));
     }
 
     /**
-     * Create a Period object for a specific week
+     * Create a Period object for a specific week.
      *
-     * @param DateTimeInterface|string|int $year
-     * @param int                          $week index from 1 to 53
+     * @param mixed $year
+     * @param int   $week index from 1 to 53
      *
      * @return self
      */
     public static function createFromWeek($year, ?int $week = null): self
     {
         if (1 === func_num_args()) {
-            $date = self::filterDatePoint($year);
-            $startDate = self::approximateDate(
-                'Y-m-d 00:00:00',
-                $date->sub(new DateInterval('P'.($date->format('N') - 1).'D'))
-            );
+            $datepoint = self::filterDatePoint($year);
+            $startDate = $datepoint
+                ->sub(new DateInterval('P'.((int) $datepoint->format('N') - 1).'D'))
+                ->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P1W')));
         }
 
+        $intYear = filter_var($year, FILTER_VALIDATE_INT);
+        if (false === $intYear) {
+            throw new TypeError(sprintf('The year value must be an integer %s given', gettype($year)));
+        }
+
+        if (null === $week) {
+            throw new Exception('The week value is missing');
+        }
+
         $startDate = (new DateTimeImmutable())
-            ->setISODate($year, self::validateRange($week, 1, 53))
-            ->setTime(0, 0, 0)
+            ->setISODate($intYear, self::validateRange($week, 1, 53))
+            ->setTime(0, 0, 0, 0);
         ;
 
         return new self($startDate, $startDate->add(new DateInterval('P1W')));
     }
 
     /**
-     * Create a Period object for a specific date
+     * Create a Period object for a specific date.
      *
      * The date is truncated so that the time range starts at midnight
      * according to the date timezone and last a full day.
@@ -343,7 +402,7 @@ final class Period implements PeriodInterface
      */
     public static function createFromDay($datepoint): self
     {
-        $startDate = self::approximateDate('Y-m-d 00:00:00', self::filterDatePoint($datepoint));
+        $startDate = self::filterDatePoint($datepoint)->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1D')));
     }
@@ -360,7 +419,8 @@ final class Period implements PeriodInterface
      */
     public static function createFromHour($datepoint): self
     {
-        $startDate = self::approximateDate('Y-m-d H:00:00', self::filterDatePoint($datepoint));
+        $datepoint = self::filterDatePoint($datepoint);
+        $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('PT1H')));
     }
@@ -377,7 +437,8 @@ final class Period implements PeriodInterface
      */
     public static function createFromMinute($datepoint): self
     {
-        $startDate = self::approximateDate('Y-m-d H:i:00', self::filterDatePoint($datepoint));
+        $datepoint = self::filterDatePoint($datepoint);
+        $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'), 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('PT1M')));
     }
@@ -394,7 +455,13 @@ final class Period implements PeriodInterface
      */
     public static function createFromSecond($datepoint): self
     {
-        $startDate = self::approximateDate('Y-m-d H:i:s', self::filterDatePoint($datepoint));
+        $datepoint = self::filterDatePoint($datepoint);
+        $startDate = $datepoint->setTime(
+            (int) $datepoint->format('H'),
+            (int) $datepoint->format('i'),
+            (int) $datepoint->format('s'),
+            0
+        );
 
         return new self($startDate, $startDate->add(new DateInterval('PT1S')));
     }
@@ -490,13 +557,12 @@ final class Period implements PeriodInterface
      */
     public function jsonSerialize()
     {
-        static $iso8601_format = 'Y-m-d\TH:i:s.u\Z';
         static $utc;
         $utc = $utc ?? new DateTimeZone('UTC');
 
         return [
-            'startDate' => $this->startDate->setTimeZone($utc)->format($iso8601_format),
-            'endDate' => $this->endDate->setTimeZone($utc)->format($iso8601_format),
+            'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
+            'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
         ];
     }
 
@@ -536,7 +602,7 @@ final class Period implements PeriodInterface
 
     /**
      * Tells whether the current Period object duration
-     * is equal to the submitted one
+     * is equal to the submitted one.
      *
      * @param Period $period
      *
@@ -608,7 +674,7 @@ final class Period implements PeriodInterface
             return $this->containsPeriod($index);
         }
 
-        return $this->containsDatePoint($index);
+        return $this->containsDatePoint(self::filterDatePoint($index));
     }
 
     /**
@@ -621,7 +687,7 @@ final class Period implements PeriodInterface
      */
     private function containsPeriod(PeriodInterface $period): bool
     {
-        return $this->contains($period->getStartDate())
+        return $this->containsDatePoint($period->getStartDate())
             && ($period->getEndDate() >= $this->startDate && $period->getEndDate() <= $this->endDate);
     }
 
@@ -629,16 +695,14 @@ final class Period implements PeriodInterface
      * Tells whether a datepoint is fully contained within
      * the current Period object.
      *
-     * @param DateTimeInterface|string $datepoint
+     * @param DateTimeInterface $datepoint
      *
      * @return bool
      */
-    private function containsDatePoint($datepoint): bool
+    private function containsDatePoint(DateTimeInterface $datepoint): bool
     {
-        $datetime = self::filterDatePoint($datepoint);
-
-        return ($datetime >= $this->startDate && $datetime < $this->endDate)
-            || ($datetime == $this->startDate && $datetime == $this->endDate);
+        return ($datepoint >= $this->startDate && $datepoint < $this->endDate)
+            || ($datepoint == $this->startDate && $datepoint == $this->endDate);
     }
 
     /**
@@ -705,7 +769,7 @@ final class Period implements PeriodInterface
 
     /**
      * Returns a new Period object with a new starting date point
-     * moved forward or backward by the given interval
+     * moved forward or backward by the given interval.
      *
      * The interval can be
      * <ul>
@@ -725,7 +789,7 @@ final class Period implements PeriodInterface
 
     /**
      * Returns a new Period object with a new ending date point
-     * moved forward or backward by the given interval
+     * moved forward or backward by the given interval.
      *
      * The interval can be
      * <ul>
@@ -745,7 +809,7 @@ final class Period implements PeriodInterface
 
     /**
      * Returns a new Period object where the datepoints
-     * are moved forwards or backward simultaneously by the given DateInterval
+     * are moved forwards or backward simultaneously by the given DateInterval.
      *
      * The interval can be
      * <ul>
@@ -782,7 +846,7 @@ final class Period implements PeriodInterface
     /**
 
      * Returns a Period whose endpoints are the largest possible
-     * between 2 instance of Period objects
+     * between 2 instance of Period objects.
      *
      * @param Period $carry
      * @param Period $period
@@ -840,7 +904,7 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * Returns the difference between two Period objects expressed in seconds
+     * Returns the difference between two Period objects expressed in seconds.
      *
      * @param Period $period
      *
@@ -852,7 +916,7 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * Returns the difference between two Period objects expressed in DateInterval
+     * Returns the difference between two Period objects expressed in DateInterval.
      *
      * @param Period $period
      *
@@ -864,7 +928,7 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * Computes the difference between two overlapsing Period objects
+     * Computes the difference between two overlapsing Period objects.
      *
      * Returns an array containing the difference expressed as Period objects
      * The array will:
@@ -900,7 +964,7 @@ final class Period implements PeriodInterface
     }
 
     /**
-     * Create a new instance given two datepoints
+     * Create a new instance given two datepoints.
      *
      * The datepoints will be used as to allow the creation of
      * a Period object

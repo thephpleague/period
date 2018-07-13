@@ -12,17 +12,10 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
+namespace League\Period\Test;
 
-namespace League\Period;
+use DateTimeImmutable;
 
-/**
- * League Period Base Exception.
- *
- * @package League.period
- * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @since   4.0.0
- */
-class Exception extends \Exception
+class ExtendedDate extends DateTimeImmutable
 {
 }
