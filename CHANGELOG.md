@@ -10,6 +10,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::createFromHour`
 - `Period::createFromMinute`
 - `Period::createFromSecond`
+- `Period::expand`
 - `Exception` class
 
 ### Fixed

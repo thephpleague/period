@@ -902,6 +902,30 @@ class PeriodTest extends TestCase
         Period::createFromDuration('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
+    public function testExpand()
+    {
+        $period = Period::createFromDay('2012-02-02')->expand(new DateInterval('P1D'));
+        $this->assertEquals(new DateTimeImmutable('2012-02-01'), $period->getStartDate());
+        $this->assertEquals(new DateTimeImmutable('2012-02-04'), $period->getEndDate());
+    }
+
+    public function testShrink()
+    {
+        $dateInterval = new DateInterval('PT12H');
+        $dateInterval->invert = 1;
+        $period = Period::createFromDay('2012-02-02')->expand($dateInterval);
+        $this->assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $period->getStartDate());
+        $this->assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $period->getEndDate());
+    }
+
+    public function testExpandThrowsException()
+    {
+        $this->expectException(Exception::class);
+        $dateInterval = new DateInterval('P1D');
+        $dateInterval->invert = 1;
+        $period = Period::createFromDay('2012-02-02')->expand($dateInterval);
+    }
+
     public function testDateIntervalDiff()
     {
         $orig = Period::createFromDuration('2012-01-01', '1 HOUR');

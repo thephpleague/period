@@ -830,6 +830,28 @@ final class Period implements PeriodInterface
     }
 
     /**
+     * Returns a new Period object where the given DateInterval is
+     * substracted from the starting datepoint and added to the ending datepoint.
+     *
+     * The interval can be
+     * <ul>
+     * <li>a DateInterval object</li>
+     * <li>an int interpreted as the duration expressed in seconds.</li>
+     * <li>a string in a format supported by DateInterval::createFromDateString</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $interval The interval
+     *
+     * @return self
+     */
+    public function expand($interval): self
+    {
+        $interval = self::filterDateInterval($interval);
+
+        return new self($this->startDate->sub($interval), $this->endDate->add($interval));
+    }
+
+    /**
      * Merges one or more Period objects to return a new Period object.
      *
      * The resultant object represents the largest duration possible.

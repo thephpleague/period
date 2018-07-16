@@ -45,12 +45,12 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 ~~~php
 <?php
 
-public static Period::createFromSecond(mixed $startDate): Period
+public static Period::createFromSecond(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
-- `$startDate`: **the starting included datepoint**; The date is truncated so that the duration starts at the beginning of the given second according to the date timezone.
+- `$datepoint`: The datepoint is truncated so that the duration starts at the beginning of the given second according to the date timezone.
 
 #### Example
 
@@ -69,12 +69,12 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromMinute(mixed $startDate): Period
+public static Period::createFromMinute(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
-- `$startDate`: **the starting included datepoint**; The date is truncated so that the duration starts at the beginning of the given minute according to the date timezone.
+- `$datepoint`: The datepoint is truncated so that the duration starts at the beginning of the given minute according to the date timezone.
 
 #### Example
 
@@ -93,12 +93,12 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromHour(mixed $startDate): Period
+public static Period::createFromHour(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
-- `$startDate`: **the starting included datepoint**; The date is truncated so that the duration starts at the beginning of the given hour according to the date timezone.
+- `$datepoint`: The datepoint is truncated so that the duration starts at the beginning of the given hour according to the date timezone.
 
 #### Example
 
@@ -117,12 +117,12 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromDay(mixed $startDate): Period
+public static Period::createFromDay(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
-- `$startDate`: **the starting included datepoint**; The date is truncated so that the duration starts at midnight according to the date timezone.
+- `$datepoint`: The datepoint is truncated so that the duration starts at midnight according to the date timezone.
 
 #### Example
 
@@ -150,7 +150,10 @@ public static Period::createFromWeek(mixed $datepoint): Period
 
 - `$year` parameter must be a valid year;
 - `$week` parameter must be a valid week (between 1 and 53);
-- `$datepoint`: **a datepoint included in the returned week interval** according to its  timezone.
+
+**or**
+
+- `$datepoint`: **a datepoint included in the returned week interval** according to its timezone.
 
 
 #### Example
@@ -181,7 +184,10 @@ public static Period::createFromMonth(mixed $datepoint): Period
 
 - The `$year` parameter must be a valid year;
 - The `$month` parameter must be a valid month (between 1 and 12);
-- The `$datepoint` represents **a datepoint included in the returned month interval** according to its  timezone.
+
+**or**
+
+- The `$datepoint` represents **a datepoint included in the returned month interval** according to its timezone.
 
 #### Example
 
@@ -209,7 +215,10 @@ public static Period::createFromQuarter(mixed $datepoint): Period
 
 - The `$year` parameter must be a valid year;
 - The `$quarter` parameter must be a valid quarter index (between 1 and 4);
-- The `$datepoint` represents **a datepoint included in the returned quarter interval** according to its  timezone.
+
+**or**
+
+- The `$datepoint` represents **a datepoint included in the returned quarter interval** according to its timezone.
 
 #### Example
 
@@ -237,7 +246,10 @@ public static Period::createFromSemester(mixed $datepoint): Period
 
 - The `$year` parameter must be a valid year;
 - The `$semester` parameter must be a valid semester index (between 1 and 2);
-- The `$datepoint` represents **a datepoint included in the returned semester interval** according to its  timezone.
+
+**or**
+
+- The `$datepoint` represents **a datepoint included in the returned semester interval** according to its timezone.
 
 #### Example
 
@@ -264,7 +276,10 @@ public static Period::createFromYear(mixed $datepoint): Period
 #### Parameter
 
 - The `$year` parameter must be a valid year;
-- The `$datepoint` represents **a datepoint included in the returned year interval** according to its  timezone.
+
+**or**
+
+- The `$datepoint` represents **a datepoint included in the returned year interval** according to its timezone.
 
 #### Example
 
