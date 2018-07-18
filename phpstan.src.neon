@@ -1,6 +1,39 @@
 includes:
 - vendor/phpstan/phpstan-strict-rules/rules.neon
 parameters:
-	ignoreErrors:
-		- '#Instanceof between DateTimeInterface and DateTimeInterface will always evaluate to true.#'
-	reportUnmatchedIgnoredErrors: true
+    ignoreErrors:
+        - '#Instanceof between DateTimeInterface and DateTimeInterface will always evaluate to true.#'
+        - '#Method League\\Period\\PeriodCollection::offsetUnset\(\) has no return typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetSet\(\) has no return typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetSet\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetSet\(\) has parameter \$value with no typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetGet\(\) has no return typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetGet\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetExists\(\) has no return typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::offsetExists\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::count\(\) has no return typehint specified.#'
+        - '#Method League\\Period\\PeriodCollection::getIterator\(\) has no return typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDuration\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDuration\(\) has parameter \$startDate with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDurationBeforeEnd\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDurationBeforeEnd\(\) has parameter \$endDate with no typehint specified.#'
+        - '#Method League\\Period\\Period::filterInt\(\) has parameter \$value with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDay\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromHour\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromMinute\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromSecond\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\Period::getDatePeriod\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::split\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::splitBackwards\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::startingOn\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\Period::endingOn\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\Period::withDuration\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::withDurationBeforeEnd\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::moveStartDate\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::moveEndDate\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::expand\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::move\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDatepoints\(\) has parameter \$datepoint1 with no typehint specified.#'
+        - '#Method League\\Period\\Period::createFromDatepoints\(\) has parameter \$datepoint2 with no typehint specified.#'
+    reportUnmatchedIgnoredErrors: true

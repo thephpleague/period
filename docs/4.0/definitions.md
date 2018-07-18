@@ -24,4 +24,4 @@ Unless stated otherwise:
     - a string parsable by the `DateInterval::createFromDateString` method.
     - an integer interpreted as the interval expressed in seconds.
 
-<p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the `0` duration is returned.</p>
+<p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the <code>0</code> interval is returned.</p>

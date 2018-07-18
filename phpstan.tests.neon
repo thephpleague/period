@@ -3,7 +3,4 @@ includes:
 - vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
     ignoreErrors:
-        - '#Parameter \#1 \$interval of method League\\Period\\Period::split\(\) expects DateInterval, int given.#'
-        - '#Parameter \#1 \$interval of method League\\Period\\Period::split\(\) expects DateInterval, string given.#'
-        - '#Parameter \#1 \$interval of method League\\Period\\Period::splitBackwards\(\) expects DateInterval, string given.#'
     reportUnmatchedIgnoredErrors: true

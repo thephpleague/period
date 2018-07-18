@@ -6,12 +6,14 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Exception` class
 - `Period::createFromDatePeriod`
 - `Period::createFromHour`
 - `Period::createFromMinute`
 - `Period::createFromSecond`
 - `Period::expand`
-- `Exception` class
+- `PeriodInterface` interface
+- `PeriodCollection` class
 
 ### Fixed
 

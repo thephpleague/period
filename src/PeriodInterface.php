@@ -18,7 +18,6 @@ use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
-use JsonSerializable;
 
 /**
  * A PHP Interface to represent an time range.
@@ -29,15 +28,13 @@ use JsonSerializable;
  * Inspired from Period
  * @see https://github.com/thephpleague/period/blob/master/src/Period.php
  */
-interface PeriodInterface extends JsonSerializable
+interface PeriodInterface
 {
     /**
      * Returns the PeriodInterface starting datepoint.
      *
      * The starting datepoint is included in the specified period.
      * The starting datepoint is always less than or equal to the ending datepoint.
-     *
-     * @return DateTimeImmutable
      */
     public function getStartDate(): DateTimeImmutable;
 
@@ -46,22 +43,16 @@ interface PeriodInterface extends JsonSerializable
      *
      * The ending datepoint is excluded from the specified period.
      * The ending datepoint is always greater than or equal to the starting datepoint.
-     *
-     * @return DateTimeImmutable
      */
     public function getEndDate(): DateTimeImmutable;
 
     /**
      * Returns the PeriodInterface duration as expressed in seconds.
-     *
-     * @return float
      */
     public function getTimestampInterval(): float;
 
     /**
      * Returns the PeriodInterface duration as a DateInterval object.
-     *
-     * @return DateInterval
      */
     public function getDateInterval(): DateInterval;
 
@@ -69,13 +60,7 @@ interface PeriodInterface extends JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the PeriodInterface object.
      *
-     * @param DateInterval $interval The interval
-     *
-     * @param int $option can be set to DatePeriod::EXCLUDE_START_DATE
-     *                    to exclude the start date from the set of
-     *                    recurring dates within the period.
-     *
-     * @return DatePeriod
+     * @see http://php.net/manual/en/dateperiod.construct.php
      */
     public function getDatePeriod(DateInterval $interval, int $option = 0): DatePeriod;
 
@@ -91,9 +76,7 @@ interface PeriodInterface extends JsonSerializable
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
      *
-     * @param DateInterval $interval The interval
-     *
-     * @return iterable
+     * @return PeriodInterface[]
      */
     public function split(DateInterval $interval): iterable;
 
@@ -109,9 +92,7 @@ interface PeriodInterface extends JsonSerializable
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
      *
-     * @param DateInterval $interval The interval
-     *
-     * @return iterable
+     * @return PeriodInterface[]
      */
     public function splitBackwards(DateInterval $interval): iterable;
 
@@ -124,37 +105,21 @@ interface PeriodInterface extends JsonSerializable
      * <li>  1 if the current PeriodInterface is greater than the submitted PeriodInterface object</li>
      * <li>  0 if both PeriodInterface objects have the same duration</li>
      * </ul>
-     *
-     * @param PeriodInterface $period
-     *
-     * @return int
      */
     public function compareDuration(PeriodInterface $period): int;
 
     /**
      * Tells whether two PeriodInterface share the same datepoints.
-     *
-     * @param PeriodInterface $period
-     *
-     * @return bool
      */
     public function sameValueAs(PeriodInterface $period): bool;
 
     /**
      * Tells whether two PeriodInterface object abuts.
-     *
-     * @param PeriodInterface $period
-     *
-     * @return bool
      */
     public function abuts(PeriodInterface $period): bool;
 
     /**
      * Tells whether two PeriodInterface objects overlaps.
-     *
-     * @param PeriodInterface $period
-     *
-     * @return bool
      */
     public function overlaps(PeriodInterface $period): bool;
 
@@ -162,8 +127,6 @@ interface PeriodInterface extends JsonSerializable
      * Tells whether a PeriodInterface is entirely after the specified index.
      *
      * @param PeriodInterface|DateTimeInterface $index
-     *
-     * @return bool
      */
     public function isAfter($index): bool;
 
@@ -171,8 +134,6 @@ interface PeriodInterface extends JsonSerializable
      * Tells whether a PeriodInterface is entirely before the specified index.
      *
      * @param PeriodInterface|DateTimeInterface $index
-     *
-     * @return bool
      */
     public function isBefore($index): bool;
 
@@ -181,8 +142,6 @@ interface PeriodInterface extends JsonSerializable
      * the current Period object.
      *
      * @param PeriodInterface|DateTimeInterface $index
-     *
-     * @return bool
      */
     public function contains($index): bool;
 
@@ -197,12 +156,69 @@ interface PeriodInterface extends JsonSerializable
     public function __toString();
 
     /**
-     * Returns the Json representation of a Period object using
-     * the JSON representation of dates as returned by Javascript Date.toJSON() method.
-     *
-     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
-     *
-     * @return string[]
+     * Returns a new Period object with a new included starting date point.
      */
-    public function jsonSerialize();
+    public function startingOn(DateTimeInterface $startDate): PeriodInterface;
+
+    /**
+     * Returns a new Period object with a new ending date point.
+     */
+    public function endingOn(DateTimeInterface $endDate): PeriodInterface;
+
+    /**
+     * Returns a new Period object with a new ending date point.
+     */
+    public function withDuration(DateInterval $interval): PeriodInterface;
+
+    /**
+     * Returns a new Period object with a new starting date point.
+     */
+    public function withDurationBeforeEnd(DateInterval $interval): PeriodInterface;
+
+    /**
+     * Returns a new Period object where the datepoints
+     * are moved forwards or backward simultaneously by the given DateInterval.
+     */
+    public function move(DateInterval $interval): PeriodInterface;
+
+    /**
+     * Returns a new Period object with a new starting date point
+     * moved forward or backward by the given interval.
+     */
+    public function moveStartDate(DateInterval $interval): PeriodInterface;
+
+    /**
+     * Returns a new Period object with a new ending date point
+     * moved forward or backward by the given interval.
+     */
+    public function moveEndDate(DateInterval $interval): PeriodInterface;
+
+    /**
+     * Returns a new Period object where the given DateInterval is
+     * substracted from the starting datepoint and added to the ending datepoint.
+     * Depending on the DateInterval value, the resulting PeriodInterface duration
+     * will be expanded or shrinked.
+     */
+    public function expand(DateInterval $interval): PeriodInterface;
+
+    /**
+     * Merges one or more Period objects to return a new Period object.
+     *
+     * The resultant object represents the largest duration possible.
+     *
+     * @param PeriodInterface ...$periods
+     */
+    public function merge(PeriodInterface ...$periods): PeriodInterface;
+
+    /**
+     * Computes the intersection between two Period objects.
+     *
+     * @throws Exception If Both objects do not overlaps
+     */
+    public function intersect(PeriodInterface $period): PeriodInterface;
+
+    /**
+     * Computes the gap between two Period objects.
+     */
+    public function gap(PeriodInterface $period): PeriodInterface;
 }
