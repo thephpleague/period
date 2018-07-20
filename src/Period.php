@@ -454,7 +454,12 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the PeriodInterface object.
+     *
+     * This method is not part of the PeriodInterface.
+     *
+     * @see http://php.net/manual/en/dateperiod.construct.php
      */
     public function getDatePeriod($interval, int $option = 0): DatePeriod
     {
@@ -462,7 +467,13 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the string representation as a ISO8601 interval format.
+     *
+     * This method is not part of the PeriodInterface.
+     *
+     * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
+     *
+     * @return string
      */
     public function __toString()
     {
@@ -543,17 +554,6 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * DEPRECATION WARNING! This methid will be removed in the next majoir point release.
-     *
-     * @deprecated deprecated since version 4.0
-     * @see PeriodInterface::equalsTo
-     */
-    public function sameValueAs(PeriodInterface $period): bool
-    {
-        return $this->equalsTo($period);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function abuts(PeriodInterface $period): bool
@@ -629,7 +629,18 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * Allows splitting a PeriodInterface in smaller PeriodInterface objects according
+     * to a given interval.
+     *
+     * The returned iterable PeriodInterface set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
+     * </ul>
+     *
+     * @return PeriodInterface[]
      */
     public function split($interval): iterable
     {
@@ -647,7 +658,18 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * Allows splitting a PeriodInterface in smaller PeriodInterface object according
+     * to a given interval.
+     *
+     * The returned iterable PeriodInterface set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
+     * </ul>
+     *
+     * @return PeriodInterface[]
      */
     public function splitBackwards($interval): iterable
     {

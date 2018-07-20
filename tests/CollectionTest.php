@@ -169,6 +169,12 @@ class CollectionTest extends TestCase
         self::assertFalse($this->collection->has(Period::createFromDay('2008-05-01')));
     }
 
+    public function testHasKey()
+    {
+        self::assertTrue($this->collection->hasKey('middle'));
+        self::assertFalse($this->collection->hasKey('faraway'));
+    }
+
     public function testFilter()
     {
         $filter = function (PeriodInterface $period, $index) {
@@ -206,13 +212,13 @@ class CollectionTest extends TestCase
         });
     }
 
-    public function testSplit()
+    public function testPartition()
     {
-        $splitter = function (PeriodInterface $period, $index) {
+        $predicate = function (PeriodInterface $period, $index) {
             return $index !== 'middle';
         };
 
-        [$matches, $no_matches] = $this->collection->split($splitter);
+        [$matches, $no_matches] = $this->collection->partition($predicate);
         self::assertCount(2, $matches);
         self::assertCount(1, $no_matches);
         self::assertSame($no_matches['middle'], $this->collection['middle']);

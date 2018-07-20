@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
-use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -57,14 +56,6 @@ interface PeriodInterface
      * Returns the PeriodInterface duration as a DateInterval object.
      */
     public function getDateInterval(): DateInterval;
-
-    /**
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the PeriodInterface object.
-     *
-     * @see http://php.net/manual/en/dateperiod.construct.php
-     */
-    public function getDatePeriod(DateInterval $interval, int $option = 0): DatePeriod;
 
     /**
      * Tells whether two PeriodInterface share the same datepoints.
@@ -116,13 +107,18 @@ interface PeriodInterface
     public function compareDuration(PeriodInterface $period): int;
 
     /**
-     * Returns the string representation as a ISO8601 interval format.
+     * Computes the intersection between two PeriodInterface objects.
      *
-     * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
-     *
-     * @return string
+     * @throws Exception If Both objects do not overlaps
      */
-    public function __toString();
+    public function intersect(PeriodInterface $period): self;
+
+    /**
+     * Computes the gap between two PeriodInterface objects.
+     *
+     * @throws Exception If Both objects overlaps
+     */
+    public function gap(PeriodInterface $period): self;
 
     /**
      * Returns an instance with the specified starting date point.
@@ -130,7 +126,7 @@ interface PeriodInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting date point.
      */
-    public function startingOn(DateTimeInterface $startDate): PeriodInterface;
+    public function startingOn(DateTimeInterface $startDate): self;
 
     /**
      * Returns an instance with the specified ending date point.
@@ -138,51 +134,5 @@ interface PeriodInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending date point.
      */
-    public function endingOn(DateTimeInterface $endDate): PeriodInterface;
-
-    /**
-     * Computes the intersection between two PeriodInterface objects.
-     *
-     * @throws Exception If Both objects do not overlaps
-     */
-    public function intersect(PeriodInterface $period): PeriodInterface;
-
-    /**
-     * Computes the gap between two PeriodInterface objects.
-     *
-     * @throws Exception If Both objects overlaps
-     */
-    public function gap(PeriodInterface $period): PeriodInterface;
-
-    /**
-     * Allows splitting a PeriodInterface in smaller PeriodInterface objects according
-     * to a given interval.
-     *
-     * The returned iterable PeriodInterface set is ordered so that:
-     * <ul>
-     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
-     * </ul>
-     *
-     * @return PeriodInterface[]
-     */
-    public function split(DateInterval $interval): iterable;
-
-    /**
-     * Allows splitting a PeriodInterface in smaller PeriodInterface object according
-     * to a given interval.
-     *
-     * The returned iterable PeriodInterface set is ordered so that:
-     * <ul>
-     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
-     * </ul>
-     *
-     * @return PeriodInterface[]
-     */
-    public function splitBackwards(DateInterval $interval): iterable;
+    public function endingOn(DateTimeInterface $endDate): self;
 }

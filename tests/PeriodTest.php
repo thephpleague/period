@@ -216,7 +216,7 @@ class PeriodTest extends TestCase
     {
         $period = new Period('2014-05-01', '2014-05-08');
         $generatedPeriod = eval('return '.var_export($period, true).';');
-        self::assertTrue($generatedPeriod->sameValueAs($period));
+        self::assertTrue($generatedPeriod->equalsTo($period));
         self::assertEquals($generatedPeriod, $period);
     }
 
@@ -508,11 +508,11 @@ class PeriodTest extends TestCase
 
     public function testCreateFromWithDateTimeInterface()
     {
-        self::assertTrue(Period::createFromWeek('2008W27')->sameValueAs(Period::createFromWeek(2008, 27)));
-        self::assertTrue(Period::createFromMonth('2008-07')->sameValueAs(Period::createFromMonth(2008, 7)));
-        self::assertTrue(Period::createFromQuarter('2008-02')->sameValueAs(Period::createFromQuarter(2008, 1)));
-        self::assertTrue(Period::createFromSemester('2008-10')->sameValueAs(Period::createFromSemester(2008, 2)));
-        self::assertTrue(Period::createFromYear('2008-01')->sameValueAs(Period::createFromYear(2008)));
+        self::assertTrue(Period::createFromWeek('2008W27')->equalsTo(Period::createFromWeek(2008, 27)));
+        self::assertTrue(Period::createFromMonth('2008-07')->equalsTo(Period::createFromMonth(2008, 7)));
+        self::assertTrue(Period::createFromQuarter('2008-02')->equalsTo(Period::createFromQuarter(2008, 1)));
+        self::assertTrue(Period::createFromSemester('2008-10')->equalsTo(Period::createFromSemester(2008, 2)));
+        self::assertTrue(Period::createFromYear('2008-01')->equalsTo(Period::createFromYear(2008)));
     }
 
     public function testCreateFromMonthWithDateTimeInterface()
@@ -736,19 +736,19 @@ class PeriodTest extends TestCase
             'testSameValueAsReturnsTrue' => [
                 Period::createFromDuration('2012-01-01', '1 MONTH'),
                 Period::createFromMonth(2012, 1),
-                'sameValueAs',
+                'equalsTo',
                 true,
             ],
             'testSameValueAsReturnsFalse' => [
                 Period::createFromDuration('2012-01-01', '1 MONTH'),
                 Period::createFromDuration('2012-01-01', '1 WEEK'),
-                'sameValueAs',
+                'equalsTo',
                 false,
             ],
             'testSameValueAsReturnsFalseArgumentOrderIndependent' => [
                 Period::createFromDurationBeforeEnd('2012-01-01', '1 WEEK'),
                 Period::createFromDurationBeforeEnd('2012-01-01', '1 MONTH'),
-                'sameValueAs',
+                'equalsTo',
                 false,
             ],
         ];
@@ -954,7 +954,7 @@ class PeriodTest extends TestCase
         self::assertInstanceOf(Period::class, $res);
         self::assertEquals($orig->getEndDate(), $res->getStartDate());
         self::assertEquals($alt->getStartDate(), $res->getEndDate());
-        self::assertTrue($res->sameValueAs($alt->gap($orig)));
+        self::assertTrue($res->equalsTo($alt->gap($orig)));
     }
 
     public function testGapThrowsExceptionWithOverlapsPeriod()

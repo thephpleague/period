@@ -37,6 +37,15 @@ use function reset;
 use function sprintf;
 use function uasort;
 
+/**
+ * A class to ease handling PeriodInterface objects collection.
+ *
+ * This class is heavily inspired by the Doctrine\Common\Collections\Collection interface
+ *
+ * @package League.period
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @since   4.0.0
+ */
 class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
@@ -224,6 +233,16 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Tells whether the index is attached to a PeriodInterface present in the collection.
+     *
+     * @param string|int $index
+     */
+    public function hasKey($index): bool
+    {
+        return $this->offsetExists($index);
+    }
+
+    /**
      * Sorts the collection using a user-defined function while maitaining index association.
      */
     public function sort(callable $callable): bool
@@ -309,21 +328,23 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Splits this collection into two separate collections according to a filter.
-     * returns a new collection with the elements returned by the mapper.
+     * Splits this collection into two separate collections according to a predicate.
+     * Keys are preserved in the resulting collections.
      *
-     * @param callable $filter the filter take at most 2 variables
-     *                         - the PeriodInterface object
-     *                         - its current offset
+     * @param callable $predicate the predicate take at most 2 variables
+     *                            - the current PeriodInterface object
+     *                            - the current offset
      *
-     * @return Collection[]
+     * @return Collection[] An array with two elements. The first element contains the collection
+     *                      of elements where the predicate returned TRUE, the second element
+     *                      contains the collection of elements where the predicate returned FALSE.
      */
-    public function split(callable $filter): array
+    public function partition(callable $predicate): array
     {
         $matches = new static();
         $no_matches = new static();
         foreach ($this->storage as $offset => $period) {
-            if (true === $filter($period, $offset)) {
+            if (true === $predicate($period, $offset)) {
                 $matches[$offset] = $period;
                 continue;
             }
@@ -338,16 +359,15 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see https://php.net/manual/en/function.array-slice.php
      *
-     * @param ?int $length
+     * @param null|int $length
      */
-    public function slice(int $offset, ?int $length = null): self
+    public function slice(int $offset, int $length = null): self
     {
         return new static(array_slice($this->storage, $offset, $length, true));
     }
 
     /**
-     * Returns a collection of founded gaps between successive PeriodInterface object
-     * as a new Collection.
+     * Returns a new instance with the founded gaps inside the current collection.
      */
     public function getGaps(): self
     {
@@ -377,8 +397,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns a collection of founded intersections between successive PeriodInterface object
-     * as a new Collection.
+     * Returns a new instance with the founded intersections inside the current collection.
      */
     public function getIntersections(): self
     {

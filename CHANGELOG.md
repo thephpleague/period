@@ -6,6 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Collection` class
 - `Exception` class
 - `Period::createFromDatePeriod`
 - `Period::createFromHour`
@@ -13,7 +14,6 @@ All Notable changes to `Period` will be documented in this file
 - `Period::createFromSecond`
 - `Period::expand`
 - `PeriodInterface` interface
-- `PeriodCollection` class
 
 ### Fixed
 
@@ -37,7 +37,8 @@ All Notable changes to `Period` will be documented in this file
 - `Period::previous`
 - `Period::add`
 - `Period::sub`
-- Support for PHP 7.0
+- `Period::sameValueAs` replaced by - `Period::equalsTo`
+- Support for PHP 7.0 and PHP 7.1
 
 ## 3.4.0 - 2017-11-17
 
