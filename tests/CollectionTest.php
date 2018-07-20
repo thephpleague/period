@@ -15,15 +15,15 @@
 namespace League\Period\Test;
 
 use DateInterval;
-use League\Period\Exception;
+use League\Period\Collection;
 use League\Period\Period;
-use League\Period\PeriodCollection;
 use League\Period\PeriodInterface;
 use PHPUnit\Framework\TestCase as TestCase;
+use TypeError;
 use const ARRAY_FILTER_USE_BOTH;
 use function date_create;
 
-class PeriodCollectionTest extends TestCase
+class CollectionTest extends TestCase
 {
     protected $timezone;
 
@@ -39,7 +39,7 @@ class PeriodCollectionTest extends TestCase
             'last' => Period::createFromWeek('2012-02-01'),
         ];
         $this->timezone = date_default_timezone_get();
-        $this->collection = new PeriodCollection($this->elements);
+        $this->collection = new Collection($this->elements);
     }
 
     public function tearDown()
@@ -50,11 +50,13 @@ class PeriodCollectionTest extends TestCase
     public function testFirst()
     {
         self::assertEquals($this->elements['first'], $this->collection->first());
+        self::assertNull((new Collection())->first());
     }
 
     public function testLast()
     {
         self::assertEquals($this->elements['last'], $this->collection->last());
+        self::assertNull((new Collection())->last());
     }
 
     public function testArrayAccess()
@@ -73,14 +75,8 @@ class PeriodCollectionTest extends TestCase
 
     public function testOffsetSetThrowException()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(TypeError::class);
         $this->collection[] = date_create();
-    }
-
-    public function testGetPeriod()
-    {
-        self::assertInstanceOf(Period::class, $this->collection->getPeriod());
-        self::assertNull((new PeriodCollection())->getPeriod());
     }
 
     public function testClear()
@@ -90,10 +86,70 @@ class PeriodCollectionTest extends TestCase
         self::assertCount(0, $this->collection);
     }
 
-    public function testToString()
+    public function testGet()
     {
-        self::assertSame('', (string) new PeriodCollection());
-        self::assertSame((string) $this->collection, (string) $this->collection->getPeriod());
+        self::assertEquals($this->elements['middle'], $this->collection->get('middle'));
+        self::assertNull($this->collection->get('faraway'));
+    }
+
+    public function testSet()
+    {
+        $period = Period::createFromYear('2013');
+        self::assertCount(3, $this->collection);
+        $this->collection->set('faraway', $period);
+        self::assertCount(4, $this->collection);
+        self::assertEquals($period, $this->collection->get('faraway'));
+        $this->assertSame('faraway', $this->collection->indexOf($period));
+    }
+
+    /**
+     * @dataProvider invalidSetterArgumentProvider
+     */
+    public function testSetThrowsException($index, $value)
+    {
+        $this->expectException(TypeError::class);
+        $this->collection->set($index, $value);
+    }
+
+    public function invalidSetterArgumentProvider()
+    {
+        return [
+            'null index' => [
+                'index' => null,
+                'value' => Period::createFromYear('2013'),
+            ],
+            'invalid value' => [
+                'index' => 'foo',
+                'value' => 'bart',
+            ],
+        ];
+    }
+
+    public function testRemove()
+    {
+        $period = $this->collection->last();
+        self::assertCount(3, $this->collection);
+        self::assertTrue($this->collection->remove($period));
+        self::assertCount(2, $this->collection);
+        self::assertTrue($this->collection->remove(clone $this->collection['first']));
+        self::assertCount(1, $this->collection);
+        self::assertFalse($this->collection->remove(Period::createFromYear('1998')));
+    }
+
+    public function testRemoveIndex()
+    {
+        self::assertCount(3, $this->collection);
+        $period = $this->collection->removeIndex('last');
+        self::assertInstanceOf(PeriodInterface::class, $period);
+        self::assertCount(2, $this->collection);
+        self::assertNull($this->collection->removeIndex('faraway'));
+    }
+
+    public function testToArray()
+    {
+        self::assertSame($this->elements, $this->collection->toArray());
+        self::assertSame(['first', 'middle', 'last'], $this->collection->getKeys());
+        self::assertSame(array_values($this->elements), $this->collection->getValues());
     }
 
     public function testIterator()
@@ -109,13 +165,8 @@ class PeriodCollectionTest extends TestCase
     public function testHas()
     {
         self::assertTrue($this->collection->has($this->elements['middle']));
-        self::assertFalse($this->collection->has(clone $this->elements['middle']));
-    }
-
-    public function testRemove()
-    {
-        self::assertTrue($this->collection->remove($this->collection['middle']));
-        self::assertFalse($this->collection->remove(clone$this->collection['first']));
+        self::assertTrue($this->collection->has(clone $this->elements['middle']));
+        self::assertFalse($this->collection->has(Period::createFromDay('2008-05-01')));
     }
 
     public function testFilter()
@@ -125,19 +176,23 @@ class PeriodCollectionTest extends TestCase
         };
 
         $newCollection = $this->collection->filter($filter, ARRAY_FILTER_USE_BOTH);
-        self::assertInstanceOf(PeriodCollection::class, $newCollection);
+        self::assertInstanceOf(Collection::class, $newCollection);
         self::assertCount(2, $newCollection);
         self::assertFalse(isset($newCollection['middle']));
     }
 
     public function testMapper()
     {
-        $mapper = function (PeriodInterface $period) {
-            return $period->expand(new DateInterval('P2D'));
+        $interval = new DateInterval('P2D');
+        $mapper = function (PeriodInterface $period) use ($interval) {
+            return $period
+                ->startingOn($period->getStartDate()->sub($interval))
+                ->endingOn($period->getStartDate()->add($interval))
+            ;
         };
 
         $newCollection = $this->collection->map($mapper);
-        self::assertInstanceOf(PeriodCollection::class, $newCollection);
+        self::assertInstanceOf(Collection::class, $newCollection);
         self::assertCount(3, $newCollection);
         self::assertTrue(isset($newCollection['middle']));
         self::assertNotEquals($newCollection['middle'], $this->collection['middle']);
@@ -145,7 +200,7 @@ class PeriodCollectionTest extends TestCase
 
     public function testMapperThrowsException()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(TypeError::class);
         $this->collection->map(function (PeriodInterface $period) {
             return true;
         });
@@ -185,41 +240,41 @@ class PeriodCollectionTest extends TestCase
      * @dataProvider providesCollectionForGaps
      *
      */
-    public function testInnerGaps(PeriodCollection $collection, PeriodCollection $expected)
+    public function testGetGaps(Collection $collection, Collection $expected)
     {
-        self::assertEquals($expected, $collection->gaps());
+        self::assertEquals($expected, $collection->getGaps());
     }
 
     public function providesCollectionForGaps()
     {
         return [
             'no entry' => [
-                'collection' => new PeriodCollection(),
-                'expected' => new PeriodCollection(),
+                'collection' => new Collection(),
+                'expected' => new Collection(),
             ],
             'a single entry' => [
-                'collection' => new PeriodCollection([Period::createFromDay('2012-02-01')]),
-                'expected' => new PeriodCollection(),
+                'collection' => new Collection([Period::createFromDay('2012-02-01')]),
+                'expected' => new Collection(),
             ],
             'no gaps' => [
-                'collection' => new PeriodCollection([
+                'collection' => new Collection([
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-02-01'),
                     'last' => Period::createFromWeek('2012-02-01'),
                 ]),
-                'expected' => new PeriodCollection(),
+                'expected' => new Collection(),
             ],
             'no gaps from a Period::split(Backwards)' => [
-                'collection' => new PeriodCollection(Period::createFromMonth('2012-06-01')->splitBackwards('1 WEEK')),
-                'expected' => new PeriodCollection(),
+                'collection' => new Collection(Period::createFromMonth('2012-06-01')->splitBackwards('1 WEEK')),
+                'expected' => new Collection(),
             ],
             'has gaps' => [
-                'collection' => new PeriodCollection([
+                'collection' => new Collection([
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-05-01'),
                     'last' => Period::createFromWeek('2012-02-01'),
                 ]),
-                'expected' => new PeriodCollection([
+                'expected' => new Collection([
                     new Period('2012-02-06', '2012-05-01'),
                 ]),
             ],
@@ -227,39 +282,39 @@ class PeriodCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider providesCollectionForOverlaps
+     * @dataProvider providesCollectionForIntersections
      *
      */
-    public function testInnerOverlaps(PeriodCollection $collection, PeriodCollection $expected)
+    public function testGetIntersections(Collection $collection, Collection $expected)
     {
-        self::assertEquals($expected, $collection->overlaps());
+        self::assertEquals($expected, $collection->getIntersections());
     }
 
-    public function providesCollectionForOverlaps()
+    public function providesCollectionForIntersections()
     {
         return [
             'no entry' => [
-                'collection' => new PeriodCollection(),
-                'expected' => new PeriodCollection(),
+                'collection' => new Collection(),
+                'expected' => new Collection(),
             ],
             'a single entry' => [
-                'collection' => new PeriodCollection([Period::createFromDay('2012-02-01')]),
-                'expected' => new PeriodCollection(),
+                'collection' => new Collection([Period::createFromDay('2012-02-01')]),
+                'expected' => new Collection(),
             ],
             'overlaps' => [
-                'collection' => new PeriodCollection([
+                'collection' => new Collection([
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-02-01'),
                     'last' => Period::createFromWeek('2012-02-01'),
                 ]),
-                'expected' => new PeriodCollection([
+                'expected' => new Collection([
                     Period::createFromDay('2012-02-01'),
                     new Period('2012-02-01', '2012-02-06'),
                 ]),
             ],
             'should not overlaps' => [
-                'collection' => new PeriodCollection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
-                'expected' => new PeriodCollection(),
+                'collection' => new Collection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
+                'expected' => new Collection(),
             ],
         ];
     }

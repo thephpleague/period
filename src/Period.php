@@ -464,42 +464,6 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * {@inheritdoc}
      */
-    public function split($interval): iterable
-    {
-        $startDate = $this->startDate;
-        $interval = self::filterDateInterval($interval);
-        do {
-            $endDate = $startDate->add($interval);
-            if ($endDate > $this->endDate) {
-                $endDate = $this->endDate;
-            }
-            yield new self($startDate, $endDate);
-
-            $startDate = $endDate;
-        } while ($startDate < $this->endDate);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function splitBackwards($interval): iterable
-    {
-        $endDate = $this->endDate;
-        $interval = self::filterDateInterval($interval);
-        do {
-            $startDate = $endDate->sub($interval);
-            if ($startDate < $this->startDate) {
-                $startDate = $this->startDate;
-            }
-            yield new self($startDate, $endDate);
-
-            $endDate = $startDate;
-        } while ($endDate > $this->startDate);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function __toString()
     {
         $period = $this->jsonSerialize();
@@ -510,6 +474,8 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * Returns the Json representation of a Period object using
      * the JSON representation of dates as returned by Javascript Date.toJSON() method.
+     *
+     * This method is not part of the PeriodInterface.
      *
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      *
@@ -537,6 +503,8 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * Tells whether the current Period object duration
      * is greater than the submitted one.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function durationGreaterThan(PeriodInterface $period): bool
     {
@@ -546,6 +514,8 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * Tells whether the current Period object duration
      * is less than the submitted one.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function durationLessThan(PeriodInterface $period): bool
     {
@@ -555,6 +525,8 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * Tells whether the current Period object duration
      * is equal to the submitted one.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function sameDurationAs(PeriodInterface $period): bool
     {
@@ -564,10 +536,21 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * {@inheritdoc}
      */
-    public function sameValueAs(PeriodInterface $period): bool
+    public function equalsTo(PeriodInterface $period): bool
     {
         return $this->startDate == $period->getStartDate()
             && $this->endDate == $period->getEndDate();
+    }
+
+    /**
+     * DEPRECATION WARNING! This methid will be removed in the next majoir point release.
+     *
+     * @deprecated deprecated since version 4.0
+     * @see PeriodInterface::equalsTo
+     */
+    public function sameValueAs(PeriodInterface $period): bool
+    {
+        return $this->equalsTo($period);
     }
 
     /**
@@ -648,9 +631,81 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * {@inheritdoc}
      */
+    public function split($interval): iterable
+    {
+        $startDate = $this->startDate;
+        $interval = self::filterDateInterval($interval);
+        do {
+            $endDate = $startDate->add($interval);
+            if ($endDate > $this->endDate) {
+                $endDate = $this->endDate;
+            }
+            yield new self($startDate, $endDate);
+
+            $startDate = $endDate;
+        } while ($startDate < $this->endDate);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function splitBackwards($interval): iterable
+    {
+        $endDate = $this->endDate;
+        $interval = self::filterDateInterval($interval);
+        do {
+            $startDate = $endDate->sub($interval);
+            if ($startDate < $this->startDate) {
+                $startDate = $this->startDate;
+            }
+            yield new self($startDate, $endDate);
+
+            $endDate = $startDate;
+        } while ($endDate > $this->startDate);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function intersect(PeriodInterface $period): PeriodInterface
+    {
+        if (!$this->overlaps($period)) {
+            throw new Exception(sprintf('Both %s  object should overlaps', PeriodInterface::class));
+        }
+
+        return new self(
+            ($period->getStartDate() > $this->startDate) ? $period->getStartDate() : $this->startDate,
+            ($period->getEndDate() < $this->endDate) ? $period->getEndDate() : $this->endDate
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gap(PeriodInterface $period): PeriodInterface
+    {
+        if ($this->overlaps($period)) {
+            throw new Exception(sprintf('Both %s  object should not overlaps', PeriodInterface::class));
+        }
+
+        if ($period->getStartDate() > $this->startDate) {
+            return new self($this->endDate, $period->getStartDate());
+        }
+
+        return new self($period->getEndDate(), $this->startDate);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function startingOn($datepoint): PeriodInterface
     {
-        return new self(self::filterDatePoint($datepoint), $this->endDate);
+        $startDate = self::filterDatePoint($datepoint);
+        if ($startDate == $this->startDate) {
+            return $this;
+        }
+
+        return new self($startDate, $this->endDate);
     }
 
     /**
@@ -658,65 +713,100 @@ final class Period implements PeriodInterface, JsonSerializable
      */
     public function endingOn($datepoint): PeriodInterface
     {
-        return new self($this->startDate, self::filterDatePoint($datepoint));
+        $endDate = self::filterDatePoint($datepoint);
+        if ($endDate == $this->endDate) {
+            return $this;
+        }
+
+        return new self($this->startDate, $endDate);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new Period object with a new ending date point.
      *
+     * This method is not part of the PeriodInterface.
      */
     public function withDuration($interval): PeriodInterface
     {
-        return new self($this->startDate, $this->startDate->add(self::filterDateInterval($interval)));
+        return $this->endingOn($this->startDate->add(self::filterDateInterval($interval)));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new Period object with a new starting date point.
      *
+     * This method is not part of the PeriodInterface.
      */
     public function withDurationBeforeEnd($interval): PeriodInterface
     {
-        return new self($this->endDate->sub(self::filterDateInterval($interval)), $this->endDate);
+        return $this->startingOn($this->endDate->sub(self::filterDateInterval($interval)));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new Period object with a new starting date point
+     * moved forward or backward by the given interval.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function moveStartDate($interval): PeriodInterface
     {
-        return new self($this->startDate->add(self::filterDateInterval($interval)), $this->endDate);
+        return $this->startingOn($this->startDate->add(self::filterDateInterval($interval)));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new Period object with a new ending date point
+     * moved forward or backward by the given interval.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function moveEndDate($interval): PeriodInterface
     {
-        return new self($this->startDate, $this->endDate->add(self::filterDateInterval($interval)));
+        return $this->endingOn($this->endDate->add(self::filterDateInterval($interval)));
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new Period object where the datepoints
+     * are moved forwards or backward simultaneously by the given DateInterval.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function move($interval): PeriodInterface
     {
         $interval = self::filterDateInterval($interval);
+        $period = new self($this->startDate->add($interval), $this->endDate->add($interval));
+        if ($period->equalsTo($this)) {
+            return $this;
+        }
 
-        return new self($this->startDate->add($interval), $this->endDate->add($interval));
+        return $period;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new Period object where the given DateInterval is
+     * substracted from the starting datepoint and added to the ending datepoint.
+     * Depending on the DateInterval value, the resulting PeriodInterface duration
+     * will be expanded or shrinked.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function expand($interval): PeriodInterface
     {
         $interval = self::filterDateInterval($interval);
 
-        return new self($this->startDate->sub($interval), $this->endDate->add($interval));
+        $period = new self($this->startDate->sub($interval), $this->endDate->add($interval));
+        if ($period->equalsTo($this)) {
+            return $this;
+        }
+
+        return $period;
     }
 
     /**
-     * {@inheritdoc}
+     * Merges one or more Period objects to return a new Period object.
+     * The resultant object represents the largest duration possible.
+     *
+     * This method is not part of the PeriodInterface.
+     *
+     * @param PeriodInterface ...$periods
      */
     public function merge(PeriodInterface ...$periods): PeriodInterface
     {
@@ -741,34 +831,9 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function intersect(PeriodInterface $period): PeriodInterface
-    {
-        if (!$this->overlaps($period)) {
-            throw new Exception('Both object should at least overlaps');
-        }
-
-        return new self(
-            ($period->getStartDate() > $this->startDate) ? $period->getStartDate() : $this->startDate,
-            ($period->getEndDate() < $this->endDate) ? $period->getEndDate() : $this->endDate
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function gap(PeriodInterface $period): PeriodInterface
-    {
-        if ($period->getStartDate() > $this->startDate) {
-            return new self($this->endDate, $period->getStartDate());
-        }
-
-        return new self($period->getEndDate(), $this->startDate);
-    }
-
-    /**
      * Returns the difference between two Period objects expressed in seconds.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function timestampIntervalDiff(PeriodInterface $period): float
     {
@@ -777,6 +842,8 @@ final class Period implements PeriodInterface, JsonSerializable
 
     /**
      * Returns the difference between two Period objects expressed in DateInterval.
+     *
+     * This method is not part of the PeriodInterface.
      */
     public function dateIntervalDiff(PeriodInterface $period): DateInterval
     {
@@ -786,7 +853,9 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * Computes the difference between two overlapsing Period objects.
      *
-     * Returns an Period Collection containing the difference expressed as Period objects
+     * This method is not part of the PeriodInterface.
+     *
+     * Returns a array containing the difference expressed as Period objects
      * The array will:
      *
      * <ul>
@@ -797,7 +866,7 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @throws Exception if both object do not overlaps
      */
-    public function diff(PeriodInterface $period): PeriodCollection
+    public function diff(PeriodInterface $period): array
     {
         if (!$this->overlaps($period)) {
             throw new Exception('Both Period objects must overlaps');
@@ -812,7 +881,7 @@ final class Period implements PeriodInterface, JsonSerializable
             return $period->getStartDate() != $period->getEndDate();
         };
 
-        return new PeriodCollection(array_values(array_filter($res, $filter)));
+        return array_values(array_filter($res, $filter));
     }
 
     /**

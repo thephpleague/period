@@ -12,6 +12,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace League\Period;
 
 use DateInterval;
@@ -65,53 +67,9 @@ interface PeriodInterface
     public function getDatePeriod(DateInterval $interval, int $option = 0): DatePeriod;
 
     /**
-     * Allows splitting a PeriodInterface in smaller PeriodInterface objects according
-     * to a given interval.
-     *
-     * The returned iterable PeriodInterface set is ordered so that:
-     * <ul>
-     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
-     * </ul>
-     *
-     * @return PeriodInterface[]
-     */
-    public function split(DateInterval $interval): iterable;
-
-    /**
-     * Allows splitting a PeriodInterface in smaller PeriodInterface object according
-     * to a given interval.
-     *
-     * The returned iterable PeriodInterface set is ordered so that:
-     * <ul>
-     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
-     * </ul>
-     *
-     * @return PeriodInterface[]
-     */
-    public function splitBackwards(DateInterval $interval): iterable;
-
-    /**
-     * Compares two PeriodInterface objects according to their duration.
-     *
-     * Returns:
-     * <ul>
-     * <li> -1 if the current PeriodInterface is lesser than the submitted PeriodInterface object</li>
-     * <li>  1 if the current PeriodInterface is greater than the submitted PeriodInterface object</li>
-     * <li>  0 if both PeriodInterface objects have the same duration</li>
-     * </ul>
-     */
-    public function compareDuration(PeriodInterface $period): int;
-
-    /**
      * Tells whether two PeriodInterface share the same datepoints.
      */
-    public function sameValueAs(PeriodInterface $period): bool;
+    public function equalsTo(PeriodInterface $period): bool;
 
     /**
      * Tells whether two PeriodInterface object abuts.
@@ -146,8 +104,19 @@ interface PeriodInterface
     public function contains($index): bool;
 
     /**
-     * Returns the string representation of a Period object
-     * as a string in the ISO8601 interval format.
+     * Compares two PeriodInterface objects according to their duration.
+     *
+     * Returns:
+     * <ul>
+     * <li> -1 if the current PeriodInterface is lesser than the submitted PeriodInterface object</li>
+     * <li>  1 if the current PeriodInterface is greater than the submitted PeriodInterface object</li>
+     * <li>  0 if both PeriodInterface objects have the same duration</li>
+     * </ul>
+     */
+    public function compareDuration(PeriodInterface $period): int;
+
+    /**
+     * Returns the string representation as a ISO8601 interval format.
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
@@ -156,69 +125,64 @@ interface PeriodInterface
     public function __toString();
 
     /**
-     * Returns a new Period object with a new included starting date point.
+     * Returns an instance with the specified starting date point.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified starting date point.
      */
     public function startingOn(DateTimeInterface $startDate): PeriodInterface;
 
     /**
-     * Returns a new Period object with a new ending date point.
+     * Returns an instance with the specified ending date point.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified ending date point.
      */
     public function endingOn(DateTimeInterface $endDate): PeriodInterface;
 
     /**
-     * Returns a new Period object with a new ending date point.
-     */
-    public function withDuration(DateInterval $interval): PeriodInterface;
-
-    /**
-     * Returns a new Period object with a new starting date point.
-     */
-    public function withDurationBeforeEnd(DateInterval $interval): PeriodInterface;
-
-    /**
-     * Returns a new Period object where the datepoints
-     * are moved forwards or backward simultaneously by the given DateInterval.
-     */
-    public function move(DateInterval $interval): PeriodInterface;
-
-    /**
-     * Returns a new Period object with a new starting date point
-     * moved forward or backward by the given interval.
-     */
-    public function moveStartDate(DateInterval $interval): PeriodInterface;
-
-    /**
-     * Returns a new Period object with a new ending date point
-     * moved forward or backward by the given interval.
-     */
-    public function moveEndDate(DateInterval $interval): PeriodInterface;
-
-    /**
-     * Returns a new Period object where the given DateInterval is
-     * substracted from the starting datepoint and added to the ending datepoint.
-     * Depending on the DateInterval value, the resulting PeriodInterface duration
-     * will be expanded or shrinked.
-     */
-    public function expand(DateInterval $interval): PeriodInterface;
-
-    /**
-     * Merges one or more Period objects to return a new Period object.
-     *
-     * The resultant object represents the largest duration possible.
-     *
-     * @param PeriodInterface ...$periods
-     */
-    public function merge(PeriodInterface ...$periods): PeriodInterface;
-
-    /**
-     * Computes the intersection between two Period objects.
+     * Computes the intersection between two PeriodInterface objects.
      *
      * @throws Exception If Both objects do not overlaps
      */
     public function intersect(PeriodInterface $period): PeriodInterface;
 
     /**
-     * Computes the gap between two Period objects.
+     * Computes the gap between two PeriodInterface objects.
+     *
+     * @throws Exception If Both objects overlaps
      */
     public function gap(PeriodInterface $period): PeriodInterface;
+
+    /**
+     * Allows splitting a PeriodInterface in smaller PeriodInterface objects according
+     * to a given interval.
+     *
+     * The returned iterable PeriodInterface set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
+     * </ul>
+     *
+     * @return PeriodInterface[]
+     */
+    public function split(DateInterval $interval): iterable;
+
+    /**
+     * Allows splitting a PeriodInterface in smaller PeriodInterface object according
+     * to a given interval.
+     *
+     * The returned iterable PeriodInterface set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
+     * </ul>
+     *
+     * @return PeriodInterface[]
+     */
+    public function splitBackwards(DateInterval $interval): iterable;
 }

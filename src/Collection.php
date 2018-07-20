@@ -1,0 +1,409 @@
+<?php
+
+/**
+ * League.Uri (https://period.thephpleague.com).
+ *
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
+ * @version 4.0.0
+ * @link    https://github.com/thephpleague/period
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace League\Period;
+
+use ArrayAccess;
+use Countable;
+use IteratorAggregate;
+use TypeError;
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function array_map;
+use function array_slice;
+use function array_values;
+use function count;
+use function end;
+use function get_class;
+use function gettype;
+use function is_int;
+use function is_object;
+use function is_string;
+use function reset;
+use function sprintf;
+use function uasort;
+
+class Collection implements ArrayAccess, Countable, IteratorAggregate
+{
+    /**
+     * @var PeriodInterface[]
+     */
+    protected $storage = [];
+
+    /**
+     * Create a new instance.
+     *
+     * @param PeriodInterface[] $periods
+     */
+    public function __construct(iterable $periods = [])
+    {
+        foreach ($periods as $offset => $value) {
+            $this->offsetSet($offset, $value);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (!$value instanceof PeriodInterface) {
+            throw new TypeError(sprintf(
+                'a %s only contains % objects, you try to add a %s instead',
+                get_class($this),
+                PeriodInterface::class,
+                is_object($value) ? get_class($value) : gettype($value)
+            ));
+        }
+
+        if (null === $offset) {
+            $this->storage[] = $value;
+            return;
+        }
+
+        $this->storage[$offset] = $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        return $this->storage[$offset] ?? null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->storage);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->storage[$offset]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->storage);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIterator()
+    {
+        foreach ($this->storage as $offset => $period) {
+            yield $offset => $period;
+        }
+    }
+
+    /**
+     * Returns all the keys of the collection.
+     *
+     * @return string[]
+     */
+    public function getKeys(): array
+    {
+        return array_keys($this->storage);
+    }
+
+    /**
+     * Returns all the PeriodInterface objects of the collection.
+     *
+     * @return PeriodInterface[]
+     */
+    public function getValues(): array
+    {
+        return array_values($this->storage);
+    }
+
+    /**
+     * Returns an array representation of the collection.
+     */
+    public function toArray(): array
+    {
+        return $this->storage;
+    }
+
+    /**
+     * Remove all the periods from the Collection.
+     */
+    public function clear(): void
+    {
+        $this->storage = [];
+    }
+
+    /**
+     * Get the PeriodInterface object at the specified index.
+     *
+     * @param string|int $index
+     *
+     * @return ?PeriodInterface
+     */
+    public function get($index): ?PeriodInterface
+    {
+        return $this->offsetGet($index);
+    }
+
+    /**
+     * Returns the first period of the collection.
+     *
+     * @return ?PeriodInterface
+     */
+    public function first(): ?PeriodInterface
+    {
+        $period = reset($this->storage);
+        if (false === $period) {
+            return null;
+        }
+
+        return $period;
+    }
+
+    /**
+     * Returns the last period of the collection.
+     *
+     * @return ?PeriodInterface
+     */
+    public function last(): ?PeriodInterface
+    {
+        $period = end($this->storage);
+        if (false === $period) {
+            return null;
+        }
+
+        return $period;
+    }
+
+    /**
+     * Tells whether the submitted PeriodInterface object is present in the collection.
+     */
+    public function has(PeriodInterface $period): bool
+    {
+        return false !== $this->indexOf($period);
+    }
+
+    /**
+     * Returns the index of a given PeriodInterface if present in the collection
+     * or false.
+     *
+     * @return string|int|bool
+     */
+    public function indexOf(PeriodInterface $period)
+    {
+        foreach ($this->storage as $index => $stored_period) {
+            if ($period->equalsTo($stored_period)) {
+                return $index;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Sorts the collection using a user-defined function while maitaining index association.
+     */
+    public function sort(callable $callable): bool
+    {
+        return uasort($this->storage, $callable);
+    }
+
+    /**
+     * Adds the given Period from the Collection if present.
+     */
+    public function add(PeriodInterface $period): void
+    {
+        $this->offsetSet(null, $period);
+    }
+
+    /**
+     * Set the PeriodInterface object at the specified index.
+     *
+     * @param string|int $index
+     */
+    public function set($index, PeriodInterface $period): void
+    {
+        if (!is_int($index) && !is_string($index)) {
+            throw new TypeError(sprintf(
+                'the index must be a string or an int, you try to add a %s instead',
+                is_object($index) ? get_class($index) : gettype($index)
+            ));
+        }
+
+        $this->offsetSet($index, $period);
+    }
+
+    /**
+     * Remove the PeriodInterface from the Collection if present.
+     */
+    public function remove(PeriodInterface $period): bool
+    {
+        $offset = $this->indexOf($period);
+        if (false === $offset) {
+            return false;
+        }
+
+        $this->offsetUnset($offset);
+
+        return true;
+    }
+
+    /**
+     * Remove the PeriodInterface at a given index from the Collection if present.
+     *
+     * @param string|int $index
+     *
+     * @return ?PeriodInterface
+     */
+    public function removeIndex($index): ?PeriodInterface
+    {
+        $period = $this->offsetGet($index);
+        if (null !== $period) {
+            $this->offsetUnset($index);
+        }
+
+        return $period;
+    }
+
+    /**
+     * Returns all the Period objects of this collection that satisfy the filter $filter.
+     * The order of the Period objetcs are preserved.
+     *
+     * @see https://php.net/manual/en/function.array-filter.php
+     */
+    public function filter(callable $filter, int $flag = 0): self
+    {
+        return new static(array_filter($this->storage, $filter, $flag));
+    }
+
+    /**
+     * Applies a mapper $mapper to all the Periods object of this collection and
+     * returns a new collection with the elements returned by the mapper.
+     */
+    public function map(callable $mapper): self
+    {
+        return new static(array_map($mapper, $this->storage));
+    }
+
+    /**
+     * Splits this collection into two separate collections according to a filter.
+     * returns a new collection with the elements returned by the mapper.
+     *
+     * @param callable $filter the filter take at most 2 variables
+     *                         - the PeriodInterface object
+     *                         - its current offset
+     *
+     * @return Collection[]
+     */
+    public function split(callable $filter): array
+    {
+        $matches = new static();
+        $no_matches = new static();
+        foreach ($this->storage as $offset => $period) {
+            if (true === $filter($period, $offset)) {
+                $matches[$offset] = $period;
+                continue;
+            }
+            $no_matches[$offset] = $period;
+        }
+
+        return [$matches, $no_matches];
+    }
+
+    /**
+     * Extracts a slice of this collection into a new collection. Keys are preserved.
+     *
+     * @see https://php.net/manual/en/function.array-slice.php
+     *
+     * @param ?int $length
+     */
+    public function slice(int $offset, ?int $length = null): self
+    {
+        return new static(array_slice($this->storage, $offset, $length, true));
+    }
+
+    /**
+     * Returns a collection of founded gaps between successive PeriodInterface object
+     * as a new Collection.
+     */
+    public function getGaps(): self
+    {
+        $periods = clone $this;
+        $periods->sort(function (PeriodInterface $period1, PeriodInterface $period2) {
+            return $period1->getStartDate() <=> $period2->getStartDate();
+        });
+
+        $collection = new static();
+        $current = $periods->first();
+        if (null === $current) {
+            return $collection;
+        }
+
+        $periods->remove($current);
+        foreach ($periods as $next) {
+            if (!$current->overlaps($next) && !$current->abuts($next)) {
+                $collection[] = $current->gap($next);
+            }
+
+            if (!$current->contains($next)) {
+                $current = $next;
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a collection of founded intersections between successive PeriodInterface object
+     * as a new Collection.
+     */
+    public function getIntersections(): self
+    {
+        $periods = clone $this;
+        $periods->sort(function (PeriodInterface $period1, PeriodInterface $period2) {
+            return $period1->getStartDate() <=> $period2->getStartDate();
+        });
+
+        $collection = new static();
+        $current = $periods->first();
+        if (null === $current) {
+            return $collection;
+        }
+
+        $periods->remove($current);
+        foreach ($periods as $next) {
+            if ($current->overlaps($next)) {
+                $collection[] = $current->intersect($next);
+            }
+
+            if (!$current->contains($next)) {
+                $current = $next;
+            }
+        }
+
+        return $collection;
+    }
+}

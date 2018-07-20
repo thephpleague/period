@@ -217,6 +217,7 @@ class PeriodTest extends TestCase
         $period = new Period('2014-05-01', '2014-05-08');
         $generatedPeriod = eval('return '.var_export($period, true).';');
         self::assertTrue($generatedPeriod->sameValueAs($period));
+        self::assertEquals($generatedPeriod, $period);
     }
 
     public function testConstructor()
@@ -760,6 +761,7 @@ class PeriodTest extends TestCase
         $newPeriod = $period->startingOn($expected);
         self::assertTrue($newPeriod->getStartDate() == $expected);
         self::assertEquals($period->getStartDate(), new DateTimeImmutable('2014-01-13'));
+        self::assertSame($period->startingOn($period->getStartDate()), $period);
     }
 
     public function testStartingOnFailedWithWrongStartDate()
@@ -776,6 +778,7 @@ class PeriodTest extends TestCase
         $newPeriod = $period->endingOn($expected);
         self::assertTrue($newPeriod->getEndDate() == $expected);
         self::assertEquals($period->getEndDate(), new DateTimeImmutable('2014-01-20'));
+        self::assertSame($period->endingOn($period->getEndDate()), $period);
     }
 
     public function testEndingOnFailedWithWrongEndDate()
@@ -880,6 +883,12 @@ class PeriodTest extends TestCase
         $period = Period::createFromDay('2012-02-02')->expand(new DateInterval('P1D'));
         self::assertEquals(new DateTimeImmutable('2012-02-01'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2012-02-04'), $period->getEndDate());
+    }
+
+    public function testExpandRetunsSameInstance()
+    {
+        $period = Period::createFromDay('2012-02-02');
+        self::assertSame($period->expand(new DateInterval('PT0S')), $period);
     }
 
     public function testShrink()
@@ -1017,6 +1026,7 @@ class PeriodTest extends TestCase
         $period = new Period('2016-01-01 15:32:12', '2016-01-15 12:00:01');
         $moved = $period->move(new DateInterval('P1D'));
         self::assertEquals(new Period('2016-01-02 15:32:12', '2016-01-16 12:00:01'), $moved);
+        self::assertSame($period->move(new DateInterval('PT0S')), $period);
     }
 
     public function testMoveSupportStringIntervals()
