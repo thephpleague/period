@@ -567,8 +567,7 @@ final class Period implements PeriodInterface, JsonSerializable
      */
     public function overlaps(PeriodInterface $period): bool
     {
-        return !$this->abuts($period)
-            && $this->startDate < $period->getEndDate()
+        return $this->startDate < $period->getEndDate()
             && $this->endDate > $period->getStartDate();
     }
 
