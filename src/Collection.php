@@ -346,11 +346,11 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
         $matches = new self();
         $no_matches = new self();
         foreach ($this->storage as $offset => $period) {
+            $collection = 'no_matches';
             if (true === $predicate($period, $offset)) {
-                $matches[$offset] = $period;
-                continue;
+                $collection = 'matches';
             }
-            $no_matches[$offset] = $period;
+            $$collection[$offset] = $period;
         }
 
         return [$matches, $no_matches];

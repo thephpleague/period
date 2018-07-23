@@ -9,6 +9,7 @@ version:
             Properties: '/4.0/properties/'
             Comparing: '/4.0/comparing/'
             Modifying: '/4.0/modifying/'
+            Collection: '/4.0/collection/'
     '3.0':
         Getting Started:
             Overview: '/3.0/'
