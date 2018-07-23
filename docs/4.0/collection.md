@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Period objects Collections
+title: Period objects Collection
 ---
 
 # Period Collections
