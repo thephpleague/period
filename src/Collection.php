@@ -46,7 +46,7 @@ use function uasort;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.0.0
  */
-class Collection implements ArrayAccess, Countable, IteratorAggregate
+final class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var PeriodInterface[]
@@ -68,12 +68,12 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (!$value instanceof PeriodInterface) {
             throw new TypeError(sprintf(
                 'a %s only contains % objects, you try to add a %s instead',
-                get_class($this),
+                Collection::class,
                 PeriodInterface::class,
                 is_object($value) ? get_class($value) : gettype($value)
             ));
@@ -90,7 +90,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?PeriodInterface
     {
         return $this->storage[$offset] ?? null;
     }
@@ -98,7 +98,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->storage);
     }
@@ -106,7 +106,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->storage[$offset]);
     }
@@ -114,7 +114,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function count()
+    public function count(): int
     {
         return count($this->storage);
     }
@@ -122,7 +122,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function getIterator()
+    public function getIterator(): iterable
     {
         foreach ($this->storage as $offset => $period) {
             yield $offset => $period;
@@ -210,7 +210,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Tells whether the submitted PeriodInterface object is present in the collection.
      */
-    public function has(PeriodInterface $period): bool
+    public function contains(PeriodInterface $period): bool
     {
         return false !== $this->indexOf($period);
     }
@@ -237,13 +237,15 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param string|int $index
      */
-    public function hasKey($index): bool
+    public function containskey($index): bool
     {
         return $this->offsetExists($index);
     }
 
     /**
      * Sorts the collection using a user-defined function while maitaining index association.
+     *
+     * @see https://php.net/manual/en/function.uasort.php
      */
     public function sort(callable $callable): bool
     {
@@ -267,7 +269,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     {
         if (!is_int($index) && !is_string($index)) {
             throw new TypeError(sprintf(
-                'the index must be a string or an int, you try to add a %s instead',
+                'the index must be a string or an int, you try to use a %s instead',
                 is_object($index) ? get_class($index) : gettype($index)
             ));
         }
@@ -281,13 +283,11 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function remove(PeriodInterface $period): bool
     {
         $offset = $this->indexOf($period);
-        if (false === $offset) {
-            return false;
+        if (false !== $offset) {
+            $this->offsetUnset($offset);
         }
 
-        $this->offsetUnset($offset);
-
-        return true;
+        return (bool) $offset;
     }
 
     /**
@@ -315,16 +315,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function filter(callable $filter, int $flag = 0): self
     {
-        return new static(array_filter($this->storage, $filter, $flag));
+        return new self(array_filter($this->storage, $filter, $flag));
     }
 
     /**
      * Applies a mapper $mapper to all the Periods object of this collection and
      * returns a new collection with the elements returned by the mapper.
+     *
+     * @see https://php.net/manual/en/function.array-map.php
      */
     public function map(callable $mapper): self
     {
-        return new static(array_map($mapper, $this->storage));
+        return new self(array_map($mapper, $this->storage));
     }
 
     /**
@@ -341,8 +343,8 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function partition(callable $predicate): array
     {
-        $matches = new static();
-        $no_matches = new static();
+        $matches = new self();
+        $no_matches = new self();
         foreach ($this->storage as $offset => $period) {
             if (true === $predicate($period, $offset)) {
                 $matches[$offset] = $period;
@@ -363,7 +365,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function slice(int $offset, int $length = null): self
     {
-        return new static(array_slice($this->storage, $offset, $length, true));
+        return new self(array_slice($this->storage, $offset, $length, true));
     }
 
     /**
@@ -376,7 +378,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
             return $period1->getStartDate() <=> $period2->getStartDate();
         });
 
-        $collection = new static();
+        $collection = new self();
         $current = $periods->first();
         if (null === $current) {
             return $collection;
@@ -406,7 +408,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
             return $period1->getStartDate() <=> $period2->getStartDate();
         });
 
-        $collection = new static();
+        $collection = new self();
         $current = $periods->first();
         if (null === $current) {
             return $collection;

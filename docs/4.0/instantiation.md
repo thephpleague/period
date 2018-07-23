@@ -45,7 +45,7 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 ~~~php
 <?php
 
-public static Period::createFromSecond(mixed $datepoint): Period
+public static Period::createFromSecond(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameter
@@ -69,7 +69,7 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromMinute(mixed $datepoint): Period
+public static Period::createFromMinute(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameter
@@ -93,7 +93,7 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromHour(mixed $datepoint): Period
+public static Period::createFromHour(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameter
@@ -117,7 +117,7 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromDay(mixed $datepoint): Period
+public static Period::createFromDay(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameter
@@ -142,7 +142,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromWeek(int $year, int $week): Period
-public static Period::createFromWeek(mixed $datepoint): Period
+public static Period::createFromWeek(DateTimeInterface|string $datepoint): Period
 ~~~
 
 
@@ -177,7 +177,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromMonth(int $year, int $month): Period
-public static Period::createFromMonth(mixed $datepoint): Period
+public static Period::createFromMonth(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameters
@@ -208,7 +208,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromQuarter(int $year, int $quarter): Period
-public static Period::createFromQuarter(mixed $datepoint): Period
+public static Period::createFromQuarter(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameters
@@ -239,7 +239,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromSemester(int $year, int $semester): Period
-public static Period::createFromSemester(mixed $datepoint): Period
+public static Period::createFromSemester(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameters
@@ -270,7 +270,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromYear(int $year): Period
-public static Period::createFromYear(mixed $datepoint): Period
+public static Period::createFromYear(DateTimeInterface|string $datepoint): Period
 ~~~
 
 #### Parameter

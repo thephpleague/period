@@ -25,11 +25,8 @@ use DateTimeZone;
 use JsonSerializable;
 use TypeError;
 use const FILTER_VALIDATE_INT;
-use function array_filter;
 use function array_reduce;
-use function array_values;
 use function filter_var;
-use function func_num_args;
 use function get_class;
 use function gettype;
 use function intdiv;
@@ -147,6 +144,41 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
+     * Filter the input integer.
+     *
+     * @param int|string|null $value
+     *
+     * @throws Exception if the given value can not be converted to an int.
+     */
+    private static function filterInt($value, string $name): int
+    {
+        $int = filter_var($value, FILTER_VALIDATE_INT);
+        if (false !== $int) {
+            return $int;
+        }
+
+        throw new Exception(sprintf('The %s value must be an integer %s given', $name, gettype($value)));
+    }
+
+    /**
+     * Validate a int according to a range.
+     *
+     * @param int $value the value to validate
+     * @param int $min   the minimum value
+     * @param int $max   the maximal value
+     *
+     * @throws Exception If the value is not in the range
+     */
+    private static function filterRange(int $value, int $min, int $max): int
+    {
+        if ($value >= $min && $value <= $max) {
+            return $value;
+        }
+
+        throw new Exception('The submitted value is not contained within a valid range');
+    }
+
+    /**
      * Create a Period object from a DatePeriod.
      *
      * @throws Exception If the submitted DatePeriod lacks an end Date.
@@ -203,13 +235,6 @@ final class Period implements PeriodInterface, JsonSerializable
             return new self($startDate, $startDate->add(new DateInterval('P1Y')));
         }
 
-        $year = filter_var($int_or_datepoint, FILTER_VALIDATE_INT);
-        if (false !== $year) {
-            $startDate = (new DateTimeImmutable())->setDate($year, 1, 1)->setTime(0, 0, 0, 0);
-
-            return new self($startDate, $startDate->add(new DateInterval('P1Y')));
-        }
-
         $datepoint = self::filterDatePoint($int_or_datepoint);
         $startDate = $datepoint->setDate((int) $datepoint->format('Y'), 1, 1)->setTime(0, 0, 0, 0);
 
@@ -224,57 +249,22 @@ final class Period implements PeriodInterface, JsonSerializable
      */
     public static function createFromSemester($int_or_datepoint, $semester = null): self
     {
-        if (1 === func_num_args() && !is_int($int_or_datepoint)) {
-            $datepoint = self::filterDatePoint($int_or_datepoint);
-            $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
-            $startDate = $datepoint
-                ->setDate((int) $datepoint->format('Y'), $month, 1)
-                ->setTime(0, 0, 0, 0)
-            ;
+        if (is_int($int_or_datepoint)) {
+            $month = ((self::filterRange(self::filterInt($semester, 'semester'), 1, 2) - 1) * 6) + 1;
+            $startDate = (new DateTimeImmutable())
+                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
+                ->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P6M')));
         }
 
-        $month = ((self::validateRange(self::filterInt($semester, 'semester'), 1, 2) - 1) * 6) + 1;
-        $startDate = (new DateTimeImmutable())
-            ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
-            ->setTime(0, 0, 0, 0)
-        ;
+        $datepoint = self::filterDatePoint($int_or_datepoint);
+        $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
+        $startDate = $datepoint
+            ->setDate((int) $datepoint->format('Y'), $month, 1)
+            ->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P6M')));
-    }
-
-    /**
-     * Filter the input integer.
-     *
-     * @throws Exception if the given value can not be converted to an int.
-     */
-    private static function filterInt($value, string $name): int
-    {
-        $int = filter_var($value, FILTER_VALIDATE_INT);
-        if (false !== $int) {
-            return $int;
-        }
-
-        throw new Exception(sprintf('The %s value must be an integer %s given', $name, gettype($value)));
-    }
-
-    /**
-     * Validate a int according to a range.
-     *
-     * @param int $value the value to validate
-     * @param int $min   the minimum value
-     * @param int $max   the maximal value
-     *
-     * @throws Exception If the value is not in the range
-     */
-    private static function validateRange(int $value, int $min, int $max): int
-    {
-        if ($value >= $min && $value <= $max) {
-            return $value;
-        }
-
-        throw new Exception('the submitted value is not contained within the valid range');
     }
 
     /**
@@ -285,22 +275,20 @@ final class Period implements PeriodInterface, JsonSerializable
      */
     public static function createFromQuarter($int_or_datepoint, $quarter = null): self
     {
-        if (1 === func_num_args() && !is_int($int_or_datepoint)) {
-            $datepoint = self::filterDatePoint($int_or_datepoint);
-            $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
-            $startDate = $datepoint
-                ->setDate((int) $datepoint->format('Y'), $month, 1)
-                ->setTime(0, 0, 0, 0)
-            ;
+        if (is_int($int_or_datepoint)) {
+            $month = ((self::filterRange(self::filterInt($quarter, 'quarter'), 1, 4) - 1) * 3) + 1;
+            $startDate = (new DateTimeImmutable())
+                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
+                ->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P3M')));
         }
 
-        $month = ((self::validateRange(self::filterInt($quarter, 'quarter'), 1, 4) - 1) * 3) + 1;
-        $startDate = (new DateTimeImmutable())
-            ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
-            ->setTime(0, 0, 0, 0)
-        ;
+        $datepoint = self::filterDatePoint($int_or_datepoint);
+        $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
+        $startDate = $datepoint
+            ->setDate((int) $datepoint->format('Y'), $month, 1)
+            ->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P3M')));
     }
@@ -313,24 +301,19 @@ final class Period implements PeriodInterface, JsonSerializable
      */
     public static function createFromMonth($int_or_datepoint, $month = null): self
     {
-        if (1 === func_num_args() && !is_int($int_or_datepoint)) {
-            $datepoint = self::filterDatePoint($int_or_datepoint);
-            $startDate = $datepoint
-                ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1)
-                ->setTime(0, 0, 0, 0)
-            ;
+        if (is_int($int_or_datepoint)) {
+            $month = self::filterRange(self::filterInt($month, 'month'), 1, 12);
+            $startDate = (new DateTimeImmutable())
+                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
+                ->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P1M')));
         }
 
-        $startDate = (new DateTimeImmutable())
-            ->setDate(
-                self::filterInt($int_or_datepoint, 'year'),
-                self::validateRange(self::filterInt($month, 'month'), 1, 12),
-                1
-            )
-            ->setTime(0, 0, 0, 0)
-        ;
+        $datepoint = self::filterDatePoint($int_or_datepoint);
+        $startDate = $datepoint
+            ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1)
+            ->setTime(0, 0, 0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')));
     }
@@ -343,22 +326,19 @@ final class Period implements PeriodInterface, JsonSerializable
      */
     public static function createFromWeek($int_or_datepoint, $week = null): self
     {
-        if (1 === func_num_args() && !is_int($int_or_datepoint)) {
-            $datepoint = self::filterDatePoint($int_or_datepoint);
-            $startDate = $datepoint
-                ->sub(new DateInterval('P'.((int) $datepoint->format('N') - 1).'D'))
+        if (is_int($int_or_datepoint)) {
+            $week = self::filterRange(self::filterInt($week, 'week'), 1, 53);
+            $startDate = (new DateTimeImmutable())
+                ->setISODate(self::filterInt($int_or_datepoint, 'year'), $week)
                 ->setTime(0, 0, 0, 0);
 
             return new self($startDate, $startDate->add(new DateInterval('P1W')));
         }
 
-        $startDate = (new DateTimeImmutable())
-            ->setISODate(
-                self::filterInt($int_or_datepoint, 'year'),
-                self::validateRange(self::filterInt($week, 'week'), 1, 53)
-            )
+        $datepoint = self::filterDatePoint($int_or_datepoint);
+        $startDate = $datepoint
+            ->sub(new DateInterval('P'.((int) $datepoint->format('N') - 1).'D'))
             ->setTime(0, 0, 0, 0);
-        ;
 
         return new self($startDate, $startDate->add(new DateInterval('P1W')));
     }
@@ -707,7 +687,7 @@ final class Period implements PeriodInterface, JsonSerializable
     public function intersect(PeriodInterface $period): PeriodInterface
     {
         if (!$this->overlaps($period)) {
-            throw new Exception(sprintf('Both %s  object should overlaps', PeriodInterface::class));
+            throw new Exception(sprintf('Both %s objects should overlaps', PeriodInterface::class));
         }
 
         return new self(
@@ -722,7 +702,7 @@ final class Period implements PeriodInterface, JsonSerializable
     public function gap(PeriodInterface $period): PeriodInterface
     {
         if ($this->overlaps($period)) {
-            throw new Exception(sprintf('Both %s  object should not overlaps', PeriodInterface::class));
+            throw new Exception(sprintf('Both %s objects should not overlaps', PeriodInterface::class));
         }
 
         if ($period->getStartDate() > $this->startDate) {
@@ -733,7 +713,60 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * Computes the difference between two overlapsing Period objects.
+     *
+     * This method is not part of the PeriodInterface.
+     *
+     * Returns a array containing the difference expressed as Period objects
+     * The array will:
+     *
+     * <ul>
+     * <li>be empty if both objects have the same datepoints</li>
+     * <li>contain one Period object if both objects share one datepoint</li>
+     * <li>contain two Period objects if both objects share no datepoint</li>
+     * </ul>
+     *
+     * @throws Exception if both object do not overlaps
+     */
+    public function diff(PeriodInterface $period): Collection
+    {
+        $collection = new Collection();
+        if ($period->equalsTo($this)) {
+            return $collection;
+        }
+
+        $intersect = $this->intersect($period);
+        $merge = $this;
+        if ($merge->getStartDate() > $period->getStartDate()) {
+            $merge = $merge->startingOn($period->getStartDate());
+        }
+
+        if ($merge->getEndDate() < $period->getEndDate()) {
+            $merge = $merge->endingOn($period->getEndDate());
+        }
+
+        if ($merge->getStartDate() == $intersect->getStartDate()) {
+            $collection[] = $merge->startingOn($intersect->getEndDate());
+
+            return $collection;
+        }
+
+        if ($merge->getEndDate() == $intersect->getEndDate()) {
+            $collection[] = $merge->endingOn($intersect->getStartDate());
+
+            return $collection;
+        }
+
+        $collection[] = $merge->endingOn($intersect->getStartDate());
+        $collection[] = $merge->startingOn($intersect->getEndDate());
+
+        return $collection;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param DateTimeInterface|string $datepoint
      */
     public function startingOn($datepoint): PeriodInterface
     {
@@ -746,7 +779,9 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     *
+     * @param DateTimeInterface|string $datepoint
      */
     public function endingOn($datepoint): PeriodInterface
     {
@@ -897,59 +932,5 @@ final class Period implements PeriodInterface, JsonSerializable
     public function dateIntervalDiff(PeriodInterface $period): DateInterval
     {
         return $this->endDate->diff($this->startDate->add($period->getDateInterval()));
-    }
-
-    /**
-     * Computes the difference between two overlapsing Period objects.
-     *
-     * This method is not part of the PeriodInterface.
-     *
-     * Returns a array containing the difference expressed as Period objects
-     * The array will:
-     *
-     * <ul>
-     * <li>be empty if both objects have the same datepoints</li>
-     * <li>contain one Period object if both objects share one datepoint</li>
-     * <li>contain two Period objects if both objects share no datepoint</li>
-     * </ul>
-     *
-     * @throws Exception if both object do not overlaps
-     */
-    public function diff(PeriodInterface $period): array
-    {
-        if (!$this->overlaps($period)) {
-            throw new Exception('Both Period objects must overlaps');
-        }
-
-        $res = [
-            self::createFromDatepoints($this->startDate, $period->getStartDate()),
-            self::createFromDatepoints($this->endDate, $period->getEndDate()),
-        ];
-
-        $filter = function (PeriodInterface $period) {
-            return $period->getStartDate() != $period->getEndDate();
-        };
-
-        return array_values(array_filter($res, $filter));
-    }
-
-    /**
-     * Create a new instance given two datepoints.
-     *
-     * The datepoints will be used as to allow the creation of
-     * a Period object
-     *
-     * @param DateTimeInterface|string $datepoint1
-     * @param DateTimeInterface|string $datepoint2
-     */
-    private static function createFromDatepoints($datepoint1, $datepoint2): self
-    {
-        $startDate = self::filterDatePoint($datepoint1);
-        $endDate = self::filterDatePoint($datepoint2);
-        if ($startDate > $endDate) {
-            return new self($endDate, $startDate);
-        }
-
-        return new self($startDate, $endDate);
     }
 }

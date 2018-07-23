@@ -349,7 +349,7 @@ class PeriodTest extends TestCase
 
     public function testCreateFromWeekFailedWithInvalidYearIndex()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(TypeError::class);
         Period::createFromWeek([], 1);
     }
 
@@ -380,7 +380,7 @@ class PeriodTest extends TestCase
 
     public function testCreateFromMonthFailedWithInvalidYearIndex()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(TypeError::class);
         Period::createFromMonth([], 1);
     }
 
@@ -411,7 +411,7 @@ class PeriodTest extends TestCase
 
     public function testCreateFromQuarterFailedWithInvalidYearIndex()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(TypeError::class);
         Period::createFromQuarter([], 1);
     }
 
@@ -430,7 +430,7 @@ class PeriodTest extends TestCase
 
     public function testCreateFromSemesterFailedWithInvalidYearIndex()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(TypeError::class);
         Period::createFromSemester([], 1);
     }
 
@@ -997,10 +997,12 @@ class PeriodTest extends TestCase
     {
         $period = Period::createFromYear(2013);
         $alt = Period::createFromDuration('2013-01-01', '1 YEAR');
-        self::assertCount(0, $alt->diff($period));
+        $res = $alt->diff($period);
+        self::assertCount(0, $res);
+        self::assertEquals($res, $period->diff($alt));
     }
 
-    public function testDiffWithPeriodSharingOneEndpoints()
+    public function testDiffWithPeriodSharingStartingDatepoints()
     {
         $period = Period::createFromYear(2013);
         $alt = Period::createFromDuration('2013-01-01', '3 MONTHS');
@@ -1009,6 +1011,19 @@ class PeriodTest extends TestCase
         self::assertInstanceOf(Period::class, $res[0]);
         self::assertEquals(new DateTimeImmutable('2013-04-01'), $res[0]->getStartDate());
         self::assertEquals(new DateTimeImmutable('2014-01-01'), $res[0]->getEndDate());
+        self::assertEquals($res, $period->diff($alt));
+    }
+
+    public function testDiffWithPeriodSharingEndingDatepoints()
+    {
+        $period = Period::createFromYear(2013);
+        $alt = Period::createFromDurationBeforeEnd('2014-01-01', '3 MONTHS');
+        $res = $alt->diff($period);
+        self::assertCount(1, $res);
+        self::assertInstanceOf(Period::class, $res[0]);
+        self::assertEquals(new DateTimeImmutable('2013-01-01'), $res[0]->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2013-10-01'), $res[0]->getEndDate());
+        self::assertEquals($res, $period->diff($alt));
     }
 
     public function testDiffWithOverlapsPeriod()
@@ -1017,8 +1032,10 @@ class PeriodTest extends TestCase
         $alt = Period::createFromDuration('2013-01-01 11:00:00', '3 HOURS');
         $res = $alt->diff($period);
         self::assertCount(2, $res);
-        self::assertEquals(3600, $res[1]->getTimestampInterval());
-        self::assertEquals(3600, $res[0]->getTimestampInterval());
+        foreach ($res as $periodDiff) {
+            self::assertEquals(3600, $periodDiff->getTimestampInterval());
+        }
+        self::assertEquals($res, $period->diff($alt));
     }
 
     public function testMove()

@@ -164,15 +164,15 @@ class CollectionTest extends TestCase
 
     public function testHas()
     {
-        self::assertTrue($this->collection->has($this->elements['middle']));
-        self::assertTrue($this->collection->has(clone $this->elements['middle']));
-        self::assertFalse($this->collection->has(Period::createFromDay('2008-05-01')));
+        self::assertTrue($this->collection->contains($this->elements['middle']));
+        self::assertTrue($this->collection->contains(clone $this->elements['middle']));
+        self::assertFalse($this->collection->contains(Period::createFromDay('2008-05-01')));
     }
 
     public function testHasKey()
     {
-        self::assertTrue($this->collection->hasKey('middle'));
-        self::assertFalse($this->collection->hasKey('faraway'));
+        self::assertTrue($this->collection->containsKey('middle'));
+        self::assertFalse($this->collection->containsKey('faraway'));
     }
 
     public function testFilter()
