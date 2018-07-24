@@ -19,10 +19,6 @@ public Period::getTimestampInterval(void): float
 ~~~
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 $period->getStartDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
 $period->getEndDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
@@ -54,10 +50,6 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 #### Examples
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = new Period('2012-01-01', '2013-01-01');
 foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
     echo $datetime->format('F, Y');
@@ -68,10 +60,6 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 Using the `$option` parameter
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = new Period('2012-01-01', '2013-01-01');
 $iterator = $period->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($iterator as $datetime) {
@@ -100,10 +88,6 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromYear(2012);
 $period_list = $period->split('1 MONTH');
 foreach ($period_list as $inner_periods) {
@@ -132,11 +116,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
-<?php
-
 date_default_timezone_set('Africa/Kinshasa');
-
-use League\Period\Period;
 
 $period = Period::createFromYear(2012);
 $period_list = iterator_to_array($period->splitBackwards('5 MONTH'));
@@ -158,14 +138,10 @@ public Period::__toString(void): string
 Returns the string representation of a `Period` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals).
 
 ~~~php
-<?php
-
 date_default_timezone_set('Africa/Nairobi');
 
-use League\Period\Period;
-
 $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
-echo $period; // '2014-04-30T21:00:00Z/2014-05-07T21:00:00Z'
+echo $period; // '2014-04-30T23:00:00.000000Z/2014-05-07T23:00:00.000000Z'
 ~~~
 
 ### Json representation
@@ -179,19 +155,15 @@ public Period::jsonSerialize(void): array
 `Period` implements the `JsonSerializable` interface and is directly usable with PHP `json_encode` function as shown below:
 
 ~~~php
-<?php
-
 date_default_timezone_set('Africa/Kinshasa');
-
-use League\Period\Period;
 
 $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 
 $res = json_decode(json_encode($period), true);
 //  $res will be equivalent to:
 // [
-//      'startDate' => '2014-04-30T21:00:00.000000Z,
-//      'endDate' => '2014-05-08 00:00:00.000000Z',
+//      'startDate' => '2014-04-30T23:00:00.000000Z,
+//      'endDate' => '2014-05-07T23:00:00.000000Z',
 // ]
 ~~~
 

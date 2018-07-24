@@ -22,6 +22,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Generator;
 use JsonSerializable;
 use TypeError;
 use const FILTER_VALIDATE_INT;
@@ -600,8 +601,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether a Period object is fully contained within
-     * the current Period object.
+     * Tells whether a Period object is fully contained within the current Period object.
      */
     private function containsPeriod(PeriodInterface $period): bool
     {
@@ -610,8 +610,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether a datepoint is fully contained within
-     * the current Period object.
+     * Tells whether a datepoint is fully contained within the current Period object.
      */
     private function containsDatePoint(DateTimeInterface $datepoint): bool
     {
@@ -622,6 +621,8 @@ final class Period implements PeriodInterface, JsonSerializable
     /**
      * Allows splitting a PeriodInterface in smaller PeriodInterface objects according
      * to a given interval.
+     *
+     * This method is not part of the PeriodInterface.
      *
      * The returned iterable PeriodInterface set is ordered so that:
      * <ul>
@@ -635,7 +636,7 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @return PeriodInterface[]
      */
-    public function split($interval): iterable
+    public function split($interval): Generator
     {
         $startDate = $this->startDate;
         $interval = self::filterDateInterval($interval);
@@ -654,6 +655,8 @@ final class Period implements PeriodInterface, JsonSerializable
      * Allows splitting a PeriodInterface in smaller PeriodInterface object according
      * to a given interval.
      *
+     * This method is not part of the PeriodInterface.
+     *
      * The returned iterable PeriodInterface set is ordered so that:
      * <ul>
      * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
@@ -666,7 +669,7 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @return PeriodInterface[]
      */
-    public function splitBackwards($interval): iterable
+    public function splitBackwards($interval): Generator
     {
         $endDate = $this->endDate;
         $interval = self::filterDateInterval($interval);
@@ -717,8 +720,8 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * This method is not part of the PeriodInterface.
      *
-     * Returns a array containing the difference expressed as Period objects
-     * The array will:
+     * Returns a Collection containing the difference expressed as Period objects
+     * The collection will:
      *
      * <ul>
      * <li>be empty if both objects have the same datepoints</li>
@@ -736,15 +739,7 @@ final class Period implements PeriodInterface, JsonSerializable
         }
 
         $intersect = $this->intersect($period);
-        $merge = $this;
-        if ($merge->getStartDate() > $period->getStartDate()) {
-            $merge = $merge->startingOn($period->getStartDate());
-        }
-
-        if ($merge->getEndDate() < $period->getEndDate()) {
-            $merge = $merge->endingOn($period->getEndDate());
-        }
-
+        $merge = $this->merge($period);
         if ($merge->getStartDate() == $intersect->getStartDate()) {
             $collection[] = $merge->startingOn($intersect->getEndDate());
 

@@ -124,14 +124,14 @@ $orig->overlaps($other); //return true
 $alt->overlaps($other);  //return true
 ~~~
 
-### Period::sameValueAs
+### Period::equalsTo
 
 #### Description
 
 ~~~php
 <?php
 
-public Period::sameValueAs(Period $period): bool
+public Period::equalsTo(Period $period): bool
 ~~~
 
 Tells whether two `Period` objects shares the same datepoints.
@@ -147,8 +147,8 @@ $orig  = Period::createFromMonth(2014, 3);
 $alt   = Period::createFromMonth(2014, 4);
 $other = Period::createFromDuration('2014-03-01', '1 MONTH');
 
-$orig->sameValueAs($alt);   //return false
-$orig->sameValueAs($other); //return true
+$orig->equalsTo($alt);   //return false
+$orig->equalsTo($other); //return true
 ~~~
 
 ### Period::contains
@@ -328,7 +328,7 @@ $alt->durationGreaterThan($other); //return false
 
 $orig->compareDuration($other);   //return 0
 $orig->sameDurationAs($other);    //return true
-$orig->sameValueAs($other);       //return false
+$orig->equalsTo($other);       //return false
 //the duration between $orig and $other are equals but not the datepoints!!
 ~~~
 

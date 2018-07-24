@@ -45,7 +45,7 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 ~~~php
 <?php
 
-public static Period::createFromSecond(DateTimeInterface|string $datepoint): Period
+public static Period::createFromSecond(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -55,13 +55,9 @@ public static Period::createFromSecond(DateTimeInterface|string $datepoint): Per
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromSecond('2012-04-01 08:30:25.124546');
 $alt    = Period::createFromSecond('2012-04-01 08:30:25');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 ~~~
 
 ### Period::createFromMinute
@@ -69,7 +65,7 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromMinute(DateTimeInterface|string $datepoint): Period
+public static Period::createFromMinute(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -79,13 +75,9 @@ public static Period::createFromMinute(DateTimeInterface|string $datepoint): Per
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromMinute('2012-04-01 08:30:25');
 $alt    = Period::createFromMinute('2012-04-01 08:30:00');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 ~~~
 
 ### Period::createFromHour
@@ -93,7 +85,7 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromHour(DateTimeInterface|string $datepoint): Period
+public static Period::createFromHour(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -103,13 +95,9 @@ public static Period::createFromHour(DateTimeInterface|string $datepoint): Perio
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromHour('2012-04-01 08:30:25');
 $alt    = Period::createFromHour('2012-04-01 08:00:00');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 ~~~
 
 ### Period::createFromDay
@@ -117,7 +105,7 @@ $alt->sameValueAs($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromDay(DateTimeInterface|string $datepoint): Period
+public static Period::createFromDay(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -127,13 +115,9 @@ public static Period::createFromDay(DateTimeInterface|string $datepoint): Period
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromDay('2012-04-01 08:30:25');
 $alt    = Period::createFromDay('2012-04-01');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 ~~~
 
 ### Period::createFromWeek
@@ -142,7 +126,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromWeek(int $year, int $week): Period
-public static Period::createFromWeek(DateTimeInterface|string $datepoint): Period
+public static Period::createFromWeek(mixed $datepoint): Period
 ~~~
 
 
@@ -159,13 +143,9 @@ public static Period::createFromWeek(DateTimeInterface|string $datepoint): Perio
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromWeek(2013, 23);
 $alt    = Period::createFromWeek('2013-06-05');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 //this period represents the 23rd week of 2013
 ~~~
 
@@ -177,7 +157,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromMonth(int $year, int $month): Period
-public static Period::createFromMonth(DateTimeInterface|string $datepoint): Period
+public static Period::createFromMonth(mixed $datepoint): Period
 ~~~
 
 #### Parameters
@@ -192,13 +172,9 @@ public static Period::createFromMonth(DateTimeInterface|string $datepoint): Peri
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromMonth(2013, 7);
 $alt    = Period::createFromMonth('2013-07-31');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 //this period represents the month of July 2013
 ~~~
 
@@ -208,7 +184,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromQuarter(int $year, int $quarter): Period
-public static Period::createFromQuarter(DateTimeInterface|string $datepoint): Period
+public static Period::createFromQuarter(mixed $datepoint): Period
 ~~~
 
 #### Parameters
@@ -223,13 +199,9 @@ public static Period::createFromQuarter(DateTimeInterface|string $datepoint): Pe
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromQuarter(2013, 2);
 $alt    = Period::createFromQuarter('2013-05-15');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 //this period represents the second quarter of 2013
 ~~~
 
@@ -239,7 +211,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromSemester(int $year, int $semester): Period
-public static Period::createFromSemester(DateTimeInterface|string $datepoint): Period
+public static Period::createFromSemester(mixed $datepoint): Period
 ~~~
 
 #### Parameters
@@ -254,13 +226,9 @@ public static Period::createFromSemester(DateTimeInterface|string $datepoint): P
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromSemester(2013, 2);
 $alt    = Period::createFromSemester('2013-03-15');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 //this period represents the second semester of 2013
 ~~~
 
@@ -270,7 +238,7 @@ $alt->sameValueAs($period); //return true;
 <?php
 
 public static Period::createFromYear(int $year): Period
-public static Period::createFromYear(DateTimeInterface|string $datepoint): Period
+public static Period::createFromYear(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -284,13 +252,9 @@ public static Period::createFromYear(DateTimeInterface|string $datepoint): Perio
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromYear(2013);
 $alt    = Period::createFromYear('2013-05-15');
-$alt->sameValueAs($period); //return true;
+$alt->equalsTo($period); //return true;
 //this period represents a time range for 2013
 ~~~
 
@@ -316,11 +280,7 @@ Both created `Period` objects will have a duration equals to `$duration`.
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
 $period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
 $alt    = Period::createFromDurationBeforeEnd('2012-04-02 08:30:25', new DateInterval('P1D'));
-$alt->sameValueAs($period); //returns true
+$alt->equalsTo($period); //returns true
 ~~~

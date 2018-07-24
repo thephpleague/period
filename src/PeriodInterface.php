@@ -63,17 +63,18 @@ interface PeriodInterface
     public function equalsTo(PeriodInterface $period): bool;
 
     /**
-     * Tells whether two PeriodInterface object abuts.
+     * Tells whether two PeriodInterface abuts.
      */
     public function abuts(PeriodInterface $period): bool;
 
     /**
-     * Tells whether two PeriodInterface objects overlaps.
+     * Tells whether two PeriodInterface overlaps.
      */
     public function overlaps(PeriodInterface $period): bool;
 
     /**
      * Tells whether a PeriodInterface is entirely after the specified index.
+     * The index can be a DateTimeInterface object or another PeriodInterface object.
      *
      * @param PeriodInterface|DateTimeInterface $index
      */
@@ -81,6 +82,7 @@ interface PeriodInterface
 
     /**
      * Tells whether a PeriodInterface is entirely before the specified index.
+     * The index can be a DateTimeInterface object or another PeriodInterface object.
      *
      * @param PeriodInterface|DateTimeInterface $index
      */
@@ -109,14 +111,14 @@ interface PeriodInterface
     /**
      * Computes the intersection between two PeriodInterface objects.
      *
-     * @throws Exception If Both objects do not overlaps
+     * @throws Exception If both objects do not overlaps
      */
     public function intersect(PeriodInterface $period): self;
 
     /**
      * Computes the gap between two PeriodInterface objects.
      *
-     * @throws Exception If Both objects overlaps
+     * @throws Exception If both objects overlaps
      */
     public function gap(PeriodInterface $period): self;
 

@@ -26,7 +26,7 @@ Starting with version 3.2. `Period` comes bundle with its own autoloader you can
 ~~~php
 <?php
 
-require 'path/to/league/repo/autoload.php';
+require 'path/to/league/period/autoload.php';
 
 var_dump(Period::createFromDay('TODAY'));
 ~~~
