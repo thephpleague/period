@@ -10,12 +10,12 @@ This class is heavily inspired by `Doctrine\Common\Collections\Collection` but a
 
 ## Time range related methods
 
-### Collection::getPeriod
+### Collection::getInterval
 
 Returns a `Period` object which represents the smallest time range containing all the `PeriodInterface` objects of the collection. If the collection is empty this methods returns `null`.
 
 ~~~php
-$retval = $collection->getPeriod();
+$retval = $collection->getInterval();
 //$retval is a PeriodInterface or null
 ~~~
 

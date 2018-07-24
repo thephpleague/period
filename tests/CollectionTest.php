@@ -327,9 +327,9 @@ class CollectionTest extends TestCase
     /**
      * @dataProvider providesCollectionForPeriods
      */
-    public function testGetPeriod(Collection $collection, PeriodInterface $expected)
+    public function testgetInterval(Collection $collection, PeriodInterface $expected)
     {
-        $period = $collection->getPeriod();
+        $period = $collection->getInterval();
         self::assertNotNull($period);
         self::assertTrue($expected->equalsTo($period));
     }
@@ -356,8 +356,8 @@ class CollectionTest extends TestCase
         ];
     }
 
-    public function testGetPeriodReturnsNullOnEmptyCollection()
+    public function testgetIntervalReturnsNullOnEmptyCollection()
     {
-        self::assertNull((new Collection())->getPeriod());
+        self::assertNull((new Collection())->getInterval());
     }
 }
