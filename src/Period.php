@@ -634,7 +634,7 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @param DateInterval|int|string $interval
      *
-     * @return PeriodInterface[]
+     * @return Generator|PeriodInterface[]
      */
     public function split($interval): Generator
     {
@@ -667,7 +667,7 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @param DateInterval|int|string $interval
      *
-     * @return PeriodInterface[]
+     * @return Generator|PeriodInterface[]
      */
     public function splitBackwards($interval): Generator
     {
@@ -789,6 +789,31 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
+     * @inheritdoc
+     */
+    public function merge(PeriodInterface ...$periods): PeriodInterface
+    {
+        return array_reduce($periods, [$this, 'reducer'], $this);
+    }
+
+    /**
+     * Returns a Period whose endpoints are the largest possible
+     * between 2 instance of Period objects.
+     */
+    private function reducer(PeriodInterface $carry, PeriodInterface $period): PeriodInterface
+    {
+        if ($carry->getStartDate() > $period->getStartDate()) {
+            $carry = $carry->startingOn($period->getStartDate());
+        }
+
+        if ($carry->getEndDate() < $period->getEndDate()) {
+            $carry = $carry->endingOn($period->getEndDate());
+        }
+
+        return $carry;
+    }
+
+    /**
      * Returns a new Period object with a new ending date point.
      *
      * This method is not part of the PeriodInterface.
@@ -877,36 +902,6 @@ final class Period implements PeriodInterface, JsonSerializable
         }
 
         return $period;
-    }
-
-    /**
-     * Merges one or more Period objects to return a new Period object.
-     * The resultant object represents the largest duration possible.
-     *
-     * This method is not part of the PeriodInterface.
-     *
-     * @param PeriodInterface ...$periods
-     */
-    public function merge(PeriodInterface ...$periods): PeriodInterface
-    {
-        return array_reduce($periods, [$this, 'reducer'], $this);
-    }
-
-    /**
-     * Returns a Period whose endpoints are the largest possible
-     * between 2 instance of Period objects.
-     */
-    private function reducer(PeriodInterface $carry, PeriodInterface $period): PeriodInterface
-    {
-        if ($carry->getStartDate() > $period->getStartDate()) {
-            $carry = $carry->startingOn($period->getStartDate());
-        }
-
-        if ($carry->getEndDate() < $period->getEndDate()) {
-            $carry = $carry->endingOn($period->getEndDate());
-        }
-
-        return $carry;
     }
 
     /**

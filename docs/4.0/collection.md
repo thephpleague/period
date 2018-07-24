@@ -3,12 +3,21 @@ layout: default
 title: Period objects Collection
 ---
 
-# Period Collections
+# Collection
 
 The `League\Period\Collection` is an **ordered map** that can also be used as a list of `PeriodInterface` objects.  
 This class is heavily inspired by `Doctrine\Common\Collections\Collection` but also feature specific methods to deal with collection of time range objects.
 
 ## Time range related methods
+
+### Collection::getPeriod
+
+Returns a `Period` object which represents the smallest time range containing all the `PeriodInterface` objects of the collection. If the collection is empty this methods returns `null`.
+
+~~~php
+$retval = $collection->getPeriod();
+//$retval is a PeriodInterface or null
+~~~
 
 ### Collection::getGaps
 

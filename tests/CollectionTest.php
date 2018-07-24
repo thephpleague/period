@@ -289,7 +289,6 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider providesCollectionForIntersections
-     *
      */
     public function testGetIntersections(Collection $collection, Collection $expected)
     {
@@ -323,5 +322,42 @@ class CollectionTest extends TestCase
                 'expected' => new Collection(),
             ],
         ];
+    }
+
+    /**
+     * @dataProvider providesCollectionForPeriods
+     */
+    public function testGetPeriod(Collection $collection, PeriodInterface $expected)
+    {
+        $period = $collection->getPeriod();
+        self::assertNotNull($period);
+        self::assertTrue($expected->equalsTo($period));
+    }
+
+    public function providesCollectionForPeriods()
+    {
+        return [
+            'a single entry' => [
+                'collection' => new Collection([Period::createFromDay('2012-02-01')]),
+                'expected' => Period::createFromDay('2012-02-01'),
+            ],
+            'overlaps' => [
+                'collection' => new Collection([
+                    'last' => Period::createFromWeek('2012-02-15'),
+                    'first' => Period::createFromDay('2012-02-01'),
+                    'middle' => Period::createFromMonth('2012-02-01'),
+                ]),
+                'expected' => Period::createFromMonth('2012-02-01'),
+            ],
+            'should not overlaps' => [
+                'collection' => new Collection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
+                'expected' => Period::createFromMonth('2012-06-01'),
+            ],
+        ];
+    }
+
+    public function testGetPeriodReturnsNullOnEmptyCollection()
+    {
+        self::assertNull((new Collection())->getPeriod());
     }
 }

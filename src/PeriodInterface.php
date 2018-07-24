@@ -137,4 +137,14 @@ interface PeriodInterface
      * an instance that contains the specified ending date point.
      */
     public function endingOn(DateTimeInterface $endDate): self;
+
+    /**
+     * Merges one or more Period objects to return a new Period object.
+     * The resultant object represents the largest duration possible.
+     *
+     * This method is not part of the PeriodInterface.
+     *
+     * @param PeriodInterface ...$periods
+     */
+    public function merge(PeriodInterface ...$periods): self;
 }

@@ -369,6 +369,20 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * Returns a PeriodInterface which represents the smallest time range which contains all the
+     * collection PeriodInterface.
+     */
+    public function getPeriod(): ?PeriodInterface
+    {
+        $period = reset($this->storage);
+        if (false === $period) {
+            return null;
+        }
+
+        return $period->merge(...array_values($this->storage));
+    }
+
+    /**
      * Returns a new instance with the founded gaps inside the current collection.
      */
     public function getGaps(): self
