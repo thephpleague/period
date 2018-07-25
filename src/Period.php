@@ -720,8 +720,8 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * This method is not part of the PeriodInterface.
      *
-     * Returns a Collection containing the difference expressed as Period objects
-     * The collection will:
+     * Returns an array containing the difference expressed as Period objects
+     * The array will:
      *
      * <ul>
      * <li>be empty if both objects have the same datepoints</li>
@@ -729,33 +729,28 @@ final class Period implements PeriodInterface, JsonSerializable
      * <li>contain two Period objects if both objects share no datepoint</li>
      * </ul>
      *
-     * @throws Exception if both object do not overlaps
+     * @throws Exception if both objects do not overlaps
      */
-    public function diff(PeriodInterface $period): Collection
+    public function diff(PeriodInterface $period): array
     {
-        $collection = new Collection();
         if ($period->equalsTo($this)) {
-            return $collection;
+            return [];
         }
 
         $intersect = $this->intersect($period);
         $merge = $this->merge($period);
         if ($merge->getStartDate() == $intersect->getStartDate()) {
-            $collection[] = $merge->startingOn($intersect->getEndDate());
-
-            return $collection;
+            return [$merge->startingOn($intersect->getEndDate())];
         }
 
         if ($merge->getEndDate() == $intersect->getEndDate()) {
-            $collection[] = $merge->endingOn($intersect->getStartDate());
-
-            return $collection;
+            return [$merge->endingOn($intersect->getStartDate())];
         }
 
-        $collection[] = $merge->endingOn($intersect->getStartDate());
-        $collection[] = $merge->startingOn($intersect->getEndDate());
-
-        return $collection;
+        return [
+            $merge->endingOn($intersect->getStartDate()),
+            $merge->startingOn($intersect->getEndDate()),
+        ];
     }
 
     /**
