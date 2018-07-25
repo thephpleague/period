@@ -87,23 +87,25 @@ $collection->add(Period::createFromDay('2018-02-03'));
 
 ### Collection::contains
 
-Tell whether the given `PeriodInterface` object is present in the current `Collection`. Because `PeriodInterface` objects are immutable, the method uses the `PeriodInterface::equalsTo` method for comparison.
+Tells whether the given `PeriodInterface` object is present in the current `Collection`.
 
 ~~~php
 $collection = new Collection([Period::createFromDay('2018-02-03')]);
 $retval = $collection->contains(Period::createFromDay('2018-02-03')); // true
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> comparisons is done using <code>PeriodInterface::equalsTo</code> method</p>
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
 
 ### Collection::containsKey
 
-Tell whether a `PeriodInterface` object present in the current `Collection` is attached using the `$index` key.
+Tells whether a `PeriodInterface` object present in the current `Collection` is attached using the `$index` key.
 
 ~~~php
 $collection = new Collection(['first' => Period::createFromDay('2018-02-03')]);
 $retval = $collection->containsKey('first'); // true
 ~~~
+
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
 
 ### Collection::clear
 
@@ -129,7 +131,7 @@ $filterCollection = $collection->filter(function (PeriodInterface $period) {
 }); // [Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS')]
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> the <code>Collection::filter</code> method uses the same argument in the same order as <code>array_filter</code>.</p>
+<p class="message-notice"><strong>Notice:</strong> the <code>Collection::filter</code> method uses the same arguments in the same order as <code>array_filter</code>.</p>
 
 ### Collection::get
 
@@ -248,6 +250,8 @@ $retval = $collection->remove($month); // return true
 $retval = $collection->remove(Period::createFromDay('2018-03-01')); //return false
 ~~~
 
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
+
 ### Collection::removeIndex
 
 Removes the `PeriodInterface` object at the specified index from the `Collection`. If not object was found `null` is returned otherwise the remove the `PeriodInterface` object is returned.
@@ -275,8 +279,6 @@ Extracts a slice of `$length` `PeriodInterface` objects starting at position `$o
 
 Calling this method will only return the selected slice and NOT change the elements contained in the collection slice is called on.
 
-<p class="message-notice"><strong>Notice:</strong> the <code>Collection::slice</code> method uses the same arguments in the same order as <code>array_slice</code></p>
-
 ~~~php
 $collection = new Collection([
     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
@@ -286,6 +288,8 @@ $collection = new Collection([
 $retval = $collection->slice(0, 2);
 $retval['meeting']; //returns null
 ~~~
+
+<p class="message-notice"><strong>Notice:</strong> the <code>Collection::slice</code> method uses the same arguments in the same order as <code>array_slice</code></p>
 
 ### Collection::sort
 
