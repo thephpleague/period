@@ -8,6 +8,36 @@ title: Period objects Collection
 The `League\Period\Collection` is an **ordered map** that can also be used as a list of `PeriodInterface` objects.  
 This class is heavily inspired by `Doctrine\Common\Collections\Collection` but also feature specific methods to deal with collection of time range objects.
 
+~~~php
+<?php
+
+use League\Period\Collection;
+use League\Period\Period;
+
+$collection = new Collection([
+    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+]);
+$collection['meeting'] = Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS');
+
+$intersection = $collection->getIntersections();
+
+$filterCollection = $collection->filter(function (PeriodInterface $period) use ($intersection) {
+    foreach ($intersection as $interPeriod) {
+        if ($interPeriod->intersects($period)) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+$filterCollection->contains($collection['sports']);  //true
+$filterCollection->contains($collection['meeting']); //true
+$filterCollection->contains($collection['lunch']);   //false
+$filterCollection['meeting']->equalsTo($collection->get('meeting')); //true
+~~~
+
 ## Time range related methods
 
 ### Collection::getInterval
@@ -60,17 +90,19 @@ $collection->add(Period::createFromDay('2018-02-03'));
 Tell whether the given `PeriodInterface` object is present in the current `Collection`. Because `PeriodInterface` objects are immutable, the method uses the `PeriodInterface::equalsTo` method for comparison.
 
 ~~~php
-$retval = $collection->contains(Period::createFromDay('2018-02-03'));
-//$retval is a boolean
+$collection = new Collection([Period::createFromDay('2018-02-03')]);
+$retval = $collection->contains(Period::createFromDay('2018-02-03')); // true
 ~~~
+
+<p class="message-notice"><strong>Notice:</strong> comparisons is done using <code>PeriodInterface::equalsTo</code> method</p>
 
 ### Collection::containsKey
 
 Tell whether a `PeriodInterface` object present in the current `Collection` is attached using the `$index` key.
 
 ~~~php
-$retval = $collection->containsKey('first');
-//$retval is a boolean
+$collection = new Collection(['first' => Period::createFromDay('2018-02-03')]);
+$retval = $collection->containsKey('first'); // true
 ~~~
 
 ### Collection::clear
@@ -86,23 +118,28 @@ $collection->clear();
 Filter the current `Collection` using a predicate function. If the predicate function returns `true`, the `PeriodInterface` and its related index are added in the returned `Collection` instance.
 
 ~~~php
-$month = Period::createFromMonth('2018-03-01');
-$retval = $collection->filter(function (PeriodInterface $period) use ($month) {
-    return $month->overlaps($period);
-});
-//$retval is a Collection containing PeriodInterface which overlaps the month of 2018-03
-//if no PeriodInterface are found $retval will be empty.
+$collection = new Collection([
+    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+    'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+]);
+
+$filterCollection = $collection->filter(function (PeriodInterface $period) {
+    return $period->getTimestampInterval() > 60 * 60;
+}); // [Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS')]
 ~~~
 
-__NOTE__: the `Collection::filter` methods uses the same argument in the same order as `array_filter`.
-
+<p class="message-notice"><strong>Notice:</strong> the <code>Collection::filter</code> method uses the same argument in the same order as <code>array_filter</code>.</p>
 
 ### Collection::get
 
 Returns the `PeriodInterface` at the specified `$index`in the current `Collection`. If not object is found or the key is invalid, `null` is returned.
 
 ~~~php
-$retval = $collection->get('foo');
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
+$retval = $collection->get('foo'); // PeriodInterface
+$retval2 = $collection->get('bar'); // null
 //$retval is a PeriodInterface object or ǹull
 ~~~
 
@@ -111,8 +148,9 @@ $retval = $collection->get('foo');
 Returns all the indexes/keys present in the current `Collection`.
 
 ~~~php
-$retval = $collection->getKeys();
-//$retval is an iterable
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
+$retval = $collection->getKeys(); // ['foo']
 ~~~
 
 ### Collection::getValues
@@ -120,8 +158,9 @@ $retval = $collection->getKeys();
 Returns all `PeriodInterface` objects present in the current `Collection`.
 
 ~~~php
-$retval = $collection->getValues();
-//$retval is an iterable
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
+$retval = $collection->getValues(); // [PeriodInterface]
 ~~~
 
 ### Collection::first
@@ -130,8 +169,9 @@ Returns the first `PeriodInterface` object present in the current `Collection` o
 empty.
 
 ~~~php
-$retval = $collection->first();
-//$retval is a PeriodInterface or null
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
+$retval = $collection->first(); // PeriodInterface or null if Collection is empty
 ~~~
 
 ### Collection::last
@@ -140,8 +180,9 @@ Returns the last `PeriodInterface` object present in the current `Collection` or
 empty.
 
 ~~~php
-$retval = $collection->last();
-//$retval is a PeriodInterface or null
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
+$retval = $collection->last();  // PeriodInterface or null if Collection is empty
 ~~~
 
 ### Collection::indexOf
@@ -149,19 +190,25 @@ $retval = $collection->last();
 Returns the index attached to the submitted `PeriodInterface` object present in the current `Collection` or `false` the `PeriodInterface` object is not found.
 
 ~~~php
-$retval = $collection->indexOf(Period::createFromDay('2018-05-03'));
-//$retval is a string or false
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-03', '+1 DAY');
+$retval = $collection->indexOf(Period::createFromDay('2018-05-03')); // 'foo'
 ~~~
+
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
 
 ### Collection::map
 
 Apply the given function to each `PeriodInterface` in the collection and returns a new `Collection` instance containing the modified `PeriodInterface` objects. Indexes are preserved.
 
 ~~~php
+$collection = new Collection();
+$collection['foo'] = Period::createFromDuration('2018-05-03', '+1 DAY');
 $retval = $collection->map(function (PeriodInterface $period) {
     return $period->endingOn($period->getEndDate()->add(new DateInterval('P1D')));
 });
-//$retval is a new Collection where each PeriodInterface object as a new ending datepoint.
+$collection['foo']->getEndDate()->format('Y-m-d'); // 2018-05-4
+$retval['foo']->getEndDate()->format('Y-m-d');     // 2018-05-5
 ~~~
 
 ### Collection::partition
@@ -169,23 +216,36 @@ $retval = $collection->map(function (PeriodInterface $period) {
 Partitions this `Collection` instance in two `Collection` instances according to a predicate. Keys are preserved in the resulting collections. The first instance contains all the `PeriodInterface` objects and their related index which verify the predicate. The second instance contains the remaining objects and their indexes.
 
 ~~~php
-$month = Period::createFromMonth('2018-03-01');
-$retval = $collection->partition(function (PeriodInterface $period) use ($month) {
-    return $month->overlaps($period);
+$collection = new Collection([
+    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+    'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+]);
+
+$retval = $collection->partition(function (PeriodInterface $period, string $index) {
+    return false !== strpos($index, 'n');
 });
-//$retval is an array containing 2 Collection instance.
+// [
+// new Collection([
+//   'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+//   'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+//  ]),
+//  new Collection(['sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR')])
+//]
 ~~~
 
-__NOTE__: the predicate first argument is the `PeriodInterface` object, its second optional argument is its index.
+<p class="message-notice"><strong>Notice:</strong> the predicate first argument is the <code>PeriodInterface</code> value and its second optional argument is its index.</p>
 
 ### Collection::remove
 
 Removes the `PeriodInterface` object from the `Collection`. If not object was removed `false` is returned otherwise `true` is returned.
 
 ~~~php
-$month = Period::createFromMonth('2018-03-01');
-$retval = $collection->remove($month);
-//$retval is a boolean
+$collection = new Collection();
+$collection['foo'] = Period::createFromMonth('2018-03-01');
+$month = new Period('2018-03-01', '2018-04-01');
+$retval = $collection->remove($month); // return true
+$retval = $collection->remove(Period::createFromDay('2018-03-01')); //return false
 ~~~
 
 ### Collection::removeIndex
@@ -193,8 +253,11 @@ $retval = $collection->remove($month);
 Removes the `PeriodInterface` object at the specified index from the `Collection`. If not object was found `null` is returned otherwise the remove the `PeriodInterface` object is returned.
 
 ~~~php
-$retval = $collection->removeIndex('foo');
-//$retval is a PeriodInterface object or null
+$collection = new Collection();
+$collection['foo'] = Period::createFromMonth('2018-03-01');
+$month = new Period('2018-03-01', '2018-04-01');
+$retval = $collection->removeIndex('foo'); // return Period::createFromMonth('2018-03-01');
+$retval = $collection->removeIndex('bar'); // return null
 ~~~
 
 ### Collection::set
@@ -202,8 +265,8 @@ $retval = $collection->removeIndex('foo');
 Sets a `PeriodInterface` object in the collection at the specified key/index.
 
 ~~~php
+$collection = new Collection();
 $retval = $collection->set('foo', Period::createFromWeek(2018, 21));
-//$retval is null
 ~~~
 
 ### Collection::slice
@@ -212,31 +275,53 @@ Extracts a slice of `$length` `PeriodInterface` objects starting at position `$o
 
 Calling this method will only return the selected slice and NOT change the elements contained in the collection slice is called on.
 
-__NOTE__: the `Collection::slice` methods uses the same argument in the same order as `array_slice`.
+<p class="message-notice"><strong>Notice:</strong> the <code>Collection::slice</code> method uses the same arguments in the same order as <code>array_slice</code></p>
 
 ~~~php
-$retval = $collection->slice(0, 3);
-//$retval is a Collection of maximumn the 3 first PeriodInterfaces objects.
+$collection = new Collection([
+    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+    'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+]);
+$retval = $collection->slice(0, 2);
+$retval['meeting']; //returns null
 ~~~
 
 ### Collection::sort
 
 Sorts the `Collection` with a user defined comparison function while maintaining the index assocation.
 
-__NOTE__: the `Collection::sort` methods uses the same argument as `uasort`.
-
 ~~~php
+$collection = new Collection([
+    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+    'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+]);
+$collection->first()->equalsTo($collection['sports']);
+$collection->las()->equalsTo($collection['meeting']);
 $collection->sort(function (PeriodInterface $period1, PeriodInterface $period2) {
     return $period2->compareDuration($period1);
 });
-//the collection PeriodInterface are now sorted according to their duration.
+$collection->first()->equalsTo($collection['lunch']);
+$collection->las()->equalsTo($collection['meeting']);
 ~~~
+
+<p class="message-notice"><strong>Notice:</strong> the <code>Collection::sort</code> method uses the same arguments as <code>uasort</code>.</p>
 
 ### Collection::toArray
 
 Gets a native PHP array representation of the `Collection` object.
 
 ~~~php
+$collection = new Collection([
+    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+    'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+]);
 $retval = $collection->toArray();
-//$retval is an array
+// [
+//     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
+//     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
+//     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
+// ]
 ~~~
