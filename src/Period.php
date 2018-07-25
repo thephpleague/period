@@ -27,6 +27,7 @@ use JsonSerializable;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function array_reduce;
+use function array_unshift;
 use function filter_var;
 use function get_class;
 use function gettype;
@@ -841,7 +842,7 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @param DateInterval|int|string $interval
      */
-    public function move($interval): PeriodInterface
+    public function move($interval): self
     {
         $interval = self::filterDateInterval($interval);
         $period = new self($this->startDate->add($interval), $this->endDate->add($interval));
@@ -862,10 +863,9 @@ final class Period implements PeriodInterface, JsonSerializable
      *
      * @param DateInterval|int|string $interval
      */
-    public function expand($interval): PeriodInterface
+    public function expand($interval): self
     {
         $interval = self::filterDateInterval($interval);
-
         $period = new self($this->startDate->sub($interval), $this->endDate->add($interval));
         if ($period->equalsTo($this)) {
             return $this;
