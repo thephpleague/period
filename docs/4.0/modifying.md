@@ -230,7 +230,7 @@ $newPeriod->getStartDate(); //returns DateTimeImmutable('2014-02-01');
 $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 ~~~
 
-*If you need to shrink the time range you can simply use a _inverted_ `DateInterval` object.*
+*If you need to shrink the time range you can simply use a __inverted__ `DateInterval` object*
 
 ~~~php
 <?php
@@ -239,7 +239,7 @@ use League\Period\Period;
 
 $period = Period::createFromMonth(2014, 3);
 $newPeriod = $period->expand('-1 DAY');
-$period->getStartDate()     //returns DateTimeImmutable('2014-03-01');
+$period->getStartDate();     //returns DateTimeImmutable('2014-03-01');
 $period->getEndDate();      //returns DateTimeImmutable('2014-04-01');
 $newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-02');
 $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-03-31');

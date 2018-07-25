@@ -1,7 +1,7 @@
 <?php
 
 $header = <<<EOF
-League.Uri (https://period.thephpleague.com)
+League.Period (https://period.thephpleague.com)
 
 @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
 @license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
