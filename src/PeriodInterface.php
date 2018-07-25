@@ -123,28 +123,18 @@ interface PeriodInterface
     public function gap(PeriodInterface $period): self;
 
     /**
-     * Returns an instance with the specified starting date point.
+     * Returns an instance with the specified starting datepoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting date point.
+     * an instance that contains the specified starting datepoint.
      */
     public function startingOn(DateTimeInterface $startDate): self;
 
     /**
-     * Returns an instance with the specified ending date point.
+     * Returns an instance with the specified ending datepoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending date point.
+     * an instance that contains the specified ending datepoint.
      */
     public function endingOn(DateTimeInterface $endDate): self;
-
-    /**
-     * Merges one or more Period objects to return a new Period object.
-     * The resultant object represents the largest duration possible.
-     *
-     * This method is not part of the PeriodInterface.
-     *
-     * @param PeriodInterface ...$periods
-     */
-    public function merge(PeriodInterface ...$periods): self;
 }

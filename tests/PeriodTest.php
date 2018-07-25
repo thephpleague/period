@@ -100,14 +100,14 @@ class PeriodTest extends TestCase
 
     public function testCreateFromDatePeriodThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $datePeriod = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
         Period::createFromDatePeriod($datePeriod);
     }
 
     public function testConstructorThrowTypeError()
     {
-        $this->expectException(TypeError::class);
+        self::expectException(TypeError::class);
         new Period(new DateTime(), []);
     }
 
@@ -237,7 +237,7 @@ class PeriodTest extends TestCase
 
     public function testConstructorThrowException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         new Period(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
@@ -281,19 +281,19 @@ class PeriodTest extends TestCase
 
     public function testCreateFromDurationWithInvalidInteger()
     {
-        $this->expectException(\Exception::class);
+        self::expectException(\Exception::class);
         Period::createFromDuration('2014-01-01', -1);
     }
 
     public function testCreateFromDurationFailedWithOutofRangeInterval()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromDuration(new DateTime('2012-01-12'), '-1 DAY');
     }
 
     public function testCreateFromDurationFailedWithInvalidInterval()
     {
-        $this->expectException(TypeError::class);
+        self::expectException(TypeError::class);
         Period::createFromDuration(new DateTime('2012-01-12'), []);
     }
 
@@ -324,7 +324,7 @@ class PeriodTest extends TestCase
 
     public function testCreateFromDurationBeforeEndFailedWithOutofRangeInterval()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromDurationBeforeEnd(new DateTime('2012-01-12'), '-1 DAY');
     }
 
@@ -337,25 +337,25 @@ class PeriodTest extends TestCase
 
     public function testCreateFromWeekFailedWithLowInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromWeek(2014, 0);
     }
 
     public function testCreateFromWeekFailedWithHighInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromWeek(2014, 54);
     }
 
     public function testCreateFromWeekFailedWithInvalidYearIndex()
     {
-        $this->expectException(TypeError::class);
+        self::expectException(TypeError::class);
         Period::createFromWeek([], 1);
     }
 
     public function testCreateFromWeekFailedWithMissingSemesterValue()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromWeek(2014, null);
     }
 
@@ -368,25 +368,25 @@ class PeriodTest extends TestCase
 
     public function testCreateFromMonthFailedWithHighInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromMonth(2014, 13);
     }
 
     public function testCreateFromMonthFailedWithLowInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromMonth(2014, 0);
     }
 
     public function testCreateFromMonthFailedWithInvalidYearIndex()
     {
-        $this->expectException(TypeError::class);
+        self::expectException(TypeError::class);
         Period::createFromMonth([], 1);
     }
 
     public function testCreateFromMonthFailedWithMissingSemesterValue()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromMonth(2014, null);
     }
 
@@ -399,25 +399,25 @@ class PeriodTest extends TestCase
 
     public function testCreateFromQuarterFailedWithHighInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromQuarter(2014, 5);
     }
 
     public function testCreateFromQuarterFailedWithLowInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromQuarter(2014, 0);
     }
 
     public function testCreateFromQuarterFailedWithInvalidYearIndex()
     {
-        $this->expectException(TypeError::class);
+        self::expectException(TypeError::class);
         Period::createFromQuarter([], 1);
     }
 
     public function testCreateFromQuarterFailedWithMissingSemesterValue()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromQuarter(2014, null);
     }
 
@@ -430,25 +430,25 @@ class PeriodTest extends TestCase
 
     public function testCreateFromSemesterFailedWithInvalidYearIndex()
     {
-        $this->expectException(TypeError::class);
+        self::expectException(TypeError::class);
         Period::createFromSemester([], 1);
     }
 
     public function testCreateFromSemesterFailedWithMissingSemesterValue()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromSemester(2014, null);
     }
 
     public function testCreateFromSemesterFailedWithLowInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromSemester(2014, 0);
     }
 
     public function testCreateFromSemesterFailedWithHighInvalidIndex()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromSemester(2014, 3);
     }
 
@@ -766,7 +766,7 @@ class PeriodTest extends TestCase
 
     public function testStartingOnFailedWithWrongStartDate()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $period = Period::createFromWeek(2014, 3);
         $period->startingOn(new DateTime('2015-03-02'));
     }
@@ -783,7 +783,7 @@ class PeriodTest extends TestCase
 
     public function testEndingOnFailedWithWrongEndDate()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $period = Period::createFromWeek(2014, 3);
         $period->endingOn(new DateTime('2012-03-02'));
     }
@@ -797,7 +797,7 @@ class PeriodTest extends TestCase
 
     public function testWithDurationThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $period = Period::createFromDuration('2014-03-01', '2 WEEKS');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -814,7 +814,7 @@ class PeriodTest extends TestCase
 
     public function testWithDurationBeforeEndThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $period = Period::createFromDurationBeforeEnd('2014-03-01', '2 WEEKS');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -831,6 +831,12 @@ class PeriodTest extends TestCase
         self::assertEquals($expected, $expected->merge($period, $altPeriod));
     }
 
+    public function testMergeThrowsException()
+    {
+        self::expectException(TypeError::class);
+        Period::createFromMonth(2014, 3)->merge();
+    }
+
     public function testAdd()
     {
         $orig = Period::createFromDuration('2012-01-01', '2 MONTH');
@@ -842,7 +848,7 @@ class PeriodTest extends TestCase
 
     public function testAddThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromDuration('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
@@ -868,13 +874,13 @@ class PeriodTest extends TestCase
 
     public function testMoveStartDateThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromDuration('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
     }
 
     public function testSubThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromDuration('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
@@ -902,7 +908,7 @@ class PeriodTest extends TestCase
 
     public function testExpandThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
         $period = Period::createFromDay('2012-02-02')->expand($dateInterval);
@@ -941,7 +947,7 @@ class PeriodTest extends TestCase
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $orig = Period::createFromDuration('2013-01-01', '1 MONTH');
         $orig->intersect(Period::createFromDuration('2012-01-01', '2 MONTH'));
     }
@@ -959,21 +965,21 @@ class PeriodTest extends TestCase
 
     public function testGapThrowsExceptionWithOverlapsPeriod()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $orig = Period::createFromDuration('2011-12-01', '5 MONTH');
         $orig->gap(Period::createFromDuration('2012-01-01', '2 MONTH'));
     }
 
     public function testGapWithSameStartingPeriod()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $orig = Period::createFromDuration('2012-12-01', '5 MONTH');
         $orig->gap(Period::createFromDuration('2012-12-01', '2 MONTH'));
     }
 
     public function testGapWithSameEndingPeriod()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         $orig = Period::createFromDurationBeforeEnd('2012-12-01', '5 MONTH');
         $orig->gap(Period::createFromDurationBeforeEnd('2012-12-01', '2 MONTH'));
     }
@@ -989,7 +995,7 @@ class PeriodTest extends TestCase
 
     public function testDiffThrowsException()
     {
-        $this->expectException(Exception::class);
+        self::expectException(Exception::class);
         Period::createFromYear(2015)->diff(Period::createFromYear(2013));
     }
 

@@ -374,12 +374,23 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function getInterval(): ?PeriodInterface
     {
-        $period = reset($this->storage);
-        if (false === $period) {
-            return null;
+        $period = null;
+        foreach ($this->storage as $item) {
+            if (null === $period) {
+                $period = $item;
+                continue;
+            }
+
+            if ($item->getStartDate() < $period->getStartDate()) {
+                $period = $period->startingOn($item->getStartDate());
+            }
+
+            if ($item->getEndDate() > $period->getEndDate()) {
+                $period = $period->endingOn($item->getEndDate());
+            }
         }
 
-        return $period->merge(...array_values($this->storage));
+        return $period;
     }
 
     /**

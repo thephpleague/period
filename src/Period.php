@@ -47,14 +47,14 @@ final class Period implements PeriodInterface, JsonSerializable
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
     /**
-     * Period starting included date point.
+     * Period starting included datepoint.
      *
      * @var DateTimeImmutable
      */
     private $startDate;
 
     /**
-     * Period ending excluded date point.
+     * Period ending excluded datepoint.
      *
      * @var DateTimeImmutable
      */
@@ -784,32 +784,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * @inheritdoc
-     */
-    public function merge(PeriodInterface ...$periods): PeriodInterface
-    {
-        return array_reduce($periods, [$this, 'reducer'], $this);
-    }
-
-    /**
-     * Returns a Period whose endpoints are the largest possible
-     * between 2 instance of Period objects.
-     */
-    private function reducer(PeriodInterface $carry, PeriodInterface $period): PeriodInterface
-    {
-        if ($carry->getStartDate() > $period->getStartDate()) {
-            $carry = $carry->startingOn($period->getStartDate());
-        }
-
-        if ($carry->getEndDate() < $period->getEndDate()) {
-            $carry = $carry->endingOn($period->getEndDate());
-        }
-
-        return $carry;
-    }
-
-    /**
-     * Returns a new Period object with a new ending date point.
+     * Returns a new Period object with a new ending datepoint.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -821,7 +796,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new starting date point.
+     * Returns a new Period object with a new starting datepoint.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -833,7 +808,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new starting date point
+     * Returns a new Period object with a new starting datepoint
      * moved forward or backward by the given interval.
      *
      * This method is not part of the PeriodInterface.
@@ -846,7 +821,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new ending date point
+     * Returns a new Period object with a new ending datepoint
      * moved forward or backward by the given interval.
      *
      * This method is not part of the PeriodInterface.
@@ -917,5 +892,37 @@ final class Period implements PeriodInterface, JsonSerializable
     public function dateIntervalDiff(PeriodInterface $period): DateInterval
     {
         return $this->endDate->diff($this->startDate->add($period->getDateInterval()));
+    }
+
+    /**
+     * Merges one or more Period objects to return a new Period object.
+     * The resultant object represents the largest duration possible.
+     *
+     * This method is not part of the PeriodInterface.
+     *
+     * @param PeriodInterface ...$periods
+     */
+    public function merge(PeriodInterface $period, PeriodInterface ...$periods): PeriodInterface
+    {
+        array_unshift($periods, $period);
+
+        return array_reduce($periods, [$this, 'reducer'], $this);
+    }
+
+    /**
+     * Returns a Period whose endpoints are the largest possible
+     * between 2 instance of Period objects.
+     */
+    private function reducer(PeriodInterface $carry, PeriodInterface $period): PeriodInterface
+    {
+        if ($carry->getStartDate() > $period->getStartDate()) {
+            $carry = $carry->startingOn($period->getStartDate());
+        }
+
+        if ($carry->getEndDate() < $period->getEndDate()) {
+            $carry = $carry->endingOn($period->getEndDate());
+        }
+
+        return $carry;
     }
 }
