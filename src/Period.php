@@ -70,7 +70,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a new instance.
+     * Creates a new instance.
      *
      * @param DateTimeInterface|string $startDate the starting included datepoint
      * @param DateTimeInterface|string $endDate   the ending excluded datepoint
@@ -89,7 +89,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Validate the datepoint.
+     * Validates the datepoint.
      *
      * @param DateTimeInterface|string $datepoint
      */
@@ -114,7 +114,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Validate a DateInterval.
+     * Validates the duration.
      *
      * The interval can be
      * <ul>
@@ -140,13 +140,13 @@ final class Period implements PeriodInterface, JsonSerializable
         }
 
         throw new TypeError(sprintf(
-            'The interval must a scalar or a DateInterval object %s given',
+            'The interval must an integer, a string or a DateInterval object %s given',
             is_object($interval) ? get_class($interval) : gettype($interval)
         ));
     }
 
     /**
-     * Filter the input integer.
+     * Filters the input integer.
      *
      * @param int|string|null $value
      *
@@ -163,7 +163,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Validate a int according to a range.
+     * Filters a integer according to a range.
      *
      * @param int $value the value to validate
      * @param int $min   the minimum value
@@ -181,11 +181,11 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object from a DatePeriod.
+     * Creates new instance from a DatePeriod.
      *
-     * @throws Exception If the submitted DatePeriod lacks an end Date.
-     *                   This is possible of the DatePeriod was created using
-     *                   Recurrences instead of a end date.
+     * @throws Exception If the submitted DatePeriod lacks an end datepoint.
+     *                   This is possible if the DatePeriod was created using
+     *                   recurrences instead of a end datepoint.
      *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
      */
     public static function createFromDatePeriod(DatePeriod $datePeriod): self
@@ -199,7 +199,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object from a starting point and an interval.
+     * Creates new instance from a starting point and an interval.
      *
      * @param DateTimeInterface|string $startDate
      * @param DateInterval|int|string  $interval
@@ -212,7 +212,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object from a ending excluded datepoint and an interval.
+     * Creates new instance from a ending excluded datepoint and an interval.
      *
      * @param DateTimeInterface|string $endDate
      * @param DateInterval|int|string  $interval
@@ -225,7 +225,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific Year.
+     * Creates new instance for a specific year.
      *
      * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
      */
@@ -244,7 +244,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific semester in a given year.
+     * Creates new instance for a specific semester in a given year.
      *
      * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
      * @param string|int|null              $semester         a semester index from 1 to 2 included
@@ -270,7 +270,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific quarter in a given year.
+     * Creates new instance for a specific quarter in a given year.
      *
      * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
      * @param string|int|null              $quarter          quarter index from 1 to 4 included
@@ -296,7 +296,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific year and month.
+     * Creates new instance for a specific year and month.
      *
      * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
      * @param string|int|null              $month            month index from 1 to 12 included
@@ -321,7 +321,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific week.
+     * Creates new instance for a specific week.
      *
      * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
      * @param string|int|null              $week             index from 1 to 53 included
@@ -346,7 +346,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific date.
+     * Creates new instance for a specific date.
      *
      * The date is truncated so that the time range starts at midnight
      * according to the date timezone and last a full day.
@@ -361,7 +361,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific date and hour.
+     * Creates new instance for a specific date and hour.
      *
      * The starting datepoint represents the beginning of the hour
      * The interval is equal to 1 hour
@@ -377,7 +377,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific date, hour and minute.
+     * Creates new instance for a specific date, hour and minute.
      *
      * The starting datepoint represents the beginning of the minute
      * The interval is equal to 1 minute
@@ -393,7 +393,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Create a Period object for a specific date, hour, minute and second.
+     * Creates new instance for a specific date, hour, minute and second.
      *
      * The starting datepoint represents the beginning of the second
      * The interval is equal to 1 second
@@ -447,7 +447,7 @@ final class Period implements PeriodInterface, JsonSerializable
 
     /**
      * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the PeriodInterface object.
+     * recurring at regular intervals, over the instance.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -477,7 +477,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns the Json representation of a Period object using
+     * Returns the Json representation of an instance using
      * the JSON representation of dates as returned by Javascript Date.toJSON() method.
      *
      * This method is not part of the PeriodInterface.
@@ -506,8 +506,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether the current Period object duration
-     * is greater than the submitted one.
+     * Tells whether the current instance duration is greater than the submitted one.
      *
      * This method is not part of the PeriodInterface.
      */
@@ -517,8 +516,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether the current Period object duration
-     * is less than the submitted one.
+     * Tells whether the current instance duration is less than the submitted one.
      *
      * This method is not part of the PeriodInterface.
      */
@@ -528,8 +526,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether the current Period object duration
-     * is equal to the submitted one.
+     * Tells whether the current instance duration is equal to the submitted one.
      *
      * This method is not part of the PeriodInterface.
      */
@@ -602,7 +599,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether a Period object is fully contained within the current Period object.
+     * Tells whether the a PeriodInterface is fully contained within the current instance.
      */
     private function containsPeriod(PeriodInterface $period): bool
     {
@@ -611,7 +608,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Tells whether a datepoint is fully contained within the current Period object.
+     * Tells whether a datepoint is fully contained within the current instance.
      */
     private function containsDatePoint(DateTimeInterface $datepoint): bool
     {
@@ -620,8 +617,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Allows splitting a PeriodInterface in smaller PeriodInterface objects according
-     * to a given interval.
+     * Allows splitting an instance in smaller Period objects according to a given interval.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -653,8 +649,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Allows splitting a PeriodInterface in smaller PeriodInterface object according
-     * to a given interval.
+     * Allows splitting an instance in smaller Period objects according to a given interval.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -717,7 +712,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Computes the difference between two overlapsing Period objects.
+     * Computes the difference between two overlapsing PeriodInterface objects.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -785,7 +780,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new ending datepoint.
+     * Returns a new instance with a new ending datepoint.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -797,7 +792,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new starting datepoint.
+     * Returns a new instance with a new starting datepoint.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -809,7 +804,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new starting datepoint
+     * Returns a new instance with a new starting datepoint
      * moved forward or backward by the given interval.
      *
      * This method is not part of the PeriodInterface.
@@ -822,7 +817,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object with a new ending datepoint
+     * Returns a new instance with a new ending datepoint
      * moved forward or backward by the given interval.
      *
      * This method is not part of the PeriodInterface.
@@ -835,7 +830,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object where the datepoints
+     * Returns a new instance where the datepoints
      * are moved forwards or backward simultaneously by the given DateInterval.
      *
      * This method is not part of the PeriodInterface.
@@ -854,9 +849,9 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a new Period object where the given DateInterval is
+     * Returns a new instance where the given interval is
      * substracted from the starting datepoint and added to the ending datepoint.
-     * Depending on the DateInterval value, the resulting PeriodInterface duration
+     * Depending on the interval value, the resulting instance duration
      * will be expanded or shrinked.
      *
      * This method is not part of the PeriodInterface.
@@ -875,7 +870,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns the difference between two Period objects expressed in seconds.
+     * Returns the difference between two PeriodInterface objects expressed in seconds.
      *
      * This method is not part of the PeriodInterface.
      */
@@ -885,7 +880,7 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns the difference between two Period objects expressed in DateInterval.
+     * Returns the difference between two PeriodInterface objects expressed in DateInterval.
      *
      * This method is not part of the PeriodInterface.
      */
@@ -895,8 +890,8 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Merges one or more Period objects to return a new Period object.
-     * The resultant object represents the largest duration possible.
+     * Merges one or more PeriodInterface objects to return a new instance.
+     * The resulting instance represents the largest duration possible.
      *
      * This method is not part of the PeriodInterface.
      *
@@ -910,8 +905,8 @@ final class Period implements PeriodInterface, JsonSerializable
     }
 
     /**
-     * Returns a Period whose endpoints are the largest possible
-     * between 2 instance of Period objects.
+     * Returns new instance whose endpoints are the largest possible
+     * between 2 instance of PeriodInterface objects.
      */
     private function reducer(PeriodInterface $carry, PeriodInterface $period): PeriodInterface
     {
