@@ -6,19 +6,21 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Interval` interface
 - `Collection` class
 - `Exception` class
 - `Period::createFromDatePeriod`
 - `Period::createFromHour`
 - `Period::createFromMinute`
 - `Period::createFromSecond`
+- `Period::createFromDurationAfterStart`
+- `Period::withDurationAfterStart`
 - `Period::expand`
-- `PeriodInterface` interface
 
 ### Fixed
 
 - The `Period` class is now final
-- `Period::JsonSerialize` now returns datepoint in JavaScript compatible date notation
+- `Period::JsonSerialize` now returns datepoint in JavaScript compatible datetime notation
 - The following methods now accepts as its sole argument a `DateTimeInterface` object.
     - `Period::createFromYear`
     - `Period::createFromMonth`
@@ -37,7 +39,9 @@ All Notable changes to `Period` will be documented in this file
 - `Period::previous`
 - `Period::add`
 - `Period::sub`
-- `Period::sameValueAs` replaced by - `Period::equalsTo`
+- `Period::sameValueAs` replaced by `Period::equalsTo`
+- `Period::createFromDuration` replaced by `Period::createFromDurationAfterStart`
+- `Period::withDuration` replaced by `Period::withDurationAfterStart`
 - Support for PHP 7.0 and PHP 7.1
 
 ## 3.4.0 - 2017-11-17

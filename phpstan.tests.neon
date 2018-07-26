@@ -4,7 +4,7 @@ includes:
 parameters:
     ignoreErrors:
         - '#Parameter \#2 \$endDate of class League\\Period\\Period constructor expects DateTimeInterface\|string, array given.#'
-        - '#Parameter \#2 \$interval of static method League\\Period\\Period::createFromDuration\(\) expects DateInterval\|int\|string, array given.#'
+        - '#Parameter \#2 \$interval of static method League\\Period\\Period::createFromDurationAfterStart\(\) expects DateInterval\|int\|string, array given.#'
         - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromWeek\(\) expects DateTimeInterface\|int\|string, array given.#'
         - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromMonth\(\) expects DateTimeInterface\|int\|string, array given.#'
         - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromQuarter\(\) expects DateTimeInterface\|int\|string, array given.#'

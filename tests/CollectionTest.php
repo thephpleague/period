@@ -16,8 +16,8 @@ namespace League\Period\Test;
 
 use DateInterval;
 use League\Period\Collection;
+use League\Period\Interval;
 use League\Period\Period;
-use League\Period\PeriodInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 use TypeError;
 use const ARRAY_FILTER_USE_BOTH;
@@ -140,7 +140,7 @@ class CollectionTest extends TestCase
     {
         self::assertCount(3, $this->collection);
         $period = $this->collection->removeIndex('last');
-        self::assertInstanceOf(PeriodInterface::class, $period);
+        self::assertInstanceOf(Interval::class, $period);
         self::assertCount(2, $this->collection);
         self::assertNull($this->collection->removeIndex('faraway'));
     }
@@ -177,7 +177,7 @@ class CollectionTest extends TestCase
 
     public function testFilter()
     {
-        $filter = function (PeriodInterface $period, $index) {
+        $filter = function (Interval $period, $index) {
             return $index !== 'middle';
         };
 
@@ -190,7 +190,7 @@ class CollectionTest extends TestCase
     public function testMapper()
     {
         $interval = new DateInterval('P2D');
-        $mapper = function (PeriodInterface $period) use ($interval) {
+        $mapper = function (Interval $period) use ($interval) {
             return $period
                 ->startingOn($period->getStartDate()->sub($interval))
                 ->endingOn($period->getStartDate()->add($interval))
@@ -207,14 +207,14 @@ class CollectionTest extends TestCase
     public function testMapperThrowsException()
     {
         $this->expectException(TypeError::class);
-        $this->collection->map(function (PeriodInterface $period) {
+        $this->collection->map(function (Interval $period) {
             return true;
         });
     }
 
     public function testPartition()
     {
-        $predicate = function (PeriodInterface $period, $index) {
+        $predicate = function (Interval $period, $index) {
             return $index !== 'middle';
         };
 
@@ -234,7 +234,7 @@ class CollectionTest extends TestCase
 
     public function testSort()
     {
-        $sort = function (PeriodInterface $period1, PeriodInterface $period2) {
+        $sort = function (Interval $period1, Interval $period2) {
             return $period2->getEndDate() <=> $period1->getEndDate();
         };
 
@@ -327,7 +327,7 @@ class CollectionTest extends TestCase
     /**
      * @dataProvider providesCollectionForPeriods
      */
-    public function testgetInterval(Collection $collection, PeriodInterface $expected)
+    public function testgetInterval(Collection $collection, Interval $expected)
     {
         $period = $collection->getInterval();
         self::assertNotNull($period);

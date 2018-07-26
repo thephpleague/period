@@ -67,14 +67,14 @@ $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 
 ## Using durations
 
-### Period::withDuration
+### Period::withDurationAfterStart
 
 #### Description
 
 ~~~php
 <?php
 
-public Period::withDuration(mixed $duration): Period
+public Period::withDurationAfterStart(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object by updating its duration. Only the excluded ending datepoint is updated.
@@ -87,7 +87,7 @@ Returns a new `Period` object by updating its duration. Only the excluded ending
 use League\Period\Period;
 
 $period    = Period::createFromMonth(2014, 3);
-$newPeriod = $period->withDuration('2 WEEKS');
+$newPeriod = $period->withDurationAfterStart('2 WEEKS');
 $period->getEndDate();    //returns DateTimeImmutable('2014-04-01');
 $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 // $period->getStartDate() equals $newPeriod->getStartDate();
