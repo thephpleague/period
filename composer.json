@@ -34,7 +34,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "League\\Period\\Test\\": "tests"
+            "LeagueTest\\Period\\": "tests"
         }
     },
     "scripts": {

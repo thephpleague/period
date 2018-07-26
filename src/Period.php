@@ -37,7 +37,7 @@ use function is_string;
 use function sprintf;
 
 /**
- * A immutable value object class to manipulate Time Range.
+ * A immutable value object class to manipulate Time interval.
  *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
@@ -116,32 +116,32 @@ final class Period implements Interval, JsonSerializable
     /**
      * Validates the duration.
      *
-     * The interval can be
+     * The duration can be
      * <ul>
      * <li>a DateInterval object</li>
      * <li>an int interpreted as the duration expressed in seconds.</li>
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param DateInterval|int|string $interval
+     * @param DateInterval|int|string $duration
      */
-    private static function filterDateInterval($interval): DateInterval
+    private static function filterDuration($duration): DateInterval
     {
-        if ($interval instanceof DateInterval) {
-            return $interval;
+        if ($duration instanceof DateInterval) {
+            return $duration;
         }
 
-        if (false !== ($res = filter_var($interval, FILTER_VALIDATE_INT))) {
+        if (false !== ($res = filter_var($duration, FILTER_VALIDATE_INT))) {
             return new DateInterval('PT'.$res.'S');
         }
 
-        if (is_string($interval)) {
-            return DateInterval::createFromDateString($interval);
+        if (is_string($duration)) {
+            return DateInterval::createFromDateString($duration);
         }
 
         throw new TypeError(sprintf(
             'The interval must an integer, a string or a DateInterval object %s given',
-            is_object($interval) ? get_class($interval) : gettype($interval)
+            is_object($duration) ? get_class($duration) : gettype($duration)
         ));
     }
 
@@ -195,33 +195,33 @@ final class Period implements Interval, JsonSerializable
             return new self($datePeriod->getStartDate(), $endDate);
         }
 
-        throw new Exception('The submitted DatePeriod object does not contain an end date');
+        throw new Exception('The submitted DatePeriod object does not contain an end datepoint');
     }
 
     /**
      * Creates new instance from a starting point and an interval.
      *
      * @param DateTimeInterface|string $datepoint
-     * @param DateInterval|int|string  $interval
+     * @param DateInterval|int|string  $duration
      */
-    public static function createFromDurationAfterStart($datepoint, $interval): self
+    public static function createFromDurationAfterStart($datepoint, $duration): self
     {
         $startDate = self::filterDatePoint($datepoint);
 
-        return new self($startDate, $startDate->add(self::filterDateInterval($interval)));
+        return new self($startDate, $startDate->add(self::filterDuration($duration)));
     }
 
     /**
      * Creates new instance from a ending excluded datepoint and an interval.
      *
      * @param DateTimeInterface|string $datepoint
-     * @param DateInterval|int|string  $interval
+     * @param DateInterval|int|string  $duration
      */
-    public static function createFromDurationBeforeEnd($datepoint, $interval): self
+    public static function createFromDurationBeforeEnd($datepoint, $duration): self
     {
         $endDate = self::filterDatePoint($datepoint);
 
-        return new self($endDate->sub(self::filterDateInterval($interval)), $endDate);
+        return new self($endDate->sub(self::filterDuration($duration)), $endDate);
     }
 
     /**
@@ -457,7 +457,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function getDatePeriod($duration, int $option = 0): DatePeriod
     {
-        return new DatePeriod($this->startDate, self::filterDateInterval($duration), $this->endDate, $option);
+        return new DatePeriod($this->startDate, self::filterDuration($duration), $this->endDate, $option);
     }
 
     /**
@@ -636,7 +636,7 @@ final class Period implements Interval, JsonSerializable
     public function split($duration): Generator
     {
         $startDate = $this->startDate;
-        $duration = self::filterDateInterval($duration);
+        $duration = self::filterDuration($duration);
         do {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
@@ -668,7 +668,7 @@ final class Period implements Interval, JsonSerializable
     public function splitBackwards($duration): Generator
     {
         $endDate = $this->endDate;
-        $duration = self::filterDateInterval($duration);
+        $duration = self::filterDuration($duration);
         do {
             $startDate = $endDate->sub($duration);
             if ($startDate < $this->startDate) {
@@ -726,6 +726,8 @@ final class Period implements Interval, JsonSerializable
      * </ul>
      *
      * @throws Exception if both objects do not overlaps
+     *
+     * @return Interval[]
      */
     public function diff(Interval $interval): array
     {
@@ -788,7 +790,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function withDurationAfterStart($duration): Interval
     {
-        return $this->endingOn($this->startDate->add(self::filterDateInterval($duration)));
+        return $this->endingOn($this->startDate->add(self::filterDuration($duration)));
     }
 
     /**
@@ -800,7 +802,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function withDurationBeforeEnd($duration): Interval
     {
-        return $this->startingOn($this->endDate->sub(self::filterDateInterval($duration)));
+        return $this->startingOn($this->endDate->sub(self::filterDuration($duration)));
     }
 
     /**
@@ -813,7 +815,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function moveStartDate($duration): Interval
     {
-        return $this->startingOn($this->startDate->add(self::filterDateInterval($duration)));
+        return $this->startingOn($this->startDate->add(self::filterDuration($duration)));
     }
 
     /**
@@ -826,7 +828,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function moveEndDate($duration): Interval
     {
-        return $this->endingOn($this->endDate->add(self::filterDateInterval($duration)));
+        return $this->endingOn($this->endDate->add(self::filterDuration($duration)));
     }
 
     /**
@@ -836,7 +838,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function move($duration): Interval
     {
-        $duration = self::filterDateInterval($duration);
+        $duration = self::filterDuration($duration);
         $period = new self($this->startDate->add($duration), $this->endDate->add($duration));
         if ($period->equalsTo($this)) {
             return $this;
@@ -852,7 +854,7 @@ final class Period implements Interval, JsonSerializable
      */
     public function expand($duration): Interval
     {
-        $duration = self::filterDateInterval($duration);
+        $duration = self::filterDuration($duration);
         $period = new self($this->startDate->sub($duration), $this->endDate->add($duration));
         if ($period->equalsTo($this)) {
             return $this;

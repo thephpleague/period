@@ -12,7 +12,7 @@
  * file that was distributed with this source code.
  */
 
-namespace League\Period\Test;
+namespace LeagueTest\Period;
 
 use DateInterval;
 use DateTime;
@@ -405,15 +405,16 @@ abstract class IntervalTest extends TestCase
     {
         $interval = $this->createInterval(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
         $moved = $interval->move(new DateInterval('P1D'));
-        self::assertEquals($this->createInterval(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01')), $moved);
-        self::assertSame($interval->move(new DateInterval('PT0S')), $interval);
+        self::assertFalse($interval->equalsTo($moved));
+        self::assertTrue($interval->move(new DateInterval('PT0S'))->equalsTo($interval));
     }
 
     public function testMoveSupportStringIntervals()
     {
         $interval = $this->createInterval(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
         $advanced = $interval->move(DateInterval::createFromDateString('1 DAY'));
-        self::assertEquals($this->createInterval(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01')), $advanced);
+        $alt = $this->createInterval(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
+        self::assertTrue($alt->equalsTo($advanced));
     }
 
     public function testMoveWithInvertedInterval()
@@ -422,14 +423,13 @@ abstract class IntervalTest extends TestCase
         $alt = $this->createInterval(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
         $duration = new DateInterval('P1D');
         $duration->invert = 1;
-
-        self::assertEquals($orig, $alt->move($duration));
+        self::assertTrue($orig->equalsTo($alt->move($duration)));
     }
 
     public function testMoveWithInvertedStringInterval()
     {
         $orig = $this->createInterval(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
         $alt = $this->createInterval(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
-        self::assertEquals($orig, $alt->move(DateInterval::createFromDateString('-1 DAY')));
+        self::assertTrue($orig->equalsTo($alt->move(DateInterval::createFromDateString('-1 DAY'))));
     }
 }

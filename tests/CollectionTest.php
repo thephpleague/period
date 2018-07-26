@@ -12,7 +12,7 @@
  * file that was distributed with this source code.
  */
 
-namespace League\Period\Test;
+namespace LeagueTest\Period;
 
 use DateInterval;
 use League\Period\Collection;
@@ -29,17 +29,17 @@ class CollectionTest extends TestCase
 
     protected $collection;
 
-    protected $elements;
+    protected $intervals;
 
     public function setUp()
     {
-        $this->elements = [
+        $this->intervals = [
             'first' => Period::createFromDay('2012-02-01'),
             'middle' => Period::createFromMonth('2012-02-01'),
             'last' => Period::createFromWeek('2012-02-01'),
         ];
         $this->timezone = date_default_timezone_get();
-        $this->collection = new Collection($this->elements);
+        $this->collection = new Collection($this->intervals);
     }
 
     public function tearDown()
@@ -49,20 +49,20 @@ class CollectionTest extends TestCase
 
     public function testFirst()
     {
-        self::assertEquals($this->elements['first'], $this->collection->first());
+        self::assertEquals($this->intervals['first'], $this->collection->first());
         self::assertNull((new Collection())->first());
     }
 
     public function testLast()
     {
-        self::assertEquals($this->elements['last'], $this->collection->last());
+        self::assertEquals($this->intervals['last'], $this->collection->last());
         self::assertNull((new Collection())->last());
     }
 
     public function testArrayAccess()
     {
         self::assertCount(3, $this->collection);
-        self::assertEquals($this->elements['middle'], $this->collection['middle']);
+        self::assertEquals($this->intervals['middle'], $this->collection['middle']);
         self::assertFalse(isset($this->collection['faraway']));
         $this->collection['faraway'] = Period::createFromYear('2013');
         self::assertTrue(isset($this->collection['faraway']));
@@ -88,7 +88,7 @@ class CollectionTest extends TestCase
 
     public function testGet()
     {
-        self::assertEquals($this->elements['middle'], $this->collection->get('middle'));
+        self::assertEquals($this->intervals['middle'], $this->collection->get('middle'));
         self::assertNull($this->collection->get('faraway'));
     }
 
@@ -147,25 +147,25 @@ class CollectionTest extends TestCase
 
     public function testToArray()
     {
-        self::assertSame($this->elements, $this->collection->toArray());
+        self::assertSame($this->intervals, $this->collection->toArray());
         self::assertSame(['first', 'middle', 'last'], $this->collection->getKeys());
-        self::assertSame(array_values($this->elements), $this->collection->getValues());
+        self::assertSame(array_values($this->intervals), $this->collection->getValues());
     }
 
     public function testIterator()
     {
         $iter = 0;
         foreach ($this->collection as $index => $period) {
-            self::assertSame($this->elements[$index], $period);
+            self::assertSame($this->intervals[$index], $period);
             ++$iter;
         }
-        self::assertCount($iter, $this->elements);
+        self::assertCount($iter, $this->intervals);
     }
 
     public function testHas()
     {
-        self::assertTrue($this->collection->contains($this->elements['middle']));
-        self::assertTrue($this->collection->contains(clone $this->elements['middle']));
+        self::assertTrue($this->collection->contains($this->intervals['middle']));
+        self::assertTrue($this->collection->contains(clone $this->intervals['middle']));
         self::assertFalse($this->collection->contains(Period::createFromDay('2008-05-01')));
     }
 

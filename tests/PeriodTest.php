@@ -12,7 +12,7 @@
  * file that was distributed with this source code.
  */
 
-namespace League\Period\Test;
+namespace LeagueTest\Period;
 
 use DateInterval;
 use DatePeriod;

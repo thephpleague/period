@@ -21,7 +21,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 /**
- * A PHP Interface to represent an time range.
+ * A PHP Interface to represent an time interval.
  *
  * Inspired from JodaTime ReadableInterval Interface
  * @see http://www.joda.org/joda-time/apidocs/org/joda/time/ReadableInterval.html
@@ -148,8 +148,8 @@ interface Interval
     public function move(DateInterval $duration): self;
 
     /**
-     * Returns an instance where the given DateInterval is
-     * substracted from the starting datepoint and simultaneously added to the ending datepoint.
+     * Returns an instance where the given DateInterval is simultaneously
+     * substracted from the starting datepoint and added to the ending datepoint.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
