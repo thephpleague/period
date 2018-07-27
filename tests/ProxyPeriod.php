@@ -14,8 +14,20 @@
 
 namespace LeagueTest\Period;
 
-use DateTimeImmutable;
+use League\Period\Interval;
+use League\Period\ProxyInterval;
 
-class ExtendedDate extends DateTimeImmutable
+final class ProxyPeriod extends ProxyInterval
 {
+    /**
+     * @var array
+     */
+    private $foo;
+
+    public function __construct(Interval $interval, array $foo = [])
+    {
+        $this->foo = $foo;
+
+        parent::__construct($interval);
+    }
 }

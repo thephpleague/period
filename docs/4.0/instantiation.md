@@ -263,11 +263,11 @@ $alt->equalsTo($period); //return true;
 ~~~php
 <?php
 
-public static Period::createFromDuration(mixed $startDate, mixed $duration): Period
+public static Period::createFromDurationAfterStart(mixed $startDate, mixed $duration): Period
 public static Period::createFromDurationBeforeEnd(mixed $endDate, mixed $duration): Period
 ~~~
 
-- `createFromDuration` returns a `Period` object which starts at `$startDate`
+- `createFromDurationAfterStart` returns a `Period` object which starts at `$startDate`
 - `createFromDurationBeforeEnd` returns a `Period` object which ends at `$endDate`.
 
 Both created `Period` objects will have a duration equals to `$duration`.
@@ -280,7 +280,7 @@ Both created `Period` objects will have a duration equals to `$duration`.
 #### Example
 
 ~~~php
-$period = Period::createFromDuration('2012-04-01 08:30:25', '1 DAY');
+$period = Period::createFromDurationAfterStart('2012-04-01 08:30:25', '1 DAY');
 $alt    = Period::createFromDurationBeforeEnd('2012-04-02 08:30:25', new DateInterval('P1D'));
 $alt->equalsTo($period); //returns true
 ~~~

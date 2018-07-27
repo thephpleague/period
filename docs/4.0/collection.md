@@ -5,7 +5,7 @@ title: Period objects Collection
 
 # Collection
 
-The `League\Period\Collection` is an **ordered map** that can also be used as a list of `PeriodInterface` objects.  
+The `League\Period\Collection` is an **ordered map** that can also be used as a list of `Interval` objects.  
 This class is heavily inspired by `Doctrine\Common\Collections\Collection` but also feature specific methods to deal with collection of time range objects.
 
 ~~~php
@@ -22,7 +22,7 @@ $collection['meeting'] = Period::createFromDuration('2018-05-12 14:00:00', '+2 H
 
 $intersection = $collection->getIntersections();
 
-$filterCollection = $collection->filter(function (PeriodInterface $period) use ($intersection) {
+$filterCollection = $collection->filter(function (Interval $period) use ($intersection) {
     foreach ($intersection as $interPeriod) {
         if ($interPeriod->intersects($period)) {
             return true;
@@ -42,11 +42,11 @@ $filterCollection['meeting']->equalsTo($collection->get('meeting')); //true
 
 ### Collection::getInterval
 
-Returns a `Period` object which represents the smallest time range containing all the `PeriodInterface` objects of the collection. If the collection is empty this methods returns `null`.
+Returns a `Period` object which represents the smallest time range containing all the `Interval` objects of the collection. If the collection is empty this methods returns `null`.
 
 ~~~php
 $retval = $collection->getInterval();
-//$retval is a PeriodInterface or null
+//$retval is a Interval or null
 ~~~
 
 ### Collection::getGaps
@@ -79,7 +79,7 @@ In addition theses methods are also available:
 
 ### Collection::add
 
-Append a `PeriodInterface` object to the current `Collection`.
+Append a `Interval` object to the current `Collection`.
 
 ~~~php
 $collection->add(Period::createFromDay('2018-02-03'));
@@ -87,29 +87,29 @@ $collection->add(Period::createFromDay('2018-02-03'));
 
 ### Collection::contains
 
-Tells whether the given `PeriodInterface` object is present in the current `Collection`.
+Tells whether the given `Interval` object is present in the current `Collection`.
 
 ~~~php
 $collection = new Collection([Period::createFromDay('2018-02-03')]);
 $retval = $collection->contains(Period::createFromDay('2018-02-03')); // true
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>Interval::equalsTo</code> method</p>
 
 ### Collection::containsKey
 
-Tells whether a `PeriodInterface` object present in the current `Collection` is attached using the `$index` key.
+Tells whether a `Interval` object present in the current `Collection` is attached using the `$index` key.
 
 ~~~php
 $collection = new Collection(['first' => Period::createFromDay('2018-02-03')]);
 $retval = $collection->containsKey('first'); // true
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>Interval::equalsTo</code> method</p>
 
 ### Collection::clear
 
-Remove all the `PeriodInterface` objects present in the current `Collection`.
+Remove all the `Interval` objects present in the current `Collection`.
 
 ~~~php
 $collection->clear();
@@ -117,7 +117,7 @@ $collection->clear();
 
 ### Collection::filter
 
-Filter the current `Collection` using a predicate function. If the predicate function returns `true`, the `PeriodInterface` and its related index are added in the returned `Collection` instance.
+Filter the current `Collection` using a predicate function. If the predicate function returns `true`, the `Interval` and its related index are added in the returned `Collection` instance.
 
 ~~~php
 $collection = new Collection([
@@ -126,7 +126,7 @@ $collection = new Collection([
     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
 ]);
 
-$filterCollection = $collection->filter(function (PeriodInterface $period) {
+$filterCollection = $collection->filter(function (Interval $period) {
     return $period->getTimestampInterval() > 60 * 60;
 }); // [Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS')]
 ~~~
@@ -135,14 +135,14 @@ $filterCollection = $collection->filter(function (PeriodInterface $period) {
 
 ### Collection::get
 
-Returns the `PeriodInterface` at the specified `$index`in the current `Collection`. If not object is found or the key is invalid, `null` is returned.
+Returns the `Interval` at the specified `$index`in the current `Collection`. If not object is found or the key is invalid, `null` is returned.
 
 ~~~php
 $collection = new Collection();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
-$retval = $collection->get('foo'); // PeriodInterface
+$retval = $collection->get('foo'); // Interval
 $retval2 = $collection->get('bar'); // null
-//$retval is a PeriodInterface object or ǹull
+//$retval is a Interval object or ǹull
 ~~~
 
 ### Collection::getKeys
@@ -157,39 +157,39 @@ $retval = $collection->getKeys(); // ['foo']
 
 ### Collection::getValues
 
-Returns all `PeriodInterface` objects present in the current `Collection`.
+Returns all `Interval` objects present in the current `Collection`.
 
 ~~~php
 $collection = new Collection();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
-$retval = $collection->getValues(); // [PeriodInterface]
+$retval = $collection->getValues(); // [Interval]
 ~~~
 
 ### Collection::first
 
-Returns the first `PeriodInterface` object present in the current `Collection` or `null` if the collection is
+Returns the first `Interval` object present in the current `Collection` or `null` if the collection is
 empty.
 
 ~~~php
 $collection = new Collection();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
-$retval = $collection->first(); // PeriodInterface or null if Collection is empty
+$retval = $collection->first(); // Interval or null if Collection is empty
 ~~~
 
 ### Collection::last
 
-Returns the last `PeriodInterface` object present in the current `Collection` or `null` if the collection is
+Returns the last `Interval` object present in the current `Collection` or `null` if the collection is
 empty.
 
 ~~~php
 $collection = new Collection();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
-$retval = $collection->last();  // PeriodInterface or null if Collection is empty
+$retval = $collection->last();  // Interval or null if Collection is empty
 ~~~
 
 ### Collection::indexOf
 
-Returns the index attached to the submitted `PeriodInterface` object present in the current `Collection` or `false` the `PeriodInterface` object is not found.
+Returns the index attached to the submitted `Interval` object present in the current `Collection` or `false` the `Interval` object is not found.
 
 ~~~php
 $collection = new Collection();
@@ -197,16 +197,16 @@ $collection['foo'] = Period::createFromDuration('2018-05-03', '+1 DAY');
 $retval = $collection->indexOf(Period::createFromDay('2018-05-03')); // 'foo'
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>Interval::equalsTo</code> method</p>
 
 ### Collection::map
 
-Apply the given function to each `PeriodInterface` in the collection and returns a new `Collection` instance containing the modified `PeriodInterface` objects. Indexes are preserved.
+Apply the given function to each `Interval` in the collection and returns a new `Collection` instance containing the modified `Interval` objects. Indexes are preserved.
 
 ~~~php
 $collection = new Collection();
 $collection['foo'] = Period::createFromDuration('2018-05-03', '+1 DAY');
-$retval = $collection->map(function (PeriodInterface $period) {
+$retval = $collection->map(function (Interval $period) {
     return $period->endingOn($period->getEndDate()->add(new DateInterval('P1D')));
 });
 $collection['foo']->getEndDate()->format('Y-m-d'); // 2018-05-4
@@ -215,7 +215,7 @@ $retval['foo']->getEndDate()->format('Y-m-d');     // 2018-05-5
 
 ### Collection::partition
 
-Partitions this `Collection` instance in two `Collection` instances according to a predicate. Keys are preserved in the resulting collections. The first instance contains all the `PeriodInterface` objects and their related index which verify the predicate. The second instance contains the remaining objects and their indexes.
+Partitions this `Collection` instance in two `Collection` instances according to a predicate. Keys are preserved in the resulting collections. The first instance contains all the `Interval` objects and their related index which verify the predicate. The second instance contains the remaining objects and their indexes.
 
 ~~~php
 $collection = new Collection([
@@ -224,7 +224,7 @@ $collection = new Collection([
     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
 ]);
 
-$retval = $collection->partition(function (PeriodInterface $period, string $index) {
+$retval = $collection->partition(function (Interval $period, string $index) {
     return false !== strpos($index, 'n');
 });
 // [
@@ -236,11 +236,11 @@ $retval = $collection->partition(function (PeriodInterface $period, string $inde
 //]
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> the predicate first argument is the <code>PeriodInterface</code> value and its second optional argument is its index.</p>
+<p class="message-notice"><strong>Notice:</strong> the predicate first argument is the <code>Interval</code> value and its second optional argument is its index.</p>
 
 ### Collection::remove
 
-Removes the `PeriodInterface` object from the `Collection`. If not object was removed `false` is returned otherwise `true` is returned.
+Removes the `Interval` object from the `Collection`. If not object was removed `false` is returned otherwise `true` is returned.
 
 ~~~php
 $collection = new Collection();
@@ -250,11 +250,11 @@ $retval = $collection->remove($month); // return true
 $retval = $collection->remove(Period::createFromDay('2018-03-01')); //return false
 ~~~
 
-<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>PeriodInterface::equalsTo</code> method</p>
+<p class="message-notice"><strong>Notice:</strong> comparison is done using <code>Interval::equalsTo</code> method</p>
 
 ### Collection::removeIndex
 
-Removes the `PeriodInterface` object at the specified index from the `Collection`. If not object was found `null` is returned otherwise the remove the `PeriodInterface` object is returned.
+Removes the `Interval` object at the specified index from the `Collection`. If not object was found `null` is returned otherwise the remove the `Interval` object is returned.
 
 ~~~php
 $collection = new Collection();
@@ -266,7 +266,7 @@ $retval = $collection->removeIndex('bar'); // return null
 
 ### Collection::set
 
-Sets a `PeriodInterface` object in the collection at the specified key/index.
+Sets a `Interval` object in the collection at the specified key/index.
 
 ~~~php
 $collection = new Collection();
@@ -275,7 +275,7 @@ $retval = $collection->set('foo', Period::createFromWeek(2018, 21));
 
 ### Collection::slice
 
-Extracts a slice of `$length` `PeriodInterface` objects starting at position `$offset` from the `Collection`.
+Extracts a slice of `$length` `Interval` objects starting at position `$offset` from the `Collection`.
 
 Calling this method will only return the selected slice and NOT change the elements contained in the collection slice is called on.
 
@@ -303,7 +303,7 @@ $collection = new Collection([
 ]);
 $collection->first()->equalsTo($collection['sports']);
 $collection->las()->equalsTo($collection['meeting']);
-$collection->sort(function (PeriodInterface $period1, PeriodInterface $period2) {
+$collection->sort(function (Interval $period1, Interval $period2) {
     return $period2->compareDuration($period1);
 });
 $collection->first()->equalsTo($collection['lunch']);

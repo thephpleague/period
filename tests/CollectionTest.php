@@ -12,12 +12,12 @@
  * file that was distributed with this source code.
  */
 
-namespace League\Period\Test;
+namespace LeagueTest\Period;
 
 use DateInterval;
 use League\Period\Collection;
+use League\Period\Interval;
 use League\Period\Period;
-use League\Period\PeriodInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 use TypeError;
 use const ARRAY_FILTER_USE_BOTH;
@@ -29,17 +29,17 @@ class CollectionTest extends TestCase
 
     protected $collection;
 
-    protected $elements;
+    protected $intervals;
 
     public function setUp()
     {
-        $this->elements = [
+        $this->intervals = [
             'first' => Period::createFromDay('2012-02-01'),
             'middle' => Period::createFromMonth('2012-02-01'),
             'last' => Period::createFromWeek('2012-02-01'),
         ];
         $this->timezone = date_default_timezone_get();
-        $this->collection = new Collection($this->elements);
+        $this->collection = new Collection($this->intervals);
     }
 
     public function tearDown()
@@ -49,20 +49,20 @@ class CollectionTest extends TestCase
 
     public function testFirst()
     {
-        self::assertEquals($this->elements['first'], $this->collection->first());
+        self::assertEquals($this->intervals['first'], $this->collection->first());
         self::assertNull((new Collection())->first());
     }
 
     public function testLast()
     {
-        self::assertEquals($this->elements['last'], $this->collection->last());
+        self::assertEquals($this->intervals['last'], $this->collection->last());
         self::assertNull((new Collection())->last());
     }
 
     public function testArrayAccess()
     {
         self::assertCount(3, $this->collection);
-        self::assertEquals($this->elements['middle'], $this->collection['middle']);
+        self::assertEquals($this->intervals['middle'], $this->collection['middle']);
         self::assertFalse(isset($this->collection['faraway']));
         $this->collection['faraway'] = Period::createFromYear('2013');
         self::assertTrue(isset($this->collection['faraway']));
@@ -88,7 +88,7 @@ class CollectionTest extends TestCase
 
     public function testGet()
     {
-        self::assertEquals($this->elements['middle'], $this->collection->get('middle'));
+        self::assertEquals($this->intervals['middle'], $this->collection->get('middle'));
         self::assertNull($this->collection->get('faraway'));
     }
 
@@ -140,32 +140,32 @@ class CollectionTest extends TestCase
     {
         self::assertCount(3, $this->collection);
         $period = $this->collection->removeIndex('last');
-        self::assertInstanceOf(PeriodInterface::class, $period);
+        self::assertInstanceOf(Interval::class, $period);
         self::assertCount(2, $this->collection);
         self::assertNull($this->collection->removeIndex('faraway'));
     }
 
     public function testToArray()
     {
-        self::assertSame($this->elements, $this->collection->toArray());
+        self::assertSame($this->intervals, $this->collection->toArray());
         self::assertSame(['first', 'middle', 'last'], $this->collection->getKeys());
-        self::assertSame(array_values($this->elements), $this->collection->getValues());
+        self::assertSame(array_values($this->intervals), $this->collection->getValues());
     }
 
     public function testIterator()
     {
         $iter = 0;
         foreach ($this->collection as $index => $period) {
-            self::assertSame($this->elements[$index], $period);
+            self::assertSame($this->intervals[$index], $period);
             ++$iter;
         }
-        self::assertCount($iter, $this->elements);
+        self::assertCount($iter, $this->intervals);
     }
 
     public function testHas()
     {
-        self::assertTrue($this->collection->contains($this->elements['middle']));
-        self::assertTrue($this->collection->contains(clone $this->elements['middle']));
+        self::assertTrue($this->collection->contains($this->intervals['middle']));
+        self::assertTrue($this->collection->contains(clone $this->intervals['middle']));
         self::assertFalse($this->collection->contains(Period::createFromDay('2008-05-01')));
     }
 
@@ -177,7 +177,7 @@ class CollectionTest extends TestCase
 
     public function testFilter()
     {
-        $filter = function (PeriodInterface $period, $index) {
+        $filter = function (Interval $period, $index) {
             return $index !== 'middle';
         };
 
@@ -190,7 +190,7 @@ class CollectionTest extends TestCase
     public function testMapper()
     {
         $interval = new DateInterval('P2D');
-        $mapper = function (PeriodInterface $period) use ($interval) {
+        $mapper = function (Interval $period) use ($interval) {
             return $period
                 ->startingOn($period->getStartDate()->sub($interval))
                 ->endingOn($period->getStartDate()->add($interval))
@@ -207,14 +207,14 @@ class CollectionTest extends TestCase
     public function testMapperThrowsException()
     {
         $this->expectException(TypeError::class);
-        $this->collection->map(function (PeriodInterface $period) {
+        $this->collection->map(function (Interval $period) {
             return true;
         });
     }
 
     public function testPartition()
     {
-        $predicate = function (PeriodInterface $period, $index) {
+        $predicate = function (Interval $period, $index) {
             return $index !== 'middle';
         };
 
@@ -234,7 +234,7 @@ class CollectionTest extends TestCase
 
     public function testSort()
     {
-        $sort = function (PeriodInterface $period1, PeriodInterface $period2) {
+        $sort = function (Interval $period1, Interval $period2) {
             return $period2->getEndDate() <=> $period1->getEndDate();
         };
 
@@ -327,7 +327,7 @@ class CollectionTest extends TestCase
     /**
      * @dataProvider providesCollectionForPeriods
      */
-    public function testgetInterval(Collection $collection, PeriodInterface $expected)
+    public function testgetInterval(Collection $collection, Interval $expected)
     {
         $period = $collection->getInterval();
         self::assertNotNull($period);

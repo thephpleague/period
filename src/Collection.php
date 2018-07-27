@@ -38,7 +38,7 @@ use function sprintf;
 use function uasort;
 
 /**
- * A class to ease handling PeriodInterface objects collection.
+ * A class to ease handling Interval objects collection.
  *
  * This class is heavily inspired by the Doctrine\Common\Collections\Collection interface
  *
@@ -49,18 +49,18 @@ use function uasort;
 final class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
-     * @var PeriodInterface[]
+     * @var Interval[]
      */
-    protected $storage = [];
+    private $storage = [];
 
     /**
      * Create a new instance.
      *
-     * @param PeriodInterface[] $periods
+     * @param Interval[] $intervals
      */
-    public function __construct(iterable $periods = [])
+    public function __construct(iterable $intervals = [])
     {
-        foreach ($periods as $offset => $value) {
+        foreach ($intervals as $offset => $value) {
             $this->offsetSet($offset, $value);
         }
     }
@@ -70,11 +70,11 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function offsetSet($offset, $value): void
     {
-        if (!$value instanceof PeriodInterface) {
+        if (!$value instanceof Interval) {
             throw new TypeError(sprintf(
                 'a %s only contains % objects, you try to add a %s instead',
                 Collection::class,
-                PeriodInterface::class,
+                Interval::class,
                 is_object($value) ? get_class($value) : gettype($value)
             ));
         }
@@ -90,7 +90,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($offset): ?PeriodInterface
+    public function offsetGet($offset): ?Interval
     {
         return $this->storage[$offset] ?? null;
     }
@@ -124,8 +124,8 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      */
     public function getIterator(): iterable
     {
-        foreach ($this->storage as $offset => $period) {
-            yield $offset => $period;
+        foreach ($this->storage as $offset => $interval) {
+            yield $offset => $interval;
         }
     }
 
@@ -140,9 +140,9 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns all the PeriodInterface objects of the collection.
+     * Returns all the Interval objects of the collection.
      *
-     * @return PeriodInterface[]
+     * @return Interval[]
      */
     public function getValues(): array
     {
@@ -150,7 +150,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns an array representation of the collection.
+     * Returns an array representation of the instance.
      */
     public function toArray(): array
     {
@@ -158,7 +158,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Remove all the periods from the Collection.
+     * Remove all the Interval objects from the instance.
      */
     public function clear(): void
     {
@@ -166,65 +166,65 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Get the PeriodInterface object at the specified index.
+     * Get the Interval object at the specified index.
      *
      * @param string|int $index
      *
-     * @return ?PeriodInterface
+     * @return ?Interval
      */
-    public function get($index): ?PeriodInterface
+    public function get($index): ?Interval
     {
         return $this->offsetGet($index);
     }
 
     /**
-     * Returns the first period of the collection.
+     * Returns the first Interval object of the instance.
      *
-     * @return ?PeriodInterface
+     * @return ?Interval
      */
-    public function first(): ?PeriodInterface
+    public function first(): ?Interval
     {
-        $period = reset($this->storage);
-        if (false === $period) {
+        $interval = reset($this->storage);
+        if (false === $interval) {
             return null;
         }
 
-        return $period;
+        return $interval;
     }
 
     /**
-     * Returns the last period of the collection.
+     * Returns the last Interval of the instance.
      *
-     * @return ?PeriodInterface
+     * @return ?Interval
      */
-    public function last(): ?PeriodInterface
+    public function last(): ?Interval
     {
-        $period = end($this->storage);
-        if (false === $period) {
+        $interval = end($this->storage);
+        if (false === $interval) {
             return null;
         }
 
-        return $period;
+        return $interval;
     }
 
     /**
-     * Tells whether the submitted PeriodInterface object is present in the collection.
+     * Tells whether the submitted Interval object is present in the collection.
      */
-    public function contains(PeriodInterface $period): bool
+    public function contains(Interval $interval): bool
     {
-        return false !== $this->indexOf($period);
+        return false !== $this->indexOf($interval);
     }
 
     /**
-     * Returns the index of a given PeriodInterface if present in the collection
+     * Returns the index of a given Interval if present in the collection
      * or false.
      *
      * @return string|int|bool
      */
-    public function indexOf(PeriodInterface $period)
+    public function indexOf(Interval $interval)
     {
-        foreach ($this->storage as $index => $stored_period) {
-            if ($period->equalsTo($stored_period)) {
+        foreach ($this->storage as $index => $stored_interval) {
+            if ($interval->equalsTo($stored_interval)) {
                 return $index;
             }
         }
@@ -233,7 +233,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Tells whether the index is attached to a PeriodInterface present in the collection.
+     * Tells whether the index is attached to a Interval present in the collection.
      *
      * @param string|int $index
      */
@@ -253,19 +253,19 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Adds the given Period from the Collection if present.
+     * Adds the given Interval to the Collection.
      */
-    public function add(PeriodInterface $period): void
+    public function add(Interval $interval): void
     {
-        $this->offsetSet(null, $period);
+        $this->offsetSet(null, $interval);
     }
 
     /**
-     * Set the PeriodInterface object at the specified index.
+     * Set the Interval object at the specified index.
      *
      * @param string|int $index
      */
-    public function set($index, PeriodInterface $period): void
+    public function set($index, Interval $interval): void
     {
         if (!is_int($index) && !is_string($index)) {
             throw new TypeError(sprintf(
@@ -274,15 +274,15 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
             ));
         }
 
-        $this->offsetSet($index, $period);
+        $this->offsetSet($index, $interval);
     }
 
     /**
-     * Remove the PeriodInterface from the Collection if present.
+     * Removes the Interval from the instance if present.
      */
-    public function remove(PeriodInterface $period): bool
+    public function remove(Interval $interval): bool
     {
-        $offset = $this->indexOf($period);
+        $offset = $this->indexOf($interval);
         if (false !== $offset) {
             $this->offsetUnset($offset);
         }
@@ -291,25 +291,25 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Remove the PeriodInterface at a given index from the Collection if present.
+     * Removes the Interval at a given index from the instance if present.
      *
      * @param string|int $index
      *
-     * @return ?PeriodInterface
+     * @return ?Interval
      */
-    public function removeIndex($index): ?PeriodInterface
+    public function removeIndex($index): ?Interval
     {
-        $period = $this->offsetGet($index);
-        if (null !== $period) {
+        $interval = $this->offsetGet($index);
+        if (null !== $interval) {
             $this->offsetUnset($index);
         }
 
-        return $period;
+        return $interval;
     }
 
     /**
-     * Returns all the Period objects of this collection that satisfy the filter $filter.
-     * The order of the Period objetcs are preserved.
+     * Returns all the Interval objects of this instance that satisfy the filter $filter.
+     * The order of the Interval objects are preserved.
      *
      * @see https://php.net/manual/en/function.array-filter.php
      */
@@ -319,8 +319,8 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Applies a mapper $mapper to all the Periods object of this collection and
-     * returns a new collection with the elements returned by the mapper.
+     * Applies a mapper $mapper to all the Interval objects of this instance and
+     * returns a new instance with the Interval objects returned by the mapper.
      *
      * @see https://php.net/manual/en/function.array-map.php
      */
@@ -330,11 +330,11 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Splits this collection into two separate collections according to a predicate.
-     * Keys are preserved in the resulting collections.
+     * Splits this instance into two separate new instances according to a predicate.
+     * Keys are preserved in the resulting instances.
      *
      * @param callable $predicate the predicate take at most 2 variables
-     *                            - the current PeriodInterface object
+     *                            - the current Interval object
      *                            - the current offset
      *
      * @return Collection[] An array with two elements. The first element contains the collection
@@ -345,19 +345,19 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     {
         $matches = new self();
         $no_matches = new self();
-        foreach ($this->storage as $offset => $period) {
+        foreach ($this->storage as $offset => $interval) {
             $collection = 'no_matches';
-            if (true === $predicate($period, $offset)) {
+            if (true === $predicate($interval, $offset)) {
                 $collection = 'matches';
             }
-            $$collection[$offset] = $period;
+            $$collection[$offset] = $interval;
         }
 
         return [$matches, $no_matches];
     }
 
     /**
-     * Extracts a slice of this collection into a new collection. Keys are preserved.
+     * Extracts a slice of this instance into a new instance. Keys are preserved.
      *
      * @see https://php.net/manual/en/function.array-slice.php
      *
@@ -369,48 +369,48 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns a PeriodInterface which represents the smallest time range which contains all the
-     * collection PeriodInterface.
+     * Returns a Interval which represents the smallest time range which contains all the
+     * instance Interval objects.
      */
-    public function getInterval(): ?PeriodInterface
+    public function getInterval(): ?Interval
     {
-        $period = null;
+        $interval = null;
         foreach ($this->storage as $item) {
-            if (null === $period) {
-                $period = $item;
+            if (null === $interval) {
+                $interval = $item;
                 continue;
             }
 
-            if ($item->getStartDate() < $period->getStartDate()) {
-                $period = $period->startingOn($item->getStartDate());
+            if ($item->getStartDate() < $interval->getStartDate()) {
+                $interval = $interval->startingOn($item->getStartDate());
             }
 
-            if ($item->getEndDate() > $period->getEndDate()) {
-                $period = $period->endingOn($item->getEndDate());
+            if ($item->getEndDate() > $interval->getEndDate()) {
+                $interval = $interval->endingOn($item->getEndDate());
             }
         }
 
-        return $period;
+        return $interval;
     }
 
     /**
-     * Returns a new instance with the founded gaps inside the current collection.
+     * Returns a new instance with the founded gaps inside the current instance.
      */
     public function getGaps(): self
     {
-        $periods = clone $this;
-        $periods->sort(function (PeriodInterface $period1, PeriodInterface $period2) {
-            return $period1->getStartDate() <=> $period2->getStartDate();
+        $intervals = clone $this;
+        $intervals->sort(function (Interval $interval1, Interval $interval2) {
+            return $interval1->getStartDate() <=> $interval2->getStartDate();
         });
 
         $collection = new self();
-        $current = $periods->first();
+        $current = $intervals->first();
         if (null === $current) {
             return $collection;
         }
 
-        $periods->remove($current);
-        foreach ($periods as $next) {
+        $intervals->remove($current);
+        foreach ($intervals as $next) {
             if (!$current->overlaps($next) && !$current->abuts($next)) {
                 $collection[] = $current->gap($next);
             }
@@ -424,23 +424,23 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns a new instance with the founded intersections inside the current collection.
+     * Returns a new instance with the founded intersections inside the current instance.
      */
     public function getIntersections(): self
     {
-        $periods = clone $this;
-        $periods->sort(function (PeriodInterface $period1, PeriodInterface $period2) {
-            return $period1->getStartDate() <=> $period2->getStartDate();
+        $intervals = clone $this;
+        $intervals->sort(function (Interval $interval1, Interval $interval2) {
+            return $interval1->getStartDate() <=> $interval2->getStartDate();
         });
 
         $collection = new self();
-        $current = $periods->first();
+        $current = $intervals->first();
         if (null === $current) {
             return $collection;
         }
 
-        $periods->remove($current);
-        foreach ($periods as $next) {
+        $intervals->remove($current);
+        foreach ($intervals as $next) {
             if ($current->overlaps($next)) {
                 $collection[] = $current->intersect($next);
             }
