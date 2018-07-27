@@ -55,14 +55,97 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * Create a new instance.
-     *
-     * @param Interval[] $intervals
      */
     public function __construct(iterable $intervals = [])
     {
         foreach ($intervals as $offset => $value) {
             $this->offsetSet($offset, $value);
         }
+    }
+
+    /**
+     * Returns a Interval which represents the smallest time range which contains all the
+     * instance Interval objects.
+     */
+    public function getInterval(): ?Interval
+    {
+        $interval = null;
+        foreach ($this->storage as $item) {
+            if (null === $interval) {
+                $interval = $item;
+                continue;
+            }
+
+            if ($item->getStartDate() < $interval->getStartDate()) {
+                $interval = $interval->startingOn($item->getStartDate());
+            }
+
+            if ($item->getEndDate() > $interval->getEndDate()) {
+                $interval = $interval->endingOn($item->getEndDate());
+            }
+        }
+
+        return $interval;
+    }
+
+    /**
+     * Returns a new instance with the founded gaps inside the current instance.
+     */
+    public function getGaps(): Collection
+    {
+        $intervals = clone $this;
+        $intervals->sort(function (Interval $interval1, Interval $interval2) {
+            return $interval1->getStartDate() <=> $interval2->getStartDate();
+        });
+
+        $collection = new self();
+        $current = $intervals->first();
+        if (null === $current) {
+            return $collection;
+        }
+
+        $intervals->remove($current);
+        foreach ($intervals as $next) {
+            if (!$current->overlaps($next) && !$current->abuts($next)) {
+                $collection[] = $current->gap($next);
+            }
+
+            if (!$current->contains($next)) {
+                $current = $next;
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a new instance with the founded intersections inside the current instance.
+     */
+    public function getIntersections(): Collection
+    {
+        $intervals = clone $this;
+        $intervals->sort(function (Interval $interval1, Interval $interval2) {
+            return $interval1->getStartDate() <=> $interval2->getStartDate();
+        });
+
+        $collection = new self();
+        $current = $intervals->first();
+        if (null === $current) {
+            return $collection;
+        }
+
+        $intervals->remove($current);
+        foreach ($intervals as $next) {
+            if ($current->overlaps($next)) {
+                $collection[] = $current->intersect($next);
+            }
+
+            if (!$current->contains($next)) {
+                $current = $next;
+            }
+        }
+
+        return $collection;
     }
 
     /**
@@ -210,7 +293,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     /**
      * Tells whether the submitted Interval object is present in the collection.
      */
-    public function contains(Interval $interval): bool
+    public function has(Interval $interval): bool
     {
         return false !== $this->indexOf($interval);
     }
@@ -237,7 +320,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param string|int $index
      */
-    public function containskey($index): bool
+    public function hasIndex($index): bool
     {
         return $this->offsetExists($index);
     }
@@ -313,7 +396,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see https://php.net/manual/en/function.array-filter.php
      */
-    public function filter(callable $filter, int $flag = 0): self
+    public function filter(callable $filter, int $flag = 0): Collection
     {
         return new self(array_filter($this->storage, $filter, $flag));
     }
@@ -324,7 +407,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @see https://php.net/manual/en/function.array-map.php
      */
-    public function map(callable $mapper): self
+    public function map(callable $mapper): Collection
     {
         return new self(array_map($mapper, $this->storage));
     }
@@ -363,93 +446,8 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param null|int $length
      */
-    public function slice(int $offset, int $length = null): self
+    public function slice(int $offset, int $length = null): Collection
     {
         return new self(array_slice($this->storage, $offset, $length, true));
-    }
-
-    /**
-     * Returns a Interval which represents the smallest time range which contains all the
-     * instance Interval objects.
-     */
-    public function getInterval(): ?Interval
-    {
-        $interval = null;
-        foreach ($this->storage as $item) {
-            if (null === $interval) {
-                $interval = $item;
-                continue;
-            }
-
-            if ($item->getStartDate() < $interval->getStartDate()) {
-                $interval = $interval->startingOn($item->getStartDate());
-            }
-
-            if ($item->getEndDate() > $interval->getEndDate()) {
-                $interval = $interval->endingOn($item->getEndDate());
-            }
-        }
-
-        return $interval;
-    }
-
-    /**
-     * Returns a new instance with the founded gaps inside the current instance.
-     */
-    public function getGaps(): self
-    {
-        $intervals = clone $this;
-        $intervals->sort(function (Interval $interval1, Interval $interval2) {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
-
-        $collection = new self();
-        $current = $intervals->first();
-        if (null === $current) {
-            return $collection;
-        }
-
-        $intervals->remove($current);
-        foreach ($intervals as $next) {
-            if (!$current->overlaps($next) && !$current->abuts($next)) {
-                $collection[] = $current->gap($next);
-            }
-
-            if (!$current->contains($next)) {
-                $current = $next;
-            }
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns a new instance with the founded intersections inside the current instance.
-     */
-    public function getIntersections(): self
-    {
-        $intervals = clone $this;
-        $intervals->sort(function (Interval $interval1, Interval $interval2) {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
-
-        $collection = new self();
-        $current = $intervals->first();
-        if (null === $current) {
-            return $collection;
-        }
-
-        $intervals->remove($current);
-        foreach ($intervals as $next) {
-            if ($current->overlaps($next)) {
-                $collection[] = $current->intersect($next);
-            }
-
-            if (!$current->contains($next)) {
-                $current = $next;
-            }
-        }
-
-        return $collection;
     }
 }

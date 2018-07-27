@@ -31,6 +31,11 @@ class CollectionTest extends TestCase
 
     protected $intervals;
 
+    protected function buildCollection(iterable $intervals = []): Collection
+    {
+        return new Collection($intervals);
+    }
+
     public function setUp()
     {
         $this->intervals = [
@@ -39,7 +44,8 @@ class CollectionTest extends TestCase
             'last' => Period::createFromWeek('2012-02-01'),
         ];
         $this->timezone = date_default_timezone_get();
-        $this->collection = new Collection($this->intervals);
+
+        $this->collection = $this->buildCollection($this->intervals);
     }
 
     public function tearDown()
@@ -50,13 +56,13 @@ class CollectionTest extends TestCase
     public function testFirst()
     {
         self::assertEquals($this->intervals['first'], $this->collection->first());
-        self::assertNull((new Collection())->first());
+        self::assertNull($this->buildCollection()->first());
     }
 
     public function testLast()
     {
         self::assertEquals($this->intervals['last'], $this->collection->last());
-        self::assertNull((new Collection())->last());
+        self::assertNull($this->buildCollection()->last());
     }
 
     public function testArrayAccess()
@@ -164,15 +170,15 @@ class CollectionTest extends TestCase
 
     public function testHas()
     {
-        self::assertTrue($this->collection->contains($this->intervals['middle']));
-        self::assertTrue($this->collection->contains(clone $this->intervals['middle']));
-        self::assertFalse($this->collection->contains(Period::createFromDay('2008-05-01')));
+        self::assertTrue($this->collection->has($this->intervals['middle']));
+        self::assertTrue($this->collection->has(clone $this->intervals['middle']));
+        self::assertFalse($this->collection->has(Period::createFromDay('2008-05-01')));
     }
 
-    public function testHasKey()
+    public function testHasIndex()
     {
-        self::assertTrue($this->collection->containsKey('middle'));
-        self::assertFalse($this->collection->containsKey('faraway'));
+        self::assertTrue($this->collection->hasIndex('middle'));
+        self::assertFalse($this->collection->hasIndex('faraway'));
     }
 
     public function testFilter()
@@ -244,7 +250,6 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider providesCollectionForGaps
-     *
      */
     public function testGetGaps(Collection $collection, Collection $expected)
     {
@@ -255,32 +260,32 @@ class CollectionTest extends TestCase
     {
         return [
             'no entry' => [
-                'collection' => new Collection(),
-                'expected' => new Collection(),
+                'collection' => $this->buildCollection(),
+                'expected' => $this->buildCollection(),
             ],
             'a single entry' => [
-                'collection' => new Collection([Period::createFromDay('2012-02-01')]),
-                'expected' => new Collection(),
+                'collection' => $this->buildCollection([Period::createFromDay('2012-02-01')]),
+                'expected' => $this->buildCollection(),
             ],
             'no gaps' => [
-                'collection' => new Collection([
+                'collection' => $this->buildCollection([
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-02-01'),
                     'last' => Period::createFromWeek('2012-02-01'),
                 ]),
-                'expected' => new Collection(),
+                'expected' => $this->buildCollection(),
             ],
             'no gaps from a Period::split(Backwards)' => [
-                'collection' => new Collection(Period::createFromMonth('2012-06-01')->splitBackwards('1 WEEK')),
-                'expected' => new Collection(),
+                'collection' => $this->buildCollection(Period::createFromMonth('2012-06-01')->splitBackwards('1 WEEK')),
+                'expected' => $this->buildCollection(),
             ],
             'has gaps' => [
-                'collection' => new Collection([
+                'collection' => $this->buildCollection([
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-05-01'),
                     'last' => Period::createFromWeek('2012-02-01'),
                 ]),
-                'expected' => new Collection([
+                'expected' => $this->buildCollection([
                     new Period('2012-02-06', '2012-05-01'),
                 ]),
             ],
@@ -299,27 +304,27 @@ class CollectionTest extends TestCase
     {
         return [
             'no entry' => [
-                'collection' => new Collection(),
-                'expected' => new Collection(),
+                'collection' => $this->buildCollection(),
+                'expected' => $this->buildCollection(),
             ],
             'a single entry' => [
-                'collection' => new Collection([Period::createFromDay('2012-02-01')]),
-                'expected' => new Collection(),
+                'collection' => $this->buildCollection([Period::createFromDay('2012-02-01')]),
+                'expected' => $this->buildCollection(),
             ],
             'overlaps' => [
-                'collection' => new Collection([
+                'collection' => $this->buildCollection([
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-02-01'),
                     'last' => Period::createFromWeek('2012-02-01'),
                 ]),
-                'expected' => new Collection([
+                'expected' => $this->buildCollection([
                     Period::createFromDay('2012-02-01'),
                     new Period('2012-02-01', '2012-02-06'),
                 ]),
             ],
             'should not overlaps' => [
-                'collection' => new Collection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
-                'expected' => new Collection(),
+                'collection' => $this->buildCollection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
+                'expected' => $this->buildCollection(),
             ],
         ];
     }
@@ -338,11 +343,11 @@ class CollectionTest extends TestCase
     {
         return [
             'a single entry' => [
-                'collection' => new Collection([Period::createFromDay('2012-02-01')]),
+                'collection' => $this->buildCollection([Period::createFromDay('2012-02-01')]),
                 'expected' => Period::createFromDay('2012-02-01'),
             ],
             'overlaps' => [
-                'collection' => new Collection([
+                'collection' => $this->buildCollection([
                     'last' => Period::createFromWeek('2012-02-15'),
                     'first' => Period::createFromDay('2012-02-01'),
                     'middle' => Period::createFromMonth('2012-02-01'),
@@ -350,7 +355,7 @@ class CollectionTest extends TestCase
                 'expected' => Period::createFromMonth('2012-02-01'),
             ],
             'should not overlaps' => [
-                'collection' => new Collection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
+                'collection' => $this->buildCollection(Period::createFromMonth('2012-06-01')->split('1 WEEK')),
                 'expected' => Period::createFromMonth('2012-06-01'),
             ],
         ];
@@ -358,6 +363,6 @@ class CollectionTest extends TestCase
 
     public function testgetIntervalReturnsNullOnEmptyCollection()
     {
-        self::assertNull((new Collection())->getInterval());
+        self::assertNull($this->buildCollection()->getInterval());
     }
 }
