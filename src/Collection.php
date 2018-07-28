@@ -16,9 +16,6 @@ declare(strict_types=1);
 
 namespace League\Period;
 
-use ArrayAccess;
-use Countable;
-use IteratorAggregate;
 use TypeError;
 use function array_filter;
 use function array_key_exists;
@@ -30,9 +27,7 @@ use function count;
 use function end;
 use function get_class;
 use function gettype;
-use function is_int;
 use function is_object;
-use function is_string;
 use function reset;
 use function sprintf;
 use function uasort;
@@ -46,7 +41,7 @@ use function uasort;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.0.0
  */
-final class Collection implements ArrayAccess, Countable, IteratorAggregate
+final class Collection implements Sequence
 {
     /**
      * @var Interval[]
@@ -64,8 +59,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns a Interval which represents the smallest time range which contains all the
-     * instance Interval objects.
+     * {@inheritdoc}
      */
     public function getInterval(): ?Interval
     {
@@ -89,9 +83,9 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns a new instance with the founded gaps inside the current instance.
+     * {@inheritdoc}
      */
-    public function getGaps(): Collection
+    public function getGaps(): Sequence
     {
         $intervals = clone $this;
         $intervals->sort(function (Interval $interval1, Interval $interval2) {
@@ -119,9 +113,9 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns a new instance with the founded intersections inside the current instance.
+     * {@inheritdoc}
      */
-    public function getIntersections(): Collection
+    public function getIntersections(): Sequence
     {
         $intervals = clone $this;
         $intervals->sort(function (Interval $interval1, Interval $interval2) {
@@ -213,27 +207,23 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns all the keys of the collection.
-     *
-     * @return string[]
+     * {@inheritdoc}
      */
-    public function getKeys(): array
+    public function getKeys(): iterable
     {
         return array_keys($this->storage);
     }
 
     /**
-     * Returns all the Interval objects of the collection.
-     *
-     * @return Interval[]
+     * {@inheritdoc}
      */
-    public function getValues(): array
+    public function getValues(): iterable
     {
         return array_values($this->storage);
     }
 
     /**
-     * Returns an array representation of the instance.
+     * {@inheritdoc}
      */
     public function toArray(): array
     {
@@ -241,7 +231,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Remove all the Interval objects from the instance.
+     * {@inheritdoc}
      */
     public function clear(): void
     {
@@ -249,11 +239,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Get the Interval object at the specified index.
-     *
-     * @param string|int $index
-     *
-     * @return ?Interval
+     * {@inheritdoc}
      */
     public function get($index): ?Interval
     {
@@ -261,9 +247,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns the first Interval object of the instance.
-     *
-     * @return ?Interval
+     * {@inheritdoc}
      */
     public function first(): ?Interval
     {
@@ -276,9 +260,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns the last Interval of the instance.
-     *
-     * @return ?Interval
+     * {@inheritdoc}
      */
     public function last(): ?Interval
     {
@@ -291,7 +273,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Tells whether the submitted Interval object is present in the collection.
+     * {@inheritdoc}
      */
     public function has(Interval $interval): bool
     {
@@ -299,10 +281,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns the index of a given Interval if present in the collection
-     * or false.
-     *
-     * @return string|int|bool
+     * {@inheritdoc}
      */
     public function indexOf(Interval $interval)
     {
@@ -316,9 +295,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Tells whether the index is attached to a Interval present in the collection.
-     *
-     * @param string|int $index
+     * {@inheritdoc}
      */
     public function hasIndex($index): bool
     {
@@ -326,9 +303,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Sorts the collection using a user-defined function while maitaining index association.
-     *
-     * @see https://php.net/manual/en/function.uasort.php
+     * {@inheritdoc}
      */
     public function sort(callable $callable): bool
     {
@@ -336,7 +311,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Adds the given Interval to the Collection.
+     * {@inheritdoc}
      */
     public function add(Interval $interval): void
     {
@@ -344,24 +319,15 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Set the Interval object at the specified index.
-     *
-     * @param string|int $index
+     * {@inheritdoc}
      */
     public function set($index, Interval $interval): void
     {
-        if (!is_int($index) && !is_string($index)) {
-            throw new TypeError(sprintf(
-                'the index must be a string or an int, you try to use a %s instead',
-                is_object($index) ? get_class($index) : gettype($index)
-            ));
-        }
-
         $this->offsetSet($index, $interval);
     }
 
     /**
-     * Removes the Interval from the instance if present.
+     * {@inheritdoc}
      */
     public function remove(Interval $interval): bool
     {
@@ -374,11 +340,7 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Removes the Interval at a given index from the instance if present.
-     *
-     * @param string|int $index
-     *
-     * @return ?Interval
+     * {@inheritdoc}
      */
     public function removeIndex($index): ?Interval
     {
@@ -391,38 +353,23 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Returns all the Interval objects of this instance that satisfy the filter $filter.
-     * The order of the Interval objects are preserved.
-     *
-     * @see https://php.net/manual/en/function.array-filter.php
+     * {@inheritdoc}
      */
-    public function filter(callable $filter, int $flag = 0): Collection
+    public function filter(callable $filter, int $flag = 0): Sequence
     {
         return new self(array_filter($this->storage, $filter, $flag));
     }
 
     /**
-     * Applies a mapper $mapper to all the Interval objects of this instance and
-     * returns a new instance with the Interval objects returned by the mapper.
-     *
-     * @see https://php.net/manual/en/function.array-map.php
+     * {@inheritdoc}
      */
-    public function map(callable $mapper): Collection
+    public function map(callable $mapper): Sequence
     {
         return new self(array_map($mapper, $this->storage));
     }
 
     /**
-     * Splits this instance into two separate new instances according to a predicate.
-     * Keys are preserved in the resulting instances.
-     *
-     * @param callable $predicate the predicate take at most 2 variables
-     *                            - the current Interval object
-     *                            - the current offset
-     *
-     * @return Collection[] An array with two elements. The first element contains the collection
-     *                      of elements where the predicate returned TRUE, the second element
-     *                      contains the collection of elements where the predicate returned FALSE.
+     * {@inheritdoc}
      */
     public function partition(callable $predicate): array
     {
@@ -440,13 +387,9 @@ final class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * Extracts a slice of this instance into a new instance. Keys are preserved.
-     *
-     * @see https://php.net/manual/en/function.array-slice.php
-     *
-     * @param null|int $length
+     * {@inheritdoc}
      */
-    public function slice(int $offset, int $length = null): Collection
+    public function slice(int $offset, int $length = null): Sequence
     {
         return new self(array_slice($this->storage, $offset, $length, true));
     }

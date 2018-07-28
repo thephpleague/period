@@ -17,10 +17,10 @@ namespace LeagueTest\Period;
 use League\Period\Collection;
 use League\Period\Sequence;
 
-class CollectionTest extends SequenceTest
+class ProxySequenceTest extends SequenceTest
 {
     protected function buildSequence(iterable $intervals = []): Sequence
     {
-        return new Collection($intervals);
+        return new ProxyCollection(new Collection($intervals), ['foo' => 'bar']);
     }
 }
