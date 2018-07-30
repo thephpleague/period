@@ -29,8 +29,6 @@ use DateTimeImmutable;
 abstract class ProxyInterval implements Interval
 {
     /**
-     * Period starting included datepoint.
-     *
      * @var Interval
      */
     protected $interval;

@@ -14,20 +14,13 @@
 
 namespace LeagueTest\Period;
 
-use League\Period\ProxySequence;
+use League\Period\Collection;
 use League\Period\Sequence;
 
-final class ProxyCollection extends ProxySequence
+class ProxyCollectionTest extends SequenceTest
 {
-    /**
-     * @var array
-     */
-    private $foo;
-
-    public function __construct(Sequence $sequence, array $foo = [])
+    protected function buildCollection(iterable $intervals = []): Collection
     {
-        $this->foo = $foo;
-
-        parent::__construct($sequence);
+        return new ProxySequence(new Sequence($intervals), ['foo' => 'bar']);
     }
 }

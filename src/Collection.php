@@ -16,381 +16,237 @@ declare(strict_types=1);
 
 namespace League\Period;
 
-use TypeError;
-use function array_filter;
-use function array_key_exists;
-use function array_keys;
-use function array_map;
-use function array_slice;
-use function array_values;
-use function count;
-use function end;
-use function get_class;
-use function gettype;
-use function is_object;
-use function reset;
-use function sprintf;
-use function uasort;
+use ArrayAccess;
+use Countable;
+use IteratorAggregate;
 
 /**
- * A class to ease handling Interval objects collection.
+ * A PHP Interface to represent a colection of Interval objects.
  *
- * This class is heavily inspired by the Doctrine\Common\Collections\Collection interface
+ * This interface is heavily inspired by
+ *
+ * - Doctrine\Common\Collections\Collection interface
+ * - Ds\Collection interface
+ * - Ds\Sequence interface
+ *
+ * @see https://github.com/php-ds/polyfill/blob/master/src/Collection.php
+ * @see https://github.com/php-ds/polyfill/blob/master/src/Sequence.php
+ * @see https://github.com/doctrine/collections/blob/master/lib/Doctrine/Common/Collections/Collection.php
  *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.0.0
  */
-final class Collection implements Sequence
+interface Collection extends ArrayAccess, Countable, IteratorAggregate
 {
     /**
-     * @var Interval[]
+     * Returns a Interval which represents the smallest time range which contains all the
+     * instance Interval objects.
      */
-    private $storage = [];
+    public function getInterval(): ?Interval;
 
     /**
-     * Create a new instance.
+     * Returns a new instance with the founded gaps inside the current instance.
      */
-    public function __construct(iterable $intervals = [])
-    {
-        foreach ($intervals as $offset => $value) {
-            $this->offsetSet($offset, $value);
-        }
-    }
+    public function getGaps(): self;
 
     /**
-     * {@inheritdoc}
+     * Returns a new instance with the founded intersections inside the current instance.
      */
-    public function getInterval(): ?Interval
-    {
-        $interval = null;
-        foreach ($this->storage as $item) {
-            if (null === $interval) {
-                $interval = $item;
-                continue;
-            }
-
-            if ($item->getStartDate() < $interval->getStartDate()) {
-                $interval = $interval->startingOn($item->getStartDate());
-            }
-
-            if ($item->getEndDate() > $interval->getEndDate()) {
-                $interval = $interval->endingOn($item->getEndDate());
-            }
-        }
-
-        return $interval;
-    }
+    public function getIntersections(): self;
 
     /**
-     * {@inheritdoc}
+     * Tells whether the collection is empty.
      */
-    public function getGaps(): Sequence
-    {
-        $intervals = clone $this;
-        $intervals->sort(function (Interval $interval1, Interval $interval2) {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
-
-        $collection = new self();
-        $current = $intervals->first();
-        if (null === $current) {
-            return $collection;
-        }
-
-        $intervals->remove($current);
-        foreach ($intervals as $next) {
-            if (!$current->overlaps($next) && !$current->abuts($next)) {
-                $collection[] = $current->gap($next);
-            }
-
-            if (!$current->contains($next)) {
-                $current = $next;
-            }
-        }
-
-        return $collection;
-    }
+    public function isEmpty(): bool;
 
     /**
-     * {@inheritdoc}
+     * Returns all the keys of the collection.
+     *
+     * @return string[]
      */
-    public function getIntersections(): Sequence
-    {
-        $intervals = clone $this;
-        $intervals->sort(function (Interval $interval1, Interval $interval2) {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
-
-        $collection = new self();
-        $current = $intervals->first();
-        if (null === $current) {
-            return $collection;
-        }
-
-        $intervals->remove($current);
-        foreach ($intervals as $next) {
-            if ($current->overlaps($next)) {
-                $collection[] = $current->intersect($next);
-            }
-
-            if (!$current->contains($next)) {
-                $current = $next;
-            }
-        }
-
-        return $collection;
-    }
+    public function getKeys(): iterable;
 
     /**
-     * {@inheritdoc}
+     * Returns all the Interval objects of the collection.
+     *
+     * @return Interval[]
      */
-    public function offsetSet($offset, $value): void
-    {
-        if (!$value instanceof Interval) {
-            throw new TypeError(sprintf(
-                'a %s only contains % objects, you try to add a %s instead',
-                Collection::class,
-                Interval::class,
-                is_object($value) ? get_class($value) : gettype($value)
-            ));
-        }
-
-        if (null === $offset) {
-            $this->storage[] = $value;
-            return;
-        }
-
-        $this->storage[$offset] = $value;
-    }
+    public function getValues(): iterable;
 
     /**
-     * {@inheritdoc}
+     * Remove all the Interval objects from the instance.
      */
-    public function offsetGet($offset): ?Interval
-    {
-        return $this->storage[$offset] ?? null;
-    }
+    public function clear(): void;
 
     /**
-     * {@inheritdoc}
+     * Get the Interval object at the specified index.
+     *
+     * @param string|int $index
+     *
+     * @return ?Interval
      */
-    public function offsetExists($offset): bool
-    {
-        return array_key_exists($offset, $this->storage);
-    }
+    public function get($index): ?Interval;
 
     /**
-     * {@inheritdoc}
+     * Returns the first Interval object of the instance.
+     *
+     * @return ?Interval
      */
-    public function offsetUnset($offset): void
-    {
-        unset($this->storage[$offset]);
-    }
+    public function first(): ?Interval;
 
     /**
-     * {@inheritdoc}
+     * Returns the last Interval of the instance.
+     *
+     * @return ?Interval
      */
-    public function count(): int
-    {
-        return count($this->storage);
-    }
+    public function last(): ?Interval;
 
     /**
-     * {@inheritdoc}
+     * Tells whether the submitted Interval object is present in the collection.
      */
-    public function getIterator(): iterable
-    {
-        foreach ($this->storage as $offset => $interval) {
-            yield $offset => $interval;
-        }
-    }
+    public function has(Interval $interval): bool;
 
     /**
-     * {@inheritdoc}
+     * Returns the index of a given Interval if present in the collection
+     * or false.
+     *
+     * @return string|int|bool
      */
-    public function getKeys(): iterable
-    {
-        return array_keys($this->storage);
-    }
+    public function indexOf(Interval $interval);
 
     /**
-     * {@inheritdoc}
+     * Tells whether the index is attached to a Interval present in the collection.
+     *
+     * @param string|int $index
      */
-    public function getValues(): iterable
-    {
-        return array_values($this->storage);
-    }
+    public function hasIndex($index): bool;
 
     /**
-     * {@inheritdoc}
+     * Tells whether at least one Interval in the current instance satisfies the predicate.
+     *
+     *
+     * @param callable $predicate accepts 2 arguments
+     *                            - the offset
+     *                            - the Interval object
+     *                            returns a boolean telling whether the predicate is satisfied or not.
      */
-    public function toArray(): array
-    {
-        return $this->storage;
-    }
+    public function exists(callable $predicate): bool;
 
     /**
-     * {@inheritdoc}
+     * Sorts the collection using a user-defined function while maitaining index association.
+     *
+     * @see https://php.net/manual/en/function.uasort.php
      */
-    public function clear(): void
-    {
-        $this->storage = [];
-    }
+    public function sort(callable $callable): bool;
 
     /**
-     * {@inheritdoc}
+     * Set the Interval object at the specified index.
+     *
+     * @param string|int $index
      */
-    public function get($index): ?Interval
-    {
-        return $this->offsetGet($index);
-    }
+    public function set($index, Interval $interval): void;
 
     /**
-     * {@inheritdoc}
+     * Remove the last item from the Collection and return it.
      */
-    public function first(): ?Interval
-    {
-        $interval = reset($this->storage);
-        if (false === $interval) {
-            return null;
-        }
-
-        return $interval;
-    }
+    public function pop(): ?Interval;
 
     /**
-     * {@inheritdoc}
+     * Adds on or more Intervals object at the end of the instance.
+     *
+     * @param Interval ...$intervals
      */
-    public function last(): ?Interval
-    {
-        $interval = end($this->storage);
-        if (false === $interval) {
-            return null;
-        }
-
-        return $interval;
-    }
+    public function push(Interval $interval, Interval ...$intervals): int;
 
     /**
-     * {@inheritdoc}
+     * Shift an Interval off the beginning of array.
      */
-    public function has(Interval $interval): bool
-    {
-        return false !== $this->indexOf($interval);
-    }
+    public function shift(): ?Interval;
 
     /**
-     * {@inheritdoc}
+     * Prepends one or more Interval to the beginning of the instance.
+     *
+     * @param Interval ...$intervals
      */
-    public function indexOf(Interval $interval)
-    {
-        foreach ($this->storage as $index => $stored_interval) {
-            if ($interval->equalsTo($stored_interval)) {
-                return $index;
-            }
-        }
-
-        return false;
-    }
+    public function unshift(Interval $interval, Interval ...$intervals): int;
 
     /**
-     * {@inheritdoc}
+     * Removes the Interval from the instance if present.
      */
-    public function hasIndex($index): bool
-    {
-        return $this->offsetExists($index);
-    }
+    public function remove(Interval $interval): bool;
 
     /**
-     * {@inheritdoc}
+     * Removes the Interval at a given index from the instance if present.
+     *
+     * @param string|int $index
+     *
+     * @return ?Interval
      */
-    public function sort(callable $callable): bool
-    {
-        return uasort($this->storage, $callable);
-    }
+    public function removeIndex($index): ?Interval;
 
     /**
-     * {@inheritdoc}
+     * Returns all the Interval objects of this instance that satisfy the filter $filter.
+     * The order of the Interval objects are preserved.
+     *
+     * @param callable $filter accepts 2 arguments
+     *                         - the offset
+     *                         - the Interval object
+     *                         returns a boolean telling whether the predicate is satisfied or not.
      */
-    public function add(Interval $interval): void
-    {
-        $this->offsetSet(null, $interval);
-    }
+    public function filter(callable $filter): self;
 
     /**
-     * {@inheritdoc}
+     * Applies a mapper $mapper to all the Interval objects of this instance and
+     * returns a new instance with the Interval objects returned by the mapper.
+     *
+     * Keys are preserved in the resulting instance.
+     *
+     * @param callable $mapper accepts 2 arguments
+     *                         - the offset
+     *                         - the Interval object
+     *                         returns an Interval object
      */
-    public function set($index, Interval $interval): void
-    {
-        $this->offsetSet($index, $interval);
-    }
+    public function map(callable $mapper): self;
 
     /**
-     * {@inheritdoc}
+     * Splits this instance into two separate new instances according to a predicate.
+     *
+     * Keys are preserved in the resulting instance.
+     *
+     * @param callable $predicate accepts 2 arguments
+     *                            - the offset
+     *                            - the Interval object
+     *                            returns a boolean telling whether the predicate is satisfied or not.
+     *
+     * @return Collection[] An array with two elements. The first element contains the collection
+     *                      of elements where the predicate returned TRUE, the second element
+     *                      contains the collection of elements where the predicate returned FALSE.
      */
-    public function remove(Interval $interval): bool
-    {
-        $offset = $this->indexOf($interval);
-        if (false !== $offset) {
-            $this->offsetUnset($offset);
-        }
-
-        return (bool) $offset;
-    }
+    public function partition(callable $predicate): array;
 
     /**
-     * {@inheritdoc}
+     * Extracts a slice of this instance into a new instance. Keys are preserved.
+     *
+     * @see https://php.net/manual/en/function.array-slice.php
+     *
+     * @param null|int $length
      */
-    public function removeIndex($index): ?Interval
-    {
-        $interval = $this->offsetGet($index);
-        if (null !== $interval) {
-            $this->offsetUnset($index);
-        }
-
-        return $interval;
-    }
+    public function slice(int $offset, int $length = null): self;
 
     /**
-     * {@inheritdoc}
+     * Iteratively reduces the instance to a single value using a callback.
+     *
+     * @param callable $callable accepts 3 arguments
+     *                           - the carry
+     *                           - the offset
+     *                           - the Interval object
+     *                           returns an updated carry value.
+     *
+     * @param mixed|null $initial Optional initial carry value.
+     *
+     * @return mixed The carry value of the final iteration, or the initial
+     *               value if the map was empty.
      */
-    public function filter(callable $filter, int $flag = 0): Sequence
-    {
-        return new self(array_filter($this->storage, $filter, $flag));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function map(callable $mapper): Sequence
-    {
-        return new self(array_map($mapper, $this->storage));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function partition(callable $predicate): array
-    {
-        $matches = new self();
-        $no_matches = new self();
-        foreach ($this->storage as $offset => $interval) {
-            $collection = 'no_matches';
-            if (true === $predicate($interval, $offset)) {
-                $collection = 'matches';
-            }
-            $$collection[$offset] = $interval;
-        }
-
-        return [$matches, $no_matches];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function slice(int $offset, int $length = null): Sequence
-    {
-        return new self(array_slice($this->storage, $offset, $length, true));
-    }
+    public function reduce(callable $callable, $initial = null);
 }

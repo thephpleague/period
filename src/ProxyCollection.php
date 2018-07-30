@@ -17,27 +17,25 @@ declare(strict_types=1);
 namespace League\Period;
 
 /**
- * A class to ease handling Interval objects collection.
- *
- * This class is heavily inspired by the Doctrine\Common\Collections\Collection interface
+ * A Proxy to ease adding more methods to an Collection implementing object.
  *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.0.0
  */
-abstract class ProxySequence implements Sequence
+abstract class ProxyCollection implements Collection
 {
     /**
-     * @var Sequence
+     * @var Collection
      */
-    private $sequence;
+    private $collection;
 
     /**
      * Create a new instance.
      */
-    public function __construct(Sequence $sequence)
+    public function __construct(Collection $collection)
     {
-        $this->sequence = $sequence;
+        $this->collection = $collection;
     }
 
     /**
@@ -45,23 +43,23 @@ abstract class ProxySequence implements Sequence
      */
     public function getInterval(): ?Interval
     {
-        return $this->sequence->getInterval();
+        return $this->collection->getInterval();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getGaps(): Sequence
+    public function getGaps(): Collection
     {
-        return $this->sequence->getGaps();
+        return $this->collection->getGaps();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getIntersections(): Sequence
+    public function getIntersections(): Collection
     {
-        return $this->sequence->getIntersections();
+        return $this->collection->getIntersections();
     }
 
     /**
@@ -69,7 +67,7 @@ abstract class ProxySequence implements Sequence
      */
     public function offsetSet($offset, $value): void
     {
-        $this->sequence->offsetSet($offset, $value);
+        $this->collection->offsetSet($offset, $value);
     }
 
     /**
@@ -77,7 +75,7 @@ abstract class ProxySequence implements Sequence
      */
     public function offsetGet($offset): ?Interval
     {
-        return $this->sequence[$offset] ?? null;
+        return $this->collection->offsetGet($offset);
     }
 
     /**
@@ -85,7 +83,7 @@ abstract class ProxySequence implements Sequence
      */
     public function offsetExists($offset): bool
     {
-        return isset($this->sequence[$offset]);
+        return $this->collection->offsetExists($offset);
     }
 
     /**
@@ -93,7 +91,7 @@ abstract class ProxySequence implements Sequence
      */
     public function offsetUnset($offset): void
     {
-        unset($this->sequence[$offset]);
+        $this->collection->offsetUnset($offset);
     }
 
     /**
@@ -101,7 +99,7 @@ abstract class ProxySequence implements Sequence
      */
     public function count(): int
     {
-        return $this->sequence->count();
+        return $this->collection->count();
     }
 
     /**
@@ -109,7 +107,15 @@ abstract class ProxySequence implements Sequence
      */
     public function getIterator(): iterable
     {
-        return $this->sequence->getIterator();
+        return $this->collection->getIterator();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmpty(): bool
+    {
+        return $this->collection->isEmpty();
     }
 
     /**
@@ -117,7 +123,7 @@ abstract class ProxySequence implements Sequence
      */
     public function getKeys(): iterable
     {
-        return $this->sequence->getKeys();
+        return $this->collection->getKeys();
     }
 
     /**
@@ -125,15 +131,7 @@ abstract class ProxySequence implements Sequence
      */
     public function getValues(): iterable
     {
-        return $this->sequence->getValues();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray(): array
-    {
-        return $this->sequence->toArray();
+        return $this->collection->getValues();
     }
 
     /**
@@ -141,7 +139,7 @@ abstract class ProxySequence implements Sequence
      */
     public function clear(): void
     {
-        $this->sequence->clear();
+        $this->collection->clear();
     }
 
     /**
@@ -149,7 +147,7 @@ abstract class ProxySequence implements Sequence
      */
     public function get($index): ?Interval
     {
-        return $this->sequence[$index];
+        return $this->collection->get($index);
     }
 
     /**
@@ -157,7 +155,7 @@ abstract class ProxySequence implements Sequence
      */
     public function first(): ?Interval
     {
-        return $this->sequence->first();
+        return $this->collection->first();
     }
 
     /**
@@ -165,7 +163,7 @@ abstract class ProxySequence implements Sequence
      */
     public function last(): ?Interval
     {
-        return $this->sequence->last();
+        return $this->collection->last();
     }
 
     /**
@@ -173,7 +171,7 @@ abstract class ProxySequence implements Sequence
      */
     public function has(Interval $interval): bool
     {
-        return $this->sequence->has($interval);
+        return $this->collection->has($interval);
     }
 
     /**
@@ -181,7 +179,7 @@ abstract class ProxySequence implements Sequence
      */
     public function indexOf(Interval $interval)
     {
-        return $this->sequence->indexOf($interval);
+        return $this->collection->indexOf($interval);
     }
 
     /**
@@ -189,7 +187,7 @@ abstract class ProxySequence implements Sequence
      */
     public function hasIndex($index): bool
     {
-        return $this->sequence->hasIndex($index);
+        return $this->collection->hasIndex($index);
     }
 
     /**
@@ -197,15 +195,39 @@ abstract class ProxySequence implements Sequence
      */
     public function sort(callable $callable): bool
     {
-        return $this->sequence->sort($callable);
+        return $this->collection->sort($callable);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add(Interval $interval): void
+    public function push(Interval $interval, Interval ...$intervals): int
     {
-        $this->sequence->add($interval);
+        return $this->collection->push($interval, ...$intervals);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function pop(): ?Interval
+    {
+        return $this->collection->pop();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unshift(Interval $interval, Interval ...$intervals): int
+    {
+        return $this->collection->unshift($interval, ...$intervals);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shift(): ?Interval
+    {
+        return $this->collection->shift();
     }
 
     /**
@@ -213,7 +235,7 @@ abstract class ProxySequence implements Sequence
      */
     public function set($index, Interval $interval): void
     {
-        $this->sequence->set($index, $interval);
+        $this->collection->set($index, $interval);
     }
 
     /**
@@ -221,7 +243,7 @@ abstract class ProxySequence implements Sequence
      */
     public function remove(Interval $interval): bool
     {
-        return $this->sequence->remove($interval);
+        return $this->collection->remove($interval);
     }
 
     /**
@@ -229,23 +251,31 @@ abstract class ProxySequence implements Sequence
      */
     public function removeIndex($index): ?Interval
     {
-        return $this->sequence->removeIndex($index);
+        return $this->collection->removeIndex($index);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function filter(callable $filter, int $flag = 0): Sequence
+    public function exists(callable $filter): bool
     {
-        return $this->sequence->filter($filter, $flag);
+        return $this->collection->exists($filter);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function map(callable $mapper): Sequence
+    public function filter(callable $filter): Collection
     {
-        return $this->sequence->map($mapper);
+        return $this->collection->filter($filter);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function map(callable $mapper): Collection
+    {
+        return $this->collection->map($mapper);
     }
 
     /**
@@ -253,14 +283,22 @@ abstract class ProxySequence implements Sequence
      */
     public function partition(callable $predicate): array
     {
-        return $this->sequence->partition($predicate);
+        return $this->collection->partition($predicate);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function slice(int $offset, int $length = null): Sequence
+    public function slice(int $offset, int $length = null): Collection
     {
-        return $this->sequence->slice($offset, $length);
+        return $this->collection->slice($offset, $length);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reduce(callable $callable, $initial = null)
+    {
+        return $this->collection->reduce($callable, $initial);
     }
 }
