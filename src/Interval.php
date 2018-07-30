@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
+use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -107,6 +108,56 @@ interface Interval
      * </ul>
      */
     public function compareDuration(Interval $interval): int;
+
+    /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance.
+     *
+     * This method is not part of the Interval.
+     *
+     * @see http://php.net/manual/en/dateperiod.construct.php
+     *
+     * @param DateInterval|int|string $duration
+     */
+    public function getDatePeriod($duration, int $option = 0): DatePeriod;
+
+    /**
+     * Allows splitting an instance in smaller Period objects according to a given interval.
+     *
+     * This method is not part of the Interval.
+     *
+     * The returned iterable Interval set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $duration
+     *
+     * @return Interval[]
+     */
+    public function split($duration): iterable;
+
+    /**
+     * Allows splitting an instance in smaller Period objects according to a given interval.
+     *
+     * This method is not part of the Interval.
+     *
+     * The returned iterable Interval set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
+     * </ul>
+     *
+     * @param DateInterval|int|string $duration
+     *
+     * @return Interval[]
+     */
+    public function splitBackwards($duration): iterable;
 
     /**
      * Computes the intersection between two Interval objects.

@@ -6,8 +6,8 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Collection` interface
 - `Interval` interface
-- `Collection` class
 - `Exception` class
 - `Period::createFromDatePeriod`
 - `Period::createFromHour`
@@ -16,6 +16,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::createFromDurationAfterStart`
 - `Period::withDurationAfterStart`
 - `Period::expand`
+- `Sequence` class
 
 ### Fixed
 

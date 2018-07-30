@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
+use DatePeriod;
 use DateTimeImmutable;
 
 /**
@@ -76,6 +77,14 @@ abstract class ProxyInterval implements Interval
     /**
      * {@inheritdoc}
      */
+    public function getDatePeriod($duration, int $option = 0): DatePeriod
+    {
+        return $this->interval->getDatePeriod($duration, $option);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function compareDuration($interval): int
     {
         return $this->interval->compareDuration($interval);
@@ -127,6 +136,22 @@ abstract class ProxyInterval implements Interval
     public function contains($index): bool
     {
         return $this->interval->contains($index);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function split($duration): iterable
+    {
+        return $this->interval->split($duration);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function splitBackwards($duration): iterable
+    {
+        return $this->interval->splitBackwards($duration);
     }
 
     /**

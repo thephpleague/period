@@ -22,7 +22,6 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Generator;
 use JsonSerializable;
 use TypeError;
 use const FILTER_VALIDATE_INT;
@@ -446,14 +445,7 @@ final class Period implements Interval, JsonSerializable
     }
 
     /**
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the instance.
-     *
-     * This method is not part of the Interval.
-     *
-     * @see http://php.net/manual/en/dateperiod.construct.php
-     *
-     * @param DateInterval|int|string $duration
+     * {@inheritdoc}
      */
     public function getDatePeriod($duration, int $option = 0): DatePeriod
     {
@@ -617,23 +609,9 @@ final class Period implements Interval, JsonSerializable
     }
 
     /**
-     * Allows splitting an instance in smaller Period objects according to a given interval.
-     *
-     * This method is not part of the Interval.
-     *
-     * The returned iterable Interval set is ordered so that:
-     * <ul>
-     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $duration
-     *
-     * @return Generator|Interval[]
+     * {@inheritdoc}
      */
-    public function split($duration): Generator
+    public function split($duration): iterable
     {
         $startDate = $this->startDate;
         $duration = self::filterDuration($duration);
@@ -649,23 +627,9 @@ final class Period implements Interval, JsonSerializable
     }
 
     /**
-     * Allows splitting an instance in smaller Period objects according to a given interval.
-     *
-     * This method is not part of the Interval.
-     *
-     * The returned iterable Interval set is ordered so that:
-     * <ul>
-     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
-     * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
-     * </ul>
-     *
-     * @param DateInterval|int|string $duration
-     *
-     * @return Generator|Interval[]
+     * {@inheritdoc}
      */
-    public function splitBackwards($duration): Generator
+    public function splitBackwards($duration): iterable
     {
         $endDate = $this->endDate;
         $duration = self::filterDuration($duration);

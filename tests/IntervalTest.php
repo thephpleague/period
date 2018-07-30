@@ -15,6 +15,7 @@
 namespace LeagueTest\Period;
 
 use DateInterval;
+use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -51,6 +52,31 @@ abstract class IntervalTest extends TestCase
     {
         $interval = $this->createInterval(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
         self::assertInternalType('float', $interval->getTimestampInterval());
+    }
+
+    /**
+     * @dataProvider provideGetDatePeriodData
+     */
+    public function testGetDatePeriod($interval, $option, $count)
+    {
+        $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $range = $period->getDatePeriod($interval, $option);
+        self::assertInstanceOf(DatePeriod::class, $range);
+        self::assertCount($count, iterator_to_array($range));
+    }
+
+    public function provideGetDatePeriodData()
+    {
+        return [
+            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
+            'useString' => ['2 HOUR', 0, 12],
+            'useInt' => [9600, 0, 9],
+            'useFloat' => [14400.0, 0, 6],
+            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
+            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
+            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
+            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
+        ];
     }
 
     public function testIsBeforeDateTimeInterface()
@@ -275,6 +301,98 @@ abstract class IntervalTest extends TestCase
                 false,
             ],
         ];
+    }
+
+    public function testSplit()
+    {
+        $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $range = $period->split(new DateInterval('PT1H'));
+        foreach ($range as $innerPeriod) {
+            self::assertInstanceOf(Interval::class, $innerPeriod);
+        }
+    }
+
+    public function testSplitMustRecreateParentObject()
+    {
+        $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $range = $period->split(new DateInterval('PT1H'));
+        $total = null;
+        foreach ($range as $part) {
+            if (null === $total) {
+                $total = $part;
+                continue;
+            }
+            $total = $total->endingOn($part->getEndDate());
+        }
+        self::assertInstanceOf(Interval::class, $total);
+        self::assertTrue($total->equalsTo($period));
+    }
+
+    public function testSplitWithLargeInterval()
+    {
+        $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $range = $period->split(new DateInterval('P1Y'));
+        foreach ($range as $expectedPeriod) {
+            self::assertInstanceOf(Interval::class, $expectedPeriod);
+            self::assertTrue($expectedPeriod->equalsTo($period));
+        }
+    }
+
+    public function testSplitWithInconsistentInterval()
+    {
+        $last = null;
+        $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+
+        foreach ($period->split(new DateInterval('PT10H')) as $innerPeriod) {
+            $last = $innerPeriod;
+        }
+        self::assertNotNull($last);
+        self::assertSame(14400.0, $last->getTimestampInterval());
+    }
+
+    public function testSplitBackwards()
+    {
+        $period = $this->createInterval(new DateTime('2015-01-01'), new DateTime('2015-01-04'));
+        $range = $period->splitBackwards(new DateInterval('P1D'));
+        $list = [];
+        foreach ($range as $innerPeriod) {
+            $list[] = $innerPeriod;
+        }
+
+        $result = array_map(function (Interval $range) {
+            return [
+                'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
+                'end'   => $range->getEndDate()->format('Y-m-d H:i:s'),
+            ];
+        }, $list);
+
+        $expected = [
+            [
+                'start' => '2015-01-03 00:00:00',
+                'end'   => '2015-01-04 00:00:00',
+            ],
+            [
+                'start' => '2015-01-02 00:00:00',
+                'end'   => '2015-01-03 00:00:00',
+            ],
+            [
+                'start' => '2015-01-01 00:00:00',
+                'end'   => '2015-01-02 00:00:00',
+            ],
+        ];
+        self::assertSame($expected, $result);
+    }
+
+    public function testSplitBackwardsWithInconsistentInterval()
+    {
+        $period = $this->createInterval(new DateTime('2010-01-01'), new DateTime('2010-01-02'));
+        $last = null;
+        foreach ($period->splitBackwards(new DateInterval('PT10H')) as $innerPeriod) {
+            $last = $innerPeriod;
+        }
+
+        self::assertNotNull($last);
+        self::assertEquals(14400.0, $last->getTimestampInterval());
     }
 
     public function testStartingOn()
