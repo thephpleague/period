@@ -416,19 +416,37 @@ abstract class CollectionTest extends TestCase
 
     public function testExists()
     {
-        $interval = Period::createFromHour('2012-02-02 12:00:00');
+        $interval = Period::createFromHour('2012-02-01 12:00:00');
         $predicate = function ($offset, Interval $value) use ($interval) {
             return $interval->overlaps($value);
         };
 
         $collection = $this->buildCollection([
             Period::createFromDay('2012-02-01'),
-            Period::createFromDay('2012-02-02'),
-            Period::createFromDay('2012-02-03'),
+            Period::createFromDay('2013-02-01'),
+            Period::createFromDay('2014-02-01'),
         ]);
 
-        self::assertTrue($collection->exists($predicate));
+        self::assertTrue($collection->some($predicate));
         $collection->clear();
-        self::assertFalse($collection->exists($predicate));
+        self::assertFalse($collection->some($predicate));
+    }
+
+    public function testEvery()
+    {
+        $collection = $this->buildCollection([
+            Period::createFromDay('2012-02-01'),
+            Period::createFromDay('2013-02-01'),
+            Period::createFromDay('2014-02-01'),
+        ]);
+        $interval = $collection->getInterval();
+        self::assertInstanceOf(Interval::class, $interval);
+        $predicate = function ($offset, Interval $value) use ($interval) {
+            return $interval->overlaps($value);
+        };
+
+        self::assertTrue($collection->every($predicate));
+        $collection->clear();
+        self::assertFalse($collection->every($predicate));
     }
 }

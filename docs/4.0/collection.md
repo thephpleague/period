@@ -14,7 +14,7 @@ This class is heavily inspired by `Doctrine\Common\Collections\Collection` but a
 use League\Period\Collection;
 use League\Period\Period;
 
-$collection = new Collection([
+$collection = new Sequence([
     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
 ]);
@@ -90,7 +90,7 @@ $collection->add(Period::createFromDay('2018-02-03'));
 Tells whether the given `Interval` object is present in the current `Collection`.
 
 ~~~php
-$collection = new Collection([Period::createFromDay('2018-02-03')]);
+$collection = new Sequence([Period::createFromDay('2018-02-03')]);
 $retval = $collection->contains(Period::createFromDay('2018-02-03')); // true
 ~~~
 
@@ -101,7 +101,7 @@ $retval = $collection->contains(Period::createFromDay('2018-02-03')); // true
 Tells whether a `Interval` object present in the current `Collection` is attached using the `$index` key.
 
 ~~~php
-$collection = new Collection(['first' => Period::createFromDay('2018-02-03')]);
+$collection = new Sequence(['first' => Period::createFromDay('2018-02-03')]);
 $retval = $collection->containsKey('first'); // true
 ~~~
 
@@ -120,7 +120,7 @@ $collection->clear();
 Filter the current `Collection` using a predicate function. If the predicate function returns `true`, the `Interval` and its related index are added in the returned `Collection` instance.
 
 ~~~php
-$collection = new Collection([
+$collection = new Sequence([
     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
@@ -138,7 +138,7 @@ $filterCollection = $collection->filter(function (Interval $period) {
 Returns the `Interval` at the specified `$index`in the current `Collection`. If not object is found or the key is invalid, `null` is returned.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
 $retval = $collection->get('foo'); // Interval
 $retval2 = $collection->get('bar'); // null
@@ -150,7 +150,7 @@ $retval2 = $collection->get('bar'); // null
 Returns all the indexes/keys present in the current `Collection`.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
 $retval = $collection->getKeys(); // ['foo']
 ~~~
@@ -160,7 +160,7 @@ $retval = $collection->getKeys(); // ['foo']
 Returns all `Interval` objects present in the current `Collection`.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
 $retval = $collection->getValues(); // [Interval]
 ~~~
@@ -171,7 +171,7 @@ Returns the first `Interval` object present in the current `Collection` or `null
 empty.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
 $retval = $collection->first(); // Interval or null if Collection is empty
 ~~~
@@ -182,7 +182,7 @@ Returns the last `Interval` object present in the current `Collection` or `null`
 empty.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR');
 $retval = $collection->last();  // Interval or null if Collection is empty
 ~~~
@@ -192,7 +192,7 @@ $retval = $collection->last();  // Interval or null if Collection is empty
 Returns the index attached to the submitted `Interval` object present in the current `Collection` or `false` the `Interval` object is not found.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-03', '+1 DAY');
 $retval = $collection->indexOf(Period::createFromDay('2018-05-03')); // 'foo'
 ~~~
@@ -204,7 +204,7 @@ $retval = $collection->indexOf(Period::createFromDay('2018-05-03')); // 'foo'
 Apply the given function to each `Interval` in the collection and returns a new `Collection` instance containing the modified `Interval` objects. Indexes are preserved.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromDuration('2018-05-03', '+1 DAY');
 $retval = $collection->map(function (Interval $period) {
     return $period->endingOn($period->getEndDate()->add(new DateInterval('P1D')));
@@ -218,7 +218,7 @@ $retval['foo']->getEndDate()->format('Y-m-d');     // 2018-05-5
 Partitions this `Collection` instance in two `Collection` instances according to a predicate. Keys are preserved in the resulting collections. The first instance contains all the `Interval` objects and their related index which verify the predicate. The second instance contains the remaining objects and their indexes.
 
 ~~~php
-$collection = new Collection([
+$collection = new Sequence([
     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
@@ -228,11 +228,11 @@ $retval = $collection->partition(function (Interval $period, string $index) {
     return false !== strpos($index, 'n');
 });
 // [
-// new Collection([
+// new Sequence([
 //   'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
 //   'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
 //  ]),
-//  new Collection(['sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR')])
+//  new Sequence(['sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR')])
 //]
 ~~~
 
@@ -243,7 +243,7 @@ $retval = $collection->partition(function (Interval $period, string $index) {
 Removes the `Interval` object from the `Collection`. If not object was removed `false` is returned otherwise `true` is returned.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromMonth('2018-03-01');
 $month = new Period('2018-03-01', '2018-04-01');
 $retval = $collection->remove($month); // return true
@@ -257,7 +257,7 @@ $retval = $collection->remove(Period::createFromDay('2018-03-01')); //return fal
 Removes the `Interval` object at the specified index from the `Collection`. If not object was found `null` is returned otherwise the remove the `Interval` object is returned.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $collection['foo'] = Period::createFromMonth('2018-03-01');
 $month = new Period('2018-03-01', '2018-04-01');
 $retval = $collection->removeIndex('foo'); // return Period::createFromMonth('2018-03-01');
@@ -269,7 +269,7 @@ $retval = $collection->removeIndex('bar'); // return null
 Sets a `Interval` object in the collection at the specified key/index.
 
 ~~~php
-$collection = new Collection();
+$collection = new Sequence();
 $retval = $collection->set('foo', Period::createFromWeek(2018, 21));
 ~~~
 
@@ -280,7 +280,7 @@ Extracts a slice of `$length` `Interval` objects starting at position `$offset` 
 Calling this method will only return the selected slice and NOT change the elements contained in the collection slice is called on.
 
 ~~~php
-$collection = new Collection([
+$collection = new Sequence([
     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
@@ -296,7 +296,7 @@ $retval['meeting']; //returns null
 Sorts the `Collection` with a user defined comparison function while maintaining the index assocation.
 
 ~~~php
-$collection = new Collection([
+$collection = new Sequence([
     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
@@ -311,21 +311,3 @@ $collection->las()->equalsTo($collection['meeting']);
 ~~~
 
 <p class="message-notice"><strong>Notice:</strong> the <code>Collection::sort</code> method uses the same arguments as <code>uasort</code>.</p>
-
-### Collection::toArray
-
-Gets a native PHP array representation of the `Collection` object.
-
-~~~php
-$collection = new Collection([
-    'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
-    'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
-    'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
-]);
-$retval = $collection->toArray();
-// [
-//     'sports' => Period::createFromDuration('2018-05-12 13:30:00', '+1 HOUR'),
-//     'lunch' => Period::createFromHour('2018-05-12 12:00:00'),
-//     'meeting' => Period::createFromDuration('2018-05-12 14:00:00', '+2 HOURS'),
-// ]
-~~~

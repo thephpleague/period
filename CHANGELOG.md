@@ -21,14 +21,15 @@ All Notable changes to `Period` will be documented in this file
 ### Fixed
 
 - The `Period` class is now final
-- `Period::JsonSerialize` now returns datepoint in JavaScript compatible datetime notation
-- The following methods now accepts as its sole argument a `DateTimeInterface` object.
+- The following named constructors now accept as its sole argument a `DateTimeInterface` object.
     - `Period::createFromYear`
     - `Period::createFromMonth`
     - `Period::createFromDay`
     - `Period::createFromSemester`
     - `Period::createFromQuarter`
     - `Period::createFromWeek`
+- `Period::JsonSerialize` now returns datepoint in JavaScript compatible datetime notation
+- `Period::diff` always returns an array containing two values.
 
 ### Deprecated
 

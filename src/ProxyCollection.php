@@ -257,9 +257,17 @@ abstract class ProxyCollection implements Collection
     /**
      * {@inheritdoc}
      */
-    public function exists(callable $filter): bool
+    public function some(callable $filter): bool
     {
-        return $this->collection->exists($filter);
+        return $this->collection->some($filter);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function every(callable $filter): bool
+    {
+        return $this->collection->every($filter);
     }
 
     /**

@@ -116,15 +116,11 @@ interface Interval
      * This method is not part of the Interval.
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
-     *
-     * @param DateInterval|int|string $duration
      */
-    public function getDatePeriod($duration, int $option = 0): DatePeriod;
+    public function getDatePeriod(DateInterval $duration, int $option = 0): DatePeriod;
 
     /**
      * Allows splitting an instance in smaller Period objects according to a given interval.
-     *
-     * This method is not part of the Interval.
      *
      * The returned iterable Interval set is ordered so that:
      * <ul>
@@ -134,16 +130,12 @@ interface Interval
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
      *
-     * @param DateInterval|int|string $duration
-     *
      * @return Interval[]
      */
-    public function split($duration): iterable;
+    public function split(DateInterval $duration): iterable;
 
     /**
      * Allows splitting an instance in smaller Period objects according to a given interval.
-     *
-     * This method is not part of the Interval.
      *
      * The returned iterable Interval set is ordered so that:
      * <ul>
@@ -153,11 +145,9 @@ interface Interval
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
      *
-     * @param DateInterval|int|string $duration
-     *
      * @return Interval[]
      */
-    public function splitBackwards($duration): iterable;
+    public function splitBackwards(DateInterval $duration): iterable;
 
     /**
      * Computes the intersection between two Interval objects.

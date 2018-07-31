@@ -3,11 +3,9 @@ includes:
 parameters:
     ignoreErrors:
         - '#Instanceof between DateTimeInterface and DateTimeInterface will always evaluate to true.#'
-        - '#Method League\\Period\\Sequence::offsetExists\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetGet\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$value with no typehint specified.#'
+        - '#Method League\\Period\\Period::getDatePeriod\(\) has parameter \$duration with no typehint specified.#'
+        - '#Method League\\Period\\Period::split\(\) has parameter \$duration with no typehint specified.#'
+        - '#Method League\\Period\\Period::splitBackwards\(\) has parameter \$duration with no typehint specified.#'
         - '#Method League\\Period\\ProxyCollection::offsetExists\(\) has parameter \$offset with no typehint specified.#'
         - '#Method League\\Period\\ProxyCollection::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
         - '#Method League\\Period\\ProxyCollection::offsetGet\(\) has parameter \$offset with no typehint specified.#'
@@ -23,4 +21,12 @@ parameters:
         - '#Method League\\Period\\ProxyInterval::move\(\) has parameter \$duration with no typehint specified.#'
         - '#Method League\\Period\\ProxyInterval::overlaps\(\) has parameter \$interval with no typehint specified.#'
         - '#Method League\\Period\\ProxyInterval::startingOn\(\) has parameter \$datepoint with no typehint specified.#'
+        - '#Method League\\Period\\ProxyInterval::getDatePeriod\(\) has parameter \$duration with no typehint specified.#'
+        - '#Method League\\Period\\ProxyInterval::split\(\) has parameter \$duration with no typehint specified.#'
+        - '#Method League\\Period\\ProxyInterval::splitBackwards\(\) has parameter \$duration with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetExists\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetGet\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$value with no typehint specified.#'
     reportUnmatchedIgnoredErrors: true

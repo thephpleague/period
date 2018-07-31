@@ -122,10 +122,14 @@ final class Period implements Interval, JsonSerializable
      * <li>a string in a format supported by DateInterval::createFromDateString</li>
      * </ul>
      *
-     * @param DateInterval|int|string $duration
+     * @param DateInterval|Interval|int|string $duration
      */
     private static function filterDuration($duration): DateInterval
     {
+        if ($duration instanceof Interval) {
+            return $duration->getDateInterval();
+        }
+
         if ($duration instanceof DateInterval) {
             return $duration;
         }
@@ -681,32 +685,31 @@ final class Period implements Interval, JsonSerializable
      * This method is not part of the Interval.
      *
      * Returns an array containing the difference expressed as Period objects
-     * The array will:
+     * The array will always contains 2 elements:
      *
      * <ul>
-     * <li>be empty if both objects have the same datepoints</li>
-     * <li>contain one Period object if both objects share one datepoint</li>
-     * <li>contain two Period objects if both objects share no datepoint</li>
+     * <li>an NULL filled array if both objects have the same datepoints</li>
+     * <li>one Period object and NULL if both objects share one datepoint</li>
+     * <li>two Period objects if both objects share no datepoint</li>
      * </ul>
      *
      * @throws Exception if both objects do not overlaps
      *
-     * @return Interval[]
      */
     public function diff(Interval $interval): array
     {
         if ($interval->equalsTo($this)) {
-            return [];
+            return [null, null];
         }
 
         $intersect = $this->intersect($interval);
         $merge = $this->merge($interval);
         if ($merge->getStartDate() == $intersect->getStartDate()) {
-            return [$merge->startingOn($intersect->getEndDate())];
+            return [$merge->startingOn($intersect->getEndDate()), null];
         }
 
         if ($merge->getEndDate() == $intersect->getEndDate()) {
-            return [$merge->endingOn($intersect->getStartDate())];
+            return [$merge->endingOn($intersect->getStartDate()), null];
         }
 
         return [

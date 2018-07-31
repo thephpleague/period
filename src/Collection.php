@@ -123,7 +123,7 @@ interface Collection extends ArrayAccess, Countable, IteratorAggregate
     public function hasIndex($index): bool;
 
     /**
-     * Tells whether at least one Interval in the current instance satisfies the predicate.
+     * Tells whether at least one item in the current instance satisfies the predicate.
      *
      *
      * @param callable $predicate accepts 2 arguments
@@ -131,7 +131,18 @@ interface Collection extends ArrayAccess, Countable, IteratorAggregate
      *                            - the Interval object
      *                            returns a boolean telling whether the predicate is satisfied or not.
      */
-    public function exists(callable $predicate): bool;
+    public function some(callable $predicate): bool;
+
+    /**
+     * Tells whether all items in the current instance satisfies the predicate.
+     *
+     *
+     * @param callable $predicate accepts 2 arguments
+     *                            - the offset
+     *                            - the Interval object
+     *                            returns a boolean telling whether the predicate is satisfied or not.
+     */
+    public function every(callable $predicate): bool;
 
     /**
      * Sorts the collection using a user-defined function while maitaining index association.

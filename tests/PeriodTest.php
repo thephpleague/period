@@ -142,6 +142,9 @@ class PeriodTest extends IntervalTest
             'usingAFloatWithNoMicroseconds' => [
                 '2015-01-01 10:00:00', '2015-01-01 11:00:00', 3600.0,
             ],
+            'usingAnInterval' => [
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', Period::createFromHour('2012-01-03 12:00:00'),
+            ],
         ];
     }
 
@@ -566,44 +569,43 @@ class PeriodTest extends IntervalTest
     {
         $period = Period::createFromYear(2013);
         $alt = Period::createFromDurationAfterStart('2013-01-01', '1 YEAR');
-        $res = $alt->diff($period);
-        self::assertCount(0, $res);
-        self::assertEquals($res, $period->diff($alt));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertNull($diff1);
+        self::assertNull($diff2);
+        self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
     public function testDiffWithPeriodSharingStartingDatepoints()
     {
         $period = Period::createFromYear(2013);
         $alt = Period::createFromDurationAfterStart('2013-01-01', '3 MONTHS');
-        $res = $alt->diff($period);
-        self::assertCount(1, $res);
-        self::assertInstanceOf(Period::class, $res[0]);
-        self::assertEquals(new DateTimeImmutable('2013-04-01'), $res[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2014-01-01'), $res[0]->getEndDate());
-        self::assertEquals($res, $period->diff($alt));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertInstanceOf(Period::class, $diff1);
+        self::assertNull($diff2);
+        self::assertEquals(new DateTimeImmutable('2013-04-01'), $diff1->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2014-01-01'), $diff1->getEndDate());
+        self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
     public function testDiffWithPeriodSharingEndingDatepoints()
     {
         $period = Period::createFromYear(2013);
         $alt = Period::createFromDurationBeforeEnd('2014-01-01', '3 MONTHS');
-        $res = $alt->diff($period);
-        self::assertCount(1, $res);
-        self::assertInstanceOf(Period::class, $res[0]);
-        self::assertEquals(new DateTimeImmutable('2013-01-01'), $res[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2013-10-01'), $res[0]->getEndDate());
-        self::assertEquals($res, $period->diff($alt));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertInstanceOf(Period::class, $diff1);
+        self::assertNull($diff2);
+        self::assertEquals(new DateTimeImmutable('2013-01-01'), $diff1->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2013-10-01'), $diff1->getEndDate());
+        self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
     public function testDiffWithOverlapsPeriod()
     {
         $period = Period::createFromDurationAfterStart('2013-01-01 10:00:00', '3 HOURS');
         $alt = Period::createFromDurationAfterStart('2013-01-01 11:00:00', '3 HOURS');
-        $res = $alt->diff($period);
-        self::assertCount(2, $res);
-        foreach ($res as $periodDiff) {
-            self::assertEquals(3600, $periodDiff->getTimestampInterval());
-        }
-        self::assertEquals($res, $period->diff($alt));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertSame(3600.0, $diff1->getTimestampInterval());
+        self::assertSame(3600.0, $diff2->getTimestampInterval());
+        self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 }

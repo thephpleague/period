@@ -63,19 +63,26 @@ final class Sequence implements Collection
      */
     public function getInterval(): ?Interval
     {
-        $reducer = function ($carry, $index, Interval $interval) {
-            if ($interval->getStartDate() < $carry->getStartDate()) {
-                $carry = $carry->startingOn($interval->getStartDate());
-            }
+        return $this->reduce([$this, 'reducer'], $this->first());
+    }
 
-            if ($interval->getEndDate() > $carry->getEndDate()) {
-                $carry = $carry->endingOn($interval->getEndDate());
-            }
+    /**
+     * Returns new instance whose endpoints are the largest possible
+     * between 2 instance of Interval objects.
+     *
+     * @param string|int $index
+     */
+    private function reducer(Interval $carry, $index, Interval $interval): Interval
+    {
+        if ($interval->getStartDate() < $carry->getStartDate()) {
+            $carry = $carry->startingOn($interval->getStartDate());
+        }
 
-            return $carry;
-        };
+        if ($interval->getEndDate() > $carry->getEndDate()) {
+            $carry = $carry->endingOn($interval->getEndDate());
+        }
 
-        return $this->reduce($reducer, $this->first());
+        return $carry;
     }
 
     /**
@@ -83,18 +90,14 @@ final class Sequence implements Collection
      */
     public function getGaps(): Collection
     {
-        $intervals = clone $this;
-        $intervals->sort(function (Interval $interval1, Interval $interval2) {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
-
         $collection = new self();
-        $current = $intervals->first();
-        if (null === $current) {
+        if ($this->isEmpty()) {
             return $collection;
         }
 
-        $intervals->remove($current);
+        $intervals = clone $this;
+        $intervals->sort([$this, 'sortByStartDate']);
+        $current = $intervals->shift();
         foreach ($intervals as $next) {
             if (!$current->overlaps($next) && !$current->abuts($next)) {
                 $collection[] = $current->gap($next);
@@ -109,29 +112,33 @@ final class Sequence implements Collection
     }
 
     /**
+     * Sort two Interval instance using their start datepoint.
+     */
+    private function sortByStartDate(Interval $interval1, Interval $interval2): int
+    {
+        return $interval1->getStartDate() <=> $interval2->getStartDate();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getIntersections(): Collection
     {
-        $intervals = clone $this;
-        $intervals->sort(function (Interval $interval1, Interval $interval2) {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
-
         $collection = new self();
-        $current = $intervals->first();
-        if (null === $current) {
+        if ($this->isEmpty()) {
             return $collection;
         }
 
-        $intervals->remove($current);
-        foreach ($intervals as $next) {
-            if ($current->overlaps($next)) {
-                $collection[] = $current->intersect($next);
+        $intervals = clone $this;
+        $intervals->sort([$this, 'sortByStartDate']);
+        $current = $intervals->shift();
+        foreach ($intervals as $interval) {
+            if ($current->overlaps($interval)) {
+                $collection[] = $current->intersect($interval);
             }
 
-            if (!$current->contains($next)) {
-                $current = $next;
+            if (!$current->contains($interval)) {
+                $current = $interval;
             }
         }
 
@@ -375,10 +382,10 @@ final class Sequence implements Collection
     /**
      * {@inheritdoc}
      */
-    public function exists(callable $filter): bool
+    public function some(callable $predicate): bool
     {
-        foreach ($this as $offset => $interval) {
-            if (true === $filter($offset, $interval)) {
+        foreach ($this->storage as $offset => $interval) {
+            if (true === $predicate($offset, $interval)) {
                 return true;
             }
         }
@@ -389,10 +396,24 @@ final class Sequence implements Collection
     /**
      * {@inheritdoc}
      */
+    public function every(callable $predicate): bool
+    {
+        foreach ($this->storage as $offset => $interval) {
+            if (true !== $predicate($offset, $interval)) {
+                return false;
+            }
+        }
+
+        return [] !== $this->storage;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function filter(callable $filter): Collection
     {
         $collection = new self();
-        foreach ($this as $offset => $interval) {
+        foreach ($this->storage as $offset => $interval) {
             if (true === $filter($offset, $interval)) {
                 $collection->set($offset, $interval);
             }
@@ -407,7 +428,7 @@ final class Sequence implements Collection
     public function map(callable $mapper): Collection
     {
         $collection = new self();
-        foreach ($this as $offset => $interval) {
+        foreach ($this->storage as $offset => $interval) {
             $collection->set($offset, $mapper($offset, $interval));
         }
 
