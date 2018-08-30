@@ -6,17 +6,18 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `Collection` interface
 - `Interval` interface
 - `Exception` class
 - `Period::createFromDatePeriod`
 - `Period::createFromHour`
 - `Period::createFromMinute`
 - `Period::createFromSecond`
+- `Period::createFromInstant`
 - `Period::createFromDurationAfterStart`
 - `Period::withDurationAfterStart`
 - `Period::expand`
-- `Sequence` class
+- `Period::equalsTo`
+- `League\Period\duration` and `League\Period\datepoint` functions
 
 ### Fixed
 

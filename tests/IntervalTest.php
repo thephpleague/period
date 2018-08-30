@@ -550,4 +550,57 @@ abstract class IntervalTest extends TestCase
         $alt = $this->createInterval(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
         self::assertTrue($orig->equalsTo($alt->move(DateInterval::createFromDateString('-1 DAY'))));
     }
+
+    public function testDiffThrowsException()
+    {
+        $interval1 = $this->createInterval(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
+        $interval2 = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+
+        self::expectException(Exception::class);
+        $interval1->diff($interval2);
+    }
+
+    public function testDiffWithEqualsPeriod()
+    {
+        $period = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $alt = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertNull($diff1);
+        self::assertNull($diff2);
+        self::assertEquals($alt->diff($period), $period->diff($alt));
+    }
+
+    public function testDiffWithPeriodSharingStartingDatepoints()
+    {
+        $period = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $alt = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2013-04-01'));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertInstanceOf(Interval::class, $diff1);
+        self::assertNull($diff2);
+        self::assertEquals(new DateTimeImmutable('2013-04-01'), $diff1->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2014-01-01'), $diff1->getEndDate());
+        self::assertEquals($alt->diff($period), $period->diff($alt));
+    }
+
+    public function testDiffWithPeriodSharingEndingDatepoints()
+    {
+        $period = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $alt = $this->createInterval(new DateTimeImmutable('2013-10-01'), new DateTimeImmutable('2014-01-01'));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertInstanceOf(Interval::class, $diff1);
+        self::assertNull($diff2);
+        self::assertEquals(new DateTimeImmutable('2013-01-01'), $diff1->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2013-10-01'), $diff1->getEndDate());
+        self::assertEquals($alt->diff($period), $period->diff($alt));
+    }
+
+    public function testDiffWithOverlapsPeriod()
+    {
+        $period = $this->createInterval(new DateTimeImmutable('2013-01-01 10:00:00'), new DateTimeImmutable('2013-01-01 13:00:00'));
+        $alt = $this->createInterval(new DateTimeImmutable('2013-01-01 11:00:00'), new DateTimeImmutable('2013-01-01 14:00:00'));
+        [$diff1, $diff2] = $alt->diff($period);
+        self::assertSame(3600.0, $diff1->getTimestampInterval());
+        self::assertSame(3600.0, $diff2->getTimestampInterval());
+        self::assertEquals($alt->diff($period), $period->diff($alt));
+    }
 }

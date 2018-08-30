@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__.'/src/functions_include.php';
+
 spl_autoload_register(function ($className) {
 
     $prefix = 'League\Period\\';

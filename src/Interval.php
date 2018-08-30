@@ -164,6 +164,25 @@ interface Interval
     public function gap(Interval $interval): self;
 
     /**
+     * Computes the difference between two overlapsing Interval objects.
+     *
+     * This method is not part of the Interval.
+     *
+     * Returns an array containing the difference expressed as Period objects
+     * The array will always contains 2 elements:
+     *
+     * <ul>
+     * <li>an NULL filled array if both objects have the same datepoints</li>
+     * <li>one Period object and NULL if both objects share one datepoint</li>
+     * <li>two Period objects if both objects share no datepoint</li>
+     * </ul>
+     *
+     * @throws Exception if both objects do not overlaps
+     *
+     */
+    public function diff(Interval $interval): array;
+
+    /**
      * Returns an instance with the specified starting datepoint.
      *
      * This method MUST retain the state of the current instance, and return

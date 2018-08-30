@@ -11,16 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace LeagueTest\Period;
-
-use League\Period\Collection;
-use League\Period\Sequence;
-
-class ProxyCollectionTest extends SequenceTest
-{
-    protected function buildCollection(iterable $intervals = []): Collection
-    {
-        return new ProxySequence(new Sequence($intervals), ['foo' => 'bar']);
-    }
+if (!function_exists('\Period\duration')) {
+    require __DIR__.'/functions.php';
 }

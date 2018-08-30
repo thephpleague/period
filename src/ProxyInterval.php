@@ -173,6 +173,14 @@ abstract class ProxyInterval implements Interval
     /**
      * {@inheritdoc}
      */
+    public function diff(Interval $interval): array
+    {
+        return $this->interval->diff($interval);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function startingOn($datepoint): Interval
     {
         $newInterval = $this->interval->startingOn($datepoint);
