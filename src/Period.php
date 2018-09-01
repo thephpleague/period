@@ -82,41 +82,6 @@ final class Period implements Interval, JsonSerializable
     }
 
     /**
-     * Filters the input integer.
-     *
-     * @param int|string|null $value
-     *
-     * @throws Exception if the given value can not be converted to an int.
-     */
-    private static function filterInt($value, string $name): int
-    {
-        $int = filter_var($value, FILTER_VALIDATE_INT);
-        if (false !== $int) {
-            return $int;
-        }
-
-        throw new Exception(sprintf('The %s value must be an integer %s given', $name, gettype($value)));
-    }
-
-    /**
-     * Filters a integer according to a range.
-     *
-     * @param int $value the value to validate
-     * @param int $min   the minimum value
-     * @param int $max   the maximal value
-     *
-     * @throws Exception If the value is not in the range
-     */
-    private static function filterRange(int $value, int $min, int $max): int
-    {
-        if ($value >= $min && $value <= $max) {
-            return $value;
-        }
-
-        throw new Exception('The submitted value is not contained within a valid range');
-    }
-
-    /**
      * Creates new instance from a DatePeriod.
      *
      * @throws Exception If the submitted DatePeriod lacks an end datepoint.
@@ -200,12 +165,46 @@ final class Period implements Interval, JsonSerializable
     }
 
     /**
+     * Filters the input integer.
+     *
+     * @param int|string|null $value
+     *
+     * @throws Exception if the given value can not be converted to an int.
+     */
+    private static function filterInt($value, string $name): int
+    {
+        if (null !== $value && false !== ($int = filter_var($value, FILTER_VALIDATE_INT))) {
+            return $int;
+        }
+
+        throw new Exception(sprintf('The %s value must be an integer %s given', $name, gettype($value)));
+    }
+
+    /**
+     * Filters a integer according to a range.
+     *
+     * @param int $value the value to validate
+     * @param int $min   the minimum value
+     * @param int $max   the maximal value
+     *
+     * @throws Exception If the value is not in the range
+     */
+    private static function filterRange(int $value, int $min, int $max): int
+    {
+        if ($value >= $min && $value <= $max) {
+            return $value;
+        }
+
+        throw new Exception('The submitted value is not contained within a valid range');
+    }
+
+    /**
      * Creates new instance for a specific quarter in a given year.
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
      * @param null|int $quarter          quarter index from 1 to 4 included
      */
-    public static function createFromQuarter($int_or_datepoint, $quarter = null): self
+    public static function createFromQuarter($int_or_datepoint, int $quarter = null): self
     {
         if (is_int($int_or_datepoint)) {
             $month = ((self::filterRange(self::filterInt($quarter, 'quarter'), 1, 4) - 1) * 3) + 1;
@@ -270,7 +269,7 @@ final class Period implements Interval, JsonSerializable
         $datepoint = datepoint($int_or_datepoint);
         $startDate = $datepoint
             ->setTime(0, 0, 0, 0)
-            ->sub(new DateInterval('P'.((int) $datepoint->format('N') - 1).'D'));
+            ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
 
         return new self($startDate, $startDate->add(new DateInterval('P1W')));
     }
