@@ -21,7 +21,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use League\Period\Exception;
 use League\Period\Interval;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 abstract class IntervalTest extends TestCase
 {

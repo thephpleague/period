@@ -3,11 +3,5 @@ includes:
 - vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
     ignoreErrors:
-        - '#Parameter \#2 \$endDate of class League\\Period\\Period constructor expects DateTimeInterface\|string, array given.#'
-        - '#Parameter \#2 \$duration of static method League\\Period\\Period::createFromDurationAfterStart\(\) expects DateInterval\|int\||League\\Period\\Interval\|string, array given.#'
-        - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromWeek\(\) expects DateTimeInterface\|int\|string, array given.#'
-        - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromMonth\(\) expects DateTimeInterface\|int\|string, array given.#'
-        - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromQuarter\(\) expects DateTimeInterface\|int\|string, array given.#'
-        - '#Parameter \#1 \$int_or_datepoint of static method League\\Period\\Period::createFromSemester\(\) expects DateTimeInterface\|int\|string, array given.#'
         - '#Method League\\Period\\Period::merge\(\) invoked with 0 parameters, at least 1 required.#'
     reportUnmatchedIgnoredErrors: true

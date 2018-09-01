@@ -19,7 +19,6 @@ namespace League\Period;
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
-use DateTimeInterface;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function filter_var;
@@ -31,8 +30,6 @@ use function sprintf;
 
 /**
  * Returns a DateTimeImmutable object.
- *
- * @param DateTimeInterface|string $datepoint
  */
 function datepoint($datepoint): DateTimeImmutable
 {
@@ -42,6 +39,10 @@ function datepoint($datepoint): DateTimeImmutable
 
     if ($datepoint instanceof DateTime) {
         return DateTimeImmutable::createFromMutable($datepoint);
+    }
+
+    if (false !== ($res = filter_var($datepoint, FILTER_VALIDATE_INT))) {
+        return new DateTimeImmutable('@'.$res);
     }
 
     if (is_string($datepoint)) {
@@ -64,8 +65,6 @@ function datepoint($datepoint): DateTimeImmutable
  * <li>an int interpreted as the duration expressed in seconds.</li>
  * <li>a string in a format supported by DateInterval::createFromDateString</li>
  * </ul>
- *
- * @param DateInterval|Interval|int|string $duration
  */
 function duration($duration): DateInterval
 {

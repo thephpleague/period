@@ -376,10 +376,10 @@ class PeriodTest extends IntervalTest
     }
 
 
-    public function testCreateFromInstant()
+    public function testcreateFromDatepoint()
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
-        $period = Period::createFromInstant($today);
+        $period = Period::createFromDatepoint($today);
         self::assertEquals($today, $period->getStartDate());
         self::assertEquals($today, $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));

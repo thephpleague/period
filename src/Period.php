@@ -65,8 +65,8 @@ final class Period implements Interval, JsonSerializable
     /**
      * Creates a new instance.
      *
-     * @param DateTimeInterface|string $startDate
-     * @param DateTimeInterface|string $endDate
+     * @param mixed $startDate the interval start datepoint
+     * @param mixed $endDate   the interval end datepoint
      *
      * @throws Exception If $startDate is greater than $endDate
      */
@@ -136,9 +136,6 @@ final class Period implements Interval, JsonSerializable
 
     /**
      * Creates new instance from a starting point and an interval.
-     *
-     * @param DateTimeInterface|string         $datepoint
-     * @param DateInterval|Interval|int|string $duration
      */
     public static function createFromDurationAfterStart($datepoint, $duration): self
     {
@@ -149,9 +146,6 @@ final class Period implements Interval, JsonSerializable
 
     /**
      * Creates new instance from a ending excluded datepoint and an interval.
-     *
-     * @param DateTimeInterface|string         $datepoint
-     * @param DateInterval|Interval|int|string $duration
      */
     public static function createFromDurationBeforeEnd($datepoint, $duration): self
     {
@@ -163,7 +157,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Creates new instance for a specific year.
      *
-     * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
+     * @param mixed $int_or_datepoint a year as an int or a datepoint
      */
     public static function createFromYear($int_or_datepoint): self
     {
@@ -182,10 +176,10 @@ final class Period implements Interval, JsonSerializable
     /**
      * Creates new instance for a specific semester in a given year.
      *
-     * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
-     * @param string|int|null              $semester         a semester index from 1 to 2 included
+     * @param mixed    $int_or_datepoint a year as an int or a datepoint
+     * @param null|int $semester         a semester index from 1 to 2 included
      */
-    public static function createFromSemester($int_or_datepoint, $semester = null): self
+    public static function createFromSemester($int_or_datepoint, int $semester = null): self
     {
         if (is_int($int_or_datepoint)) {
             $month = ((self::filterRange(self::filterInt($semester, 'semester'), 1, 2) - 1) * 6) + 1;
@@ -208,8 +202,8 @@ final class Period implements Interval, JsonSerializable
     /**
      * Creates new instance for a specific quarter in a given year.
      *
-     * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
-     * @param string|int|null              $quarter          quarter index from 1 to 4 included
+     * @param mixed    $int_or_datepoint a year as an int or a datepoint
+     * @param null|int $quarter          quarter index from 1 to 4 included
      */
     public static function createFromQuarter($int_or_datepoint, $quarter = null): self
     {
@@ -234,10 +228,10 @@ final class Period implements Interval, JsonSerializable
     /**
      * Creates new instance for a specific year and month.
      *
-     * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
-     * @param string|int|null              $month            month index from 1 to 12 included
+     * @param mixed    $int_or_datepoint a year as an int or a datepoint
+     * @param int|null $month            month index from 1 to 12 included
      */
-    public static function createFromMonth($int_or_datepoint, $month = null): self
+    public static function createFromMonth($int_or_datepoint, int $month = null): self
     {
         if (is_int($int_or_datepoint)) {
             $month = self::filterRange(self::filterInt($month, 'month'), 1, 12);
@@ -259,10 +253,10 @@ final class Period implements Interval, JsonSerializable
     /**
      * Creates new instance for a specific ISO8601 week.
      *
-     * @param DateTimeInterface|string|int $int_or_datepoint a year as an int or a datepoint
-     * @param string|int|null              $week             index from 1 to 53 included
+     * @param mixed    $int_or_datepoint a year as an int or a datepoint
+     * @param int|null $week             index from 1 to 53 included
      */
-    public static function createFromWeek($int_or_datepoint, $week = null): self
+    public static function createFromWeek($int_or_datepoint, int $week = null): self
     {
         if (is_int($int_or_datepoint)) {
             $week = self::filterRange(self::filterInt($week, 'week'), 1, 53);
@@ -286,8 +280,6 @@ final class Period implements Interval, JsonSerializable
      *
      * The date is truncated so that the time range starts at midnight
      * according to the date timezone and last a full day.
-     *
-     * @param DateTimeInterface|string $datepoint
      */
     public static function createFromDay($datepoint): self
     {
@@ -301,8 +293,6 @@ final class Period implements Interval, JsonSerializable
      *
      * The starting datepoint represents the beginning of the hour
      * The interval is equal to 1 hour
-     *
-     * @param DateTimeInterface|string $datepoint
      */
     public static function createFromHour($datepoint): self
     {
@@ -317,8 +307,6 @@ final class Period implements Interval, JsonSerializable
      *
      * The starting datepoint represents the beginning of the minute
      * The interval is equal to 1 minute
-     *
-     * @param DateTimeInterface|string $datepoint
      */
     public static function createFromMinute($datepoint): self
     {
@@ -333,8 +321,6 @@ final class Period implements Interval, JsonSerializable
      *
      * The starting datepoint represents the beginning of the second
      * The interval is equal to 1 second
-     *
-     * @param DateTimeInterface|string $datepoint
      */
     public static function createFromSecond($datepoint): self
     {
@@ -351,10 +337,8 @@ final class Period implements Interval, JsonSerializable
 
     /**
      * Creates new instance for a specific instant.
-     *
-     * @param DateTimeInterface|string $datepoint
      */
-    public static function createFromInstant($datepoint): self
+    public static function createFromDatepoint($datepoint): self
     {
         $datepoint = datepoint($datepoint);
 
@@ -395,8 +379,6 @@ final class Period implements Interval, JsonSerializable
 
     /**
      * @inheritdoc
-     *
-     * @param DateInterval|Interval|string|int $duration
      */
     public function getDatePeriod($duration, int $option = 0): DatePeriod
     {
@@ -658,7 +640,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * @inheritdoc
      *
-     * @param DateTimeInterface|string $datepoint
+     * @param DateTimeInterface|int|string $datepoint
      */
     public function startingOn($datepoint): Interval
     {
@@ -673,7 +655,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * @inheritdoc
      *
-     * @param DateTimeInterface|string $datepoint
+     * @param DateTimeInterface|int|string $datepoint
      */
     public function endingOn($datepoint): Interval
     {
