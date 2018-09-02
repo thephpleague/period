@@ -197,35 +197,35 @@ class PeriodTest extends IntervalTest
         Period::createFromDurationBeforeEnd(new DateTime('2012-01-12'), '-1 DAY');
     }
 
-    public function testCreateFromWeek()
+    public function testcreateFromISOWeek()
     {
-        $period = Period::createFromWeek(2014, 3);
+        $period = Period::createFromISOWeek(2014, 3);
         self::assertEquals(new DateTimeImmutable('2014-01-13'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2014-01-20'), $period->getEndDate());
     }
 
-    public function testCreateFromWeekFailedWithLowInvalidIndex()
+    public function testcreateFromISOWeekFailedWithLowInvalidIndex()
     {
         self::expectException(Exception::class);
-        Period::createFromWeek(2014, 0);
+        Period::createFromISOWeek(2014, 0);
     }
 
-    public function testCreateFromWeekFailedWithHighInvalidIndex()
+    public function testcreateFromISOWeekFailedWithHighInvalidIndex()
     {
         self::expectException(Exception::class);
-        Period::createFromWeek(2014, 54);
+        Period::createFromISOWeek(2014, 54);
     }
 
-    public function testCreateFromWeekFailedWithInvalidYearIndex()
+    public function testcreateFromISOWeekFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
-        Period::createFromWeek([], 1);
+        Period::createFromISOWeek([], 1);
     }
 
-    public function testCreateFromWeekFailedWithMissingSemesterValue()
+    public function testcreateFromISOWeekFailedWithMissingSemesterValue()
     {
         self::expectException(Exception::class);
-        Period::createFromWeek(2014, null);
+        Period::createFromISOWeek(2014, null);
     }
 
     public function testCreateFromMonth()
@@ -328,6 +328,15 @@ class PeriodTest extends IntervalTest
         self::assertEquals(new DateTimeImmutable('2015-01-01'), $period->getEndDate());
     }
 
+    public function testCreateFromISOYear()
+    {
+        $period = Period::createFromISOYear(2014);
+        $interval = Period::createFromISOYear('2014-06-25');
+        self::assertEquals(new DateTimeImmutable('2013-12-30'), $period->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2014-12-29'), $period->getEndDate());
+        self::assertTrue($period->equalsTo($interval));
+    }
+
     public function testCreateFromDay()
     {
         $period = Period::createFromDay(new ExtendedDate('2008-07-01T22:35:17.123456+08:00'));
@@ -391,7 +400,7 @@ class PeriodTest extends IntervalTest
 
     public function testCreateFromWithDateTimeInterface()
     {
-        self::assertTrue(Period::createFromWeek('2008W27')->equalsTo(Period::createFromWeek(2008, 27)));
+        self::assertTrue(Period::createFromISOWeek('2008W27')->equalsTo(Period::createFromISOWeek(2008, 27)));
         self::assertTrue(Period::createFromMonth('2008-07')->equalsTo(Period::createFromMonth(2008, 7)));
         self::assertTrue(Period::createFromQuarter('2008-02')->equalsTo(Period::createFromQuarter(2008, 1)));
         self::assertTrue(Period::createFromSemester('2008-10')->equalsTo(Period::createFromSemester(2008, 2)));

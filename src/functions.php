@@ -50,7 +50,7 @@ function datepoint($datepoint): DateTimeImmutable
     }
 
     throw new TypeError(sprintf(
-        'The datepoint must a string or a DateTimeInteface object %s given',
+        'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
         is_object($datepoint) ? get_class($datepoint) : gettype($datepoint)
     ));
 }
@@ -85,7 +85,7 @@ function duration($duration): DateInterval
     }
 
     throw new TypeError(sprintf(
-        'The interval must an integer, a string or a DateInterval object %s given',
+        'The duration must be expressed using an integer, a string or a DateInterval object %s given',
         is_object($duration) ? get_class($duration) : gettype($duration)
     ));
 }

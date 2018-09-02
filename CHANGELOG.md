@@ -9,6 +9,8 @@ All Notable changes to `Period` will be documented in this file
 - `Interval` interface
 - `Exception` class
 - `Period::createFromDatePeriod`
+- `Period::createFromISOYear`
+- `Period::createFromISOWeek`
 - `Period::createFromHour`
 - `Period::createFromMinute`
 - `Period::createFromSecond`
@@ -28,7 +30,6 @@ All Notable changes to `Period` will be documented in this file
     - `Period::createFromDay`
     - `Period::createFromSemester`
     - `Period::createFromQuarter`
-    - `Period::createFromWeek`
 - `Period::JsonSerialize` now returns datepoint in JavaScript compatible datetime notation
 - `Period::diff` always returns an array containing two values.
 
@@ -45,6 +46,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::sameValueAs` replaced by `Period::equalsTo`
 - `Period::createFromDuration` replaced by `Period::createFromDurationAfterStart`
 - `Period::withDuration` replaced by `Period::withDurationAfterStart`
+- `Period::createFromWeek` replaced by `Period::createFromISOWeek`
 - Support for PHP 7.0 and PHP 7.1
 
 ## 3.4.0 - 2017-11-17

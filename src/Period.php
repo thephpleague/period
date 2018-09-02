@@ -127,15 +127,40 @@ final class Period implements Interval, JsonSerializable
     public static function createFromYear($int_or_datepoint): self
     {
         if (is_int($int_or_datepoint)) {
-            $startDate = (new DateTimeImmutable())->setDate($int_or_datepoint, 1, 1)->setTime(0, 0, 0, 0);
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setDate($int_or_datepoint, 1, 1);
 
             return new self($startDate, $startDate->add(new DateInterval('P1Y')));
         }
 
         $datepoint = datepoint($int_or_datepoint);
-        $startDate = $datepoint->setDate((int) $datepoint->format('Y'), 1, 1)->setTime(0, 0, 0, 0);
+        $startDate = $datepoint->setTime(0, 0, 0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
 
         return new self($startDate, $startDate->add(new DateInterval('P1Y')));
+    }
+
+    /**
+     * Creates new instance for a specific ISO year.
+     *
+     * @param mixed $iso_year a year as an int or a datepoint
+     */
+    public static function createFromISOYear($iso_year): self
+    {
+        if (is_int($iso_year)) {
+            $datepoint = (new DateTimeImmutable())->setTime(0, 0, 0, 0);
+
+            return new self(
+                $datepoint->setISODate($iso_year, 1, 1),
+                $datepoint->setISODate(++$iso_year, 1, 1)
+            );
+        }
+
+        $datepoint = datepoint($iso_year)->setTime(0, 0, 0, 0);
+        $iso_year = (int) $datepoint->format('o');
+
+        return new self(
+            $datepoint->setISODate($iso_year, 1, 1),
+            $datepoint->setISODate(++$iso_year, 1, 1)
+        );
     }
 
     /**
@@ -148,18 +173,16 @@ final class Period implements Interval, JsonSerializable
     {
         if (is_int($int_or_datepoint)) {
             $month = ((self::filterRange(self::filterInt($semester, 'semester'), 1, 2) - 1) * 6) + 1;
-            $startDate = (new DateTimeImmutable())
-                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
-                ->setTime(0, 0, 0, 0);
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1);
 
             return new self($startDate, $startDate->add(new DateInterval('P6M')));
         }
 
         $datepoint = datepoint($int_or_datepoint);
         $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
-        $startDate = $datepoint
-            ->setDate((int) $datepoint->format('Y'), $month, 1)
-            ->setTime(0, 0, 0, 0);
+        $startDate = $datepoint->setTime(0, 0, 0, 0)
+            ->setDate((int) $datepoint->format('Y'), $month, 1);
 
         return new self($startDate, $startDate->add(new DateInterval('P6M')));
     }
@@ -208,18 +231,16 @@ final class Period implements Interval, JsonSerializable
     {
         if (is_int($int_or_datepoint)) {
             $month = ((self::filterRange(self::filterInt($quarter, 'quarter'), 1, 4) - 1) * 3) + 1;
-            $startDate = (new DateTimeImmutable())
-                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
-                ->setTime(0, 0, 0, 0);
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1);
 
             return new self($startDate, $startDate->add(new DateInterval('P3M')));
         }
 
-        $datepoint = datepoint($int_or_datepoint);
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
         $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
         $startDate = $datepoint
-            ->setDate((int) $datepoint->format('Y'), $month, 1)
-            ->setTime(0, 0, 0, 0);
+            ->setDate((int) $datepoint->format('Y'), $month, 1);
 
         return new self($startDate, $startDate->add(new DateInterval('P3M')));
     }
@@ -234,17 +255,15 @@ final class Period implements Interval, JsonSerializable
     {
         if (is_int($int_or_datepoint)) {
             $month = self::filterRange(self::filterInt($month, 'month'), 1, 12);
-            $startDate = (new DateTimeImmutable())
-                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1)
-                ->setTime(0, 0, 0, 0);
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1);
 
             return new self($startDate, $startDate->add(new DateInterval('P1M')));
         }
 
-        $datepoint = datepoint($int_or_datepoint);
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
         $startDate = $datepoint
-            ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1)
-            ->setTime(0, 0, 0, 0);
+            ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')));
     }
@@ -255,23 +274,21 @@ final class Period implements Interval, JsonSerializable
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
      * @param int|null $week             index from 1 to 53 included
      */
-    public static function createFromWeek($int_or_datepoint, int $week = null): self
+    public static function createFromISOWeek($int_or_datepoint, int $week = null): self
     {
         if (is_int($int_or_datepoint)) {
             $week = self::filterRange(self::filterInt($week, 'week'), 1, 53);
-            $startDate = (new DateTimeImmutable())
-                ->setTime(0, 0, 0, 0)
-                ->setISODate(self::filterInt($int_or_datepoint, 'year'), $week);
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+                ->setISODate(self::filterInt($int_or_datepoint, 'year'), $week, 1);
 
-            return new self($startDate, $startDate->add(new DateInterval('P1W')));
+            return new self($startDate, $startDate->add(new DateInterval('P7D')));
         }
 
-        $datepoint = datepoint($int_or_datepoint);
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
         $startDate = $datepoint
-            ->setTime(0, 0, 0, 0)
             ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
 
-        return new self($startDate, $startDate->add(new DateInterval('P1W')));
+        return new self($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
     /**
@@ -387,7 +404,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
@@ -404,9 +421,10 @@ final class Period implements Interval, JsonSerializable
      * Returns the Json representation of an instance using
      * the JSON representation of dates as returned by Javascript Date.toJSON() method.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
      *
      * @return string[]
      */
@@ -432,7 +450,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Tells whether the current instance duration is greater than the submitted one.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      */
     public function durationGreaterThan(Interval $interval): bool
     {
@@ -442,7 +460,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Tells whether the current instance duration is less than the submitted one.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      */
     public function durationLessThan(Interval $interval): bool
     {
@@ -452,7 +470,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Tells whether the current instance duration is equal to the submitted one.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      */
     public function sameDurationAs(Interval $interval): bool
     {
@@ -669,7 +687,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Returns a new instance with a new ending datepoint.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @param DateInterval|Interval|int|string $duration
      */
@@ -681,7 +699,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Returns a new instance with a new starting datepoint.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @param DateInterval|Interval|int|string $duration
      */
@@ -694,7 +712,7 @@ final class Period implements Interval, JsonSerializable
      * Returns a new instance with a new starting datepoint
      * moved forward or backward by the given interval.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @param DateInterval|Interval|int|string $duration
      */
@@ -707,7 +725,7 @@ final class Period implements Interval, JsonSerializable
      * Returns a new instance with a new ending datepoint
      * moved forward or backward by the given interval.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @param DateInterval|Interval|int|string $duration
      */
@@ -751,7 +769,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Returns the difference between two Interval objects expressed in seconds.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      */
     public function timestampIntervalDiff(Interval $interval): float
     {
@@ -761,7 +779,7 @@ final class Period implements Interval, JsonSerializable
     /**
      * Returns the difference between two Interval objects expressed in DateInterval.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      */
     public function dateIntervalDiff(Interval $interval): DateInterval
     {
@@ -772,7 +790,7 @@ final class Period implements Interval, JsonSerializable
      * Merges one or more Interval objects to return a new instance.
      * The resulting instance represents the largest duration possible.
      *
-     * This method is not part of the Interval.
+     * This method is not part of the Interval interface.
      *
      * @param Interval ...$intervals
      */
