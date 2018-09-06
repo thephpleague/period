@@ -22,10 +22,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
-use const FILTER_VALIDATE_INT;
 use function array_unshift;
-use function filter_var;
-use function gettype;
 use function intdiv;
 use function sprintf;
 
@@ -93,7 +90,7 @@ final class Period implements JsonSerializable
     {
         $endDate = $datePeriod->getEndDate();
         if ($endDate instanceof DateTimeInterface) {
-            return new self($datePeriod->getStartDate(), $endDate);
+            return new Period($datePeriod->getStartDate(), $endDate);
         }
 
         throw new Exception('The submitted DatePeriod object does not contain an end datepoint');
@@ -102,21 +99,21 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance from a starting point and an interval.
      */
-    public static function createFromDurationAfterStart($datepoint, $duration): self
+    public static function createFromDurationAfterStart($startDate, $duration): self
     {
-        $startDate = datepoint($datepoint);
+        $startDate = datepoint($startDate);
 
-        return new self($startDate, $startDate->add(duration($duration)));
+        return new Period($startDate, $startDate->add(duration($duration)));
     }
 
     /**
      * Creates new instance from a ending excluded datepoint and an interval.
      */
-    public static function createFromDurationBeforeEnd($datepoint, $duration): self
+    public static function createFromDurationBeforeEnd($endDate, $duration): self
     {
-        $endDate = datepoint($datepoint);
+        $endDate = datepoint($endDate);
 
-        return new self($endDate->sub(duration($duration)), $endDate);
+        return new Period($endDate->sub(duration($duration)), $endDate);
     }
 
     /**
@@ -141,25 +138,25 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance for a specific ISO year.
      *
-     * @param mixed $iso_year a year as an int or a datepoint
+     * @param mixed $int_or_datepoint a year as an int or a datepoint
      */
-    public static function createFromISOYear($iso_year): self
+    public static function createFromISOYear($int_or_datepoint): self
     {
-        if (is_int($iso_year)) {
+        if (is_int($int_or_datepoint)) {
             $datepoint = (new DateTimeImmutable())->setTime(0, 0, 0, 0);
 
             return new self(
-                $datepoint->setISODate($iso_year, 1, 1),
-                $datepoint->setISODate(++$iso_year, 1, 1)
+                $datepoint->setISODate($int_or_datepoint, 1, 1),
+                $datepoint->setISODate(++$int_or_datepoint, 1, 1)
             );
         }
 
-        $datepoint = datepoint($iso_year)->setTime(0, 0, 0, 0);
-        $iso_year = (int) $datepoint->format('o');
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+        $int_or_datepoint = (int) $datepoint->format('o');
 
         return new self(
-            $datepoint->setISODate($iso_year, 1, 1),
-            $datepoint->setISODate(++$iso_year, 1, 1)
+            $datepoint->setISODate($int_or_datepoint, 1, 1),
+            $datepoint->setISODate(++$int_or_datepoint, 1, 1)
         );
     }
 
@@ -167,128 +164,106 @@ final class Period implements JsonSerializable
      * Creates new instance for a specific semester in a given year.
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param null|int $semester         a semester index from 1 to 2 included
+     * @param null|int $index            a semester index from 1 to 2 included
      */
-    public static function createFromSemester($int_or_datepoint, int $semester = null): self
+    public static function createFromSemester($int_or_datepoint, int $index = null): self
     {
-        if (is_int($int_or_datepoint)) {
-            $month = ((self::filterRange(self::filterInt($semester, 'semester'), 1, 2) - 1) * 6) + 1;
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
-                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1);
+        if (!is_int($int_or_datepoint)) {
+            $datepoint = datepoint($int_or_datepoint);
+            $startDate = $datepoint->setTime(0, 0, 0, 0)->setDate(
+                (int) $datepoint->format('Y'),
+                (intdiv((int) $datepoint->format('n'), 6) * 6) + 1,
+                1
+            );
 
             return new self($startDate, $startDate->add(new DateInterval('P6M')));
         }
 
-        $datepoint = datepoint($int_or_datepoint);
-        $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
-        $startDate = $datepoint->setTime(0, 0, 0, 0)
-            ->setDate((int) $datepoint->format('Y'), $month, 1);
+        if (null !== $index && 0 < $index && 2 >= $index) {
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+                ->setDate($int_or_datepoint, (($index - 1) * 6) + 1, 1);
 
-        return new self($startDate, $startDate->add(new DateInterval('P6M')));
-    }
-
-    /**
-     * Filters the input integer.
-     *
-     * @param int|string|null $value
-     *
-     * @throws Exception if the given value can not be converted to an int.
-     */
-    private static function filterInt($value, string $name): int
-    {
-        if (null !== $value && false !== ($int = filter_var($value, FILTER_VALIDATE_INT))) {
-            return $int;
+            return new self($startDate, $startDate->add(new DateInterval('P6M')));
         }
 
-        throw new Exception(sprintf('The %s value must be an integer %s given', $name, gettype($value)));
-    }
-
-    /**
-     * Filters a integer according to a range.
-     *
-     * @param int $value the value to validate
-     * @param int $min   the minimum value
-     * @param int $max   the maximal value
-     *
-     * @throws Exception If the value is not in the range
-     */
-    private static function filterRange(int $value, int $min, int $max): int
-    {
-        if ($value >= $min && $value <= $max) {
-            return $value;
-        }
-
-        throw new Exception('The submitted value is not contained within a valid range');
+        throw new Exception('The semester index is not contained within the valid range.');
     }
 
     /**
      * Creates new instance for a specific quarter in a given year.
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param null|int $quarter          quarter index from 1 to 4 included
+     * @param null|int $index            quarter index from 1 to 4 included
      */
-    public static function createFromQuarter($int_or_datepoint, int $quarter = null): self
+    public static function createFromQuarter($int_or_datepoint, int $index = null): self
     {
-        if (is_int($int_or_datepoint)) {
-            $month = ((self::filterRange(self::filterInt($quarter, 'quarter'), 1, 4) - 1) * 3) + 1;
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
-                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1);
+        if (!is_int($int_or_datepoint)) {
+            $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+            $startDate = $datepoint->setDate(
+                (int) $datepoint->format('Y'),
+                (intdiv((int) $datepoint->format('n'), 3) * 3) + 1,
+                1
+            );
 
             return new self($startDate, $startDate->add(new DateInterval('P3M')));
         }
 
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-        $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
-        $startDate = $datepoint
-            ->setDate((int) $datepoint->format('Y'), $month, 1);
+        if (null !== $index && 0 < $index && 4 >= $index) {
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+                ->setDate($int_or_datepoint, (($index - 1) * 3) + 1, 1);
 
-        return new self($startDate, $startDate->add(new DateInterval('P3M')));
+            return new self($startDate, $startDate->add(new DateInterval('P3M')));
+        }
+
+        throw new Exception('The quarter index is not contained within the valid range.');
     }
 
     /**
      * Creates new instance for a specific year and month.
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param int|null $month            month index from 1 to 12 included
+     * @param int|null $index            month index from 1 to 12 included
      */
-    public static function createFromMonth($int_or_datepoint, int $month = null): self
+    public static function createFromMonth($int_or_datepoint, int $index = null): self
     {
-        if (is_int($int_or_datepoint)) {
-            $month = self::filterRange(self::filterInt($month, 'month'), 1, 12);
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
-                ->setDate(self::filterInt($int_or_datepoint, 'year'), $month, 1);
+        if (!is_int($int_or_datepoint)) {
+            $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+            $startDate = $datepoint->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
 
             return new self($startDate, $startDate->add(new DateInterval('P1M')));
         }
 
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-        $startDate = $datepoint
-            ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
+        if (null !== $index && 0 < $index && 12 >= $index) {
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setDate($int_or_datepoint, $index, 1);
 
-        return new self($startDate, $startDate->add(new DateInterval('P1M')));
+            return new self($startDate, $startDate->add(new DateInterval('P1M')));
+        }
+
+        throw new Exception('The month index is not contained within the valid range.');
     }
 
     /**
      * Creates new instance for a specific ISO8601 week.
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param int|null $week             index from 1 to 53 included
+     * @param int|null $index            index from 1 to 53 included
      */
-    public static function createFromISOWeek($int_or_datepoint, int $week = null): self
+    public static function createFromISOWeek($int_or_datepoint, int $index = null): self
     {
-        if (is_int($int_or_datepoint)) {
-            $week = self::filterRange(self::filterInt($week, 'week'), 1, 53);
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
-                ->setISODate(self::filterInt($int_or_datepoint, 'year'), $week, 1);
+        if (!is_int($int_or_datepoint)) {
+            $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+            $startDate = $datepoint->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
 
             return new self($startDate, $startDate->add(new DateInterval('P7D')));
         }
 
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-        $startDate = $datepoint
-            ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
+        if (null !== $index && 0 < $index && 53 >= $index) {
+            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setISODate($int_or_datepoint, $index, 1);
 
-        return new self($startDate, $startDate->add(new DateInterval('P7D')));
+            return new self($startDate, $startDate->add(new DateInterval('P7D')));
+        }
+
+        throw new Exception('The week index is not contained within the valid range.');
     }
 
     /**
@@ -352,7 +327,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance for a specific instant.
+     * Creates new instance for a specific datepoint.
      */
     public static function createFromDatepoint($datepoint): self
     {

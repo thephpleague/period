@@ -9,7 +9,7 @@ spl_autoload_register(function ($className) {
         return;
     }
 
-    $file = __DIR_.'/src/'.str_replace('\\', '/', substr($className, strlen($prefix))).'.php';
+    $file = __DIR__.'/src/'.str_replace('\\', '/', substr($className, strlen($prefix))).'.php';
     if (!is_readable($file)) {
         return;
     }
