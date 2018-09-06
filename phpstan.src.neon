@@ -3,16 +3,6 @@ includes:
 parameters:
     ignoreErrors:
         - '#Instanceof between DateTimeInterface and DateTimeInterface will always evaluate to true.#'
-        - '#Method League\\Period\\Period::createFromDurationAfterStart\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromDurationBeforeEnd\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromDay\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromHour\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromMinute\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromSecond\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromDatepoint\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromDurationAfterStart\(\) has parameter \$duration with no typehint specified.#'
-        - '#Method League\\Period\\Period::createFromDurationBeforeEnd\(\) has parameter \$duration with no typehint specified.#'
-        - '#Method League\\Period\\Period::getDatePeriod\(\) has parameter \$duration with no typehint specified.#'
-        - '#Function League\\Period\\datepoint\(\) has parameter \$datepoint with no typehint specified.#'
-        - '#Function League\\Period\\duration\(\) has parameter \$duration with no typehint specified.#'
+        - '#Method League\\Period\\Period::(createFrom|get)[A-Z][A-Za-z]+\(\) has parameter \$(datepoint|duration) with no typehint specified.#'
+        - '#Function League\\Period\\(datepoint|duration)\(\) has parameter \$(datepoint|duration) with no typehint specified.#'
     reportUnmatchedIgnoredErrors: true
