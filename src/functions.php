@@ -68,7 +68,7 @@ function datepoint($datepoint): DateTimeImmutable
  */
 function duration($duration): DateInterval
 {
-    if ($duration instanceof Interval) {
+    if ($duration instanceof Period) {
         return $duration->getDateInterval();
     }
 

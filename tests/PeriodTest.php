@@ -22,13 +22,12 @@ use DateTimeInterface;
 use DateTimeZone;
 use Exception as PhpException;
 use League\Period\Exception;
-use League\Period\Interval;
 use League\Period\Period;
 use TypeError;
 
 class PeriodTest extends IntervalTest
 {
-    protected function createInterval(DateTimeInterface $startDate, DateTimeInterface $endDate): Interval
+    protected function createInterval(DateTimeInterface $startDate, DateTimeInterface $endDate): Period
     {
         return new Period($startDate, $endDate);
     }

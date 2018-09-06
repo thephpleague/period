@@ -20,7 +20,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use League\Period\Exception;
-use League\Period\Interval;
+use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 
 abstract class IntervalTest extends TestCase
@@ -40,7 +40,7 @@ abstract class IntervalTest extends TestCase
         date_default_timezone_set($this->timezone);
     }
 
-    abstract protected function createInterval(DateTimeInterface $startDate, DateTimeInterface $endDate): Interval;
+    abstract protected function createInterval(DateTimeInterface $startDate, DateTimeInterface $endDate): Period;
 
     public function testGetDateInterval()
     {
@@ -126,7 +126,7 @@ abstract class IntervalTest extends TestCase
     /**
      * @dataProvider provideAbutsData
      */
-    public function testAbuts(Interval $interval, Interval $arg, $expected)
+    public function testAbuts(Period $interval, Period $arg, $expected)
     {
         self::assertSame($expected, $interval->abuts($arg));
     }
@@ -150,7 +150,7 @@ abstract class IntervalTest extends TestCase
     /**
      * @dataProvider provideOverlapsData
      */
-    public function testOverlaps(Interval $interval, Interval $arg, $expected)
+    public function testOverlaps(Period $interval, Period $arg, $expected)
     {
         self::assertSame($expected, $interval->overlaps($arg));
     }
@@ -194,7 +194,7 @@ abstract class IntervalTest extends TestCase
     /**
      * @dataProvider provideContainsData
      */
-    public function testContains(Interval $interval, $arg, $expected)
+    public function testContains(Period $interval, $arg, $expected)
     {
         self::assertSame($expected, $interval->contains($arg));
     }
@@ -248,7 +248,7 @@ abstract class IntervalTest extends TestCase
     /**
      * @dataProvider provideCompareDurationData
      */
-    public function testCompareDuration(Interval $interval1, Interval $interval2, int $expected)
+    public function testCompareDuration(Period $interval1, Period $interval2, int $expected)
     {
         self::assertSame($expected, $interval1->compareDuration($interval2));
     }
@@ -277,7 +277,7 @@ abstract class IntervalTest extends TestCase
     /**
      * @dataProvider provideEqualsToData
      */
-    public function testEqualsTo(Interval $interval1, Interval $interval2, bool $expected)
+    public function testEqualsTo(Period  $interval1, Period $interval2, bool $expected)
     {
         self::assertSame($expected, $interval1->equalsTo($interval2));
     }
@@ -308,7 +308,7 @@ abstract class IntervalTest extends TestCase
         $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = $period->split(new DateInterval('PT1H'));
         foreach ($range as $innerPeriod) {
-            self::assertInstanceOf(Interval::class, $innerPeriod);
+            self::assertInstanceOf(Period::class, $innerPeriod);
         }
     }
 
@@ -324,7 +324,7 @@ abstract class IntervalTest extends TestCase
             }
             $total = $total->endingOn($part->getEndDate());
         }
-        self::assertInstanceOf(Interval::class, $total);
+        self::assertInstanceOf(Period::class, $total);
         self::assertTrue($total->equalsTo($period));
     }
 
@@ -333,7 +333,7 @@ abstract class IntervalTest extends TestCase
         $period = $this->createInterval(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = $period->split(new DateInterval('P1Y'));
         foreach ($range as $expectedPeriod) {
-            self::assertInstanceOf(Interval::class, $expectedPeriod);
+            self::assertInstanceOf(Period::class, $expectedPeriod);
             self::assertTrue($expectedPeriod->equalsTo($period));
         }
     }
@@ -359,7 +359,7 @@ abstract class IntervalTest extends TestCase
             $list[] = $innerPeriod;
         }
 
-        $result = array_map(function (Interval $range) {
+        $result = array_map(function (Period $range) {
             return [
                 'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
                 'end'   => $range->getEndDate()->format('Y-m-d H:i:s'),
@@ -463,7 +463,7 @@ abstract class IntervalTest extends TestCase
     {
         $orig = $this->createInterval(new DateTime('2011-12-01'), new DateTime('2012-04-01'));
         $alt = $this->createInterval(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
-        self::assertInstanceOf(Interval::class, $orig->intersect($alt));
+        self::assertInstanceOf(Period::class, $orig->intersect($alt));
     }
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange()
@@ -480,7 +480,7 @@ abstract class IntervalTest extends TestCase
         $alt = $this->createInterval(new DateTime('2012-06-01'), new DateTime('2012-09-01'));
         $res = $orig->gap($alt);
 
-        self::assertInstanceOf(Interval::class, $res);
+        self::assertInstanceOf(Period::class, $res);
         self::assertEquals($orig->getEndDate(), $res->getStartDate());
         self::assertEquals($alt->getStartDate(), $res->getEndDate());
         self::assertTrue($res->equalsTo($alt->gap($orig)));
@@ -515,7 +515,7 @@ abstract class IntervalTest extends TestCase
         $orig = $this->createInterval(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = $this->createInterval(new DateTime('2012-02-01'), new DateTime('2012-02-02'));
         $gap = $orig->gap($alt);
-        self::assertInstanceOf(Interval::class, $gap);
+        self::assertInstanceOf(Period::class, $gap);
         self::assertEquals(0, $gap->getTimestampInterval());
     }
 
@@ -575,7 +575,7 @@ abstract class IntervalTest extends TestCase
         $period = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         $alt = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2013-04-01'));
         [$diff1, $diff2] = $alt->diff($period);
-        self::assertInstanceOf(Interval::class, $diff1);
+        self::assertInstanceOf(Period::class, $diff1);
         self::assertNull($diff2);
         self::assertEquals(new DateTimeImmutable('2013-04-01'), $diff1->getStartDate());
         self::assertEquals(new DateTimeImmutable('2014-01-01'), $diff1->getEndDate());
@@ -587,7 +587,7 @@ abstract class IntervalTest extends TestCase
         $period = $this->createInterval(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         $alt = $this->createInterval(new DateTimeImmutable('2013-10-01'), new DateTimeImmutable('2014-01-01'));
         [$diff1, $diff2] = $alt->diff($period);
-        self::assertInstanceOf(Interval::class, $diff1);
+        self::assertInstanceOf(Period::class, $diff1);
         self::assertNull($diff2);
         self::assertEquals(new DateTimeImmutable('2013-01-01'), $diff1->getStartDate());
         self::assertEquals(new DateTimeImmutable('2013-10-01'), $diff1->getEndDate());
