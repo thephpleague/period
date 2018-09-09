@@ -23,7 +23,6 @@ use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
 use function array_unshift;
-use function intdiv;
 use function sprintf;
 
 /**
@@ -98,242 +97,114 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a starting point and an interval.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\interval_after
      */
     public static function createFromDurationAfterStart($startDate, $duration): self
     {
-        $startDate = datepoint($startDate);
-
-        return new Period($startDate, $startDate->add(duration($duration)));
+        return interval_after($startDate, $duration);
     }
 
     /**
      * Creates new instance from a ending excluded datepoint and an interval.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\interval_before
      */
     public static function createFromDurationBeforeEnd($endDate, $duration): self
     {
-        $endDate = datepoint($endDate);
-
-        return new Period($endDate->sub(duration($duration)), $endDate);
+        return interval_before($endDate, $duration);
     }
 
     /**
      * Creates new instance for a specific year.
      *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\year
+     *
      * @param mixed $int_or_datepoint a year as an int or a datepoint
      */
     public static function createFromYear($int_or_datepoint): self
     {
-        if (is_int($int_or_datepoint)) {
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setDate($int_or_datepoint, 1, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P1Y')));
-        }
-
-        $datepoint = datepoint($int_or_datepoint);
-        $startDate = $datepoint->setTime(0, 0, 0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
-
-        return new self($startDate, $startDate->add(new DateInterval('P1Y')));
-    }
-
-    /**
-     * Creates new instance for a specific ISO year.
-     *
-     * @param mixed $int_or_datepoint a year as an int or a datepoint
-     */
-    public static function createFromISOYear($int_or_datepoint): self
-    {
-        if (is_int($int_or_datepoint)) {
-            $datepoint = (new DateTimeImmutable())->setTime(0, 0, 0, 0);
-
-            return new self(
-                $datepoint->setISODate($int_or_datepoint, 1, 1),
-                $datepoint->setISODate(++$int_or_datepoint, 1, 1)
-            );
-        }
-
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-        $int_or_datepoint = (int) $datepoint->format('o');
-
-        return new self(
-            $datepoint->setISODate($int_or_datepoint, 1, 1),
-            $datepoint->setISODate(++$int_or_datepoint, 1, 1)
-        );
+        return year($int_or_datepoint);
     }
 
     /**
      * Creates new instance for a specific semester in a given year.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\semester
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
      * @param null|int $index            a semester index from 1 to 2 included
      */
     public static function createFromSemester($int_or_datepoint, int $index = null): self
     {
-        if (!is_int($int_or_datepoint)) {
-            $datepoint = datepoint($int_or_datepoint);
-            $startDate = $datepoint->setTime(0, 0, 0, 0)->setDate(
-                (int) $datepoint->format('Y'),
-                (intdiv((int) $datepoint->format('n'), 6) * 6) + 1,
-                1
-            );
-
-            return new self($startDate, $startDate->add(new DateInterval('P6M')));
-        }
-
-        if (null !== $index && 0 < $index && 2 >= $index) {
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
-                ->setDate($int_or_datepoint, (($index - 1) * 6) + 1, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P6M')));
-        }
-
-        throw new Exception('The semester index is not contained within the valid range.');
+        return semester($int_or_datepoint, $index);
     }
 
     /**
      * Creates new instance for a specific quarter in a given year.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\quarter
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
      * @param null|int $index            quarter index from 1 to 4 included
      */
     public static function createFromQuarter($int_or_datepoint, int $index = null): self
     {
-        if (!is_int($int_or_datepoint)) {
-            $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-            $startDate = $datepoint->setDate(
-                (int) $datepoint->format('Y'),
-                (intdiv((int) $datepoint->format('n'), 3) * 3) + 1,
-                1
-            );
-
-            return new self($startDate, $startDate->add(new DateInterval('P3M')));
-        }
-
-        if (null !== $index && 0 < $index && 4 >= $index) {
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
-                ->setDate($int_or_datepoint, (($index - 1) * 3) + 1, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P3M')));
-        }
-
-        throw new Exception('The quarter index is not contained within the valid range.');
+        return quarter($int_or_datepoint, $index);
     }
 
     /**
      * Creates new instance for a specific year and month.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\month
      *
      * @param mixed    $int_or_datepoint a year as an int or a datepoint
      * @param int|null $index            month index from 1 to 12 included
      */
     public static function createFromMonth($int_or_datepoint, int $index = null): self
     {
-        if (!is_int($int_or_datepoint)) {
-            $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-            $startDate = $datepoint->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P1M')));
-        }
-
-        if (null !== $index && 0 < $index && 12 >= $index) {
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setDate($int_or_datepoint, $index, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P1M')));
-        }
-
-        throw new Exception('The month index is not contained within the valid range.');
-    }
-
-    /**
-     * Creates new instance for a specific ISO8601 week.
-     *
-     * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param int|null $index            index from 1 to 53 included
-     */
-    public static function createFromISOWeek($int_or_datepoint, int $index = null): self
-    {
-        if (!is_int($int_or_datepoint)) {
-            $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
-            $startDate = $datepoint->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P7D')));
-        }
-
-        if (null !== $index && 0 < $index && 53 >= $index) {
-            $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setISODate($int_or_datepoint, $index, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P7D')));
-        }
-
-        throw new Exception('The week index is not contained within the valid range.');
+        return month($int_or_datepoint, $index);
     }
 
     /**
      * Creates new instance for a specific date.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.0.0
+     *
+     * @see \League\Period\day
      *
      * The date is truncated so that the time range starts at midnight
      * according to the date timezone and last a full day.
      */
     public static function createFromDay($datepoint): self
     {
-        $startDate = datepoint($datepoint)->setTime(0, 0, 0, 0);
-
-        return new self($startDate, $startDate->add(new DateInterval('P1D')));
-    }
-
-    /**
-     * Creates new instance for a specific date and hour.
-     *
-     * The starting datepoint represents the beginning of the hour
-     * The interval is equal to 1 hour
-     */
-    public static function createFromHour($datepoint): self
-    {
-        $datepoint = datepoint($datepoint);
-        $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0, 0, 0);
-
-        return new self($startDate, $startDate->add(new DateInterval('PT1H')));
-    }
-
-    /**
-     * Creates new instance for a specific date, hour and minute.
-     *
-     * The starting datepoint represents the beginning of the minute
-     * The interval is equal to 1 minute
-     */
-    public static function createFromMinute($datepoint): self
-    {
-        $datepoint = datepoint($datepoint);
-        $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'), 0, 0);
-
-        return new self($startDate, $startDate->add(new DateInterval('PT1M')));
-    }
-
-    /**
-     * Creates new instance for a specific date, hour, minute and second.
-     *
-     * The starting datepoint represents the beginning of the second
-     * The interval is equal to 1 second
-     */
-    public static function createFromSecond($datepoint): self
-    {
-        $datepoint = datepoint($datepoint);
-        $startDate = $datepoint->setTime(
-            (int) $datepoint->format('H'),
-            (int) $datepoint->format('i'),
-            (int) $datepoint->format('s'),
-            0
-        );
-
-        return new self($startDate, $startDate->add(new DateInterval('PT1S')));
-    }
-
-    /**
-     * Creates new instance for a specific datepoint.
-     */
-    public static function createFromDatepoint($datepoint): self
-    {
-        $datepoint = datepoint($datepoint);
-
-        return new self($datepoint, $datepoint);
+        return day($datepoint);
     }
 
     /**
@@ -465,7 +336,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether two Interval share the same datepoints.
      */
-    public function equalsTo(Period $interval): bool
+    public function equals(Period $interval): bool
     {
         return $this->startDate == $interval->getStartDate()
             && $this->endDate == $interval->getEndDate();
@@ -665,7 +536,7 @@ final class Period implements JsonSerializable
      */
     public function diff(Period $interval): array
     {
-        if ($interval->equalsTo($this)) {
+        if ($interval->equals($this)) {
             return [null, null];
         }
 
@@ -776,7 +647,7 @@ final class Period implements JsonSerializable
     {
         $duration = duration($duration);
         $period = new self($this->startDate->add($duration), $this->endDate->add($duration));
-        if ($period->equalsTo($this)) {
+        if ($period->equals($this)) {
             return $this;
         }
 
@@ -798,7 +669,7 @@ final class Period implements JsonSerializable
     {
         $duration = duration($duration);
         $period = new self($this->startDate->sub($duration), $this->endDate->add($duration));
-        if ($period->equalsTo($this)) {
+        if ($period->equals($this)) {
             return $this;
         }
 
