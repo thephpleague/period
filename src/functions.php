@@ -24,6 +24,7 @@ use const FILTER_VALIDATE_INT;
 use function filter_var;
 use function get_class;
 use function gettype;
+use function intdiv;
 use function is_object;
 use function is_string;
 use function sprintf;

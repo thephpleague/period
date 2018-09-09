@@ -24,7 +24,6 @@ use League\Period\Exception;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 use TypeError;
-use function League\Period\hour;
 
 class PeriodTest extends TestCase
 {
@@ -715,7 +714,7 @@ class PeriodTest extends TestCase
                 '2015-01-01 10:00:00', '2015-01-01 11:00:00', 3600.0,
             ],
             'usingAnInterval' => [
-                '2015-01-01 10:00:00', '2015-01-01 11:00:00', hour('2012-01-03 12:00:00'),
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', new Period('2012-01-03 12:00:00', '2012-01-03 13:00:00'),
             ],
         ];
     }
