@@ -7,14 +7,9 @@ All Notable changes to `Period` will be documented in this file
 ### Added
 
 - `Exception` class
-- `Period::createFromDurationAfterStart`
-- `Period::withDurationAfterStart`
 - `Period::expand`
 - `Period::equals`
 - `Period::createFromDatePeriod`
-
-#### Helper functions
-
 - `League\Period\year`
 - `League\Period\semester`
 - `League\Period\quarter`
@@ -34,36 +29,30 @@ All Notable changes to `Period` will be documented in this file
 ### Fixed
 
 - The `Period` class is now final
-- The following named constructors now accept as its sole argument a `DateTimeInterface` object.
-    - `Period::createFromYear`
-    - `Period::createFromMonth`
-    - `Period::createFromDay`
-    - `Period::createFromSemester`
-    - `Period::createFromQuarter`
 - `Period::JsonSerialize` now returns datepoint in JavaScript compatible datetime notation
 - `Period::diff` always returns an array containing two values.
 
 ### Deprecated
 
-- `Period::createFromYear` use instead `League\Period\year`
-- `Period::createFromMonth` use instead `League\Period\month`
-- `Period::createFromDay` use instead `League\Period\day`
-- `Period::createFromSemester` use instead `League\Period\semester`
-- `Period::createFromQuarter` use instead `League\Period\quarter`
-- `Period::createFromDurationAfterStart` use instead `League\Period\interval_after`
-- `Period::createFromDurationBeforeEnd` use instead `League\Period\interval_before`
+- None
 
 ### Removed
 
+- `Period::createFromYear` use instead `League\Period\year`
+- `Period::createFromMonth` use instead `League\Period\month`
+- `Period::createFromWeek` replaced by `League\Period\iso_week`
+- `Period::createFromDay` use instead `League\Period\day`
+- `Period::createFromSemester` use instead `League\Period\semester`
+- `Period::createFromQuarter` use instead `League\Period\quarter`
+- `Period::createFromDuration` use instead `League\Period\interval_after`
+- `Period::createFromDurationBeforeEnd` use instead `League\Period\interval_before`
 - `Period::next`
 - `Period::previous`
 - `Period::add`
 - `Period::sub`
 - `Period::sameValueAs` replaced by `Period::equals`
-- `Period::createFromDuration` replaced by `League\Period\interval_after`
 - `Period::withDuration` replaced by `Period::withDurationAfterStart`
-- `Period::createFromWeek` replaced by `League\Period\iso_week`
-- Support for PHP 7.0 and PHP 7.1
+- Support for PHP 7.0
 
 ## 3.4.0 - 2017-11-17
 

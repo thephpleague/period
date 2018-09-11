@@ -51,6 +51,24 @@ final class Period implements JsonSerializable
     private $endDate;
 
     /**
+     * Creates new instance from a DatePeriod.
+     *
+     * @throws Exception If the submitted DatePeriod lacks an end datepoint.
+     *                   This is possible if the DatePeriod was created using
+     *                   recurrences instead of a end datepoint.
+     *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
+     */
+    public static function createFromDatePeriod(DatePeriod $datePeriod): self
+    {
+        $endDate = $datePeriod->getEndDate();
+        if ($endDate instanceof DateTimeInterface) {
+            return new self($datePeriod->getStartDate(), $endDate);
+        }
+
+        throw new Exception('The submitted DatePeriod object does not contain an end datepoint');
+    }
+
+    /**
      * @inheritdoc
      */
     public static function __set_state(array $period)
@@ -75,136 +93,6 @@ final class Period implements JsonSerializable
         }
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-    }
-
-    /**
-     * Creates new instance from a DatePeriod.
-     *
-     * @throws Exception If the submitted DatePeriod lacks an end datepoint.
-     *                   This is possible if the DatePeriod was created using
-     *                   recurrences instead of a end datepoint.
-     *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
-     */
-    public static function createFromDatePeriod(DatePeriod $datePeriod): self
-    {
-        $endDate = $datePeriod->getEndDate();
-        if ($endDate instanceof DateTimeInterface) {
-            return new Period($datePeriod->getStartDate(), $endDate);
-        }
-
-        throw new Exception('The submitted DatePeriod object does not contain an end datepoint');
-    }
-
-    /**
-     * Creates new instance from a starting point and an interval.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\interval_after
-     */
-    public static function createFromDurationAfterStart($startDate, $duration): self
-    {
-        return interval_after($startDate, $duration);
-    }
-
-    /**
-     * Creates new instance from a ending excluded datepoint and an interval.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\interval_before
-     */
-    public static function createFromDurationBeforeEnd($endDate, $duration): self
-    {
-        return interval_before($endDate, $duration);
-    }
-
-    /**
-     * Creates new instance for a specific year.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\year
-     *
-     * @param mixed $int_or_datepoint a year as an int or a datepoint
-     */
-    public static function createFromYear($int_or_datepoint): self
-    {
-        return year($int_or_datepoint);
-    }
-
-    /**
-     * Creates new instance for a specific semester in a given year.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\semester
-     *
-     * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param null|int $index            a semester index from 1 to 2 included
-     */
-    public static function createFromSemester($int_or_datepoint, int $index = null): self
-    {
-        return semester($int_or_datepoint, $index);
-    }
-
-    /**
-     * Creates new instance for a specific quarter in a given year.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\quarter
-     *
-     * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param null|int $index            quarter index from 1 to 4 included
-     */
-    public static function createFromQuarter($int_or_datepoint, int $index = null): self
-    {
-        return quarter($int_or_datepoint, $index);
-    }
-
-    /**
-     * Creates new instance for a specific year and month.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\month
-     *
-     * @param mixed    $int_or_datepoint a year as an int or a datepoint
-     * @param int|null $index            month index from 1 to 12 included
-     */
-    public static function createFromMonth($int_or_datepoint, int $index = null): self
-    {
-        return month($int_or_datepoint, $index);
-    }
-
-    /**
-     * Creates new instance for a specific date.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.0.0
-     *
-     * @see \League\Period\day
-     *
-     * The date is truncated so that the time range starts at midnight
-     * according to the date timezone and last a full day.
-     */
-    public static function createFromDay($datepoint): self
-    {
-        return day($datepoint);
     }
 
     /**
@@ -261,7 +149,6 @@ final class Period implements JsonSerializable
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
-     *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
      * @return string
@@ -276,7 +163,6 @@ final class Period implements JsonSerializable
     /**
      * Returns the Json representation of an instance using
      * the JSON representation of dates as returned by Javascript Date.toJSON() method.
-     *
      *
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
@@ -295,7 +181,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Compares two Interval objects according to their duration.
+     * Compares two instances according to their duration.
      *
      * Returns:
      * <ul>
@@ -363,8 +249,6 @@ final class Period implements JsonSerializable
     /**
      * Tells whether a Interval is entirely after the specified index.
      * The index can be a DateTimeInterface object or another Interval object.
-     *
-     * @param Period|DateTimeInterface $index
      */
     public function isAfter($index): bool
     {
@@ -378,8 +262,6 @@ final class Period implements JsonSerializable
     /**
      * Tells whether a Interval is entirely before the specified index.
      * The index can be a DateTimeInterface object or another Interval object.
-     *
-     * @param Period|DateTimeInterface $index
      */
     public function isBefore($index): bool
     {
@@ -393,8 +275,6 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the specified index is fully contained within
      * the current Period object.
-     *
-     * @param Period|DateTimeInterface $index
      */
     public function contains($index): bool
     {
@@ -484,7 +364,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Computes the intersection between two Interval objects.
+     * Computes the intersection between two instances.
      *
      * @throws Exception If both objects do not overlaps
      */
@@ -501,7 +381,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Computes the gap between two Interval objects.
+     * Computes the gap between two instances.
      *
      * @throws Exception If both objects overlaps
      */
@@ -519,7 +399,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Computes the difference between two overlapsing Interval objects.
+     * Computes the difference between two overlapsing instances.
      *
      * This method is not part of the Interval.
      *
@@ -677,7 +557,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference between two Interval objects expressed in seconds.
+     * Returns the difference between two instances expressed in seconds.
      */
     public function timestampIntervalDiff(Period $interval): float
     {
@@ -685,7 +565,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference between two Interval objects expressed in DateInterval.
+     * Returns the difference between two instances expressed in DateInterval.
      */
     public function dateIntervalDiff(Period $interval): DateInterval
     {
@@ -693,7 +573,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Merges one or more Interval objects to return a new instance.
+     * Merges one or more instances to return a new instance.
      * The resulting instance represents the largest duration possible.
      *
      * @param Period ...$intervals

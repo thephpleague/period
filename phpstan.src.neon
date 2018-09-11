@@ -3,6 +3,6 @@ includes:
 parameters:
     ignoreErrors:
         - '#Instanceof between DateTimeInterface and DateTimeInterface will always evaluate to true.#'
-        - '#Method League\\Period\\Period::(createFrom|get)[A-Z][A-Za-z]+\(\) has parameter \$(datepoint|duration|startDate|endDate) with no typehint specified.#'
+        - '#Method League\\Period\\Period::[a-z][A-Za-z_]+\(\) has parameter \$(datepoint|duration|startDate|endDate|index) with no typehint specified.#'
         - '#Function League\\Period\\[a-z][A-Za-z_]+\(\) has parameter \$(datepoint|duration|startDate|endDate) with no typehint specified.#'
     reportUnmatchedIgnoredErrors: true
