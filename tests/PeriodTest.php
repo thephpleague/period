@@ -125,14 +125,14 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideAbutsData
+     * @dataProvider abutsDataProvider
      */
     public function testAbuts(Period $interval, Period $arg, $expected)
     {
         self::assertSame($expected, $interval->abuts($arg));
     }
 
-    public function provideAbutsData()
+    public function abutsDataProvider()
     {
         return [
             'testAbutsReturnsTrueWithEqualDatePoints' => [
@@ -149,14 +149,14 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideOverlapsData
+     * @dataProvider overlapsDataProvider
      */
     public function testOverlaps(Period $interval, Period $arg, $expected)
     {
         self::assertSame($expected, $interval->overlaps($arg));
     }
 
-    public function provideOverlapsData()
+    public function overlapsDataProvider()
     {
         return [
             'testOverlapsReturnsFalseWithAbutsIntervals' => [
@@ -193,14 +193,14 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideContainsData
+     * @dataProvider containsDataProvider
      */
     public function testContains(Period $interval, $arg, $expected)
     {
         self::assertSame($expected, $interval->contains($arg));
     }
 
-    public function provideContainsData()
+    public function containsDataProvider()
     {
         return [
             'testContainsReturnsTrueWithADateTimeInterfaceObject' => [
@@ -247,14 +247,14 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCompareDurationData
+     * @dataProvider durationCompareDataProvider
      */
-    public function testCompareDuration(Period $interval1, Period $interval2, int $expected)
+    public function testdurationCompare(Period $interval1, Period $interval2, int $expected)
     {
-        self::assertSame($expected, $interval1->compareDuration($interval2));
+        self::assertSame($expected, $interval1->durationCompare($interval2));
     }
 
-    public function provideCompareDurationData()
+    public function durationCompareDataProvider()
     {
         return [
             'testDurationLessThan' => [
@@ -267,7 +267,7 @@ class PeriodTest extends TestCase
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
                 1,
             ],
-            'testSameDurationAsReturnsTrueWithMicroseconds' => [
+            'testdurationEqualsReturnsTrueWithMicroseconds' => [
                 new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
                 new Period(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
                 0,
@@ -276,14 +276,14 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideequalsData
+     * @dataProvider equalsDataProvider
      */
     public function testequals(Period  $interval1, Period $interval2, bool $expected)
     {
         self::assertSame($expected, $interval1->equals($interval2));
     }
 
-    public function provideequalsData()
+    public function equalsDataProvider()
     {
         return [
             'testSameValueAsReturnsTrue' => [
@@ -689,14 +689,14 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCompareDurationInnerMethodsData
+     * @dataProvider durationCompareInnerMethodsDataProvider
      */
-    public function testCompareDurationInnerMethods(Period $period1, Period $period2, $method, $expected)
+    public function testdurationCompareInnerMethods(Period $period1, Period $period2, $method, $expected)
     {
         self::assertSame($expected, $period1->$method($period2));
     }
 
-    public function provideCompareDurationInnerMethodsData()
+    public function durationCompareInnerMethodsDataProvider()
     {
         return [
             'testDurationLessThan' => [
@@ -711,16 +711,16 @@ class PeriodTest extends TestCase
                 'durationGreaterThan',
                 true,
             ],
-            'testSameDurationAsReturnsTrueWithMicroseconds' => [
+            'testdurationEqualsReturnsTrueWithMicroseconds' => [
                 new Period('2012-01-01 00:00:00', '2012-01-03 00:00:00'),
                 new Period('2012-02-02 00:00:00', '2012-02-04 00:00:00'),
-                'sameDurationAs',
+                'durationEquals',
                 true,
             ],
         ];
     }
 
-    public function testwithDurationAfterStart()
+    public function testWithDurationAfterStart()
     {
         $expected = new Period('2014-03-01', '2014-04-01');
         $period = new Period('2014-03-01', '2014-03-15');
@@ -773,7 +773,7 @@ class PeriodTest extends TestCase
     {
         $orig = interval_after('2012-01-01', '2 MONTH');
         $period = $orig->moveEndDate('-1 MONTH');
-        self::assertSame(1, $orig->compareDuration($period));
+        self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
         self::assertEquals($orig->getStartDate(), $period->getStartDate());
     }
@@ -788,7 +788,7 @@ class PeriodTest extends TestCase
     {
         $orig = month(2012, 1);
         $period = $orig->moveStartDate('-1 MONTH');
-        self::assertSame(-1, $orig->compareDuration($period));
+        self::assertSame(-1, $orig->durationCompare($period));
         self::assertTrue($orig->durationLessThan($period));
         self::assertEquals($orig->getEndDate(), $period->getEndDate());
         self::assertNotEquals($orig->getStartDate(), $period->getStartDate());
@@ -798,7 +798,7 @@ class PeriodTest extends TestCase
     {
         $orig = month(2012, 1);
         $period = $orig->moveStartDate('2 WEEKS');
-        self::assertSame(1, $orig->compareDuration($period));
+        self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
         self::assertEquals($orig->getEndDate(), $period->getEndDate());
         self::assertNotEquals($orig->getStartDate(), $period->getStartDate());

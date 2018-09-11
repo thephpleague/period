@@ -9,6 +9,8 @@ All Notable changes to `Period` will be documented in this file
 - `Exception` class
 - `Period::expand`
 - `Period::equals`
+- `Period::durationCompare`
+- `Period::durationEquals`
 - `Period::createFromDatePeriod`
 - `League\Period\year`
 - `League\Period\semester`
@@ -51,6 +53,8 @@ All Notable changes to `Period` will be documented in this file
 - `Period::add`
 - `Period::sub`
 - `Period::sameValueAs` replaced by `Period::equals`
+- `Period::sameDurationAs` replaced by `Period::durationEquals`
+- `Period::compareDuration` replaced by `Period::durationCompare`
 - `Period::withDuration` replaced by `Period::withDurationAfterStart`
 - Support for PHP 7.0
 
