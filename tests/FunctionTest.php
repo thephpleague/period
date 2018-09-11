@@ -372,6 +372,8 @@ class FunctionTest extends TestCase
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = second($today);
+        self::assertTrue($period->contains($today));
+        self::assertTrue($today >= $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:35:17+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:35:18+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));

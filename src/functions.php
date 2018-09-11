@@ -119,13 +119,13 @@ function interval_before($endDate, $duration): Period
 function year($int_or_datepoint): Period
 {
     if (is_int($int_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setDate($int_or_datepoint, 1, 1);
+        $startDate = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, 1, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
     }
 
     $datepoint = datepoint($int_or_datepoint);
-    $startDate = $datepoint->setTime(0, 0, 0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
+    $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
 
     return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
 }
@@ -138,20 +138,20 @@ function year($int_or_datepoint): Period
 function iso_year($int_or_datepoint): Period
 {
     if (is_int($int_or_datepoint)) {
-        $datepoint = (new DateTimeImmutable())->setTime(0, 0, 0, 0);
+        $datepoint = (new DateTimeImmutable())->setTime(0, 0);
 
         return new Period(
-            $datepoint->setISODate($int_or_datepoint, 1, 1),
-            $datepoint->setISODate(++$int_or_datepoint, 1, 1)
+            $datepoint->setISODate($int_or_datepoint, 1),
+            $datepoint->setISODate(++$int_or_datepoint, 1)
         );
     }
 
-    $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+    $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
     $int_or_datepoint = (int) $datepoint->format('o');
 
     return new Period(
-        $datepoint->setISODate($int_or_datepoint, 1, 1),
-        $datepoint->setISODate(++$int_or_datepoint, 1, 1)
+        $datepoint->setISODate($int_or_datepoint, 1),
+        $datepoint->setISODate(++$int_or_datepoint, 1)
     );
 }
 
@@ -165,7 +165,7 @@ function semester($int_or_datepoint, int $index = null): Period
 {
     if (!is_int($int_or_datepoint)) {
         $datepoint = datepoint($int_or_datepoint);
-        $startDate = $datepoint->setTime(0, 0, 0, 0)->setDate(
+        $startDate = $datepoint->setTime(0, 0)->setDate(
             (int) $datepoint->format('Y'),
             (intdiv((int) $datepoint->format('n'), 6) * 6) + 1,
             1
@@ -175,7 +175,7 @@ function semester($int_or_datepoint, int $index = null): Period
     }
 
     if (null !== $index && 0 < $index && 2 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+        $startDate = (new DateTimeImmutable())->setTime(0, 0)
             ->setDate($int_or_datepoint, (($index - 1) * 6) + 1, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P6M')));
@@ -193,7 +193,7 @@ function semester($int_or_datepoint, int $index = null): Period
 function quarter($int_or_datepoint, int $index = null): Period
 {
     if (!is_int($int_or_datepoint)) {
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
         $startDate = $datepoint->setDate(
             (int) $datepoint->format('Y'),
             (intdiv((int) $datepoint->format('n'), 3) * 3) + 1,
@@ -204,7 +204,7 @@ function quarter($int_or_datepoint, int $index = null): Period
     }
 
     if (null !== $index && 0 < $index && 4 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)
+        $startDate = (new DateTimeImmutable())->setTime(0, 0)
             ->setDate($int_or_datepoint, (($index - 1) * 3) + 1, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P3M')));
@@ -222,14 +222,14 @@ function quarter($int_or_datepoint, int $index = null): Period
 function month($int_or_datepoint, int $index = null): Period
 {
     if (!is_int($int_or_datepoint)) {
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
         $startDate = $datepoint->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
     }
 
     if (null !== $index && 0 < $index && 12 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setDate($int_or_datepoint, $index, 1);
+        $startDate = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, $index, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
     }
@@ -246,14 +246,14 @@ function month($int_or_datepoint, int $index = null): Period
 function iso_week($int_or_datepoint, int $index = null): Period
 {
     if (!is_int($int_or_datepoint)) {
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0, 0, 0);
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
         $startDate = $datepoint->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
     if (null !== $index && 0 < $index && 53 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0, 0, 0)->setISODate($int_or_datepoint, $index, 1);
+        $startDate = (new DateTimeImmutable())->setTime(0, 0)->setISODate($int_or_datepoint, $index, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
@@ -269,7 +269,7 @@ function iso_week($int_or_datepoint, int $index = null): Period
  */
 function day($datepoint): Period
 {
-    $startDate = datepoint($datepoint)->setTime(0, 0, 0, 0);
+    $startDate = datepoint($datepoint)->setTime(0, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('P1D')));
 }
@@ -283,7 +283,7 @@ function day($datepoint): Period
 function hour($datepoint): Period
 {
     $datepoint = datepoint($datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0, 0, 0);
+    $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
 }
@@ -297,7 +297,7 @@ function hour($datepoint): Period
 function minute($datepoint): Period
 {
     $datepoint = datepoint($datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'), 0, 0);
+    $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
 }
@@ -314,8 +314,7 @@ function second($datepoint): Period
     $startDate = $datepoint->setTime(
         (int) $datepoint->format('H'),
         (int) $datepoint->format('i'),
-        (int) $datepoint->format('s'),
-        0
+        (int) $datepoint->format('s')
     );
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
