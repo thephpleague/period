@@ -33,8 +33,8 @@ The `$index` argument can be another `Period` object or a datepoint.
 use League\Period\Period;
 
 //comparing a datetime
-$period = Period::createFromMonth(1983, 4);
-$alt = Period::createFromMonth(1984, 4);
+$period = month(1983, 4);
+$alt = month(1984, 4);
 $period->isBefore($alt); //returns true;
 $alt->isBefore($period); //return false;
 ~~~
@@ -63,8 +63,8 @@ The `$index` argument can be another `Period` object or a datepoint.
 use League\Period\Period;
 
 //comparing a datetime
-$period = Period::createFromMonth(1983, 4);
-$alt = Period::createFromMonth(1984, 4);
+$period = month(1983, 4);
+$alt = month(1984, 4);
 $alt->isAfter($period); //returns true;
 $period->isAfter($alt); //return false;
 ~~~
@@ -90,8 +90,8 @@ A `Period` abuts if it starts immediately after, or ends immediately before the 
 
 use League\Period\Period;
 
-$period        = Period::createFromMonth(2014, 3);
-$anotherPeriod = Period::createFromMonth(2014, 4);
+$period        = month(2014, 3);
+$anotherPeriod = month(2014, 4);
 $period->abuts($anotherPeriod); //return true
 //in this case $period->getEndDate() == $anotherPeriod->getStartDate();
 ~~~
@@ -113,11 +113,9 @@ A `Period` overlaps another if they share some common part of their respective d
 ~~~php
 <?php
 
-use League\Period\Period;
-
-$orig  = Period::createFromMonth(2014, 3);
-$alt   = Period::createFromMonth(2014, 4);
-$other = Period::createFromDuration('2014-03-15', '3 WEEKS');
+$orig  = month(2014, 3);
+$alt   = month(2014, 4);
+$other = interval_after('2014-03-15', '3 WEEKS');
 
 $orig->overlaps($alt);   //return false
 $orig->overlaps($other); //return true
@@ -141,11 +139,9 @@ Tells whether two `Period` objects shares the same datepoints.
 ~~~php
 <?php
 
-use League\Period\Period;
-
-$orig  = Period::createFromMonth(2014, 3);
-$alt   = Period::createFromMonth(2014, 4);
-$other = Period::createFromDuration('2014-03-01', '1 MONTH');
+$orig  = month(2014, 3);
+$alt   = month(2014, 4);
+$other = interval_after('2014-03-01', '1 MONTH');
 
 $orig->equalsTo($alt);   //return false
 $orig->equalsTo($other); //return true
@@ -173,15 +169,13 @@ The `$index` argument can be another `Period` object or a datepoint.
 ~~~php
 <?php
 
-use League\Period\Period;
-
 //comparing a datetime
-$period = Period::createFromMonth(1983, 4);
+$period = month(1983, 4);
 $period->contains('1983-04-15');      //returns true;
 $period->contains($period->getEndDate()); //returns false;
 
 //comparing two Period objects
-$alt = Period::createFromDuration('1983-04-12', '12 DAYS');
+$alt = interval_after('1983-04-12', '12 DAYS');
 $period->contains($alt); //return true;
 $alt->contains($period); //return false;
 ~~~
@@ -209,12 +203,8 @@ The difference is expressed as an `array`. The returned array:
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
-$orig = Period::createFromDuration('2013-01-01', '1 MONTH');
-$alt  = Period::createFromDuration('2013-01-15', '7 DAYS');
+$orig = interval_after('2013-01-01', '1 MONTH');
+$alt  = interval_after('2013-01-15', '7 DAYS');
 $diff = $period->diff($alt);
 // $diff is an array containing 2 Period objects
 // the first object is equal to new Period('2013-01-01', '2013-01-15');
@@ -244,12 +234,8 @@ An Period overlaps another if it shares some common part of the datetime continu
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
-$period        = Period::createFromDuration('2012-01-01', '2 MONTHS');
-$anotherPeriod = Period::createFromDuration('2012-01-15', '3 MONTHS');
+$period        = interval_after('2012-01-01', '2 MONTHS');
+$anotherPeriod = interval_after('2012-01-15', '3 MONTHS');
 $intersectPeriod = $period->intersect($anotherPeriod);
 ~~~
 
@@ -272,12 +258,8 @@ A `Period` has a gap with another Period if there is a non-zero interval between
 #### Example
 
 ~~~php
-<?php
-
-use League\Period\Period;
-
-$orig = Period::createFromDuration('2012-01-01', '2 MONTHS');
-$alt  = Period::createFromDuration('2013-01-15', '3 MONTHS');
+$orig = interval_after('2012-01-01', '2 MONTHS');
+$alt  = interval_after('2013-01-15', '3 MONTHS');
 $gapPeriod = $orig->gap($alt);
 ~~~
 
@@ -290,13 +272,13 @@ $gapPeriod = $orig->gap($alt);
 ~~~php
 <?php
 
-public Period::compareDuration(Period $period): int
+public Period::durationCompare(Period $period): int
 public Period::durationGreaterThan(Period $period): bool
 public Period::durationLessThan(Period $period): bool
-public Period::sameDurationAs(Period $period): bool
+public Period::durationEquals(Period $period): bool
 ~~~
 
-The method `Period::compareDuration` compares two `Period` objects according to their duration. The method returns:
+The method `Period::durationCompare` compares two `Period` objects according to their duration. The method returns:
 
 - `1` if the current object duration is greater than the submitted object duration;
 - `-1` if the current object duration is lesser than the submitted object duration;
@@ -304,9 +286,9 @@ The method `Period::compareDuration` compares two `Period` objects according to 
 
 To ease the method usage you can rely on the following proxy methods:
 
-- `Period::durationGreaterThan` returns `true` when `Period::compareDuration` returns `1`
-- `Period::durationLessThan` returns `true` when `Period::compareDuration` returns `-1`
-- `Period::sameDurationAs` returns `true` when `Period::compareDuration` returns `0`
+- `Period::durationGreaterThan` returns `true` when `Period::durationCompare` returns `1`
+- `Period::durationLessThan` returns `true` when `Period::durationCompare` returns `-1`
+- `Period::durationEquals` returns `true` when `Period::durationCompare` returns `0`
 
 
 #### Examples
@@ -314,20 +296,20 @@ To ease the method usage you can rely on the following proxy methods:
 ~~~php
 <?php
 
-$orig  = Period::createFromDuration('2012-01-01', '1 MONTH');
-$alt   = Period::createFromDuration('2012-01-01', '1 WEEK');
-$other = Period::createFromDuration('2013-01-01', '1 MONTH');
+$orig  = interval_after('2012-01-01', '1 MONTH');
+$alt   = interval_after('2012-01-01', '1 WEEK');
+$other = interval_after('2013-01-01', '1 MONTH');
 
-$orig->compareDuration($alt);     //return 1
+$orig->durationCompare($alt);     //return 1
 $orig->durationGreaterThan($alt); //return true
 $orig->durationLessThan($alt);    //return false
 
-$alt->compareDuration($other);     //return -1
+$alt->durationCompare($other);     //return -1
 $alt->durationLessThan($other);    //return true
 $alt->durationGreaterThan($other); //return false
 
-$orig->compareDuration($other);   //return 0
-$orig->sameDurationAs($other);    //return true
+$orig->durationCompare($other);   //return 0
+$orig->durationEquals($other);    //return true
 $orig->equalsTo($other);       //return false
 //the duration between $orig and $other are equals but not the datepoints!!
 ~~~
@@ -352,8 +334,8 @@ Return the duration difference between two Period objects using a `DateInterval`
 
 use League\Period\Period;
 
-$period    = Period::createFromSemester(2012, 1);
-$altPeriod = Period::createFromWeek(2012, 4);
+$period    = semester(2012, 1);
+$altPeriod = iso_week(2012, 4);
 $diff = $period->dateIntervalDiff($altPeriod);
 // $diff is a DateInterval object
 $diff_as_seconds = $period->timestampIntervalDiff($altPeriod);

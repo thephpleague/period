@@ -5,7 +5,7 @@ title: Period instantiation using named constructors
 
 # Instantiation
 
-To instantiate a `Period` object you can rely on its constructor or on several named constructors describe below.
+To instantiate a `Period` object you can rely on its constructor or on several helper functions describe below.
 
 ## The default constructor
 
@@ -36,16 +36,47 @@ use League\Period\Period;
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
 
-## Named constructors
+## Create an instance from a DatePeriod object.
 
-Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors to return a new `Period` object.
-
-### Period::createFromSecond
+### Description
 
 ~~~php
 <?php
 
-public static Period::createFromSecond(mixed $datepoint): Period
+public Period::fromDatePeriod(DatePeriod $datePeriod): Period
+~~~
+
+### Parameters
+
+The `$datePeriod` is a `DatePeriod` object.
+
+### Examples
+
+~~~php
+<?php
+
+use League\Period\Period;
+
+$begin = new DateTime('2012-08-01');
+$end = new DateTime('2012-08-31');
+$interval = new DateInterval('PT1H');
+
+$period = Period::fromDatePeriod(new DatePeriod($begin, $interval, $end));
+~~~
+
+<p class="message-warning">If the submitted `DatePeriod` instance does not have a ending datepoint, It will trigger and exception.</p>
+
+
+## Helper functions
+
+Apart from its constructor, to ease the class instantiation you can rely on many built in helper functions to return a new `Period` object. All helper functions are declared under the `League\Period` namespace.
+
+### second
+
+~~~php
+<?php
+
+function second(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -55,17 +86,17 @@ public static Period::createFromSecond(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromSecond('2012-04-01 08:30:25.124546');
-$alt    = Period::createFromSecond('2012-04-01 08:30:25');
+$period = second('2012-04-01 08:30:25.124546');
+$alt    = second('2012-04-01 08:30:25');
 $alt->equalsTo($period); //return true;
 ~~~
 
-### Period::createFromMinute
+### minute
 
 ~~~php
 <?php
 
-public static Period::createFromMinute(mixed $datepoint): Period
+function minute(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -75,17 +106,17 @@ public static Period::createFromMinute(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromMinute('2012-04-01 08:30:25');
-$alt    = Period::createFromMinute('2012-04-01 08:30:00');
+$period = minute('2012-04-01 08:30:25');
+$alt    = minute('2012-04-01 08:30:00');
 $alt->equalsTo($period); //return true;
 ~~~
 
-### Period::createFromHour
+### hour
 
 ~~~php
 <?php
 
-public static Period::createFromHour(mixed $datepoint): Period
+function hour(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -95,17 +126,17 @@ public static Period::createFromHour(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromHour('2012-04-01 08:30:25');
-$alt    = Period::createFromHour('2012-04-01 08:00:00');
+$period = hour('2012-04-01 08:30:25');
+$alt    = hour('2012-04-01 08:00:00');
 $alt->equalsTo($period); //return true;
 ~~~
 
-### Period::createFromDay
+### day
 
 ~~~php
 <?php
 
-public static Period::createFromDay(mixed $datepoint): Period
+function day(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -115,18 +146,18 @@ public static Period::createFromDay(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromDay('2012-04-01 08:30:25');
-$alt    = Period::createFromDay('2012-04-01');
+$period = day('2012-04-01 08:30:25');
+$alt    = day('2012-04-01');
 $alt->equalsTo($period); //return true;
 ~~~
 
-### Period::createFromWeek
+### iso_week
 
 ~~~php
 <?php
 
-public static Period::createFromWeek(int $year, int $week): Period
-public static Period::createFromWeek(mixed $datepoint): Period
+function iso_week(int $year, int $week): Period
+function iso_week(mixed $datepoint): Period
 ~~~
 
 
@@ -143,21 +174,21 @@ public static Period::createFromWeek(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromWeek(2013, 23);
-$alt    = Period::createFromWeek('2013-06-05');
+$period = iso_week(2013, 23);
+$alt    = iso_week('2013-06-05');
 $alt->equalsTo($period); //return true;
 //this period represents the 23rd week of 2013
 ~~~
 
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
-### Period::createFromMonth
+### month
 
 ~~~php
 <?php
 
-public static Period::createFromMonth(int $year, int $month): Period
-public static Period::createFromMonth(mixed $datepoint): Period
+function month(int $year, int $month): Period
+function month(mixed $datepoint): Period
 ~~~
 
 #### Parameters
@@ -172,19 +203,19 @@ public static Period::createFromMonth(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromMonth(2013, 7);
-$alt    = Period::createFromMonth('2013-07-31');
+month(2013, 7);
+$alt = month('2013-07-31');
 $alt->equalsTo($period); //return true;
 //this period represents the month of July 2013
 ~~~
 
-### Period::createFromQuarter
+### quarter
 
 ~~~php
 <?php
 
-public static Period::createFromQuarter(int $year, int $quarter): Period
-public static Period::createFromQuarter(mixed $datepoint): Period
+function quarter(int $year, int $quarter): Period
+function quarter(mixed $datepoint): Period
 ~~~
 
 #### Parameters
@@ -199,19 +230,19 @@ public static Period::createFromQuarter(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromQuarter(2013, 2);
-$alt    = Period::createFromQuarter('2013-05-15');
+$period = quarter(2013, 2);
+$alt    = quarter('2013-05-15');
 $alt->equalsTo($period); //return true;
 //this period represents the second quarter of 2013
 ~~~
 
-### Period::createFromSemester
+### semester
 
 ~~~php
 <?php
 
-public static Period::createFromSemester(int $year, int $semester): Period
-public static Period::createFromSemester(mixed $datepoint): Period
+function semester(int $year, int $semester): Period
+function semester(mixed $datepoint): Period
 ~~~
 
 #### Parameters
@@ -226,24 +257,24 @@ public static Period::createFromSemester(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromSemester(2013, 2);
-$alt    = Period::createFromSemester('2013-03-15');
+$period = semester(2013, 2);
+$alt    = semester('2013-03-15');
 $alt->equalsTo($period); //return true;
 //this period represents the second semester of 2013
 ~~~
 
-### Period::createFromYear
+### year
 
 ~~~php
 <?php
 
-public static Period::createFromYear(int $year): Period
-public static Period::createFromYear(mixed $datepoint): Period
+function year(int $year): Period
+function year(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
-- The `$year` parameter must be a valid year;
+- The `$int_or_datepoint` parameter must be a valid year;
 
 **or**
 
@@ -252,35 +283,61 @@ public static Period::createFromYear(mixed $datepoint): Period
 #### Example
 
 ~~~php
-$period = Period::createFromYear(2013);
-$alt    = Period::createFromYear('2013-05-15');
+$period = function year(2013);
+$alt    = function year('2013-05-15');
 $alt->equalsTo($period); //return true;
 //this period represents a time range for 2013
 ~~~
 
-### Create a new instance from a date and a duration
+### iso_year
 
 ~~~php
 <?php
 
-public static Period::createFromDurationAfterStart(mixed $startDate, mixed $duration): Period
-public static Period::createFromDurationBeforeEnd(mixed $endDate, mixed $duration): Period
+function iso_year(int $year): Period
+function iso_year(mixed $datepoint): Period
 ~~~
 
-- `createFromDurationAfterStart` returns a `Period` object which starts at `$startDate`
-- `createFromDurationBeforeEnd` returns a `Period` object which ends at `$endDate`.
+#### Parameter
 
-Both created `Period` objects will have a duration equals to `$duration`.
+- The `$int_or_datepoint` parameter must be a valid year;
 
-#### Parameters
+**or**
 
-- Both `$startDate` and `$endDate` parameters represent a time range datepoints.
-- The `$duration` represents the time range duration.
+- The `$datepoint` represents **a datepoint included in the returned iso year interval** according to its timezone.
 
 #### Example
 
 ~~~php
-$period = Period::createFromDurationAfterStart('2012-04-01 08:30:25', '1 DAY');
-$alt    = Period::createFromDurationBeforeEnd('2012-04-02 08:30:25', new DateInterval('P1D'));
+$period = function iso_year(2013);
+$alt    = function iso_year('2013-05-15');
+$alt->equalsTo($period); //return true;
+//this period represents a time range for 2013
+~~~
+
+### Create a new instance from a datepoint and a duration
+
+~~~php
+<?php
+
+function interval_after(mixed $datepoint, mixed $duration): Period
+function interval_before(mixed $datepoint, mixed $duration): Period
+function interval_around(mixed $datepoint, mixed $duration): Period
+~~~
+
+- `interval_after` returns a `Period` object which starts at `$startDate`
+- `interval_before` returns a `Period` object which ends at `$endDate`.
+- `interval_around` returns a `Period` object where the given duration is simultaneously substracted from and added to the datepoint.
+
+#### Parameters
+
+- The `$datepoint` parameter represent a time range datepoints.
+- The `$duration` represents a duration.
+
+#### Example
+
+~~~php
+$period = interval_after('2012-04-01 08:30:25', '1 DAY');
+$alt    = interval_before('2012-04-02 08:30:25', new DateInterval('P1D'));
 $alt->equalsTo($period); //returns true
 ~~~

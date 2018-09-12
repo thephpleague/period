@@ -88,7 +88,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
-$period = Period::createFromYear(2012);
+$period = year(2012);
 $period_list = $period->split('1 MONTH');
 foreach ($period_list as $inner_periods) {
     echo $inner_period; //returns the string representation of a Period object
@@ -118,7 +118,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 ~~~php
 date_default_timezone_set('Africa/Kinshasa');
 
-$period = Period::createFromYear(2012);
+$period = year(2012);
 $period_list = iterator_to_array($period->splitBackwards('5 MONTH'));
 echo $period_list[0]; // 2012-07-31T23:00:00Z/2012-12-31T23:00:00Z (5 months interval)
 echo $period_list[1]; // 2012-02-29T23:00:00Z/2012-07-31T23:00:00Z (5 months interval)
