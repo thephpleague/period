@@ -242,10 +242,9 @@ class FunctionTest extends TestCase
         iso_week(2007, 53);
     }
 
-    public function testISOWeekFailedWithMissingSemesterValue()
+    public function testISOWeekWithMissingWeekValue()
     {
-        self::expectException(Exception::class);
-        iso_week(2014, null);
+        self::assertTrue(iso_week(2014)->equals(iso_week(2014, 1)));
     }
 
     public function testMonth()
@@ -273,10 +272,9 @@ class FunctionTest extends TestCase
         month([], 1);
     }
 
-    public function testMonthFailedWithMissingSemesterValue()
+    public function testMonthWithMissingValue()
     {
-        self::expectException(Exception::class);
-        month(2014, null);
+        self::assertTrue(month(2014)->equals(month(2014, 1)));
     }
 
     public function testQuarter()
@@ -304,10 +302,9 @@ class FunctionTest extends TestCase
         quarter([], 1);
     }
 
-    public function testQuarterFailedWithMissingSemesterValue()
+    public function testQuarterWithMissingValue()
     {
-        self::expectException(Exception::class);
-        quarter(2014, null);
+        self::assertEquals(quarter(2014), quarter(2014, 1));
     }
 
     public function testSemester()
@@ -323,10 +320,9 @@ class FunctionTest extends TestCase
         semester([], 1);
     }
 
-    public function testSemesterFailedWithMissingSemesterValue()
+    public function testSemesterFailedWithMissingValue()
     {
-        self::expectException(Exception::class);
-        semester(2014, null);
+        self::assertEquals(semester(2014), semester(2014, 1));
     }
 
     public function testSemesterFailedWithLowInvalidIndex()
@@ -366,6 +362,58 @@ class FunctionTest extends TestCase
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
         self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
         self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
+    }
+
+    public function testAlternateDay()
+    {
+        $period = day('2008-07-01');
+        $alt_period = day(2008, 7, 1);
+        self::assertEquals($period, $alt_period);
+    }
+
+    /**
+     * @dataProvider invalidDayArgumentProvider
+     */
+    public function testAlternateDayThrowsException(int $year, int $month, int $day)
+    {
+        self::expectException(Exception::class);
+        day($year, $month, $day);
+    }
+
+    public function invalidDayArgumentProvider()
+    {
+        return [
+            'invalid month (1)' => [
+                'year' => 2012,
+                'month' => 0,
+                'day' => 24,
+            ],
+            'invalid month (2)' => [
+                'year' => 2012,
+                'month' => 13,
+                'day' => 24,
+            ],
+            'invalid day (1)' => [
+                'year' => 2012,
+                'month' => 7,
+                'day' => 0,
+            ],
+            'invalid day (2)' => [
+                'year' => 2012,
+                'month' => 7,
+                'day' => 32,
+            ],
+            'invalid day leap year' => [
+                'year' => 2016,
+                'month' => 2,
+                'day' => 30,
+            ],
+            'invalid day non-leap year' => [
+                'year' => 2017,
+                'month' => 2,
+                'day' => 29,
+            ],
+        ];
     }
 
     public function testHour()

@@ -53,8 +53,6 @@ The `$datePeriod` is a `DatePeriod` object.
 ### Examples
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $begin = new DateTime('2012-08-01');
@@ -64,12 +62,43 @@ $interval = new DateInterval('PT1H');
 $period = Period::fromDatePeriod(new DatePeriod($begin, $interval, $end));
 ~~~
 
-<p class="message-warning">If the submitted `DatePeriod` instance does not have a ending datepoint, It will trigger and exception.</p>
+<p class="message-warning">If the submitted `DatePeriod` instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>
 
 
 ## Helper functions
 
 Apart from its constructor, to ease the class instantiation you can rely on many built in helper functions to return a new `Period` object. All helper functions are declared under the `League\Period` namespace.
+
+~~~php
+
+use League\Period;
+use function League\Period\interval_after;
+
+$period = Period\interval_after('YESTERDAY', '2 MINUTE');
+$alt_period = interval_after('YESTERDAY', 180);
+
+$alt_period->equals($period);
+~~~
+
+### instant
+
+~~~php
+<?php
+
+function instant(mixed $datepoint): Period
+~~~
+
+#### Parameter
+
+- `$datepoint`: The datepoint will be used for start and end datepoint.
+
+#### Example
+
+~~~php
+$period = instant('2012-04-01 08:30:25.124546');
+$period->getStartDate() === $period->getEndDate(); //returns true
+$period->getDateInterInterval() == new DateInterval('PT0S'); //returns true
+~~~
 
 ### second
 
@@ -136,12 +165,21 @@ $alt->equals($period); //return true;
 ~~~php
 <?php
 
+function day(int $year [, int $month = 1 [, int $day = 1]]): Period
 function day(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
+- `$year` parameter must be a valid year;
+- `$month` parameter must be a valid month, between 1 and 12, default to 1;
+- `$day` parameter must be a valid day, between 1 and 31, default to 1;
+
+**or**
+
 - `$datepoint`: The datepoint is truncated so that the duration starts at midnight according to the date timezone.
+
+<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 #### Example
 
@@ -156,7 +194,7 @@ $alt->equals($period); //return true;
 ~~~php
 <?php
 
-function iso_week(int $year, int $week): Period
+function iso_week(int $year [, int $week = 1]): Period
 function iso_week(mixed $datepoint): Period
 ~~~
 
@@ -164,12 +202,13 @@ function iso_week(mixed $datepoint): Period
 #### Parameters
 
 - `$year` parameter must be a valid year;
-- `$week` parameter must be a valid week (between 1 and 53);
+- `$week` parameter must be a valid week, between 1 and 53, default to 1;
 
 **or**
 
 - `$datepoint`: **a datepoint included in the returned week interval** according to its timezone.
 
+<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 #### Example
 
@@ -187,18 +226,20 @@ $alt->equals($period); //return true;
 ~~~php
 <?php
 
-function month(int $year, int $month): Period
+function month(int $year [, int $month = 1]): Period
 function month(mixed $datepoint): Period
 ~~~
 
 #### Parameters
 
 - The `$year` parameter must be a valid year;
-- The `$month` parameter must be a valid month (between 1 and 12);
+- The `$month` parameter must be a valid month, between 1 and 12, default to 1;
 
 **or**
 
 - The `$datepoint` represents **a datepoint included in the returned month interval** according to its timezone.
+
+<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 #### Example
 
@@ -214,7 +255,7 @@ $alt->equals($period); //return true;
 ~~~php
 <?php
 
-function quarter(int $year, int $quarter): Period
+function quarter(int $year [, int $quarter = 1]): Period
 function quarter(mixed $datepoint): Period
 ~~~
 
@@ -226,6 +267,8 @@ function quarter(mixed $datepoint): Period
 **or**
 
 - The `$datepoint` represents **a datepoint included in the returned quarter interval** according to its timezone.
+
+<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 #### Example
 
@@ -241,7 +284,7 @@ $alt->equals($period); //return true;
 ~~~php
 <?php
 
-function semester(int $year, int $semester): Period
+function semester(int $year [, int $semester = 1]): Period
 function semester(mixed $datepoint): Period
 ~~~
 
@@ -253,6 +296,8 @@ function semester(mixed $datepoint): Period
 **or**
 
 - The `$datepoint` represents **a datepoint included in the returned semester interval** according to its timezone.
+
+<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 #### Example
 

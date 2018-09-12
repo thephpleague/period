@@ -94,21 +94,21 @@ function duration($duration): DateInterval
 /**
  * Creates new instance from a starting point and an interval.
  */
-function interval_after($startDate, $duration): Period
+function interval_after($datepoint, $duration): Period
 {
-    $startDate = datepoint($startDate);
+    $datepoint = datepoint($datepoint);
 
-    return new Period($startDate, $startDate->add(duration($duration)));
+    return new Period($datepoint, $datepoint->add(duration($duration)));
 }
 
 /**
  * Creates new instance from a ending excluded datepoint and an interval.
  */
-function interval_before($endDate, $duration): Period
+function interval_before($datepoint, $duration): Period
 {
-    $endDate = datepoint($endDate);
+    $datepoint = datepoint($datepoint);
 
-    return new Period($endDate->sub(duration($duration)), $endDate);
+    return new Period($datepoint->sub(duration($duration)), $datepoint);
 }
 
 /**
@@ -170,12 +170,12 @@ function iso_year($int_or_datepoint): Period
 /**
  * Creates new instance for a specific semester in a given year.
  *
- * @param mixed    $int_or_datepoint a year as an int or a datepoint
- * @param null|int $index            a semester index from 1 to 2 included
+ * @param mixed $int_or_datepoint a year as an int or a datepoint
+ * @param int   $index            a semester index from 1 to 2 included
  *
  * @throws Exception If the semester index is out of bounds
  */
-function semester($int_or_datepoint, int $index = null): Period
+function semester($int_or_datepoint, int $index = 1): Period
 {
     if (!is_int($int_or_datepoint)) {
         $datepoint = datepoint($int_or_datepoint);
@@ -188,7 +188,7 @@ function semester($int_or_datepoint, int $index = null): Period
         return new Period($startDate, $startDate->add(new DateInterval('P6M')));
     }
 
-    if (null !== $index && 0 < $index && 2 >= $index) {
+    if (0 < $index && 2 >= $index) {
         $startDate = (new DateTimeImmutable())->setTime(0, 0)
             ->setDate($int_or_datepoint, (($index - 1) * 6) + 1, 1);
 
@@ -201,12 +201,12 @@ function semester($int_or_datepoint, int $index = null): Period
 /**
  * Creates new instance for a specific quarter in a given year.
  *
- * @param mixed    $int_or_datepoint a year as an int or a datepoint
- * @param null|int $index            quarter index from 1 to 4 included
+ * @param mixed $int_or_datepoint a year as an int or a datepoint
+ * @param int   $index            quarter index from 1 to 4 included
  *
  * @throws Exception If the quarter index is out of bounds
  */
-function quarter($int_or_datepoint, int $index = null): Period
+function quarter($int_or_datepoint, int $index = 1): Period
 {
     if (!is_int($int_or_datepoint)) {
         $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
@@ -219,7 +219,7 @@ function quarter($int_or_datepoint, int $index = null): Period
         return new Period($startDate, $startDate->add(new DateInterval('P3M')));
     }
 
-    if (null !== $index && 0 < $index && 4 >= $index) {
+    if (0 < $index && 4 >= $index) {
         $startDate = (new DateTimeImmutable())->setTime(0, 0)
             ->setDate($int_or_datepoint, (($index - 1) * 3) + 1, 1);
 
@@ -232,12 +232,12 @@ function quarter($int_or_datepoint, int $index = null): Period
 /**
  * Creates new instance for a specific year and month.
  *
- * @param mixed    $int_or_datepoint a year as an int or a datepoint
- * @param int|null $index            month index from 1 to 12 included
+ * @param mixed $int_or_datepoint a year as an int or a datepoint
+ * @param int   $index            month index from 1 to 12 included
  *
  * @throws Exception If the month index is out of bounds
  */
-function month($int_or_datepoint, int $index = null): Period
+function month($int_or_datepoint, int $index = 1): Period
 {
     if (!is_int($int_or_datepoint)) {
         $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
@@ -246,7 +246,7 @@ function month($int_or_datepoint, int $index = null): Period
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
     }
 
-    if (null !== $index && 0 < $index && 12 >= $index) {
+    if (0 < $index && 12 >= $index) {
         $startDate = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, $index, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
@@ -258,12 +258,12 @@ function month($int_or_datepoint, int $index = null): Period
 /**
  * Creates new instance for a specific ISO8601 week.
  *
- * @param mixed    $int_or_datepoint a year as an int or a datepoint
- * @param int|null $index            index from 1 to 53 included
+ * @param mixed $int_or_datepoint a year as an int or a datepoint
+ * @param int   $index            index from 1 to 53 included
  *
  * @throws Exception If the week index for a given year is out of bounds
  */
-function iso_week($int_or_datepoint, int $index = null): Period
+function iso_week($int_or_datepoint, int $index = 1): Period
 {
     if (!is_int($int_or_datepoint)) {
         $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
@@ -273,7 +273,7 @@ function iso_week($int_or_datepoint, int $index = null): Period
     }
 
     $datepoint = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, 12, 28);
-    if (null !== $index && 0 < $index && (int) $datepoint->format('W') >= $index) {
+    if (0 < $index && (int) $datepoint->format('W') >= $index) {
         $startDate = $datepoint->setISODate($int_or_datepoint, $index, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
@@ -287,12 +287,29 @@ function iso_week($int_or_datepoint, int $index = null): Period
  *
  * The date is truncated so that the time range starts at midnight
  * according to the date timezone and last a full day.
+ *
+ * @param mixed $int_or_datepoint a year as an int or a datepoint
  */
-function day($datepoint): Period
+function day($int_or_datepoint, int $month = 1, int $day = 1): Period
 {
-    $startDate = datepoint($datepoint)->setTime(0, 0);
+    if (!is_int($int_or_datepoint)) {
+        $startDate = datepoint($int_or_datepoint)->setTime(0, 0);
 
-    return new Period($startDate, $startDate->add(new DateInterval('P1D')));
+        return new Period($startDate, $startDate->add(new DateInterval('P1D')));
+    }
+
+    if (1 > $month || 12 < $month) {
+        throw new Exception('The month index is not contained within the valid range.');
+    }
+
+    $datepoint = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, $month, 1);
+    if (0 < $day && (int) $datepoint->format('t') >= $day) {
+        $startDate = $datepoint->setDate($int_or_datepoint, $month, $day);
+
+        return new Period($startDate, $startDate->add(new DateInterval('P1D')));
+    }
+
+    throw new Exception('The day index is not contained within the valid range.');
 }
 
 /**
