@@ -88,7 +88,7 @@ function second(mixed $datepoint): Period
 ~~~php
 $period = second('2012-04-01 08:30:25.124546');
 $alt    = second('2012-04-01 08:30:25');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 ~~~
 
 ### minute
@@ -108,7 +108,7 @@ function minute(mixed $datepoint): Period
 ~~~php
 $period = minute('2012-04-01 08:30:25');
 $alt    = minute('2012-04-01 08:30:00');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 ~~~
 
 ### hour
@@ -128,7 +128,7 @@ function hour(mixed $datepoint): Period
 ~~~php
 $period = hour('2012-04-01 08:30:25');
 $alt    = hour('2012-04-01 08:00:00');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 ~~~
 
 ### day
@@ -148,7 +148,7 @@ function day(mixed $datepoint): Period
 ~~~php
 $period = day('2012-04-01 08:30:25');
 $alt    = day('2012-04-01');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 ~~~
 
 ### iso_week
@@ -176,7 +176,7 @@ function iso_week(mixed $datepoint): Period
 ~~~php
 $period = iso_week(2013, 23);
 $alt    = iso_week('2013-06-05');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 //this period represents the 23rd week of 2013
 ~~~
 
@@ -205,7 +205,7 @@ function month(mixed $datepoint): Period
 ~~~php
 month(2013, 7);
 $alt = month('2013-07-31');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 //this period represents the month of July 2013
 ~~~
 
@@ -232,7 +232,7 @@ function quarter(mixed $datepoint): Period
 ~~~php
 $period = quarter(2013, 2);
 $alt    = quarter('2013-05-15');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 //this period represents the second quarter of 2013
 ~~~
 
@@ -259,7 +259,7 @@ function semester(mixed $datepoint): Period
 ~~~php
 $period = semester(2013, 2);
 $alt    = semester('2013-03-15');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 //this period represents the second semester of 2013
 ~~~
 
@@ -285,7 +285,7 @@ function year(mixed $datepoint): Period
 ~~~php
 $period = function year(2013);
 $alt    = function year('2013-05-15');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 //this period represents a time range for 2013
 ~~~
 
@@ -311,7 +311,7 @@ function iso_year(mixed $datepoint): Period
 ~~~php
 $period = function iso_year(2013);
 $alt    = function iso_year('2013-05-15');
-$alt->equalsTo($period); //return true;
+$alt->equals($period); //return true;
 //this period represents a time range for 2013
 ~~~
 
@@ -339,5 +339,5 @@ function interval_around(mixed $datepoint, mixed $duration): Period
 ~~~php
 $period = interval_after('2012-04-01 08:30:25', '1 DAY');
 $alt    = interval_before('2012-04-02 08:30:25', new DateInterval('P1D'));
-$alt->equalsTo($period); //returns true
+$alt->equals($period); //returns true
 ~~~

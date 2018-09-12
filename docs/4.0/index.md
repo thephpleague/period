@@ -42,10 +42,6 @@ Learn more about how this all works in the [basic usage](/4.0/properties/).
 A simple example on how to get all the days from a selected month.
 
 ~~~php
-<?php
-
-use function League\Period\month;
-
 $period = new Period(new DateTime('2014-10-01'), new DateTimeImmutable('2014-11-01'));
 foreach ($period->getDatePeriod('1 DAY') as $day) {
     $day->format('Y-m-d');
