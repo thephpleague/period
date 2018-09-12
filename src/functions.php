@@ -112,6 +112,18 @@ function interval_before($endDate, $duration): Period
 }
 
 /**
+ * Creates new instance where the given duration is simultaneously
+ * substracted from and added to the datepoint.
+ */
+function interval_around($datepoint, $duration): Period
+{
+    $datepoint = datepoint($datepoint);
+    $duration = duration($duration);
+
+    return new Period($datepoint->sub($duration), $datepoint->add($duration));
+}
+
+/**
  * Creates new instance for a specific year.
  *
  * @param mixed $int_or_datepoint a year as an int or a datepoint

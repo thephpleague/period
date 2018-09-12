@@ -27,6 +27,7 @@ use function League\Period\duration;
 use function League\Period\hour;
 use function League\Period\instant;
 use function League\Period\interval_after;
+use function League\Period\interval_around;
 use function League\Period\interval_before;
 use function League\Period\iso_week;
 use function League\Period\iso_year;
@@ -191,6 +192,23 @@ class FunctionTest extends TestCase
     {
         self::expectException(Exception::class);
         interval_before(new DateTime('2012-01-12'), '-1 DAY');
+    }
+
+    public function testIntervalAround()
+    {
+        $date = '2012-06-05';
+        $duration = '1 WEEK';
+
+        $period = interval_around($date, $duration);
+        self::assertTrue($period->contains($date));
+        self::assertEquals(datepoint($date)->sub(duration($duration)), $period->getStartDate());
+        self::assertEquals(datepoint($date)->add(duration($duration)), $period->getEndDate());
+    }
+
+    public function testIntervalAroundThrowsException()
+    {
+        self::expectException(Exception::class);
+        interval_around(new DateTime('2012-06-05'), '-1 DAY');
     }
 
     public function testISOWeek()

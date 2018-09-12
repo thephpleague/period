@@ -58,7 +58,7 @@ final class Period implements JsonSerializable
      *                   recurrences instead of a end datepoint.
      *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
      */
-    public static function createFromDatePeriod(DatePeriod $datePeriod): self
+    public static function fromDatePeriod(DatePeriod $datePeriod): self
     {
         $endDate = $datePeriod->getEndDate();
         if ($endDate instanceof DateTimeInterface) {

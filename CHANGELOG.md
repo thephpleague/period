@@ -11,7 +11,9 @@ All Notable changes to `Period` will be documented in this file
 - `Period::equals`
 - `Period::durationCompare`
 - `Period::durationEquals`
-- `Period::createFromDatePeriod`
+- `Period::fromDatePeriod`
+- `League\Period\datepoint`
+- `League\Period\duration`
 - `League\Period\year`
 - `League\Period\semester`
 - `League\Period\quarter`
@@ -25,8 +27,7 @@ All Notable changes to `Period` will be documented in this file
 - `League\Period\iso_week`
 - `League\Period\interval_after`
 - `League\Period\interval_before`
-- `League\Period\duration`
-- `League\Period\datepoint`
+- `League\Period\interval_around`
 
 ### Fixed
 
