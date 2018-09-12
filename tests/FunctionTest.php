@@ -236,6 +236,12 @@ class FunctionTest extends TestCase
         iso_week([], 1);
     }
 
+    public function testISOWeekFailedWithInvalidMaxWeek()
+    {
+        self::expectException(Exception::class);
+        iso_week(2007, 53);
+    }
+
     public function testISOWeekFailedWithMissingSemesterValue()
     {
         self::expectException(Exception::class);

@@ -86,7 +86,7 @@ function duration($duration): DateInterval
     }
 
     throw new TypeError(sprintf(
-        'The duration must be expressed using an integer, a string or a DateInterval object %s given',
+        'The duration must be expressed using an integer, a string, a DateInterval or a Period object %s given',
         is_object($duration) ? get_class($duration) : gettype($duration)
     ));
 }
@@ -172,6 +172,8 @@ function iso_year($int_or_datepoint): Period
  *
  * @param mixed    $int_or_datepoint a year as an int or a datepoint
  * @param null|int $index            a semester index from 1 to 2 included
+ *
+ * @throws Exception If the semester index is out of bounds
  */
 function semester($int_or_datepoint, int $index = null): Period
 {
@@ -201,6 +203,8 @@ function semester($int_or_datepoint, int $index = null): Period
  *
  * @param mixed    $int_or_datepoint a year as an int or a datepoint
  * @param null|int $index            quarter index from 1 to 4 included
+ *
+ * @throws Exception If the quarter index is out of bounds
  */
 function quarter($int_or_datepoint, int $index = null): Period
 {
@@ -230,6 +234,8 @@ function quarter($int_or_datepoint, int $index = null): Period
  *
  * @param mixed    $int_or_datepoint a year as an int or a datepoint
  * @param int|null $index            month index from 1 to 12 included
+ *
+ * @throws Exception If the month index is out of bounds
  */
 function month($int_or_datepoint, int $index = null): Period
 {
@@ -254,6 +260,8 @@ function month($int_or_datepoint, int $index = null): Period
  *
  * @param mixed    $int_or_datepoint a year as an int or a datepoint
  * @param int|null $index            index from 1 to 53 included
+ *
+ * @throws Exception If the week index for a given year is out of bounds
  */
 function iso_week($int_or_datepoint, int $index = null): Period
 {
@@ -264,8 +272,9 @@ function iso_week($int_or_datepoint, int $index = null): Period
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
-    if (null !== $index && 0 < $index && 53 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0)->setISODate($int_or_datepoint, $index, 1);
+    $datepoint = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, 12, 28);
+    if (null !== $index && 0 < $index && (int) $datepoint->format('W') >= $index) {
+        $startDate = $datepoint->setISODate($int_or_datepoint, $index, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
