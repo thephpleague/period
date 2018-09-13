@@ -2,7 +2,7 @@
 
 _(Please explain the library current status regarding your PR)_
 
-## Proposal 
+## Proposal
 
 ### Describe the new/updated/fixed feature
 

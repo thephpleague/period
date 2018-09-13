@@ -13,15 +13,37 @@ title: Period cheat sheet
 
 ## Arguments
 
-Unless stated otherwise:
+At his core the `Period` class only uses `DateTimeImmutable` and `DateInterval` objects. But because it is sometime complicated to get your  hands on such objects the package comes bundles with two simple functions that are used throughout the library to ensure typesafety.
 
-- Whenever a datepoint is expected you can provide:
-    - a `DateTimeInterface` implementing object;
-    - a string parsable by the `DateTime` constructor.
+- `League\Period\datepoint`: This function converts any input into a `DateTimeImmutable` object if the input can not be converted a PHP `TypeError` is triggered. The function accepts:
 
-- Whenever a duration is expected you can provide:
+	- `DateTimeInterface` implementing objects
+	- a string parsable by the `DateTime` constructor.
+    - an integer interpreted as a timestamp.
+
+- `League\Period\duration`: This function converts any input into a `DateInterval` object if the input can not be converted a PHP `TypeError` is triggered. The function accepts:
+
     - a `DateInterval` object;
     - a string parsable by the `DateInterval::createFromDateString` method.
     - an integer interpreted as the interval expressed in seconds.
 
 <p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the <code>0</code> interval is returned.</p>
+
+### Examples
+
+~~~php
+<?php
+
+use function League\Period\datepoint;
+use function League\Period\duration;
+
+$datePeriod = new DatePeriod(datepoint('YESTERDAY'), duration(600), datepoint(new DateTime('+3 WEEKS')));
+//is equivalent of writting
+$datePeriod = new DatePeriod(
+	new DateTimeImmutable('YESTERDAY'),
+	new DateInterval('PT600S'),
+	new DateTimeImmutable('+3 WEEKS')
+);
+~~~
+
+Theses functions are used by the `Period` class and the helper functions to allow broader input acceptance.

@@ -9,7 +9,7 @@ _(In case of a bug report Please complete the table below)_
 | Information | Description |
 |--------------|---------|
 | League\Period version |  |
-| PHP/HHVM version |  |
+| PHP version |  |
 | OS Platform |  |
 
 

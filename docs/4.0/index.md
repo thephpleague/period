@@ -43,7 +43,7 @@ A simple example on how to get all the days from a selected month.
 
 ~~~php
 $period = new Period(new DateTime('2014-10-01'), new DateTimeImmutable('2014-11-01'));
-foreach ($period->getDatePeriod('1 DAY') as $day) {
+foreach ($period->getDatePeriod(new DateInterval('P1D')) as $day) {
     $day->format('Y-m-d');
 }
 ~~~

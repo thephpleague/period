@@ -136,8 +136,7 @@ final class Period implements JsonSerializable
     /**
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance.
-     *
-     * This method is not part of the Interval.
+
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      */
@@ -220,40 +219,55 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two Interval share the same datepoints.
+     * Tells whether two intervals share the same datepoints.
+     *
+     * [--------------------)
+     * [--------------------)
      */
     public function equals(Period $interval): bool
     {
-        return $this->startDate == $interval->getStartDate()
-            && $this->endDate == $interval->getEndDate();
+        return $this->startDate == $interval->startDate
+            && $this->endDate == $interval->endDate;
     }
 
     /**
-     * Tells whether two Interval abuts.
+     * Tells whether two intervals abuts.
+     *
+     * [--------------------)
+     *                      [--------------------)
+     * or
+     *                      [--------------------)
+     * [--------------------)
      */
     public function abuts(Period $interval): bool
     {
-        return $this->startDate == $interval->getEndDate()
-            || $this->endDate == $interval->getStartDate();
+        return $this->startDate == $interval->endDate
+            || $this->endDate == $interval->startDate;
     }
 
     /**
-     * Tells whether two Interval overlaps.
+     * Tells whether two intervals overlaps.
+     *
+     * [--------------------)
+     *          [--------------------)
      */
     public function overlaps(Period $interval): bool
     {
-        return $this->startDate < $interval->getEndDate()
-            && $this->endDate > $interval->getStartDate();
+        return $this->startDate < $interval->endDate
+            && $this->endDate > $interval->startDate;
     }
 
     /**
-     * Tells whether a Interval is entirely after the specified index.
-     * The index can be a DateTimeInterface object or another Interval object.
+     * Tells whether an interval is entirely after the specified index.
+     * The index can be a DateTimeInterface object or another Period object.
+     *
+     *                          [--------------------)
+     * [--------------------)
      */
     public function isAfter($index): bool
     {
         if ($index instanceof Period) {
-            return $this->startDate >= $index->getEndDate();
+            return $this->startDate >= $index->endDate;
         }
 
         return $this->startDate > datepoint($index);
@@ -261,12 +275,15 @@ final class Period implements JsonSerializable
 
     /**
      * Tells whether a Interval is entirely before the specified index.
-     * The index can be a DateTimeInterface object or another Interval object.
+     * The index can be a DateTimeInterface object or another Period object.
+     *
+     * [--------------------)
+     *                          [--------------------)
      */
     public function isBefore($index): bool
     {
         if ($index instanceof Period) {
-            return $this->endDate <= $index->getStartDate();
+            return $this->endDate <= $index->startDate;
         }
 
         return $this->endDate <= datepoint($index);
@@ -286,16 +303,21 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the a Interval is fully contained within the current instance.
+     * Tells whether the an interval is fully contained within the current instance.
+     *
+     * [--------------------)
+     *     [----------)
      */
     private function containsPeriod(Period $interval): bool
     {
-        return $this->containsDatePoint($interval->getStartDate())
-            && ($interval->getEndDate() >= $this->startDate && $interval->getEndDate() <= $this->endDate);
+        return $this->containsDatePoint($interval->startDate)
+            && ($interval->endDate >= $this->startDate && $interval->endDate <= $this->endDate);
     }
 
     /**
      * Tells whether a datepoint is fully contained within the current instance.
+     *
+     * [------|------------)
      */
     private function containsDatePoint(DateTimeInterface $datepoint): bool
     {
@@ -366,6 +388,12 @@ final class Period implements JsonSerializable
     /**
      * Computes the intersection between two instances.
      *
+     * [--------------------)
+     *          ∩
+     *                 [----------)
+     *          =
+     *                 [----)
+     *
      * @throws Exception If both objects do not overlaps
      */
     public function intersect(Period $interval): self
@@ -375,33 +403,13 @@ final class Period implements JsonSerializable
         }
 
         return new self(
-            ($interval->getStartDate() > $this->startDate) ? $interval->getStartDate() : $this->startDate,
-            ($interval->getEndDate() < $this->endDate) ? $interval->getEndDate() : $this->endDate
+            ($interval->startDate > $this->startDate) ? $interval->startDate : $this->startDate,
+            ($interval->endDate < $this->endDate) ? $interval->endDate : $this->endDate
         );
     }
 
     /**
-     * Computes the gap between two instances.
-     *
-     * @throws Exception If both objects overlaps
-     */
-    public function gap(Period $interval): self
-    {
-        if ($this->overlaps($interval)) {
-            throw new Exception(sprintf('Both %s objects should not overlaps', Period::class));
-        }
-
-        if ($interval->getStartDate() > $this->startDate) {
-            return new self($this->endDate, $interval->getStartDate());
-        }
-
-        return new self($interval->getEndDate(), $this->startDate);
-    }
-
-    /**
      * Computes the difference between two overlapsing instances.
-     *
-     * This method is not part of the Interval.
      *
      * Returns an array containing the difference expressed as Period objects
      * The array will always contains 2 elements:
@@ -411,6 +419,12 @@ final class Period implements JsonSerializable
      * <li>one Period object and NULL if both objects share one datepoint</li>
      * <li>two Period objects if both objects share no datepoint</li>
      * </ul>
+     *
+     * [--------------------)
+     *          -
+     *                [-----------)
+     *          =
+     * [--------------)  +  [-----)
      *
      * @throws Exception if both objects do not overlaps
      */
@@ -422,18 +436,42 @@ final class Period implements JsonSerializable
 
         $intersect = $this->intersect($interval);
         $merge = $this->merge($interval);
-        if ($merge->getStartDate() == $intersect->getStartDate()) {
-            return [$merge->startingOn($intersect->getEndDate()), null];
+        if ($merge->startDate == $intersect->startDate) {
+            return [$merge->startingOn($intersect->endDate), null];
         }
 
-        if ($merge->getEndDate() == $intersect->getEndDate()) {
-            return [$merge->endingOn($intersect->getStartDate()), null];
+        if ($merge->endDate == $intersect->endDate) {
+            return [$merge->endingOn($intersect->startDate), null];
         }
 
         return [
-            $merge->endingOn($intersect->getStartDate()),
-            $merge->startingOn($intersect->getEndDate()),
+            $merge->endingOn($intersect->startDate),
+            $merge->startingOn($intersect->endDate),
         ];
+    }
+
+    /**
+     * Computes the gap between two instances.
+     *
+     * [--------------------)
+     *          +
+     *                          [----------)
+     *          =
+     *                      [---)
+     *
+     * @throws Exception If both objects overlaps
+     */
+    public function gap(Period $interval): self
+    {
+        if ($this->overlaps($interval)) {
+            throw new Exception(sprintf('Both %s objects should not overlaps', Period::class));
+        }
+
+        if ($interval->startDate > $this->startDate) {
+            return new self($this->endDate, $interval->startDate);
+        }
+
+        return new self($interval->endDate, $this->startDate);
     }
 
     /**
@@ -583,12 +621,12 @@ final class Period implements JsonSerializable
         array_unshift($intervals, $interval);
         $carry = $this;
         foreach ($intervals as $interval) {
-            if ($carry->getStartDate() > $interval->getStartDate()) {
-                $carry = $carry->startingOn($interval->getStartDate());
+            if ($carry->startDate > $interval->startDate) {
+                $carry = $carry->startingOn($interval->startDate);
             }
 
-            if ($carry->getEndDate() < $interval->getEndDate()) {
-                $carry = $carry->endingOn($interval->getEndDate());
+            if ($carry->endDate < $interval->endDate) {
+                $carry = $carry->endingOn($interval->endDate);
             }
         }
 

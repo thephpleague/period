@@ -80,283 +80,120 @@ $alt_period = interval_after('YESTERDAY', 180);
 $alt_period->equals($period);
 ~~~
 
-### instant
+### Helper functions accepting only a datepoint
 
 ~~~php
 <?php
 
 function instant(mixed $datepoint): Period
-~~~
-
-#### Parameter
-
-- `$datepoint`: The datepoint will be used for start and end datepoint.
-
-#### Example
-
-~~~php
-$period = instant('2012-04-01 08:30:25.124546');
-$period->getStartDate() === $period->getEndDate(); //returns true
-$period->getDateInterInterval() == new DateInterval('PT0S'); //returns true
-~~~
-
-### second
-
-~~~php
-<?php
-
 function second(mixed $datepoint): Period
-~~~
-
-#### Parameter
-
-- `$datepoint`: The datepoint is truncated so that the duration starts at the beginning of the given second according to the date timezone.
-
-#### Example
-
-~~~php
-$period = second('2012-04-01 08:30:25.124546');
-$alt    = second('2012-04-01 08:30:25');
-$alt->equals($period); //return true;
-~~~
-
-### minute
-
-~~~php
-<?php
-
 function minute(mixed $datepoint): Period
-~~~
-
-#### Parameter
-
-- `$datepoint`: The datepoint is truncated so that the duration starts at the beginning of the given minute according to the date timezone.
-
-#### Example
-
-~~~php
-$period = minute('2012-04-01 08:30:25');
-$alt    = minute('2012-04-01 08:30:00');
-$alt->equals($period); //return true;
-~~~
-
-### hour
-
-~~~php
-<?php
-
 function hour(mixed $datepoint): Period
 ~~~
 
 #### Parameter
 
-- `$datepoint`: The datepoint is truncated so that the duration starts at the beginning of the given hour according to the date timezone.
+- `$datepoint`: The datepoint used to defined the interval. It is truncated so that the duration starts at the beginning of the given time period according to the date timezone.
 
 #### Example
 
 ~~~php
-$period = hour('2012-04-01 08:30:25');
-$alt    = hour('2012-04-01 08:00:00');
-$alt->equals($period); //return true;
+$instant = instant('2012-04-01 08:30:25.124546');
+$instant->getStartDate() === $instant->getEndDate(); //returns true
+$instant->getDateInterInterval() == new DateInterval('PT0S'); //returns true
+
+$second = second('2012-04-01 08:30:25.124546');
+$alt_s  = second('2012-04-01 08:30:25');
+$alt_s->equals($second); //return true;
+
+$minute = minute('2012-04-01 08:30:25');
+$alt_m  = minute('2012-04-01 08:30:00');
+$alt_m->equals($minute); //return true;
+
+$hour = hour('2012-04-01 08:30:25');
+$alt_h = hour('2012-04-01 08:00:00');
+$alt_h->equals($hour); //return true;
 ~~~
 
-### day
+### Helper functions accepting a list of integer arguments or a datepoint
+
+#### Using a list of integer arguments
+
+- `$year` parameter must be a valid year;
+- `$month` parameter must be a valid month, between 1 and 12, default to 1;
+- `$week` parameter must be a valid week, between 1 and 53, default to 1;
+- `$day` parameter must be a valid day, between 1 and 31, default to 1;
+
+The time is truncated so that the duration always starts at midnight according to the date timezone.
+
+<p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
+
+<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 ~~~php
 <?php
 
 function day(int $year [, int $month = 1 [, int $day = 1]]): Period
-function day(mixed $datepoint): Period
-~~~
-
-#### Parameter
-
-- `$year` parameter must be a valid year;
-- `$month` parameter must be a valid month, between 1 and 12, default to 1;
-- `$day` parameter must be a valid day, between 1 and 31, default to 1;
-
-**or**
-
-- `$datepoint`: The datepoint is truncated so that the duration starts at midnight according to the date timezone.
-
-<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
-
-#### Example
-
-~~~php
-$period = day('2012-04-01 08:30:25');
-$alt    = day('2012-04-01');
-$alt->equals($period); //return true;
-~~~
-
-### iso_week
-
-~~~php
-<?php
-
 function iso_week(int $year [, int $week = 1]): Period
-function iso_week(mixed $datepoint): Period
-~~~
-
-
-#### Parameters
-
-- `$year` parameter must be a valid year;
-- `$week` parameter must be a valid week, between 1 and 53, default to 1;
-
-**or**
-
-- `$datepoint`: **a datepoint included in the returned week interval** according to its timezone.
-
-<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
-
-#### Example
-
-~~~php
-$period = iso_week(2013, 23);
-$alt    = iso_week('2013-06-05');
-$alt->equals($period); //return true;
-//this period represents the 23rd week of 2013
-~~~
-
-<p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
-
-### month
-
-~~~php
-<?php
-
 function month(int $year [, int $month = 1]): Period
-function month(mixed $datepoint): Period
-~~~
-
-#### Parameters
-
-- The `$year` parameter must be a valid year;
-- The `$month` parameter must be a valid month, between 1 and 12, default to 1;
-
-**or**
-
-- The `$datepoint` represents **a datepoint included in the returned month interval** according to its timezone.
-
-<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
-
-#### Example
-
-~~~php
-month(2013, 7);
-$alt = month('2013-07-31');
-$alt->equals($period); //return true;
-//this period represents the month of July 2013
-~~~
-
-### quarter
-
-~~~php
-<?php
-
 function quarter(int $year [, int $quarter = 1]): Period
-function quarter(mixed $datepoint): Period
-~~~
-
-#### Parameters
-
-- The `$year` parameter must be a valid year;
-- The `$quarter` parameter must be a valid quarter index (between 1 and 4);
-
-**or**
-
-- The `$datepoint` represents **a datepoint included in the returned quarter interval** according to its timezone.
-
-<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
-
-#### Example
-
-~~~php
-$period = quarter(2013, 2);
-$alt    = quarter('2013-05-15');
-$alt->equals($period); //return true;
-//this period represents the second quarter of 2013
-~~~
-
-### semester
-
-~~~php
-<?php
-
 function semester(int $year [, int $semester = 1]): Period
-function semester(mixed $datepoint): Period
-~~~
-
-#### Parameters
-
-- The `$year` parameter must be a valid year;
-- The `$semester` parameter must be a valid semester index (between 1 and 2);
-
-**or**
-
-- The `$datepoint` represents **a datepoint included in the returned semester interval** according to its timezone.
-
-<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
-
-#### Example
-
-~~~php
-$period = semester(2013, 2);
-$alt    = semester('2013-03-15');
-$alt->equals($period); //return true;
-//this period represents the second semester of 2013
-~~~
-
-### year
-
-~~~php
-<?php
-
 function year(int $year): Period
-function year(mixed $datepoint): Period
+function iso_year(int $year): Period
 ~~~
 
-#### Parameter
+#### Using a datepoint
 
-- The `$int_or_datepoint` parameter must be a valid year;
+- `$datepoint`: The datepoint used to defined the interval. It is truncated so that the duration starts at midnight according to the date timezone at the beginning of the given datetime period.
 
-**or**
-
-- The `$datepoint` represents **a datepoint included in the returned year interval** according to its timezone.
-
-#### Example
-
-~~~php
-$period = function year(2013);
-$alt    = function year('2013-05-15');
-$alt->equals($period); //return true;
-//this period represents a time range for 2013
-~~~
-
-### iso_year
+<p class="message-warning">The starting datepoint is determined using <code>DateTime::__construct</code> parser. Values exceeding ranges will be added to their parent values.</p>
 
 ~~~php
 <?php
-
-function iso_year(int $year): Period
+function day(mixed $datepoint): Period
+function iso_week(mixed $datepoint): Period
+function month(mixed $datepoint): Period
+function quarter(mixed $datepoint): Period
+function semester(mixed $datepoint): Period
+function year(mixed $datepoint): Period
 function iso_year(mixed $datepoint): Period
 ~~~
 
-#### Parameter
-
-- The `$int_or_datepoint` parameter must be a valid year;
-
-**or**
-
-- The `$datepoint` represents **a datepoint included in the returned iso year interval** according to its timezone.
-
-#### Example
+#### Examples
 
 ~~~php
-$period = function iso_year(2013);
-$alt    = function iso_year('2013-05-15');
-$alt->equals($period); //return true;
+$day = day('2012-04-01 08:30:25');
+$alt_d = day('2012-04-01');
+$alt_d->equals($day); //return true;
+
+$week = iso_week(2013, 23);
+$alt_w  = iso_week('2013-06-05');
+$alt_w->equals($week); //return true;
+//this period represents the 23rd week of 2013
+
+$month = month(2013, 7);
+$alt_m = month('2013-07-31');
+$alt_m->equals($month); //return true;
+//this period represents the month of July 2013
+
+$quarter = quarter(2013, 2);
+$alt_q = quarter('2013-05-15');
+$alt_q->equals($quarter); //return true;
+//this period represents the second quarter of 2013
+
+$semester = semester(2013, 2);
+$alt_s    = semester('2013-03-15');
+$alt_s->equals($semester); //return true;
+//this period represents the second semester of 2013
+
+$year = year(2013);
+$alt_y = year('2013-05-15');
+$alt_y->equals($year); //return true;
+//this period represents a time range for 2013
+
+$iso_year = iso_year(2013);
+$alt_iy = iso_year('2013-05-15');
+$alt_iy->equals($iso_year); //return true;
 //this period represents a time range for 2013
 ~~~
 
@@ -370,9 +207,9 @@ function interval_before(mixed $datepoint, mixed $duration): Period
 function interval_around(mixed $datepoint, mixed $duration): Period
 ~~~
 
-- `interval_after` returns a `Period` object which starts at `$startDate`
-- `interval_before` returns a `Period` object which ends at `$endDate`.
-- `interval_around` returns a `Period` object where the given duration is simultaneously substracted from and added to the datepoint.
+- `interval_after` returns a `Period` object which starts at `$datepoint`
+- `interval_before` returns a `Period` object which ends at `$datepoint`.
+- `interval_around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
 
 #### Parameters
 
