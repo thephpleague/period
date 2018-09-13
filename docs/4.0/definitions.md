@@ -37,8 +37,14 @@ At his core the `Period` class only uses `DateTimeImmutable` and `DateInterval` 
 use function League\Period\datepoint;
 use function League\Period\duration;
 
-$datePeriod = new DatePeriod(datepoint('YESTERDAY'), duration(600), datepoint(new DateTime('+3 WEEKS')));
-//is equivalent of writting
+$datePeriod = new DatePeriod(
+	datepoint('YESTERDAY'),
+	duration(600),
+	datepoint(new DateTime('+3 WEEKS'))
+);
+
+//returns the same object as if you had written
+
 $datePeriod = new DatePeriod(
 	new DateTimeImmutable('YESTERDAY'),
 	new DateInterval('PT600S'),

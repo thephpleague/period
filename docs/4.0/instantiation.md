@@ -144,7 +144,7 @@ function iso_year(int $year): Period
 
 #### Using a datepoint
 
-- `$datepoint`: The datepoint used to defined the interval. It is truncated so that the duration starts at midnight according to the date timezone at the beginning of the given datetime period.
+- `$datepoint`: The datepoint is truncated so that the duration starts at midnight according to the timezone at the beginning of the given datetime period.
 
 <p class="message-warning">The starting datepoint is determined using <code>DateTime::__construct</code> parser. Values exceeding ranges will be added to their parent values.</p>
 
@@ -162,9 +162,11 @@ function iso_year(mixed $datepoint): Period
 #### Examples
 
 ~~~php
-$day = day('2012-04-01 08:30:25');
+$day = day(2012, 4, 1);
+$day_string = day('2012-04-01 08:30:25');
 $alt_d = day('2012-04-01');
 $alt_d->equals($day); //return true;
+$day_string->equals($day); //return true;
 
 $week = iso_week(2013, 23);
 $alt_w  = iso_week('2013-06-05');
@@ -189,12 +191,12 @@ $alt_s->equals($semester); //return true;
 $year = year(2013);
 $alt_y = year('2013-05-15');
 $alt_y->equals($year); //return true;
-//this period represents a time range for 2013
+//this period represents a the year 2013 time range
 
 $iso_year = iso_year(2013);
 $alt_iy = iso_year('2013-05-15');
 $alt_iy->equals($iso_year); //return true;
-//this period represents a time range for 2013
+//this period represents a the iso year 2013 time range
 ~~~
 
 ### Create a new instance from a datepoint and a duration
@@ -219,7 +221,13 @@ function interval_around(mixed $datepoint, mixed $duration): Period
 #### Example
 
 ~~~php
-$period = interval_after('2012-04-01 08:30:25', '1 DAY');
-$alt    = interval_before('2012-04-02 08:30:25', new DateInterval('P1D'));
-$alt->equals($period); //returns true
+$date = datepoint('2012-04-01 08:30:25');
+$duration = duration('1 DAY');
+$half_duration = duration('12 HOURS');
+
+$interval_after = interval_after($date, $duration);
+$interval_before = interval_before($date->add($duration), $duration);
+$interval_after->equals($interval_before); //returns true
+$interval_around = interval_around($date->add($half_duration), $half_duration);
+$interval_around->equals($interval_before); //returns true
 ~~~
