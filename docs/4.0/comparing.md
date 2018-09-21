@@ -3,7 +3,7 @@ layout: default
 title: Comparing Period objects
 ---
 
-# Comparing Period objects
+# Comparing
 
 You can compare different `Period` objects according to their datepoints or durations.
 
@@ -30,13 +30,21 @@ The `$index` argument can be another `Period` object or a datepoint.
 ~~~php
 <?php
 
-use League\Period\Period;
+use function League\Period\datepoint;
+use function League\Period\month;
 
-//comparing a datetime
+
 $period = month(1983, 4);
 $alt = month(1984, 4);
+
+//test against another Period object
 $period->isBefore($alt); //returns true;
 $alt->isBefore($period); //return false;
+
+//test againts a datepoint
+$period->isBefore('1983-06-02'); //returns true
+$period->isBefore('1982-06-02'); //returns false
+$period->isBefore($period->getEndDate()); //returns true
 ~~~
 
 ### Period::isAfter
@@ -46,7 +54,7 @@ $alt->isBefore($period); //return false;
 ~~~php
 <?php
 
-public Period::isBefore(mixed $index): bool
+public Period::isAfter(mixed $index): bool
 ~~~
 
 Tells whether the current `Period` object datetime continuum is entirely after the specified `$index`.
@@ -62,11 +70,17 @@ The `$index` argument can be another `Period` object or a datepoint.
 
 use League\Period\Period;
 
-//comparing a datetime
 $period = month(1983, 4);
 $alt = month(1984, 4);
+
+//test against another Period object
 $alt->isAfter($period); //returns true;
 $period->isAfter($alt); //return false;
+
+//test againts a datepoint
+$period->isAfter('1983-06-02'); //returns false
+$period->isAfter('1982-06-02'); //returns true
+$period->isAfter($period->getStartDate()); //returns false
 ~~~
 
 ### Period::abuts
@@ -90,10 +104,10 @@ A `Period` abuts if it starts immediately after, or ends immediately before the 
 
 use League\Period\Period;
 
-$period        = month(2014, 3);
-$anotherPeriod = month(2014, 4);
-$period->abuts($anotherPeriod); //return true
-//in this case $period->getEndDate() == $anotherPeriod->getStartDate();
+$period = month(2014, 3);
+$alt = month(2014, 4);
+$period->abuts($alt); //return true
+//in this case $period->getEndDate() === $alt->getStartDate();
 ~~~
 
 ### Period::overlaps
@@ -106,15 +120,15 @@ $period->abuts($anotherPeriod); //return true
 public Period::overlaps(Period $period): bool
 ~~~
 
-A `Period` overlaps another if they share some common part of their respective datetime continuum without abutting.
+A `Period` overlaps another if they share some common part of their respective continuous portion of time without abutting.
 
 #### Example
 
 ~~~php
 <?php
 
-$orig  = month(2014, 3);
-$alt   = month(2014, 4);
+$orig  = month('2014-03-15');
+$alt   = month('2014-04-15');
 $other = interval_after('2014-03-15', '3 WEEKS');
 
 $orig->overlaps($alt);   //return false
@@ -171,8 +185,9 @@ The `$index` argument can be another `Period` object or a datepoint.
 
 //comparing a datetime
 $period = month(1983, 4);
-$period->contains('1983-04-15');      //returns true;
-$period->contains($period->getEndDate()); //returns false;
+$period->contains('1983-04-15');            //returns true;
+$period->contains($period->getStartDate()); //returns true;
+$period->contains($period->getEndDate());   //returns false;
 
 //comparing two Period objects
 $alt = interval_after('1983-04-12', '12 DAYS');
@@ -192,10 +207,10 @@ public Period::diff(Period $period): array
 
 This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
 
-The difference is expressed as an `array`. The returned array:
+The difference is expressed as an `array`. The returned array always contains two values:
 
-- is empty if both objects share the same datepoints;
-- contains one `Period` object if both objects share only one datepoint;
+- both values are `null` if both interval share the same datepoints;
+- contains one `Period` object and a `null` value if both objects share only one datepoint;
 - contains two `Period` objects if no datepoint are shared between objects. The first `Period` datetime continuum is always entirely set before the second one;
 
 ![](/media/period-diff.png "The difference express as Period objects")
@@ -205,11 +220,11 @@ The difference is expressed as an `array`. The returned array:
 ~~~php
 $orig = interval_after('2013-01-01', '1 MONTH');
 $alt  = interval_after('2013-01-15', '7 DAYS');
-$diff = $period->diff($alt);
+list($first, $last) = $orig->diff($alt);
 // $diff is an array containing 2 Period objects
-// the first object is equal to new Period('2013-01-01', '2013-01-15');
-// the second object is equal to new Period('2013-01-23', '2013-02-01');
-$diff[0]->isBefore($diff[1]); //return true;
+$first->equals(new Period('2013-01-01', '2013-01-15')); // returns true
+$last->equals(new Period('2013-01-23', '2013-02-01'));  // returns true
+$first->isBefore($last); //return true;
 //this is always true when two Period objects are present
 ~~~
 
@@ -225,7 +240,7 @@ $diff[0]->isBefore($diff[1]); //return true;
 public function intersect(Period $period): Period
 ~~~
 
-An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap or abut, then an Exception is thrown.
+An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap, then an `Period\Exception` is thrown.
 
 <p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 

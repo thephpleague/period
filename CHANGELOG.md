@@ -11,7 +11,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::equals`
 - `Period::durationCompare`
 - `Period::durationEquals`
-- `Period::fromDatePeriod`
+- `Period::createFromDatePeriod`
 - `League\Period\datepoint`
 - `League\Period\duration`
 - `League\Period\year`

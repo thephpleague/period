@@ -632,7 +632,7 @@ class PeriodTest extends TestCase
             new DateInterval('P1D'),
             new DateTime('2016-05-20T00:00:00Z')
         );
-        $period = Period::fromDatePeriod($datePeriod);
+        $period = Period::createFromDatePeriod($datePeriod);
         self::assertEquals($datePeriod->getStartDate(), $period->getStartDate());
         self::assertEquals($datePeriod->getEndDate(), $period->getEndDate());
     }
@@ -640,7 +640,7 @@ class PeriodTest extends TestCase
     public function testCreateFromDatePeriodThrowsException()
     {
         self::expectException(Exception::class);
-        Period::fromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+        Period::createFromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
     public function testConstructorThrowTypeError()

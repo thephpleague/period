@@ -91,7 +91,7 @@ $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 public Period::withDurationBeforeEnd(mixed $duration): Period
 ~~~
 
-Returns a new `Period` object by updating its duration. Only the includate starting datepoint is updated.
+Returns a new `Period` object by updating its duration. Only the included starting datepoint is updated.
 
 ### Example
 
@@ -198,7 +198,7 @@ $newPeriod->getStartDate(); //returns DateTimeImmutable('2014-02-01');
 $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 ~~~
 
-*If you need to shrink the time range you can simply use a __inverted__ `DateInterval` object*
+<p class="message-info">If you need to shrink the time range you can simply use a <strong>inverted</strong> <code>DateInterval</code> object</p>
 
 ~~~php
 $period = month(2014, 3);

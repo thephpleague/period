@@ -4,7 +4,7 @@ version:
             Overview: '/4.0/'
             Installation: '/4.0/installation/'
         The API:
-            Definitions: '/4.0/definitions/'
+            Arguments: '/4.0/definitions/'
             Instantiation: '/4.0/instantiation/'
             Properties: '/4.0/properties/'
             Comparing: '/4.0/comparing/'

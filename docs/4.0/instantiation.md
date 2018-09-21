@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Period instantiation using named constructors
+title: Period instantiation using named constructors or helper functions
 ---
 
 # Instantiation
@@ -43,7 +43,7 @@ $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'))
 ~~~php
 <?php
 
-public Period::fromDatePeriod(DatePeriod $datePeriod): Period
+public Period::createFromDatePeriod(DatePeriod $datePeriod): Period
 ~~~
 
 ### Parameters
@@ -59,10 +59,10 @@ $begin = new DateTime('2012-08-01');
 $end = new DateTime('2012-08-31');
 $interval = new DateInterval('PT1H');
 
-$period = Period::fromDatePeriod(new DatePeriod($begin, $interval, $end));
+$period = Period::createFromDatePeriod(new DatePeriod($begin, $interval, $end));
 ~~~
 
-<p class="message-warning">If the submitted `DatePeriod` instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>
+<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>
 
 
 ## Helper functions

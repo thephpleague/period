@@ -23,7 +23,7 @@ $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'))
 $period->getStartDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
 $period->getEndDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
 $duration = $period->getDateInterval(); //returns a DateInterval object
-$altduration = $period->getTimestampInterval(); //returns the interval as expressed in seconds
+$altduration = $period->getTimestampInterval(); //returns the duration in seconds
 ~~~
 
 ## Iteration over a Period
@@ -50,8 +50,9 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 #### Examples
 
 ~~~php
-$period = new Period('2012-01-01', '2013-01-01');
-foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
+use function League\Period\year;
+
+foreach (year(2012)->getDatePeriod('1 MONTH') as $datetime) {
     echo $datetime->format('F, Y');
 }
 //will iterate 12 times
@@ -60,9 +61,9 @@ foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
 Using the `$option` parameter
 
 ~~~php
-$period = new Period('2012-01-01', '2013-01-01');
-$iterator = $period->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
-foreach ($iterator as $datetime) {
+$interval = year('2012-06-05');
+$datePeriod = $interval->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+foreach ($datePeriod as $datetime) {
     echo $datetime->format('F, Y');
 }
 //will iterate 11 times
@@ -88,10 +89,8 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
-$period = year(2012);
-$period_list = $period->split('1 MONTH');
-foreach ($period_list as $inner_periods) {
-    echo $inner_period; //returns the string representation of a Period object
+foreach (year(2012)->split('1 MONTH') as $inner_periods) {
+    echo $inner_period; //returns Period object whose interval is 1 MONTH
 }
 //will iterate 12 times
 ~~~
@@ -118,11 +117,10 @@ This method splits a given `Period` object in smaller `Period` objects according
 ~~~php
 date_default_timezone_set('Africa/Kinshasa');
 
-$period = year(2012);
-$period_list = iterator_to_array($period->splitBackwards('5 MONTH'));
-echo $period_list[0]; // 2012-07-31T23:00:00Z/2012-12-31T23:00:00Z (5 months interval)
-echo $period_list[1]; // 2012-02-29T23:00:00Z/2012-07-31T23:00:00Z (5 months interval)
-echo $period_list[2]; // 2011-12-31T23:00:00Z/2012-02-29T23:00:00Z (2 months interval)
+$collection = iterator_to_array(year(2012)->splitBackwards('5 MONTH'));
+echo $collection[0]; // 2012-07-31T23:00:00Z/2012-12-31T23:00:00Z (5 months interval)
+echo $collection[1]; // 2012-02-29T23:00:00Z/2012-07-31T23:00:00Z (5 months interval)
+echo $collection[2]; // 2011-12-31T23:00:00Z/2012-02-29T23:00:00Z (2 months interval)
 ~~~
 
 ## Period representations
@@ -167,4 +165,4 @@ $res = json_decode(json_encode($period), true);
 // ]
 ~~~
 
-This format can directly be used in PHP to Javascript data conversion.
+<p class="message-info">This format was chosen to enable better compatibility with Javascript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString">Date representation</a>.</p>
