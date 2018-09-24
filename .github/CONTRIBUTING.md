@@ -22,9 +22,9 @@ We accept bug reports via issues created on [Github](https://github.com/thephple
 
 ## Pull Request
 
-We accept contributions via Pull Requests on [Github](https://github.com/thephpleague/period/pull).
+We accept contributions via Pull Requests on [Github](https://github.com/thephpleague/period/pulls).
 
-- **[PSR-2 Coding Standard](http://www.php-fig.org/psr/psr-2/)** - The easiest way to apply the conventions is to install [PHP Code Sniffer](https://packagist.org/packages/squizlabs/php_codesniffer).
+- **[PSR-2 Coding Standard](https://www.php-fig.org/psr/psr-2/)** - Your patch won't be accepted if it doesn't pass the package coding style test suite.
 
 - **Add tests!** - Your patch won't be accepted if it doesn't have tests.
 
@@ -38,12 +38,10 @@ We accept contributions via Pull Requests on [Github](https://github.com/thephpl
 
 - **Send coherent history** - Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please squash them before submitting.
 
-
-## Running Tests
+- **Run the test suite** - If you want your PR to be reviewed ASAP please consider running this command before submitting it to make sure all tests are still passing and that the package coding style is respected.
 
 ``` bash
-$ phpunit
+$ composer test
 ```
-
 
 **Happy coding**!
