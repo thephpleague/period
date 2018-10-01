@@ -189,7 +189,7 @@ final class Period implements JsonSerializable
      * <li>  0 if both Interval objects have the same duration</li>
      * </ul>
      */
-    public function durationCompare(Period $interval): int
+    public function durationCompare(self $interval): int
     {
         return $this->endDate <=> $this->startDate->add($interval->getDateInterval());
     }
@@ -197,7 +197,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the current instance duration is equal to the submitted one.
      */
-    public function durationEquals(Period $interval): bool
+    public function durationEquals(self $interval): bool
     {
         return 0 === $this->durationCompare($interval);
     }
@@ -205,7 +205,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the current instance duration is greater than the submitted one.
      */
-    public function durationGreaterThan(Period $interval): bool
+    public function durationGreaterThan(self $interval): bool
     {
         return 1 === $this->durationCompare($interval);
     }
@@ -213,7 +213,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the current instance duration is less than the submitted one.
      */
-    public function durationLessThan(Period $interval): bool
+    public function durationLessThan(self $interval): bool
     {
         return -1 === $this->durationCompare($interval);
     }
@@ -224,7 +224,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      * [--------------------)
      */
-    public function equals(Period $interval): bool
+    public function equals(self $interval): bool
     {
         return $this->startDate == $interval->startDate
             && $this->endDate == $interval->endDate;
@@ -239,7 +239,7 @@ final class Period implements JsonSerializable
      *                      [--------------------)
      * [--------------------)
      */
-    public function abuts(Period $interval): bool
+    public function abuts(self $interval): bool
     {
         return $this->startDate == $interval->endDate
             || $this->endDate == $interval->startDate;
@@ -251,7 +251,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *          [--------------------)
      */
-    public function overlaps(Period $interval): bool
+    public function overlaps(self $interval): bool
     {
         return $this->startDate < $interval->endDate
             && $this->endDate > $interval->startDate;
@@ -308,7 +308,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *     [----------)
      */
-    private function containsPeriod(Period $interval): bool
+    private function containsPeriod(self $interval): bool
     {
         return $this->containsDatePoint($interval->startDate)
             && ($interval->endDate >= $this->startDate && $interval->endDate <= $this->endDate);
@@ -396,7 +396,7 @@ final class Period implements JsonSerializable
      *
      * @throws Exception If both objects do not overlaps
      */
-    public function intersect(Period $interval): self
+    public function intersect(self $interval): self
     {
         if (!$this->overlaps($interval)) {
             throw new Exception(sprintf('Both %s objects should overlaps', Period::class));
@@ -428,7 +428,7 @@ final class Period implements JsonSerializable
      *
      * @throws Exception if both objects do not overlaps
      */
-    public function diff(Period $interval): array
+    public function diff(self $interval): array
     {
         if ($interval->equals($this)) {
             return [null, null];
@@ -461,7 +461,7 @@ final class Period implements JsonSerializable
      *
      * @throws Exception If both objects overlaps
      */
-    public function gap(Period $interval): self
+    public function gap(self $interval): self
     {
         if ($this->overlaps($interval)) {
             throw new Exception(sprintf('Both %s objects should not overlaps', Period::class));
@@ -597,7 +597,7 @@ final class Period implements JsonSerializable
     /**
      * Returns the difference between two instances expressed in seconds.
      */
-    public function timestampIntervalDiff(Period $interval): float
+    public function timestampIntervalDiff(self $interval): float
     {
         return $this->getTimestampInterval() - $interval->getTimestampInterval();
     }
@@ -605,7 +605,7 @@ final class Period implements JsonSerializable
     /**
      * Returns the difference between two instances expressed in DateInterval.
      */
-    public function dateIntervalDiff(Period $interval): DateInterval
+    public function dateIntervalDiff(self $interval): DateInterval
     {
         return $this->endDate->diff($this->startDate->add($interval->getDateInterval()));
     }
@@ -616,7 +616,7 @@ final class Period implements JsonSerializable
      *
      * @param Period ...$intervals
      */
-    public function merge(Period $interval, Period ...$intervals): self
+    public function merge(self $interval, self ...$intervals): self
     {
         array_unshift($intervals, $interval);
         $carry = $this;
