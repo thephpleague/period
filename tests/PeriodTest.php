@@ -23,6 +23,7 @@ use League\Period\Exception;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
 use TypeError;
+use function League\Period\instant;
 use function League\Period\interval_after;
 use function League\Period\month;
 
@@ -623,6 +624,13 @@ class PeriodTest extends TestCase
 
         self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));
         self::assertEquals($period->getEndDate(), new DateTimeImmutable($res->endDate));
+    }
+
+    public function testFormat()
+    {
+        date_default_timezone_set('Africa/Nairobi');
+        self::assertSame('[2015-04, 2015-05)', month(2015, 4)->format('Y-m'));
+        self::assertSame('[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)', instant('2015-04-01')->format('Y-m-d e'));
     }
 
     public function testCreateFromDatePeriod()

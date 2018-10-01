@@ -71,9 +71,9 @@ final class Period implements JsonSerializable
     /**
      * @inheritdoc
      */
-    public static function __set_state(array $period)
+    public static function __set_state(array $interval)
     {
-        return new self($period['startDate'], $period['endDate']);
+        return new self($interval['startDate'], $interval['endDate']);
     }
 
     /**
@@ -154,9 +154,9 @@ final class Period implements JsonSerializable
      */
     public function __toString()
     {
-        $period = $this->jsonSerialize();
+        $interval = $this->jsonSerialize();
 
-        return $period['startDate'].'/'.$period['endDate'];
+        return $interval['startDate'].'/'.$interval['endDate'];
     }
 
     /**
@@ -177,6 +177,20 @@ final class Period implements JsonSerializable
             'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
             'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
         ];
+    }
+
+    /**
+     * Returns the mathematical represeation of an instance as a right open interval.
+     *
+     * @see https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals
+     * @see https://php.net/manual/en/function.date.php for supported format string
+     * @see https://www.postgresql.org/docs/9.3/static/rangetypes.html
+     *
+     * @param string $format the format of the outputted date string
+     */
+    public function format(string $format): string
+    {
+        return sprintf('[%s, %s)', $this->startDate->format($format), $this->endDate->format($format));
     }
 
     /**
@@ -266,7 +280,7 @@ final class Period implements JsonSerializable
      */
     public function isAfter($index): bool
     {
-        if ($index instanceof Period) {
+        if ($index instanceof self) {
             return $this->startDate >= $index->endDate;
         }
 
@@ -282,7 +296,7 @@ final class Period implements JsonSerializable
      */
     public function isBefore($index): bool
     {
-        if ($index instanceof Period) {
+        if ($index instanceof self) {
             return $this->endDate <= $index->startDate;
         }
 
@@ -295,7 +309,7 @@ final class Period implements JsonSerializable
      */
     public function contains($index): bool
     {
-        if ($index instanceof Period) {
+        if ($index instanceof self) {
             return $this->containsPeriod($index);
         }
 
@@ -463,7 +477,7 @@ final class Period implements JsonSerializable
     public function gap(self $interval): self
     {
         if ($this->overlaps($interval)) {
-            throw new Exception(sprintf('Both %s objects should not overlaps', Period::class));
+            throw new Exception(sprintf('Both %s objects should not overlaps', self::class));
         }
 
         if ($interval->startDate > $this->startDate) {
@@ -563,12 +577,12 @@ final class Period implements JsonSerializable
     public function move($duration): self
     {
         $duration = duration($duration);
-        $period = new self($this->startDate->add($duration), $this->endDate->add($duration));
-        if ($period->equals($this)) {
+        $interval = new self($this->startDate->add($duration), $this->endDate->add($duration));
+        if ($interval->equals($this)) {
             return $this;
         }
 
-        return $period;
+        return $interval;
     }
 
     /**
@@ -585,12 +599,12 @@ final class Period implements JsonSerializable
     public function expand($duration): self
     {
         $duration = duration($duration);
-        $period = new self($this->startDate->sub($duration), $this->endDate->add($duration));
-        if ($period->equals($this)) {
+        $interval = new self($this->startDate->sub($duration), $this->endDate->add($duration));
+        if ($interval->equals($this)) {
             return $this;
         }
 
-        return $period;
+        return $interval;
     }
 
     /**

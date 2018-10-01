@@ -166,3 +166,21 @@ $res = json_decode(json_encode($period), true);
 ~~~
 
 <p class="message-info">This format was chosen to enable better compatibility with Javascript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString">Date representation</a>.</p>
+
+### Mathematical representation
+
+~~~php
+<?php
+
+public Period::format(string $format): string
+~~~
+
+You can use the `format` method to represent a `Period` object in its mathematical representation as a [right open interval](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as show below. the `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
+
+~~~php
+
+$interval = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
+echo $interval->format('Y-m-d'); // [2014-05-01, 2014-05-08)
+~~~
+
+This representation can be used, for instance, in a PostreSQL query against a [DateRange field](https://www.postgresql.org/docs/9.3/static/rangetypes.html).

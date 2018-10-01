@@ -7,11 +7,12 @@ All Notable changes to `Period` will be documented in this file
 ### Added
 
 - `Exception` class
-- `Period::expand`
-- `Period::equals`
+- `Period::createFromDatePeriod`
 - `Period::durationCompare`
 - `Period::durationEquals`
-- `Period::createFromDatePeriod`
+- `Period::format`
+- `Period::expand`
+- `Period::equals`
 - `League\Period\datepoint`
 - `League\Period\duration`
 - `League\Period\year`
@@ -34,6 +35,7 @@ All Notable changes to `Period` will be documented in this file
 - The `Period` class is now final
 - `Period::JsonSerialize` now returns datepoint in JavaScript compatible datetime notation
 - `Period::diff` always returns an array containing two values.
+- A Period with a duration equals to `DateInterval('PT0S')` contains no value not even its starting datepoint.
 
 ### Deprecated
 
