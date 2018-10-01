@@ -238,10 +238,10 @@ class PeriodTest extends TestCase
                 new Period(new DateTimeImmutable('2015-12-01'), new DateTimeImmutable('2016-01-01')),
                 true,
             ],
-            'testContainsReturnsTrueWithAZeroDurationObject' => [
+            'testContainsReturnsFalseWithAZeroDurationObject' => [
                 new Period(new DateTimeImmutable('2012-03-12'), new DateTimeImmutable('2012-03-12')),
                 new DateTime('2012-03-12'),
-                true,
+                false,
             ],
         ];
     }

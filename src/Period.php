@@ -321,8 +321,7 @@ final class Period implements JsonSerializable
      */
     private function containsDatePoint(DateTimeInterface $datepoint): bool
     {
-        return ($datepoint >= $this->startDate && $datepoint < $this->endDate)
-            || ($datepoint == $this->startDate && $datepoint == $this->endDate);
+        return $datepoint >= $this->startDate && $datepoint < $this->endDate;
     }
 
     /**
