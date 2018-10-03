@@ -1,20 +1,17 @@
-$(function() {
-    $('.versions').change(function (e) {
-        location.href = $(this).find('option:selected').data('url');
-    });
-});
+(() => {
+  let versions = document.querySelector('.versions');
+  versions.addEventListener(
+    'change',
+    () => location.href = versions.options[versions.options.selectedIndex].dataset.url
+  , false);
 
-(function (w) {
-  var d = w.document,
-      headerList = d.querySelector('main').querySelectorAll("h2[id]"),
-      uri = location.href.split('#', 2).pop();
-
-  for (var i = 0, header, link; header = headerList[i]; ++i) {
-    link = d.createElement("a");
+  let uri = location.href.split('#', 2).pop();
+  document.querySelector('main').querySelectorAll("h2[id]").forEach((header) => {
+    let link = document.createElement("a");
     link.className = "header-permalink";
     link.title = "Permalink";
-    link.href = uri + "#" + header.id;
+    link.href = uri + '#' + header.id;
     link.innerHTML = "&#182;";
     header.appendChild(link);
-  }
-})(window);
+  });
+})();
