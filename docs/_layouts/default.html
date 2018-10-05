@@ -4,21 +4,39 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if site.data.project.description %}
+        <meta name="description" content="{{ site.data.project.description }}">
+    {% endif %}
+
     {% assign version = page.url | remove_first: "/" | split: "/" | first %}
+
+    {% assign upgrading = false %}
     {% if version == '' or version == 'upgrading' %}
         {% assign version = site.data.project.releases.current.version %}
+        {% assign upgrading = true %}
     {% endif %}
+
     {% capture version_home %}/{{ version }}/{% endcapture %}
+
     {% if page.url == '/'  or page.url == version_home %}
-    <title>{{ site.data.project.title }} - {{ site.data.project.tagline }}</title>
+        <title>{{ site.data.project.title }} - {{ site.data.project.tagline }}</title>
     {% else %}
-    <title>{{ page.title }} - {{ site.data.project.title }}</title>
+        <title>{{ page.title }} - {{ site.data.project.title }}</title>
     {% endif %}
-    <meta name="description" content="{{ site.data.project.description }}">
-    <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
-    <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
+
+    {% if site.data.images.favicon %}
+        <link rel="icon" type="image/x-icon" href="{{ site.data.images.favicon }}" />
+    {% else %}
+        <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
+    {% endif %}
+
+    {% if site.data.images.apple_touch %}
+        <link rel="apple-touch-icon-precomposed" href="{{ site.data.images.apple_touch }}">
+    {% else %}
+        <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
+    {% endif %}
     <link rel="stylesheet" href="//theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="/custom.css?12">
+    <link rel="stylesheet" href="/custom.css?5">
 {% if site.data.project.google_analytics_tracking_id %}
     <script async src="https://www.googletagmanager.com/gtag/js?id={{  site.data.project.google_analytics_tracking_id }}"></script>
     <script>
@@ -30,51 +48,69 @@
 {% endif %}
 </head>
 <body>
-
 <header>
-    <a class="logo" href="/">
-        <span class="name">{{ site.data.project.title }}</span>
-        <span class="tagline">{{ site.data.project.tagline }}</span>
-    </a>
+    <div class="header-content">
+        <a class="logo" href="/">
+            <span class="name"><em>League\</em>{{ site.data.project.title }}</span>
+        </a>
+
+        <div class="tool">
+            <label><span>Version:</span>
+            <select class="versions">
+                {% if upgrading == true %}<option>choose</option>{% endif %}
+                {% for v in site.data.menu.version %}
+                    <option data-url="/{{ v[0] }}/" {% if version == v[0] and upgrading == false %}selected="selected"{% endif %}>{{ v[0] }}</option>
+                {% endfor %}
+            </select>
+            </label>
+        </div>
+    </div>
 </header>
 
 <input type="checkbox" id="menu">
 <label for="menu" onclick>
-    <div class="closed">&#9776; Menu</div>
-    <div class="open">&#9776; Hide Menu</div>
+    <div class="closed">&#9776;</div>
+    <div class="open">&#10799;</div>
 </label>
 
 <main>
     <menu>
-        <div class="tool">
-        <select class="versions">
-            {% for v in site.data.menu.version %}
-                <option data-url="/{{ v[0] }}/" {% if version == v[0] %}selected="selected"{% endif %}>Version: {{ v[0] }}</option>
-            {% endfor %}
-        </select>
+        <div class="versions-small">
+        <h2>Versions</h2>
+            <ul>
+        {% for v in site.data.menu.version %}
+                <li {% if version == v[0] and upgrading == false %}class="selected"{% endif %}>
+                    <a href="/{{ v[0] }}/">{{ v[0] }}</a>
+                </li>
+        {% endfor %}
+            </ul>
         </div>
 
-        {% for section in site.data.menu.version[version] %}
-            <h2>{{ section[0] }}</h2>
-            <ul>
-                {% for link in section[1] %}
-                    <li {% if page.url == link[1] %}class="selected"{% endif %}>
-                        <a href="{{ link[1] }}">{{ link[0] }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
-
-        {% for section in site.data.menu.upgrading %}
-            <h2>{{ section[0] }}</h2>
-            <ul>
-                {% for link in section[1] %}
-                    <li {% if page.url == link[1] %}class="selected"{% endif %}>
-                        <a href="{{ link[1] }}">{{ link[0] }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
+        {% if upgrading == false %}
+            {% for section in site.data.menu.version[version] %}
+            <div class="menu-section">
+                <h2>{{ section[0] }}</h2>
+                <ul>
+                    {% for link in section[1] %}
+                        <li {% if page.url == link[1] %}class="selected"{% endif %}>
+                            <a href="{{ link[1] }}">{{ link[0] }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for section in site.data.menu.upgrading %}
+                <h2>{{ section[0] }}</h2>
+                <ul>
+                    {% for link in section[1] %}
+                        <li {% if page.url == link[1] %}class="selected"{% endif %}>
+                            <a href="{{ link[1] }}">{{ link[0] }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% endif %}
     </menu>
     <article>
     {% if version == site.data.project.releases.next.version %}
@@ -95,9 +131,8 @@
 
 <footer>
     <span>&copy; Copyright <a href="//thephpleague.com">The League of Extraordinary Packages</a>.</span>
-    <span>Site design by <a href="//reinink.ca">Jonathan Reinink</a>.</span>
+    <span>Site design by <a href="//reinink.ca">Jonathan Reinink</a> and <a href="//nyamsprod.com">Ignace Nyamagana Butera</a>.</span>
 </footer>
-
-<script src="/custom.js?4"></script>
+<script src="/custom.js?2"></script>
 </body>
 </html>

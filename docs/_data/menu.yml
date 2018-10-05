@@ -3,6 +3,8 @@ version:
         Getting Started:
             Overview: '/4.0/'
             Installation: '/4.0/installation/'
+            Upgrading from 3.x: '/4.0/upgrading/'
+            Release Notes: '/upgrading/'
         The API:
             Arguments: '/4.0/definitions/'
             Instantiation: '/4.0/instantiation/'
@@ -13,6 +15,7 @@ version:
         Getting Started:
             Overview: '/3.0/'
             Installation: '/3.0/installation/'
+            Release Notes: '/upgrading/'
         The API:
             Definitions: '/3.0/definitions/'
             Instantiation: '/3.0/api/instantiation/'
@@ -21,6 +24,5 @@ version:
             Modifying: '/3.0/api/modifying/'
 upgrading:
     'Upgrading Guide':
-        Introduction: '/upgrading/'
-        Changelog: '/upgrading/changelog/'
-        3.x to 4.x: '/upgrading/4.0/'
+        Release Notes: '/upgrading/'
+        From 3.x to 4.x: '/4.0/upgrading/'

@@ -3,8 +3,6 @@ layout: default
 title: Upgrading from 3.x to 4.x
 ---
 
-<p class="message-notice">This is the documentation for the upcoming <code>version 4.0</code>. This is a work in progress.</p>
-
 # Upgrading from 3.x to 4.x
 
 `4.0` is a new major version that comes with backward compatibility breaks.
