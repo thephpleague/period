@@ -51,14 +51,14 @@ header .logo sup {
 label[for=menu] {
     position:fixed;
     z-index: 2;
-    top:5px;
-    right:5px;
+    top:20px;
+    right:0;
     display:inline-block;
     box-sizing: border-box;
     background:transparent;
     color:#1672ce;
     width:50px;
-    font-size:44px;
+    font-size:30px;
     line-height: 1;
     padding:0;
     margin:0;
@@ -66,7 +66,7 @@ label[for=menu] {
 
 label[for=menu]:hover {
     background:transparent;
-    color:#0a3159;
+    color:#1672ce;
 }
 
 main {
