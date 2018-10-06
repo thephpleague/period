@@ -13,6 +13,9 @@ blockquote {
 }
 
 header {
+    position:fixed;
+    height:4.5em;
+    z-index: 1;
     border-bottom:1px solid #cfe4f9;
     max-width: none;
     width: 100%;
@@ -46,18 +49,19 @@ header .logo sup {
 }
 
 label[for=menu] {
-    position:absolute;
+    position:fixed;
+    z-index: 2;
     top:5px;
     right:5px;
-    border-radius: .3em;
     display:inline-block;
     box-sizing: border-box;
     background:transparent;
     color:#1672ce;
     width:50px;
     font-size:44px;
-    padding:.2em;
-    margin:0 auto;
+    line-height: 1;
+    padding:0;
+    margin:0;
 }
 
 label[for=menu]:hover {
@@ -66,6 +70,7 @@ label[for=menu]:hover {
 }
 
 main {
+    padding-top:4em;
     background:none;
 }
 
@@ -165,10 +170,7 @@ main menu ul li.selected a {
 
 @media screen and (min-width: 550px) {
     header {
-        position:fixed;
-        height:4.5em;
         background:#fff;
-        z-index:1;
     }
 
     header .header-content {
@@ -204,9 +206,12 @@ main menu ul li.selected a {
         text-transform: uppercase;
     }
 
+    label[for=menu] {
+        display:none;
+    }
+    
     main {
         background: none;
-        padding-top:4em;
     }
 
     main menu {
