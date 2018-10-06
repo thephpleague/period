@@ -1,11 +1,10 @@
 (() => {
-  const uri = new URL(location.href);
 
-  document.querySelector('.versions').addEventListener('change', function() {
-    uri.hash = '';
-    uri.pathname = this.options[this.options.selectedIndex].dataset.url;
-    location.href = uri.toString();
+  document.querySelector('.tool nav h2').addEventListener('click', function () {
+    this.parentNode.querySelector('ul').classList.toggle('show-nav');
   }, false);
+
+  const uri = new URL(location.href);
 
   document.querySelectorAll("main h2[id]").forEach((header) => {
     uri.hash = header.id;
