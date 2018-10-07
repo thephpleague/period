@@ -1,10 +1,10 @@
 (() => {
 
-  document.querySelector('.tool nav h2').addEventListener('click', function () {
-    this.parentNode.querySelector('ul').classList.toggle('show-nav');
-  }, false);
-
   const uri = new URL(location.href);
+
+  document.querySelector('header nav h2').addEventListener('click', function () {
+    this.parentNode.querySelector('ul').classList.toggle('show');
+  }, false);
 
   document.querySelectorAll("main h2[id]").forEach((header) => {
     uri.hash = header.id;
