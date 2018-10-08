@@ -24,13 +24,12 @@ releases:
 author:
     name: 'Ignace Nyamagana Butera'
     twitter_account: 'nyamsprod'
-# Homepage specific
 highlights:
-  description: "`Period` is PHP's Time Range class. It is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges."
-  features:
-    - Treats Time Range as immutable value objects
-    - Exposes many named constructors to ease time range creation
-    - Covers all basic manipulations related to time range
-    - Framework-agnostic
+    description: "<code>Period</code> is PHP's Time Range class. It is based on <a href=\"http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/\">Resolving Feature Envy in the Domain</a> by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges."
+    features:
+        - Treats Time Range as immutable value objects
+        - Exposes many named constructors to ease time range creation
+        - Covers all basic manipulations related to time range
+        - Framework-agnostic
 composer: '$ composer require league/period'
 support: 'Once a new major version is released, the previous stable release remains supported for six more months through patches and security fixes.'

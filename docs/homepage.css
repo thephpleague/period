@@ -158,6 +158,10 @@ pre {
     color:#ff4043;
 }
 
+.highlights a {
+    color:#ff4043;
+}
+
 .documentation {
     background: #F2F7FC;
     border-bottom:1px solid #CFE4F9;
