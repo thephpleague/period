@@ -24,6 +24,12 @@ header {
     background:#fff;
 }
 
+header .header-content:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 header nav {
     display:none;
     font-family: "Museo Sans 500";
@@ -89,6 +95,7 @@ header nav li:last-of-type a {
 }
 
 header .logo {
+    float: left;
     text-align:left;
 }
 
@@ -96,9 +103,20 @@ header .logo .name {
     font-size:38px;
 }
 
-header .logo em {
-    color:#777;
-    font-style:normal;
+header .search {
+    float:left;
+}
+
+#doc-search {
+    font-family: "Museo Sans 500";
+    font-weight: normal;
+    font-size: 16px;
+    width:40%;
+    border:1px solid #e8e8e8;
+    background-color:#f4f4f4;
+    padding:.5em 1em;
+    margin-left:.3em;
+    border-radius: .3em;
 }
 
 label[for=menu] {
@@ -227,6 +245,10 @@ main menu ul li.selected a:hover {
         padding: 20px 0 25px 10px;
     }
 
+    #doc-search {
+        width:50%;
+    }
+
     menu {
         text-align: center;
     }
@@ -253,17 +275,18 @@ main menu ul li.selected a:hover {
         background:#fff;
     }
 
+    #doc-search {
+        display:block;
+        max-width:400px;
+        width:50%;
+    }
+
+
     header .header-content {
         box-sizing: border-box;
         max-width:1192px;
         margin:0 auto;
         padding:1em;
-    }
-
-    header .header-content:after {
-        content: "";
-        display: table;
-        clear: both;
     }
 
     header .logo {
