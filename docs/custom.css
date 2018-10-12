@@ -188,6 +188,10 @@ main article div>code {
     border: solid #dcdddd 1px;
 }
 
+main article p code {
+    background:#fff;
+}
+
 footer {
     border-top:1px solid #cfe4f9;
     background:#fff;
