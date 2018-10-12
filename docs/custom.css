@@ -248,6 +248,16 @@ main menu ul li.selected a:hover {
     text-decoration: none;
 }
 
+main article table {
+    background: #fff;
+    box-shadow:0 6px 6px 0 rgba(80, 88, 94, .24);
+}
+
+main article table th {
+    color:#fff;
+    background: #1672ce;
+}
+
 @media screen and (max-width: 400px) {
     header .title {
         display: none;

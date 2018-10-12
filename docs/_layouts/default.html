@@ -21,7 +21,7 @@
     <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
     <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
     <link rel="stylesheet" href="//theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="/custom.css?13">
+    <link rel="stylesheet" href="/custom.css?15">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id={{  site.data.project.google_analytics_tracking_id }}"></script>
     <script>
@@ -121,7 +121,7 @@
     apiKey: '0b444a337a024ecded8e2da9367775fa',
     indexName: 'period_thephpleague',
     inputSelector: '#doc-search',
-    algoliaOptions: { 'facetFilters': ["version:4.0"] },
+    algoliaOptions: { 'facetFilters': ["version:{{ version }}"] },
     debug: false // Set debug to true if you want to inspect the dropdown
 });
 </script>

@@ -38,18 +38,18 @@ The following methods were already marked as deprecated is the `3.x` line. They 
 
 ### Named constructors
 
-To reduce code and allow more flexibility all named constructors have been removed from the `Period` class.
+To reduce code and allow more flexibility all named constructors have been removed from the `Period` class. They are replaced by functions defined in the same namespace as the `Period` class.
 
 | previous named constructors           |  new functions                  |
 | ------------------------------------- | ------------------------------- |
-| `Period::createFromYear`              | `League\Period\year`            |
-| `Period::createFromMonth`             | `League\Period\month`           |
-| `Period::createFromWeek`              | `League\Period\iso_week`        |
-| `Period::createFromDay`               | `League\Period\day`             |
-| `Period::createFromSemester`          | `League\Period\semester`        |
-| `Period::createFromQuarter`           | `League\Period\quarter`         |
-| `Period::createFromDuration`          | `League\Period\interval_after`  |
-| `Period::createFromDurationBeforeEnd` | `League\Period\interval_before` |
+| `Period::createFromYear`              | `year`            |
+| `Period::createFromMonth`             | `month`           |
+| `Period::createFromWeek`              | `iso_week`        |
+| `Period::createFromDay`               | `day`             |
+| `Period::createFromSemester`          | `semester`        |
+| `Period::createFromQuarter`           | `quarter`         |
+| `Period::createFromDuration`          | `interval_after`  |
+| `Period::createFromDurationBeforeEnd` | `interval_before` |
 
 The functions take the same arguments in the same order.
 
