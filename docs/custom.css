@@ -30,13 +30,47 @@ header .header-content:after {
     clear: both;
 }
 
-header nav {
+header .title {
+    float: left;
+    text-align:left;
+    font-family: "Museo 100";
+    font-weight: bold;
+    margin:0;
+    padding:0;
+    width:96px;
+}
+
+header .title a {
+    color:#ff4143;
+    text-decoration: none;
+}
+
+header .search {
+    float:left;
+    text-align:right;
+    width:calc(100% - 175px);
+    padding-right:.3em;
+}
+
+#doc-search {
+    font-family: "Museo Sans 500";
+    font-weight: normal;
+    font-size: 16px;
+    border:1px solid #e8e8e8;
+    background-color:#f4f4f4;
+    padding:.5em 1em;
+    margin-left:.3em;
+    border-radius: .3em;
+}
+
+header .versions {
+    float:left;
     display:none;
     font-family: "Museo Sans 500";
     font-weight: normal;
 }
 
-header nav h2 {
+header .versions h2 {
     font-family: "Museo Sans 500";
     font-weight: normal;
     font-size: 16px;
@@ -51,26 +85,25 @@ header nav h2 {
     cursor: pointer;
 }
 
-header nav ul {
+header .versions ul {
     display:none;
-    z-index: 5;
     margin:0;
     padding:0;
     list-style:none;
     width: 75px;
 }
 
-header nav .show {
+header .versions .show {
     display:block;
 }
 
-header nav li {
+header .versions li {
     margin:0;
     padding:0;
     text-align: center;
 }
 
-header nav a {
+header .versions a {
     display:block;
     margin:0;
     padding:.5em .3em;
@@ -81,42 +114,17 @@ header nav a {
     border-width:0 1px 1px;
 }
 
-header nav a:hover {
+header .versions a:hover {
     background:#f1f1f1;
 }
 
-header nav li:first-of-type a {
+header .versions li:first-of-type a {
     border-top-width: 1px;
     border-radius:.3em .3em 0 0;
 }
 
-header nav li:last-of-type a {
+header .versions li:last-of-type a {
     border-radius:0 0 .3em .3em;
-}
-
-header .logo {
-    float: left;
-    text-align:left;
-}
-
-header .logo .name {
-    font-size:38px;
-}
-
-header .search {
-    float:left;
-}
-
-#doc-search {
-    font-family: "Museo Sans 500";
-    font-weight: normal;
-    font-size: 16px;
-    width:40%;
-    border:1px solid #e8e8e8;
-    background-color:#f4f4f4;
-    padding:.5em 1em;
-    margin-left:.3em;
-    border-radius: .3em;
 }
 
 label[for=menu] {
@@ -240,33 +248,19 @@ main menu ul li.selected a:hover {
     text-decoration: none;
 }
 
+@media screen and (max-width: 400px) {
+    header .title {
+        display: none;
+    }
+}
+
 @media screen and (max-width: 549px) {
     header {
         padding: 20px 0 25px 10px;
     }
 
-    #doc-search {
-        width:50%;
-    }
-
     menu {
         text-align: center;
-    }
-}
-
-@media screen and (min-width: 404px) {
-    header nav {
-        display:block;
-        position:fixed;
-        z-index: 2;
-        top:20px;
-        right:50px;
-        padding:0;
-        margin:0;
-    }
-
-    main menu .versions-small {
-        display:none;
     }
 }
 
@@ -275,13 +269,6 @@ main menu ul li.selected a:hover {
         background:#fff;
     }
 
-    #doc-search {
-        display:block;
-        max-width:400px;
-        width:50%;
-    }
-
-
     header .header-content {
         box-sizing: border-box;
         max-width:1192px;
@@ -289,16 +276,8 @@ main menu ul li.selected a:hover {
         padding:1em;
     }
 
-    header .logo {
-        float:left;
-        text-align:right;
-    }
-
-    header nav {
-        position: static;
-        float:right;
-        margin:0;
-        padding:0;
+    header .versions {
+        display: block;
     }
 
     label[for=menu] {
@@ -311,6 +290,10 @@ main menu ul li.selected a:hover {
 
     main menu {
         border-right: 1px dashed #cfe4f9;
+    }
+
+    main menu .versions-small {
+        display:none;
     }
 
     main article p,

@@ -38,15 +38,15 @@ Learn more about how this all works in the [basic usage](/4.0/properties/).
 A simple example on how to get all the days from a selected month.
 
 ~~~php
-use function League\Period\interval_after;
+use function League\Period\month;
 
-$interval = interval_after('2014-10-01', '1 MONTH');
+$interval = month(2014, 10);
 foreach ($interval->getDatePeriod(new DateInterval('P1D')) as $day) {
     $day->format('Y-m-d');
 }
 ~~~
 
-To help easily instantiate your time range, the package comes bundle with [named constructors and helper functions](/4.0/instantiation/).
+To help easily instantiate your time range, the package comes bundle with [helper functions](/4.0/instantiation/).
 
 ## Comparing intervals
 
@@ -57,7 +57,7 @@ use function League\Period\interval_after;
 use function League\Period\iso_week;
 
 $interval = interval_after('2014-01-01', '1 WEEK');
-$alt_interval = iso_week(2014, 3);
+$alt_interval = iso_week(2014, 1);
 $interval->durationEquals($alt_interval); //returns true
 $interval->equals($alt_interval);         //returns false
 ~~~

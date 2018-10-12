@@ -21,8 +21,8 @@
     <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
     <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
     <link rel="stylesheet" href="//theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="/custom.css?12">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"> 
+    <link rel="stylesheet" href="/custom.css?13">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id={{  site.data.project.google_analytics_tracking_id }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -34,13 +34,9 @@
 <body>
 <header>
     <div class="header-content">
-        <a class="logo" href="/">
-            <span class="name">{{ site.data.project.title }}</span>
-        </a>
-        <div class="search">
-            <input type="search" id="doc-search" placeholder="search the docs...">
-        </div>
-        <nav>
+        <h1 class="title"><a href="/">{{ site.data.project.title }}</a></h1>
+        <div class="search"><input type="search" id="doc-search" placeholder="search the docs..."></div>
+        <nav class="versions">
             <h2>{% if upgrading == true %}Notes{% else %}v{{ version }}{% endif %} &#9662;</h2>
             <ul>
             {% for v in site.data.menu.version %}
