@@ -175,7 +175,7 @@ $res = json_decode(json_encode($period), true);
 public Period::format(string $format): string
 ~~~
 
-You can use the `format` method to represent a `Period` object in its mathematical representation as a [right open interval](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as show below. the `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
+You can use the `format` method to represent a `Period` object in its mathematical representation as a [left closed, right open interval](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as show below. the `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
 
 ~~~php
 

@@ -7,27 +7,48 @@ title: Concepts and arguments
 
 ## Concepts
 
-- **datepoint** - An interval consists of two positions in time called datepoints and the continuous portion of time between them. This library assumes that the starting datepoint is included into the interval. Conversely, the ending datepoint is excluded from the specified interval. The starting datepoint is always less than or equal to the ending datepoint. The datepoints are expressed as `DateTimeImmutable` objects.
+- **period** - A left closed right open interval which consists of two datepoints and the duration between them. This library assumes that the starting datepoint is included into the interval. Conversely, the ending datepoint is excluded from the specified interval. The starting datepoint is always less than or equal to the ending datepoint.
 
-- **duration** - The continuous portion of time between datepoints is called the duration. This duration is defined as a `DateInterval` object. The duration cannot be negative.
+- **datepoint** - A position in time expressed as a `DateTimeImmutable` object.
+
+- **duration** - The continuous portion of time between two datepoints is called the duration. This duration is defined as a `DateInterval` object. The duration cannot be negative.
 
 ## Arguments
 
-At its core the `Period` class only uses `DateTimeImmutable` and `DateInterval` objects. But because it is sometimes complicated to get your hands on such objects the package comes bundle with two simple functions that are used throughout the library to ensure typesafety.
+Since this package relies heavily on `DateTimeImmutable` and `DateInterval` objects and because it is sometimes complicated to get your hands on such objects the package comes bundled with two simple functions that are used throughout the library to ensure typesafety.
 
-### League\Period\datepoint
+### datepoint
 
-`League\Period\datepoint` converts any input into a `DateTimeImmutable` object if the input can not be converted a PHP `TypeError` is triggered.  
-The function accepts:
+`League\Period\datepoint` converts any input into a `DateTimeImmutable` object if the input can not be converted a PHP `TypeError` is triggered.
 
-- `DateTimeInterface` implementing objects
+~~~php
+<?php
+
+function League\Period\datepoint(mixed $datepoint): DateTimeImmutable;
+~~~
+
+#### parameter
+
+`$datepoint` can be:
+
+- a `DateTimeInterface` implementing object
 - a string parsable by the `DateTime` constructor.
 - an integer interpreted as a timestamp.
 
-### League\Period\duration
 
-`League\Period\duration` converts any input into a `DateInterval` object if the input can not be converted a PHP `TypeError` is triggered.  
-The function accepts:
+### duration
+
+`League\Period\duration` converts any input into a `DateInterval` object if the input can not be converted a PHP `TypeError` is triggered.
+
+~~~php
+<?php
+
+function League\Period\duration(mixed $duration): DateInterval;
+~~~
+
+#### parameter
+
+`$duration` can be:
 
 - a `League\Period\Period` object;
 - a `DateInterval` object;

@@ -17,8 +17,10 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
+use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function filter_var;
@@ -121,6 +123,24 @@ function interval_around($datepoint, $duration): Period
     $duration = duration($duration);
 
     return new Period($datepoint->sub($duration), $datepoint->add($duration));
+}
+
+/**
+ * Creates new instance from a DatePeriod.
+ *
+ * @throws Exception If the submitted DatePeriod lacks an end datepoint.
+ *                   This is possible if the DatePeriod was created using
+ *                   recurrences instead of a end datepoint.
+ *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
+ */
+function interval_from_dateperiod(DatePeriod $datePeriod): Period
+{
+    $endDate = $datePeriod->getEndDate();
+    if ($endDate instanceof DateTimeInterface) {
+        return new Period($datePeriod->getStartDate(), $endDate);
+    }
+
+    throw new Exception('The submitted DatePeriod object does not contain an end datepoint');
 }
 
 /**

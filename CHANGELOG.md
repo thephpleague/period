@@ -7,7 +7,6 @@ All Notable changes to `Period` will be documented in this file
 ### Added
 
 - `Exception` class
-- `Period::createFromDatePeriod`
 - `Period::durationCompare`
 - `Period::durationEquals`
 - `Period::format`
@@ -29,6 +28,7 @@ All Notable changes to `Period` will be documented in this file
 - `League\Period\interval_after`
 - `League\Period\interval_before`
 - `League\Period\interval_around`
+- `League\Period\interval_from_dateperiod`
 
 ### Fixed
 

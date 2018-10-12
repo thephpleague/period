@@ -15,6 +15,7 @@
 namespace LeagueTest\Period;
 
 use DateInterval;
+use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use Exception as PhpException;
@@ -29,6 +30,7 @@ use function League\Period\instant;
 use function League\Period\interval_after;
 use function League\Period\interval_around;
 use function League\Period\interval_before;
+use function League\Period\interval_from_dateperiod;
 use function League\Period\iso_week;
 use function League\Period\iso_year;
 use function League\Period\minute;
@@ -209,6 +211,24 @@ class FunctionTest extends TestCase
     {
         self::expectException(Exception::class);
         interval_around(new DateTime('2012-06-05'), '-1 DAY');
+    }
+
+    public function testIntervalFromDatePeriod()
+    {
+        $datePeriod = new DatePeriod(
+            new DateTime('2016-05-16T00:00:00Z'),
+            new DateInterval('P1D'),
+            new DateTime('2016-05-20T00:00:00Z')
+        );
+        $period = interval_from_dateperiod($datePeriod);
+        self::assertEquals($datePeriod->getStartDate(), $period->getStartDate());
+        self::assertEquals($datePeriod->getEndDate(), $period->getEndDate());
+    }
+
+    public function testIntervalFromDatePeriodThrowsException()
+    {
+        self::expectException(Exception::class);
+        interval_from_dateperiod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
     public function testISOWeek()

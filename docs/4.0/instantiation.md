@@ -7,7 +7,7 @@ title: Period instantiation using named constructors or helper functions
 
 To instantiate a `Period` object you can rely on its constructor or on several helper functions describe below.
 
-## The default constructor
+## The constructor
 
 ### Description
 
@@ -35,35 +35,6 @@ use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
-
-## Create an instance from a DatePeriod object.
-
-### Description
-
-~~~php
-<?php
-
-public Period::createFromDatePeriod(DatePeriod $datePeriod): Period
-~~~
-
-### Parameters
-
-The `$datePeriod` is a `DatePeriod` object.
-
-### Examples
-
-~~~php
-use League\Period\Period;
-
-$begin = new DateTime('2012-08-01');
-$end = new DateTime('2012-08-31');
-$interval = new DateInterval('PT1H');
-
-$period = Period::createFromDatePeriod(new DatePeriod($begin, $interval, $end));
-~~~
-
-<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>
-
 
 ## Helper functions
 
@@ -231,3 +202,29 @@ $interval_after->equals($interval_before); //returns true
 $interval_around = interval_around($date->add($half_duration), $half_duration);
 $interval_around->equals($interval_before); //returns true
 ~~~
+
+### Create a new instance from a DatePeriod object
+
+~~~php
+<?php
+
+function interval_from_dateperiod(DatePeriod $datePeriod): Period
+~~~
+
+### Parameter
+
+- `$datePeriod` is a `DatePeriod` object.
+
+### Example
+
+~~~php
+use League\Period\Period;
+
+$begin = new DateTime('2012-08-01');
+$end = new DateTime('2012-08-31');
+$interval = new DateInterval('PT1H');
+
+$period = interval_from_dateperiod(new DatePeriod($begin, $interval, $end));
+~~~
+
+<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>

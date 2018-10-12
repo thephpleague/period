@@ -51,24 +51,6 @@ final class Period implements JsonSerializable
     private $endDate;
 
     /**
-     * Creates new instance from a DatePeriod.
-     *
-     * @throws Exception If the submitted DatePeriod lacks an end datepoint.
-     *                   This is possible if the DatePeriod was created using
-     *                   recurrences instead of a end datepoint.
-     *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
-     */
-    public static function createFromDatePeriod(DatePeriod $datePeriod): self
-    {
-        $endDate = $datePeriod->getEndDate();
-        if ($endDate instanceof DateTimeInterface) {
-            return new self($datePeriod->getStartDate(), $endDate);
-        }
-
-        throw new Exception('The submitted DatePeriod object does not contain an end datepoint');
-    }
-
-    /**
      * @inheritdoc
      */
     public static function __set_state(array $interval)

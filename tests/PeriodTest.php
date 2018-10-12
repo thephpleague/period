@@ -633,24 +633,6 @@ class PeriodTest extends TestCase
         self::assertSame('[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)', instant('2015-04-01')->format('Y-m-d e'));
     }
 
-    public function testCreateFromDatePeriod()
-    {
-        $datePeriod = new DatePeriod(
-            new DateTime('2016-05-16T00:00:00Z'),
-            new DateInterval('P1D'),
-            new DateTime('2016-05-20T00:00:00Z')
-        );
-        $period = Period::createFromDatePeriod($datePeriod);
-        self::assertEquals($datePeriod->getStartDate(), $period->getStartDate());
-        self::assertEquals($datePeriod->getEndDate(), $period->getEndDate());
-    }
-
-    public function testCreateFromDatePeriodThrowsException()
-    {
-        self::expectException(Exception::class);
-        Period::createFromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
-    }
-
     public function testConstructorThrowTypeError()
     {
         self::expectException(TypeError::class);
