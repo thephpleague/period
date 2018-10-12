@@ -9,8 +9,6 @@ layout: homepage
 To help you start working with `Period` objects
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = new Period(new DateTime('2014-10-15 08:35:26'), '2014-10-15 08:53:12');
@@ -29,8 +27,6 @@ Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
 Once instantiated, you can access `Period` datepoints and durations easily:
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = Period::createFromDuration('2014-10-03 08:12:37', 3600);
@@ -46,8 +42,6 @@ echo $period;
 You can return selected datepoints inside the `Period` time range
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = Period::createFromMonth(2014, 10);
@@ -59,8 +53,6 @@ foreach ($period->getDatePeriod('1 DAY') as $datepoint) {
 or split the given time range into smaller `Period` objects
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = Period::createFromMonth(2014, 10);
@@ -74,8 +66,6 @@ foreach ($period->split('1 DAY') as $period) {
 You can compare time ranges based on their duration and/or their datepoints.
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = Period::createFromDuration('2014-01-01', '1 WEEK');
@@ -89,8 +79,6 @@ $period->sameValueAs($altPeriod); //will return false because the datepoints dif
 `Period` is an immutable value object. Any changes to the object returns a new object.
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = Period::createFromDuration('2014-01-01', '1 WEEK');
