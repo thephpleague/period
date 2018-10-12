@@ -11,11 +11,7 @@ You can compare different `Period` objects according to their datepoints or dura
 
 ### Period::isBefore
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::isBefore(mixed $index): bool
 ~~~
 
@@ -25,14 +21,11 @@ Tells whether the current `Period` object datetime continuum is entirely before 
 
 The `$index` argument can be another `Period` object or a datepoint.
 
-#### Example
+#### Examples
 
 ~~~php
-<?php
-
 use function League\Period\datepoint;
 use function League\Period\month;
-
 
 $period = month(1983, 4);
 $alt = month(1984, 4);
@@ -49,11 +42,7 @@ $period->isBefore($period->getEndDate()); //returns true
 
 ### Period::isAfter
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::isAfter(mixed $index): bool
 ~~~
 
@@ -63,11 +52,9 @@ Tells whether the current `Period` object datetime continuum is entirely after t
 
 The `$index` argument can be another `Period` object or a datepoint.
 
-#### Example
+#### Examples
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = month(1983, 4);
@@ -85,11 +72,7 @@ $period->isAfter($period->getStartDate()); //returns false
 
 ### Period::abuts
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::abuts(Period $index): bool
 ~~~
 
@@ -97,11 +80,9 @@ A `Period` abuts if it starts immediately after, or ends immediately before the 
 
 ![](/media/period-abuts.png "$period abuts $anotherPeriod")
 
-#### Example
+#### Examples
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = month(2014, 3);
@@ -112,21 +93,15 @@ $period->abuts($alt); //return true
 
 ### Period::overlaps
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::overlaps(Period $period): bool
 ~~~
 
 A `Period` overlaps another if they share some common part of their respective continuous portion of time without abutting.
 
-#### Example
+#### Examples
 
 ~~~php
-<?php
-
 $orig  = month('2014-03-15');
 $alt   = month('2014-04-15');
 $other = interval_after('2014-03-15', '3 WEEKS');
@@ -138,21 +113,15 @@ $alt->overlaps($other);  //return true
 
 ### Period::equals
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::equals(Period $period): bool
 ~~~
 
 Tells whether two `Period` objects shares the same datepoints.
 
-#### Example
+#### Examples
 
 ~~~php
-<?php
-
 $orig  = month(2014, 3);
 $alt   = month(2014, 4);
 $other = interval_after('2014-03-01', '1 MONTH');
@@ -163,11 +132,7 @@ $orig->equals($other); //return true
 
 ### Period::contains
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::contains(mixed $index): bool
 ~~~
 
@@ -178,11 +143,9 @@ public Period::contains(mixed $index): bool
 
 The `$index` argument can be another `Period` object or a datepoint.
 
-#### Example
+#### Examples
 
 ~~~php
-<?php
-
 //comparing a datetime
 $period = month(1983, 4);
 $period->contains('1983-04-15');            //returns true;
@@ -197,11 +160,7 @@ $alt->contains($period); //return false;
 
 ### Period::diff
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::diff(Period $period): array
 ~~~
 
@@ -215,7 +174,7 @@ The difference is expressed as an `array`. The returned array always contains tw
 
 ![](/media/period-diff.png "The difference express as Period objects")
 
-#### Example
+#### Examples
 
 ~~~php
 $orig = interval_after('2013-01-01', '1 MONTH');
@@ -232,11 +191,7 @@ $first->isBefore($last); //return true;
 
 ### Period::intersect
 
-#### Description
-
 ~~~php
-<?php
-
 public function intersect(Period $period): Period
 ~~~
 
@@ -246,7 +201,7 @@ An Period overlaps another if it shares some common part of the datetime continu
 
 ![](/media/period-intersect.png "$intersectPeriod represents the intersection Period between both Period object")
 
-#### Example
+#### Examples
 
 ~~~php
 $period        = interval_after('2012-01-01', '2 MONTHS');
@@ -256,11 +211,7 @@ $intersectPeriod = $period->intersect($anotherPeriod);
 
 ### Period::gap
 
-#### Description
-
 ~~~php
-<?php
-
 public function gap(Period $period): Period
 ~~~
 
@@ -270,7 +221,7 @@ A `Period` has a gap with another Period if there is a non-zero interval between
 
 ![](/media/period-gap.png "$gapPeriod represents the gap Period between both Period objects")
 
-#### Example
+#### Examples
 
 ~~~php
 $orig = interval_after('2012-01-01', '2 MONTHS');
@@ -282,11 +233,7 @@ $gapPeriod = $orig->gap($alt);
 
 ### Sorting objects
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::durationCompare(Period $period): int
 public Period::durationGreaterThan(Period $period): bool
 public Period::durationLessThan(Period $period): bool
@@ -309,8 +256,6 @@ To ease the method usage you can rely on the following proxy methods:
 #### Examples
 
 ~~~php
-<?php
-
 $orig  = interval_after('2012-01-01', '1 MONTH');
 $alt   = interval_after('2012-01-01', '1 WEEK');
 $other = interval_after('2013-01-01', '1 MONTH');
@@ -331,22 +276,16 @@ $orig->equals($other);       //return false
 
 ### Returning the duration differences
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::dateIntervalDiff(Period $period): DateInterval
 public Period::timestampIntervalDiff(Period $period): float
 ~~~
 
-Return the duration difference between two Period objects using a `DateInterval` object or expressed in seconds.
+Returns the duration difference between two Period objects using a `DateInterval` object or expressed in seconds.
 
 #### Examples
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period    = semester(2012, 1);

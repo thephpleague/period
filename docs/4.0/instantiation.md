@@ -9,15 +9,11 @@ To instantiate a `Period` object you can rely on its constructor or on several h
 
 ## The constructor
 
-### Description
-
 ~~~php
-<?php
-
 public Period::__construct(mixed $startDate, mixed $endDate)
 ~~~
 
-### Parameters
+#### Parameters
 
 Both `$startDate` and `$endDate` parameters represent the period datepoints.
 
@@ -26,11 +22,9 @@ Both `$startDate` and `$endDate` parameters represent the period datepoints.
 
 `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
 
-### Examples
+#### Examples
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
@@ -41,7 +35,6 @@ $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'))
 Apart from its constructor, to ease the class instantiation you can rely on many built in helper functions to return a new `Period` object. All helper functions are declared under the `League\Period` namespace.
 
 ~~~php
-
 use League\Period;
 use function League\Period\interval_after;
 
@@ -54,8 +47,6 @@ $alt_period->equals($period);
 ### Helper functions accepting only a datepoint
 
 ~~~php
-<?php
-
 function instant(mixed $datepoint): Period
 function second(mixed $datepoint): Period
 function minute(mixed $datepoint): Period
@@ -102,8 +93,6 @@ The time is truncated so that the duration always starts at midnight according t
 <p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 ~~~php
-<?php
-
 function day(int $year [, int $month = 1 [, int $day = 1]]): Period
 function iso_week(int $year [, int $week = 1]): Period
 function month(int $year [, int $month = 1]): Period
@@ -120,7 +109,6 @@ function iso_year(int $year): Period
 <p class="message-warning">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
 ~~~php
-<?php
 function day(mixed $datepoint): Period
 function iso_week(mixed $datepoint): Period
 function month(mixed $datepoint): Period
@@ -173,8 +161,6 @@ $alt_iy->equals($iso_year); //return true;
 ### Create a new instance from a datepoint and a duration
 
 ~~~php
-<?php
-
 function interval_after(mixed $datepoint, mixed $duration): Period
 function interval_before(mixed $datepoint, mixed $duration): Period
 function interval_around(mixed $datepoint, mixed $duration): Period
@@ -206,16 +192,14 @@ $interval_around->equals($interval_before); //returns true
 ### Create a new instance from a DatePeriod object
 
 ~~~php
-<?php
-
 function interval_from_dateperiod(DatePeriod $datePeriod): Period
 ~~~
 
-### Parameter
+#### Parameter
 
 - `$datePeriod` is a `DatePeriod` object.
 
-### Example
+#### Example
 
 ~~~php
 use League\Period\Period;

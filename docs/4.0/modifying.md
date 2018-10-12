@@ -15,11 +15,7 @@ You can manipulate a `Period` object according to their datepoints or durations.
 
 ### Period::startingOn
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::startingOn(mixed $startDate): Period
 ~~~
 
@@ -37,11 +33,7 @@ $newPeriod->getStartDate(); //returns DateTimeImmutable('2014-02-01');
 
 ### Period::endingOn
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::endingOn(mixed $endDate): Period
 ~~~
 
@@ -61,17 +53,13 @@ $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 
 ### Period::withDurationAfterStart
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::withDurationAfterStart(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object by updating its duration. Only the excluded ending datepoint is updated.
 
-### Example
+#### Example
 
 ~~~php
 $period    = month(2014, 3);
@@ -83,17 +71,13 @@ $newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 
 ### Period::withDurationBeforeEnd
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::withDurationBeforeEnd(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object by updating its duration. Only the included starting datepoint is updated.
 
-### Example
+#### Example
 
 ~~~php
 $period    = month(2014, 3);
@@ -105,17 +89,13 @@ $newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-30');
 
 ### Period::move
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::move(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object where the endpoints are moved forward or backward simultaneously by a given interval.
 
-### Example
+#### Example
 
 ~~~php
 $period = month(2014, 3);
@@ -128,17 +108,13 @@ $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 
 ### Period::moveStartDate
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::moveStartDate(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object where the starting endpoint is moved forward or backward by a given interval.
 
-### Example
+#### Example
 
 ~~~php
 $period = month(2014, 3);
@@ -151,17 +127,13 @@ $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-04-01');
 
 ### Period::moveEndDate
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::moveEndDate(mixed $duration): Period
 ~~~
 
 Returns a new `Period` object where the ending endpoint is moved forward or backward by a given interval.
 
-### Example
+#### Example
 
 ~~~php
 $period = month(2014, 3);
@@ -174,11 +146,7 @@ $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 
 ### Period::expand
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::expand(mixed $duration): Period
 ~~~
 
@@ -187,7 +155,7 @@ Returns a new `Period` object where the given interval is:
 - substracted from the starting endpoint
 - added to the ending endpoint
 
-### Example
+#### Example
 
 ~~~php
 $period = month(2014, 3);
@@ -213,11 +181,7 @@ $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-03-31');
 
 ### Period::merge
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::merge(Period ...$period): Period
 ~~~
 

@@ -10,8 +10,6 @@ title: Accessing Period object properties
 Once you have a instantiated `Period` object you can access the object datepoints and durations using the following getter methods:
 
 ~~~php
-<?php
-
 public Period::getStartDate(void): DateTimeImmutable
 public Period::getEndDate(void): DateTimeImmutable
 public Period::getDateInterval(void): DateInterval
@@ -30,11 +28,7 @@ $altduration = $period->getTimestampInterval(); //returns the duration in second
 
 ### Period::getDatePeriod
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::getDatePeriod(mixed $duration, int $option): DatePeriod
 ~~~
 
@@ -71,11 +65,7 @@ foreach ($datePeriod as $datetime) {
 
 ### Period::split
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::split(mixed $duration): Generator
 ~~~
 
@@ -97,11 +87,7 @@ foreach (year(2012)->split('1 MONTH') as $inner_periods) {
 
 ### Period::splitBackwards
 
-#### Description
-
 ~~~php
-<?php
-
 public Period::splitBackwards(mixed $duration): Generator
 ~~~
 
@@ -128,8 +114,6 @@ echo $collection[2]; // 2011-12-31T23:00:00Z/2012-02-29T23:00:00Z (2 months inte
 ### String representation
 
 ~~~php
-<?php
-
 public Period::__toString(void): string
 ~~~
 
@@ -145,8 +129,6 @@ echo $period; // '2014-04-30T23:00:00.000000Z/2014-05-07T23:00:00.000000Z'
 ### Json representation
 
 ~~~php
-<?php
-
 public Period::jsonSerialize(void): array
 ~~~
 
@@ -170,15 +152,12 @@ $res = json_decode(json_encode($period), true);
 ### Mathematical representation
 
 ~~~php
-<?php
-
 public Period::format(string $format): string
 ~~~
 
 You can use the `format` method to represent a `Period` object in its mathematical representation as a [left closed, right open interval](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as show below. the `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
 
 ~~~php
-
 $interval = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 echo $interval->format('Y-m-d'); // [2014-05-01, 2014-05-08)
 ~~~

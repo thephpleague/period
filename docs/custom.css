@@ -153,11 +153,6 @@ main {
     background:none;
 }
 
-pre {
-    background:#fff;
-    border-radius:.3em .3em 0 0;
-}
-
 /* ---------- header automatic permalink -----------*/
 
 .header-permalink {
@@ -175,6 +170,11 @@ h4:hover .header-permalink,
 h5:hover .header-permalink {
     text-decoration: none;
     color:#777;
+}
+
+h4 {
+    font-variant: small-caps;
+    font-size:1em;
 }
 
 main article div>code {
@@ -248,12 +248,15 @@ main menu ul li.selected a:hover {
     text-decoration: none;
 }
 
-main article table {
+pre,
+table {
+    border-radius: none;
+    border:1px solid #eee;
     background: #fff;
     box-shadow:0 6px 6px 0 rgba(80, 88, 94, .24);
 }
 
-main article table th {
+table th {
     color:#fff;
     background: #1672ce;
 }

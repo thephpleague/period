@@ -19,15 +19,16 @@ redirect_from: /examples/
 ## Accessing the interval properties
 
 ~~~php
-<?php
-
 use League\Period\Period;
 
-$interval = new Period(new DateTime('2014-10-03 08:12:37'), new DateTimeImmutable('2014-10-03 08:12:37'));
-$start = $interval->getStartDate(); //return DateTimeImmutable('2014-10-03 08:12:37');
-$end = $interval->getEndDate();     //return DateTimeImmutable('2014-10-03 09:12:37');
-$duration = $interval->getDateInterval();       //return a DateInterval object
-$duration2 = $interval->getTimestampInterval(); //return the same interval expressed in seconds.
+$interval = new Period(
+    new DateTime('2014-10-03 08:12:37'),
+    new DateTimeImmutable('2014-10-03 08:12:37')
+);
+$start = $interval->getStartDate(); //returns a DateTimeImmutable
+$end = $interval->getEndDate();     //returns a DateTimeImmutable
+$duration = $interval->getDateInterval();       //returns a DateInterval object
+$duration2 = $interval->getTimestampInterval(); //returns the duration in seconds
 echo $interval; //displays '2014-10-03T08:12:37Z/014-10-03T09:12:37Z'
 ~~~
 
@@ -41,18 +42,16 @@ A simple example on how to get all the days from a selected month.
 use function League\Period\month;
 
 $interval = month(2014, 10);
-foreach ($interval->getDatePeriod(new DateInterval('P1D')) as $day) {
+foreach ($interval->getDatePeriod('1 DAY') as $day) {
     $day->format('Y-m-d');
 }
 ~~~
 
-To help easily instantiate your time range, the package comes bundle with [helper functions](/4.0/instantiation/).
+To help easily instantiate your time range and manipulating it, the package comes bundle with [helper](/4.0/instantiation/) [functions](/4.0/definitions/).
 
 ## Comparing intervals
 
 ~~~php
-<?php
-
 use function League\Period\interval_after;
 use function League\Period\iso_week;
 
@@ -67,8 +66,6 @@ The class comes with other ways to [compare time ranges](/4.0/comparing/) based 
 ## Modifying interval
 
 ~~~php
-<?php
-
 use function League\Period\interval_after;
 
 $period = interval_after('2014-01-01', '1 WEEK');

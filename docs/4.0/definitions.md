@@ -15,17 +15,15 @@ title: Concepts and arguments
 
 ## Arguments
 
-Since this package relies heavily on `DateTimeImmutable` and `DateInterval` objects and because it is sometimes complicated to get your hands on such objects the package comes bundled with two simple functions that are used throughout the library to ensure typesafety.
+Since this package relies heavily on `DateTimeImmutable` and `DateInterval` objects and because it is sometimes complicated to get your hands on such objects the package comes bundled with two simple functions that are used throughout the library to ensure typesafety. These functions are defined under the `League\Period` namespace.
 
 ### datepoint
 
-`League\Period\datepoint` converts any input into a `DateTimeImmutable` object if the input can not be converted a PHP `TypeError` is triggered.
-
 ~~~php
-<?php
-
 function League\Period\datepoint(mixed $datepoint): DateTimeImmutable;
 ~~~
+
+Converts its single input into a `DateTimeImmutable` object or throws a `TypeError` otherwise.
 
 #### parameter
 
@@ -35,16 +33,13 @@ function League\Period\datepoint(mixed $datepoint): DateTimeImmutable;
 - a string parsable by the `DateTime` constructor.
 - an integer interpreted as a timestamp.
 
-
 ### duration
 
-`League\Period\duration` converts any input into a `DateInterval` object if the input can not be converted a PHP `TypeError` is triggered.
-
 ~~~php
-<?php
-
 function League\Period\duration(mixed $duration): DateInterval;
 ~~~
+
+Converts its single input into a `DateInterval` object or throws a `TypeError` otherwise.
 
 #### parameter
 
@@ -60,8 +55,6 @@ function League\Period\duration(mixed $duration): DateInterval;
 ### Examples
 
 ~~~php
-<?php
-
 use function League\Period\datepoint;
 use function League\Period\duration;
 
