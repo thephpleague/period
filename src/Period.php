@@ -614,24 +614,20 @@ final class Period implements JsonSerializable
      */
     public function merge(self $interval, self ...$intervals): self
     {
+        $reducer = static function (self $carry, self $interval): self {
+            if ($carry->startDate > $interval->startDate) {
+                $carry = $carry->startingOn($interval->startDate);
+            }
+
+            if ($carry->endDate < $interval->endDate) {
+                $carry = $carry->endingOn($interval->endDate);
+            }
+
+            return $carry;
+        };
+
         array_unshift($intervals, $interval);
 
-        return array_reduce($intervals, [$this, 'mergeOne'], $this);
-    }
-
-    /**
-     * Merge two instances.
-     */
-    private function mergeOne(self $carry, self $interval): self
-    {
-        if ($carry->startDate > $interval->startDate) {
-            $carry = $carry->startingOn($interval->startDate);
-        }
-
-        if ($carry->endDate < $interval->endDate) {
-            $carry = $carry->endingOn($interval->endDate);
-        }
-
-        return $carry;
+        return array_reduce($intervals, $reducer, $this);
     }
 }
