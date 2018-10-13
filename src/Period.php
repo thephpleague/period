@@ -22,6 +22,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
+use function array_reduce;
 use function array_unshift;
 use function sprintf;
 
@@ -162,7 +163,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the mathematical represeation of an instance as a right open interval.
+     * Returns the mathematical representation of an instance as a right open interval.
      *
      * @see https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals
      * @see https://php.net/manual/en/function.date.php for supported format string
@@ -614,8 +615,7 @@ final class Period implements JsonSerializable
     public function merge(self $interval, self ...$intervals): self
     {
         array_unshift($intervals, $interval);
-        $carry = $this;
-        foreach ($intervals as $interval) {
+        $reducer = static function (self $carry, self $interval): self {
             if ($carry->startDate > $interval->startDate) {
                 $carry = $carry->startingOn($interval->startDate);
             }
@@ -623,8 +623,10 @@ final class Period implements JsonSerializable
             if ($carry->endDate < $interval->endDate) {
                 $carry = $carry->endingOn($interval->endDate);
             }
-        }
 
-        return $carry;
+            return $carry;
+        };
+
+        return array_reduce($intervals, $reducer, $this);
     }
 }
