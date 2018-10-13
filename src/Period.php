@@ -22,9 +22,6 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
-use function array_reduce;
-use function array_unshift;
-use function sprintf;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -173,7 +170,7 @@ final class Period implements JsonSerializable
      */
     public function format(string $format): string
     {
-        return sprintf('[%s, %s)', $this->startDate->format($format), $this->endDate->format($format));
+        return '['.$this->startDate->format($format).', '.$this->endDate->format($format).')';
     }
 
     /**
@@ -395,7 +392,7 @@ final class Period implements JsonSerializable
     public function intersect(self $interval): self
     {
         if (!$this->overlaps($interval)) {
-            throw new Exception(sprintf('Both %s objects should overlaps', Period::class));
+            throw new Exception('Both '.self::class.' objects should overlaps');
         }
 
         return new self(
@@ -437,8 +434,6 @@ final class Period implements JsonSerializable
      *                [-----------)
      *          =
      * [--------------)  +  [-----)
-     *
-     * @throws Exception if both objects do not overlaps
      */
     public function diff(self $interval): array
     {
@@ -476,7 +471,7 @@ final class Period implements JsonSerializable
     public function gap(self $interval): self
     {
         if ($this->overlaps($interval)) {
-            throw new Exception(sprintf('Both %s objects should not overlaps', self::class));
+            throw new Exception('Both '.self::class.' objects must not overlaps');
         }
 
         if ($interval->startDate > $this->startDate) {
@@ -614,7 +609,9 @@ final class Period implements JsonSerializable
      */
     public function merge(self $interval, self ...$intervals): self
     {
-        $reducer = static function (self $carry, self $interval): self {
+        $intervals[] = $interval;
+        $carry = $this;
+        foreach ($intervals as $interval) {
             if ($carry->startDate > $interval->startDate) {
                 $carry = $carry->startingOn($interval->startDate);
             }
@@ -622,12 +619,8 @@ final class Period implements JsonSerializable
             if ($carry->endDate < $interval->endDate) {
                 $carry = $carry->endingOn($interval->endDate);
             }
-
-            return $carry;
-        };
-
-        array_unshift($intervals, $interval);
-
-        return array_reduce($intervals, $reducer, $this);
+        }
+        
+        return $carry;
     }
 }
