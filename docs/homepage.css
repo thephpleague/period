@@ -14,12 +14,20 @@ footer {
 }
 
 pre {
-    border-radius: none;
-    border:1px solid #eee;
+    border-width:0 0 0 4px;
     background: #fff;
-    box-shadow:0 3px 6px 0 rgba(80, 88, 94, .24);
 }
 
+main p code,
+main li code,
+main div > code {
+    font-family: Consolas,Monaco,'Andale Mono',monospace;
+    font-size: 17px;
+    line-height: 100%;
+    color:#1672ce;
+    background: #fff;
+    border:none;
+}
 /* -------- homepage css -----------------*/
 
 .homepage header {

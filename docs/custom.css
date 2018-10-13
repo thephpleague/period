@@ -177,20 +177,17 @@ h4 {
     font-size:1em;
 }
 
-main article div>code {
-    display: inline-block;
-    padding: 3px 5px;
+main article p code,
+main article li code,
+main article div > code {
     font-family: Consolas,Monaco,'Andale Mono',monospace;
     font-size: 17px;
     line-height: 100%;
-    border-radius: 2px;
-    background: #f5f6f7;
-    border: solid #dcdddd 1px;
+    color:#1672ce;
+    background: #fff;
+    border:none;
 }
 
-main article p code {
-    background:#fff;
-}
 
 footer {
     border-top:1px solid #cfe4f9;
@@ -252,9 +249,12 @@ main menu ul li.selected a:hover {
     text-decoration: none;
 }
 
-pre,
+pre {
+    border-width:0 0 0 4px;
+    background: #fff;
+}
+
 table {
-    border-radius: none;
     border:1px solid #eee;
     background: #fff;
     box-shadow:0 6px 6px 0 rgba(80, 88, 94, .24);
