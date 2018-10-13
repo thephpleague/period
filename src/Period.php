@@ -405,6 +405,22 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Returns the difference between two instances expressed in seconds.
+     */
+    public function timestampIntervalDiff(self $interval): float
+    {
+        return $this->getTimestampInterval() - $interval->getTimestampInterval();
+    }
+
+    /**
+     * Returns the difference between two instances expressed in DateInterval.
+     */
+    public function dateIntervalDiff(self $interval): DateInterval
+    {
+        return $this->endDate->diff($this->startDate->add($interval->getDateInterval()));
+    }
+
+    /**
      * Computes the difference between two overlapsing instances.
      *
      * Returns an array containing the difference expressed as Period objects
@@ -591,22 +607,6 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference between two instances expressed in seconds.
-     */
-    public function timestampIntervalDiff(self $interval): float
-    {
-        return $this->getTimestampInterval() - $interval->getTimestampInterval();
-    }
-
-    /**
-     * Returns the difference between two instances expressed in DateInterval.
-     */
-    public function dateIntervalDiff(self $interval): DateInterval
-    {
-        return $this->endDate->diff($this->startDate->add($interval->getDateInterval()));
-    }
-
-    /**
      * Merges one or more instances to return a new instance.
      * The resulting instance represents the largest duration possible.
      *
@@ -615,18 +615,23 @@ final class Period implements JsonSerializable
     public function merge(self $interval, self ...$intervals): self
     {
         array_unshift($intervals, $interval);
-        $reducer = static function (self $carry, self $interval): self {
-            if ($carry->startDate > $interval->startDate) {
-                $carry = $carry->startingOn($interval->startDate);
-            }
 
-            if ($carry->endDate < $interval->endDate) {
-                $carry = $carry->endingOn($interval->endDate);
-            }
+        return array_reduce($intervals, [$this, 'mergeOne'], $this);
+    }
 
-            return $carry;
-        };
+    /**
+     * Merge two instances.
+     */
+    private function mergeOne(self $carry, self $interval): self
+    {
+        if ($carry->startDate > $interval->startDate) {
+            $carry = $carry->startingOn($interval->startDate);
+        }
 
-        return array_reduce($intervals, $reducer, $this);
+        if ($carry->endDate < $interval->endDate) {
+            $carry = $carry->endingOn($interval->endDate);
+        }
+
+        return $carry;
     }
 }
