@@ -7,11 +7,14 @@ title: Concepts and arguments
 
 ## Concepts
 
-- **interval** - `Period` is a PHP implementation of a left closed right open datetime interval which consists of two datepoints and the duration between them. This library assumes that the starting datepoint is included into the interval. Conversely, the ending datepoint is excluded from the specified interval. The starting datepoint is always less than or equal to the ending datepoint.
+- **interval** - `Period` is a PHP implementation of a left closed right open datetime interval which consists of two datepoints and the duration between them. This means that:
+
+    - The starting datepoint is included into the interval whereas the ending datepoint is excluded from it.
+    - The starting datepoint is always less than or equal to the ending datepoint.
 
 - **datepoint** - A position in time expressed as a `DateTimeImmutable` object.
 
-- **duration** - The continuous portion of time between two datepoints is called the duration. This duration is defined as a `DateInterval` object. The duration cannot be negative.
+- **duration** - The continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
 
 ## Arguments
 
@@ -32,6 +35,8 @@ Converts its single input into a `DateTimeImmutable` object or throws a `TypeErr
 - a `DateTimeInterface` implementing object
 - a string parsable by the `DateTime` constructor.
 - an integer interpreted as a timestamp.
+
+<p class="message-notice">If no timezone information is given, the returned <code>DateTimeImmutable</code> object will use the current timezone.</p>
 
 ### duration
 

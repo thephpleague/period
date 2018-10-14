@@ -47,10 +47,10 @@ $alt_period->equals($period);
 ### Helper functions accepting only a datepoint
 
 ~~~php
-function instant(mixed $datepoint): Period
-function second(mixed $datepoint): Period
-function minute(mixed $datepoint): Period
-function hour(mixed $datepoint): Period
+function League\Period\instant(mixed $datepoint): Period
+function League\Period\second(mixed $datepoint): Period
+function League\Period\minute(mixed $datepoint): Period
+function League\Period\hour(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -60,6 +60,11 @@ function hour(mixed $datepoint): Period
 #### Example
 
 ~~~php
+use function League\Period\instant;
+use function League\Period\second;
+use function League\Period\minute;
+use function League\Period\hour;
+
 $instant = instant('2012-04-01 08:30:25.124546');
 $instant->getStartDate() === $instant->getEndDate(); //returns true
 $instant->getDateInterInterval() == new DateInterval('PT0S'); //returns true
@@ -93,13 +98,13 @@ The time is truncated so that the duration always starts at midnight according t
 <p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
 
 ~~~php
-function day(int $year [, int $month = 1 [, int $day = 1]]): Period
-function iso_week(int $year [, int $week = 1]): Period
-function month(int $year [, int $month = 1]): Period
-function quarter(int $year [, int $quarter = 1]): Period
-function semester(int $year [, int $semester = 1]): Period
-function year(int $year): Period
-function iso_year(int $year): Period
+function League\Period\day(int $year [, int $month = 1 [, int $day = 1]]): Period
+function League\Period\iso_week(int $year [, int $week = 1]): Period
+function League\Period\month(int $year [, int $month = 1]): Period
+function League\Period\quarter(int $year [, int $quarter = 1]): Period
+function League\Period\semester(int $year [, int $semester = 1]): Period
+function League\Period\year(int $year): Period
+function League\Period\iso_year(int $year): Period
 ~~~
 
 #### Using a datepoint
@@ -109,51 +114,53 @@ function iso_year(int $year): Period
 <p class="message-warning">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
 ~~~php
-function day(mixed $datepoint): Period
-function iso_week(mixed $datepoint): Period
-function month(mixed $datepoint): Period
-function quarter(mixed $datepoint): Period
-function semester(mixed $datepoint): Period
-function year(mixed $datepoint): Period
-function iso_year(mixed $datepoint): Period
+function League\Period\day(mixed $datepoint): Period
+function League\Period\iso_week(mixed $datepoint): Period
+function League\Period\month(mixed $datepoint): Period
+function League\Period\quarter(mixed $datepoint): Period
+function League\Period\semester(mixed $datepoint): Period
+function League\Period\year(mixed $datepoint): Period
+function League\Period\iso_year(mixed $datepoint): Period
 ~~~
 
 #### Examples
 
 ~~~php
-$day = day(2012, 4, 1);
-$day_string = day('2012-04-01 08:30:25');
-$alt_d = day('2012-04-01');
+use League\Period;
+
+$day = Period\day(2012, 4, 1);
+$day_string = Period\day('2012-04-01 08:30:25');
+$alt_d = Period\day('2012-04-01');
 $alt_d->equals($day); //return true;
 $day_string->equals($day); //return true;
 
-$week = iso_week(2013, 23);
-$alt_w  = iso_week('2013-06-05');
+$week = Period\iso_week(2013, 23);
+$alt_w  = Period\iso_week('2013-06-05');
 $alt_w->equals($week); //return true;
 //this period represents the 23rd week of 2013
 
-$month = month(2013, 7);
-$alt_m = month('2013-07-31');
+$month = Period\month(2013, 7);
+$alt_m = Period\month('2013-07-31');
 $alt_m->equals($month); //return true;
 //this period represents the month of July 2013
 
-$quarter = quarter(2013, 2);
-$alt_q = quarter('2013-05-15');
+$quarter = Period\quarter(2013, 2);
+$alt_q = Period\quarter('2013-05-15');
 $alt_q->equals($quarter); //return true;
 //this period represents the second quarter of 2013
 
-$semester = semester(2013, 2);
-$alt_s    = semester('2013-03-15');
+$semester = Period\semester(2013, 2);
+$alt_s    = Period\semester('2013-03-15');
 $alt_s->equals($semester); //return true;
 //this period represents the second semester of 2013
 
-$year = year(2013);
-$alt_y = year('2013-05-15');
+$year = Period\year(2013);
+$alt_y = Period\year('2013-05-15');
 $alt_y->equals($year); //return true;
 //this period represents a the year 2013 time range
 
-$iso_year = iso_year(2013);
-$alt_iy = iso_year('2013-05-15');
+$iso_year = Period\iso_year(2013);
+$alt_iy = Period\iso_year('2013-05-15');
 $alt_iy->equals($iso_year); //return true;
 //this period represents a the iso year 2013 time range
 ~~~
@@ -161,9 +168,9 @@ $alt_iy->equals($iso_year); //return true;
 ### Create a new instance from a datepoint and a duration
 
 ~~~php
-function interval_after(mixed $datepoint, mixed $duration): Period
-function interval_before(mixed $datepoint, mixed $duration): Period
-function interval_around(mixed $datepoint, mixed $duration): Period
+function League\Period\interval_after(mixed $datepoint, mixed $duration): Period
+function League\Period\interval_before(mixed $datepoint, mixed $duration): Period
+function League\Period\interval_around(mixed $datepoint, mixed $duration): Period
 ~~~
 
 - `interval_after` returns a `Period` object which starts at `$datepoint`
@@ -192,7 +199,7 @@ $interval_around->equals($interval_before); //returns true
 ### Create a new instance from a DatePeriod object
 
 ~~~php
-function interval_from_dateperiod(DatePeriod $datePeriod): Period
+function League\Period\interval_from_dateperiod(DatePeriod $datePeriod): Period
 ~~~
 
 #### Parameter
@@ -202,13 +209,13 @@ function interval_from_dateperiod(DatePeriod $datePeriod): Period
 #### Example
 
 ~~~php
-use League\Period\Period;
-
 $begin = new DateTime('2012-08-01');
 $end = new DateTime('2012-08-31');
 $interval = new DateInterval('PT1H');
 
 $period = interval_from_dateperiod(new DatePeriod($begin, $interval, $end));
+$period->getStartDate() == $begin;
+$period->getEndDate() == $end;
 ~~~
 
 <p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>
