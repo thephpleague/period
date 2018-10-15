@@ -206,8 +206,6 @@ function iso_year($int_or_datepoint): Period
  *
  * @param mixed $int_or_datepoint a year as an int or a datepoint
  * @param int   $index            a semester index from 1 to 2 included
- *
- * @throws Exception If the semester index is out of bounds
  */
 function semester($int_or_datepoint, int $index = 1): Period
 {
@@ -222,22 +220,16 @@ function semester($int_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P6M')));
     }
 
-    if (0 < $index && 2 >= $index) {
-        $startDate = datepoint($int_or_datepoint, (($index - 1) * 6) + 1, 1);
+    $startDate = datepoint($int_or_datepoint, (($index - 1) * 6) + 1, 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P6M')));
-    }
-
-    throw new Exception(sprintf('The semester `%s` is not contained within the valid range.', $index));
+    return new Period($startDate, $startDate->add(new DateInterval('P6M')));
 }
 
 /**
  * Creates new instance for a specific quarter in a given year.
  *
  * @param mixed $int_or_datepoint a year as an int or a datepoint
- * @param int   $index            quarter index from 1 to 4 included
- *
- * @throws Exception If the quarter index is out of bounds
+ * @param int   $index            quarter index
  */
 function quarter($int_or_datepoint, int $index = 1): Period
 {
@@ -252,13 +244,9 @@ function quarter($int_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P3M')));
     }
 
-    if (0 < $index && 4 >= $index) {
-        $startDate = datepoint($int_or_datepoint, (($index - 1) * 3) + 1, 1);
+    $startDate = datepoint($int_or_datepoint, (($index - 1) * 3) + 1, 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P3M')));
-    }
-
-    throw new Exception(sprintf('The quarter `%s` is not contained within the valid range.', $index));
+    return new Period($startDate, $startDate->add(new DateInterval('P3M')));
 }
 
 /**
@@ -266,8 +254,6 @@ function quarter($int_or_datepoint, int $index = 1): Period
  *
  * @param mixed $int_or_datepoint a year as an int or a datepoint
  * @param int   $index            month index from 1 to 12 included
- *
- * @throws Exception If the month index is out of bounds
  */
 function month($int_or_datepoint, int $index = 1): Period
 {
@@ -287,9 +273,7 @@ function month($int_or_datepoint, int $index = 1): Period
  * Creates new instance for a specific ISO8601 week.
  *
  * @param mixed $int_or_datepoint a year as an int or a datepoint
- * @param int   $index            index from 1 to 53 included
- *
- * @throws Exception If the week index for a given year is out of bounds
+ * @param int   $index            iso week index
  */
 function iso_week($int_or_datepoint, int $index = 1): Period
 {
@@ -300,14 +284,9 @@ function iso_week($int_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
-    $datepoint = datepoint($int_or_datepoint, 12, 28);
-    if (0 < $index && (int) $datepoint->format('W') >= $index) {
-        $startDate = $datepoint->setISODate($int_or_datepoint, $index, 1);
+    $startDate = (new DateTimeImmutable())->setTime(0, 0)->setISODate($int_or_datepoint, $index, 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P7D')));
-    }
-
-    throw new Exception('The week index is not contained within the valid range.');
+    return new Period($startDate, $startDate->add(new DateInterval('P7D')));
 }
 
 /**

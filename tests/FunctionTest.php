@@ -244,28 +244,10 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2014-01-20'), $period->getEndDate());
     }
 
-    public function testISOWeekFailedWithLowInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        iso_week(2014, 0);
-    }
-
-    public function testISOWeekFailedWithHighInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        iso_week(2014, 54);
-    }
-
     public function testISOWeekFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
         iso_week([], 1);
-    }
-
-    public function testISOWeekFailedWithInvalidMaxWeek()
-    {
-        self::expectException(Exception::class);
-        iso_week(2007, 53);
     }
 
     public function testISOWeekWithMissingWeekValue()
@@ -298,18 +280,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2014-10-01'), $period->getEndDate());
     }
 
-    public function testQuarterFailedWithHighInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        quarter(2014, 5);
-    }
-
-    public function testQuarterFailedWithLowInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        quarter(2014, 0);
-    }
-
     public function testQuarterFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
@@ -337,18 +307,6 @@ class FunctionTest extends TestCase
     public function testSemesterFailedWithMissingValue()
     {
         self::assertEquals(semester(2014), semester(2014, 1));
-    }
-
-    public function testSemesterFailedWithLowInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        semester(2014, 0);
-    }
-
-    public function testSemesterFailedWithHighInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        semester(2014, 3);
     }
 
     public function testYear()

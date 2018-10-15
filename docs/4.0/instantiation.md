@@ -68,15 +68,15 @@ $instant->getDateInterInterval() == new DateInterval('PT0S'); //returns true
 
 #### Using a list of integer arguments
 
-- `$year`;
+- `$year` must be an integer;
 - `$month` default to `1`;
 - `$day` default to `1`;
 - `$hour` default to `0`;
 - `$minute` default to `0`;
 - `$second` default to `0`;
 - `$week` default to `1`;
-- `$quarter` default to `1` can not exceed `4` otherwise an `Exception` is thrown;
-- `$semester` default to `1` can not exceed `2` otherwise an `Exception` is thrown;
+- `$quarter` default to `1`;
+- `$semester` default to `1`;
 
 The time is truncated so that the duration always starts at midnight according to the date timezone.
 
