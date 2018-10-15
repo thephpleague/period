@@ -42,7 +42,7 @@ Returns a `DateTimeImmutable` object or throws:
 - `$year_or_datepoint` can be:
     - a `DateTimeInterface` implementing object
     - a string parsable by the `DateTime` constructor.
-    - an integer interpreted as a timestamp **or** the datepoint year.
+    - an integer interpreted as a timestamp **or** the date year.
 - `$month` the date month as an `int` or `null`;
 - `$day` the date day as an `int` or `null`;
 
@@ -52,17 +52,17 @@ Returns a `DateTimeImmutable` object or throws:
     - second,
     - and microseconds.
 
-Theses arguments will only be taken into account if:
+The `$month`, `$day` and `$indexes` arguments will only be taken into account if:
 
 - `$year_or_datepoint` is an integer;
 - `$month` is not `null`;
 - `$day` is not `null`;
 
-In such case, the time indexes default to `0` if not provided.
+In such case, the time `$indexes` values will default to `0` if not provided.
+
+<p class="message-info">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
 <p class="message-notice">If no timezone information is given, the returned <code>DateTimeImmutable</code> object will use the current timezone.</p>
-
-<p class="message-warning">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
 #### examples
 
@@ -86,7 +86,7 @@ use function League\Period\datepoint;
 datepoint(2018, 2, 1, 4); // returns new DateTimeImmutable('2018-02-01 04:00:00')
 ~~~
 
-<p class="message-notice">Because you must provide at least the month and the day index, here's how to get the first day of the year using this function.</p>
+Because you must provide at least the month and the day index, here's how to get the first day of the year using this function.
 
 ~~~php
 use function League\Period\datepoint;
@@ -104,7 +104,7 @@ datepoint(2018, 1);
 
 datepoint(2018, 1, 2, 3, 4, 5, 6, 7);
 // throw a ArgumentCountError which extends the TypeError class
-// too many argument passed to the function
+// too many arguments passed to the function
 ~~~
 
 ### duration
