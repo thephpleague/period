@@ -84,7 +84,7 @@ class FunctionTest extends TestCase
 
     public function testDatepointThrowsException()
     {
-        self::expectException(PhpException::class);
+        self::expectException(TypeError::class);
         datepoint(2018, 12);
     }
 

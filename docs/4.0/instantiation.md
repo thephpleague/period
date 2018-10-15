@@ -99,8 +99,6 @@ function League\Period\iso_year(int $year): Period
 
 - `$datepoint`: The datepoint is truncated so that the duration starts at midnight according to the timezone at the beginning of the given datetime period.
 
-<p class="message-warning">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
-
 ~~~php
 function League\Period\second(mixed $datepoint): Period
 function League\Period\minute(mixed $datepoint): Period

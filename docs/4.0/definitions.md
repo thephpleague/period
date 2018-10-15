@@ -33,7 +33,8 @@ function League\Period\datepoint(
 
 Returns a `DateTimeImmutable` object or throws:
 
-- a `TypeError` if the `$year_or_datepoint` type is not supported.
+- a `TypeError` if the submitted parameters have the wrong type.
+- a `TypeError` if the number of parameters passed is invalid.
 - a PHP `Exception` if creating a `DateTimeImmutable` fails.
 
 #### parameters
@@ -60,6 +61,8 @@ Theses arguments will only be taken into account if:
 In such case, the time indexes default to `0` if not provided.
 
 <p class="message-notice">If no timezone information is given, the returned <code>DateTimeImmutable</code> object will use the current timezone.</p>
+
+<p class="message-warning">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
 #### examples
 

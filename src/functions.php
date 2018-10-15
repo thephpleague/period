@@ -21,7 +21,6 @@ use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Exception as PhpException;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function filter_var;
@@ -64,13 +63,13 @@ function datepoint($int_or_datepoint, int $month = null, int $day = null, int ..
         ));
     }
 
-    if (null !== $month && null !== $day) {
-        $indexes = $indexes + [0, 0, 0, 0];
-
-        return (new DateTimeImmutable())->setDate($int_or_datepoint, $month, $day)->setTime(...$indexes);
+    if (null === $month || null === $day) {
+        throw new TypeError('The month and day parameters must be integer, null given');
     }
 
-    throw new PhpException('When using date and times indexes you must at least specify a year, a month and a day');
+    $indexes = $indexes + [0, 0, 0, 0];
+
+    return (new DateTimeImmutable())->setDate($int_or_datepoint, $month, $day)->setTime(...$indexes);
 }
 
 /**
