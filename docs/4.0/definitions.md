@@ -23,7 +23,12 @@ Since this package relies heavily on `DateTimeImmutable` and `DateInterval` obje
 ### datepoint
 
 ~~~php
-function League\Period\datepoint(mixed $year_or_datepoint, int ...$indexes): DateTimeImmutable;
+function League\Period\datepoint(
+    mixed $year_or_datepoint,
+    int $month = null,
+    int $day = null,
+    int ...$indexes
+): DateTimeImmutable;
 ~~~
 
 Returns a `DateTimeImmutable` object or throws:
@@ -33,24 +38,26 @@ Returns a `DateTimeImmutable` object or throws:
 
 #### parameters
 
-`$year_or_datepoint` can be:
+- `$year_or_datepoint` can be:
+    - a `DateTimeInterface` implementing object
+    - a string parsable by the `DateTime` constructor.
+    - an integer interpreted as a timestamp.
+- `$month` the date month as an `int` or `null`;
+- `$day` the date day as an `int` or `null`;
 
-- a `DateTimeInterface` implementing object
-- a string parsable by the `DateTime` constructor.
-- an integer interpreted as a timestamp.
+- `$indexes` represents time indexes for, in order:
+    - hour,
+    - minute,
+    - second,
+    - and microseconds.
 
-`$indexes` represents date and time indexes for, in order:
+Theses arguments will only be taken into account if:
 
-- month,
-- day,
-- hour,
-- minute,
-- second,
-- and microseconds.
+- `$year_or_datepoint` is an integer;
+- `$month` is not `null`;
+- `$day` is not `null`;
 
-**Theses arguments will only be taken into account if `$year_or_datepoint` is an integer and at least the month argument is provided.**
-
-In such case, the other time indexes argument will default to `0` and the day index to `1` if not provided.
+In such case, the time indexes default to `0` if not provided.
 
 <p class="message-notice">If no timezone information is given, the returned <code>DateTimeImmutable</code> object will use the current timezone.</p>
 
@@ -63,6 +70,7 @@ use function League\Period\datepoint;
 
 datepoint('yesterday'); // returns new DateTimeImmutable('yesterday')
 datepoint('2018');      // returns new DateTimeImmutable('@2018')
+datepoint(2018);        // returns new DateTimeImmutable('@2018')
 datepoint(new DateTime('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
 datepoint(new DateTimeImmutable('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
 ~~~
@@ -72,24 +80,15 @@ Using `$indexes` extra arguments:
 ~~~php
 use function League\Period\datepoint;
 
-datepoint(2018, 2, 1); // returns new DateTimeImmutable('2018-02-01')
-datepoint(2018, 2);    // returns new DateTimeImmutable('2018-02-01')
+datepoint(2018, 2, 1, 4); // returns new DateTimeImmutable('2018-02-01 04:00:00')
 ~~~
 
-<p class="message-notice">Because you must provide at least the month index, to get the first day of the year using this function you must provide at least the month index.</p>
+<p class="message-notice">Because you must provide at least the month and the day index, here's how to get the first day of the year using this function.</p>
 
 ~~~php
 use function League\Period\datepoint;
 
-datepoint(2018, 1); // returns new DateTimeImmutable('2018-01-01')
-~~~
-
-<p class="message-warning">If you only supply a single parameter which is an integer it will be evaluated as a timestamp.</p>
-
-~~~php
-use function League\Period\datepoint;
-
-datepoint(2018); // is equivalent to new DateTimeImmutable('@2018')
+datepoint(2018, 1, 1); // returns new DateTimeImmutable('2018-01-01')
 ~~~
 
 ### duration
@@ -118,17 +117,17 @@ use function League\Period\datepoint;
 use function League\Period\duration;
 
 $datePeriod = new DatePeriod(
-	datepoint('YESTERDAY'),
-	duration(600),
-	datepoint(new DateTime('+3 WEEKS'))
+    datepoint('YESTERDAY'),
+    duration(600),
+    datepoint(new DateTime('+3 WEEKS'))
 );
 
 //returns the same object as if you had written
 
 $datePeriod = new DatePeriod(
-	new DateTimeImmutable('YESTERDAY'),
-	new DateInterval('PT600S'),
-	new DateTimeImmutable('+3 WEEKS')
+    new DateTimeImmutable('YESTERDAY'),
+    new DateInterval('PT600S'),
+    new DateTimeImmutable('+3 WEEKS')
 );
 ~~~
 

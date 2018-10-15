@@ -21,6 +21,7 @@ use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Exception as PhpException;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function filter_var;
@@ -35,9 +36,9 @@ use function sprintf;
 /**
  * Returns a DateTimeImmutable object.
  *
- * @param int ...$indexes date and time indexes from month to microseconds
+ * @param int ...$indexes time indexes hours, minutes, second and microseconds
  */
-function datepoint($int_or_datepoint, int ...$indexes): DateTimeImmutable
+function datepoint($int_or_datepoint, int $month = null, int $day = null, int ...$indexes): DateTimeImmutable
 {
     if ($int_or_datepoint instanceof DateTimeImmutable) {
         return $int_or_datepoint;
@@ -47,16 +48,8 @@ function datepoint($int_or_datepoint, int ...$indexes): DateTimeImmutable
         return DateTimeImmutable::createFromMutable($int_or_datepoint);
     }
 
-    if (is_int($int_or_datepoint) && [] !== $indexes) {
-        $indexes = $indexes + [1, 1, 0, 0, 0, 0];
-
-        return (new DateTimeImmutable())
-            ->setTime($indexes[2], $indexes[3], $indexes[4], $indexes[5])
-            ->setDate($int_or_datepoint, $indexes[0], $indexes[1])
-        ;
-    }
-
-    if (false !== ($res = filter_var($int_or_datepoint, FILTER_VALIDATE_INT))) {
+    $res = filter_var($int_or_datepoint, FILTER_VALIDATE_INT);
+    if (false !== $res && null === $month && null === $day) {
         return new DateTimeImmutable('@'.$res);
     }
 
@@ -64,10 +57,20 @@ function datepoint($int_or_datepoint, int ...$indexes): DateTimeImmutable
         return new DateTimeImmutable($int_or_datepoint);
     }
 
-    throw new TypeError(sprintf(
-        'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
-        is_object($int_or_datepoint) ? get_class($int_or_datepoint) : gettype($int_or_datepoint)
-    ));
+    if (!is_int($int_or_datepoint)) {
+        throw new TypeError(sprintf(
+            'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
+            is_object($int_or_datepoint) ? get_class($int_or_datepoint) : gettype($int_or_datepoint)
+        ));
+    }
+
+    if (null !== $month && null !== $day) {
+        $indexes = $indexes + [0, 0, 0, 0];
+
+        return (new DateTimeImmutable())->setDate($int_or_datepoint, $month, $day)->setTime(...$indexes);
+    }
+
+    throw new PhpException('When using date and times indexes you must at least specify a year, a month and a day');
 }
 
 /**
@@ -298,7 +301,7 @@ function iso_week($int_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
-    $datepoint = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, 12, 28);
+    $datepoint = datepoint($int_or_datepoint, 12, 28);
     if (0 < $index && (int) $datepoint->format('W') >= $index) {
         $startDate = $datepoint->setISODate($int_or_datepoint, $index, 1);
 
