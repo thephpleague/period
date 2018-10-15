@@ -41,7 +41,7 @@ Returns a `DateTimeImmutable` object or throws:
 - `$year_or_datepoint` can be:
     - a `DateTimeInterface` implementing object
     - a string parsable by the `DateTime` constructor.
-    - an integer interpreted as a timestamp.
+    - an integer interpreted as a timestamp **or** the datepoint year.
 - `$month` the date month as an `int` or `null`;
 - `$day` the date day as an `int` or `null`;
 
