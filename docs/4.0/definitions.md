@@ -27,7 +27,10 @@ function League\Period\datepoint(
     mixed $year_or_datepoint,
     int $month = null,
     int $day = null,
-    int ...$indexes
+    int $hour = 0,
+    int $minute = 0,
+    int $second = 0
+    int $microseconds = 0
 ): DateTimeImmutable;
 ~~~
 
@@ -45,20 +48,18 @@ Returns a `DateTimeImmutable` object or throws:
     - an integer interpreted as a timestamp **or** the date year.
 - `$month` the date month as an `int` or `null`;
 - `$day` the date day as an `int` or `null`;
+- `$hour` the date hour as an `int`;
+- `$minute` the date minute as an `int`;
+- `$second` the date second as an `int`;
+- `$microseconds` the date microseconds as an `int`;
 
-- `$indexes` represents time indexes for, in order:
-    - hour,
-    - minute,
-    - second,
-    - and microseconds.
-
-The `$month`, `$day` and `$indexes` arguments will only be taken into account if:
+The `$month`, `$day`, `$hour`, `$minute`, `$second`, `$microseconds` arguments will only be taken into account if:
 
 - `$year_or_datepoint` is an integer;
 - `$month` is not `null`;
 - `$day` is not `null`;
 
-In such case, the time `$indexes` values will default to `0` if not provided.
+In such case, `$hour`, `$minute`, `$second`, `$microseconds` values will default to `0` if not provided.
 
 <p class="message-info">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
@@ -78,7 +79,7 @@ datepoint(new DateTime('2018-10-15'));  // returns new DateTimeImmutable('2018-1
 datepoint(new DateTimeImmutable('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
 ~~~
 
-Using `$month`, `$day` and `$indexes` arguments:
+Using `$month`, `$day`, `$hour`, `$minute`, `$second`, `$microseconds` arguments:
 
 ~~~php
 use function League\Period\datepoint;
@@ -101,10 +102,6 @@ use function League\Period\datepoint;
 
 datepoint(2018, 1);
 // throw a TypeError the day argument is missing or equals to null
-
-datepoint(2018, 1, 2, 3, 4, 5, 6, 7);
-// throw a ArgumentCountError which extends the TypeError class
-// too many arguments passed to the function
 ~~~
 
 ### duration

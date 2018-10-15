@@ -34,11 +34,16 @@ use function sprintf;
 
 /**
  * Returns a DateTimeImmutable object.
- *
- * @param int ...$indexes time indexes hours, minutes, second and microseconds
  */
-function datepoint($int_or_datepoint, int $month = null, int $day = null, int ...$indexes): DateTimeImmutable
-{
+function datepoint(
+    $int_or_datepoint,
+    int $month = null,
+    int $day = null,
+    int $hour = 0,
+    int $minute = 0,
+    int $second = 0,
+    int $microseconds = 0
+): DateTimeImmutable {
     if ($int_or_datepoint instanceof DateTimeImmutable) {
         return $int_or_datepoint;
     }
@@ -67,9 +72,10 @@ function datepoint($int_or_datepoint, int $month = null, int $day = null, int ..
         throw new TypeError('The month and day parameters must be integer, null given');
     }
 
-    $indexes = $indexes + [0, 0, 0, 0];
-
-    return (new DateTimeImmutable())->setDate($int_or_datepoint, $month, $day)->setTime(...$indexes);
+    return (new DateTimeImmutable())
+        ->setDate($int_or_datepoint, $month, $day)
+        ->setTime($hour, $minute, $second, $microseconds)
+    ;
 }
 
 /**
