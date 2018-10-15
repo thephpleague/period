@@ -78,7 +78,7 @@ datepoint(new DateTime('2018-10-15'));  // returns new DateTimeImmutable('2018-1
 datepoint(new DateTimeImmutable('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
 ~~~
 
-Using `$indexes` extra arguments:
+Using `$month`, `$day` and `$indexes` arguments:
 
 ~~~php
 use function League\Period\datepoint;
@@ -92,6 +92,19 @@ datepoint(2018, 2, 1, 4); // returns new DateTimeImmutable('2018-02-01 04:00:00'
 use function League\Period\datepoint;
 
 datepoint(2018, 1, 1); // returns new DateTimeImmutable('2018-01-01')
+~~~
+
+<p class="message-warning">If you provide too few or too many integer arguments a <code>TypeError</code> exception will be thrown.</p>
+
+~~~php
+use function League\Period\datepoint;
+
+datepoint(2018, 1);
+// throw a TypeError the day argument is missing or equals to null
+
+datepoint(2018, 1, 2, 3, 4, 5, 6, 7);
+// throw a ArgumentCountError which extends the TypeError class
+// too many argument passed to the function
 ~~~
 
 ### duration
