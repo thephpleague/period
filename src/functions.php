@@ -36,7 +36,7 @@ use function sprintf;
  * Returns a DateTimeImmutable object.
  */
 function datepoint(
-    $int_or_datepoint,
+    $year_or_datepoint,
     int $month = null,
     int $day = null,
     int $hour = 0,
@@ -44,27 +44,27 @@ function datepoint(
     int $second = 0,
     int $microseconds = 0
 ): DateTimeImmutable {
-    if ($int_or_datepoint instanceof DateTimeImmutable) {
-        return $int_or_datepoint;
+    if ($year_or_datepoint instanceof DateTimeImmutable) {
+        return $year_or_datepoint;
     }
 
-    if ($int_or_datepoint instanceof DateTime) {
-        return DateTimeImmutable::createFromMutable($int_or_datepoint);
+    if ($year_or_datepoint instanceof DateTime) {
+        return DateTimeImmutable::createFromMutable($year_or_datepoint);
     }
 
-    $res = filter_var($int_or_datepoint, FILTER_VALIDATE_INT);
+    $res = filter_var($year_or_datepoint, FILTER_VALIDATE_INT);
     if (false !== $res && null === $month && null === $day) {
         return new DateTimeImmutable('@'.$res);
     }
 
-    if (is_string($int_or_datepoint)) {
-        return new DateTimeImmutable($int_or_datepoint);
+    if (is_string($year_or_datepoint)) {
+        return new DateTimeImmutable($year_or_datepoint);
     }
 
-    if (!is_int($int_or_datepoint)) {
+    if (!is_int($year_or_datepoint)) {
         throw new TypeError(sprintf(
             'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
-            is_object($int_or_datepoint) ? get_class($int_or_datepoint) : gettype($int_or_datepoint)
+            is_object($year_or_datepoint) ? get_class($year_or_datepoint) : gettype($year_or_datepoint)
         ));
     }
 
@@ -73,7 +73,7 @@ function datepoint(
     }
 
     return (new DateTimeImmutable())
-        ->setDate($int_or_datepoint, $month, $day)
+        ->setDate($year_or_datepoint, $month, $day)
         ->setTime($hour, $minute, $second, $microseconds)
     ;
 }
