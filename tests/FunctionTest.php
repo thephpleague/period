@@ -274,18 +274,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2014-04-01'), $period->getEndDate());
     }
 
-    public function testMonthFailedWithHighInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        month(2014, 13);
-    }
-
-    public function testMonthFailedWithLowInvalidIndex()
-    {
-        self::expectException(Exception::class);
-        month(2014, 0);
-    }
-
     public function testMonthFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
@@ -391,51 +379,6 @@ class FunctionTest extends TestCase
         self::assertEquals($period, $alt_period);
     }
 
-    /**
-     * @dataProvider invalidDayArgumentProvider
-     */
-    public function testAlternateDayThrowsException(int $year, int $month, int $day)
-    {
-        self::expectException(Exception::class);
-        day($year, $month, $day);
-    }
-
-    public function invalidDayArgumentProvider()
-    {
-        return [
-            'invalid month (1)' => [
-                'year' => 2012,
-                'month' => 0,
-                'day' => 24,
-            ],
-            'invalid month (2)' => [
-                'year' => 2012,
-                'month' => 13,
-                'day' => 24,
-            ],
-            'invalid day (1)' => [
-                'year' => 2012,
-                'month' => 7,
-                'day' => 0,
-            ],
-            'invalid day (2)' => [
-                'year' => 2012,
-                'month' => 7,
-                'day' => 32,
-            ],
-            'invalid day leap year' => [
-                'year' => 2016,
-                'month' => 2,
-                'day' => 30,
-            ],
-            'invalid day non-leap year' => [
-                'year' => 2017,
-                'month' => 2,
-                'day' => 29,
-            ],
-        ];
-    }
-
     public function testHour()
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
@@ -448,6 +391,13 @@ class FunctionTest extends TestCase
         self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
+    public function testAlternateHour()
+    {
+        $period = hour('2008-07-01 12:03:04');
+        $alt_period = hour(2008, 7, 1, 12);
+        self::assertEquals($period, $alt_period);
+    }
+
     public function testMinute()
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
@@ -458,6 +408,13 @@ class FunctionTest extends TestCase
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
         self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
         self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
+    }
+
+    public function testAlternateMinute()
+    {
+        $period = minute('2008-07-01 12:03:04');
+        $alt_period = minute(2008, 7, 1, 12, 3);
+        self::assertEquals($period, $alt_period);
     }
 
     public function testSecond()
@@ -474,6 +431,12 @@ class FunctionTest extends TestCase
         self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
+    public function testAlternateSecond()
+    {
+        $period = second('2008-07-01 12:03:04');
+        $alt_period = second(2008, 7, 1, 12, 3, 4);
+        self::assertEquals($period, $alt_period);
+    }
 
     public function testInstant()
     {

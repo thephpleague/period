@@ -48,9 +48,6 @@ $alt_period->equals($period);
 
 ~~~php
 function League\Period\instant(mixed $datepoint): Period
-function League\Period\second(mixed $datepoint): Period
-function League\Period\minute(mixed $datepoint): Period
-function League\Period\hour(mixed $datepoint): Period
 ~~~
 
 #### Parameter
@@ -61,49 +58,40 @@ function League\Period\hour(mixed $datepoint): Period
 
 ~~~php
 use function League\Period\instant;
-use function League\Period\second;
-use function League\Period\minute;
-use function League\Period\hour;
 
 $instant = instant('2012-04-01 08:30:25.124546');
 $instant->getStartDate() === $instant->getEndDate(); //returns true
 $instant->getDateInterInterval() == new DateInterval('PT0S'); //returns true
-
-$second = second('2012-04-01 08:30:25.124546');
-$alt_s  = second('2012-04-01 08:30:25');
-$alt_s->equals($second); //return true;
-
-$minute = minute('2012-04-01 08:30:25');
-$alt_m  = minute('2012-04-01 08:30:00');
-$alt_m->equals($minute); //return true;
-
-$hour = hour('2012-04-01 08:30:25');
-$alt_h = hour('2012-04-01 08:00:00');
-$alt_h->equals($hour); //return true;
 ~~~
 
 ### Helper functions accepting a list of integer arguments or a datepoint
 
 #### Using a list of integer arguments
 
-- `$year` parameter must be a valid year;
-- `$month` parameter must be a valid month, between 1 and 12, default to 1;
-- `$week` parameter must be a valid week, between 1 and 53, default to 1;
-- `$day` parameter must be a valid day, between 1 and 31, default to 1;
+- `$year`;
+- `$month` default to `1`;
+- `$day` default to `1`;
+- `$hour` default to `0`;
+- `$minute` default to `0`;
+- `$second` default to `0`;
+- `$week` default to `1`;
+- `$quarter` default to `1` can not exceed `4` otherwise an `Exception` is thrown;
+- `$semester` default to `1` can not exceed `2` otherwise an `Exception` is thrown;
 
 The time is truncated so that the duration always starts at midnight according to the date timezone.
 
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
-<p class="message-warning">Values exceeding accepted ranges will trigger <code>Period\Exception</code></p>
-
 ~~~php
+function League\Period\second(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0 [, int $minute = 0 [, int $second = 0]]]]]): Period
+function League\Period\minute(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0 [, int $minute = 0]]]]): Period
+function League\Period\hour(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0]]]): Period
 function League\Period\day(int $year [, int $month = 1 [, int $day = 1]]): Period
-function League\Period\iso_week(int $year [, int $week = 1]): Period
 function League\Period\month(int $year [, int $month = 1]): Period
+function League\Period\year(int $year): Period
 function League\Period\quarter(int $year [, int $quarter = 1]): Period
 function League\Period\semester(int $year [, int $semester = 1]): Period
-function League\Period\year(int $year): Period
+function League\Period\iso_week(int $year [, int $week = 1]): Period
 function League\Period\iso_year(int $year): Period
 ~~~
 
@@ -114,12 +102,15 @@ function League\Period\iso_year(int $year): Period
 <p class="message-warning">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
 ~~~php
+function League\Period\second(mixed $datepoint): Period
+function League\Period\minute(mixed $datepoint): Period
+function League\Period\hour(mixed $datepoint): Period
 function League\Period\day(mixed $datepoint): Period
-function League\Period\iso_week(mixed $datepoint): Period
 function League\Period\month(mixed $datepoint): Period
+function League\Period\year(mixed $datepoint): Period
 function League\Period\quarter(mixed $datepoint): Period
 function League\Period\semester(mixed $datepoint): Period
-function League\Period\year(mixed $datepoint): Period
+function League\Period\iso_week(mixed $datepoint): Period
 function League\Period\iso_year(mixed $datepoint): Period
 ~~~
 
@@ -127,6 +118,18 @@ function League\Period\iso_year(mixed $datepoint): Period
 
 ~~~php
 use League\Period;
+
+$second = Period\second('2012-04-01 08:30:25.124546');
+$alt_s  = Period\second(2012, 4, 1, 8, 30, 25, 124546);
+$alt_s->equals($second); //return true;
+
+$minute = Period\minute('2012-04-01 08:30:25');
+$alt_m  = Period\minute(2012, 4, 1, 8, 30, 48);
+$alt_m->equals($minute); //return true;
+
+$hour = Period\hour('2012-04-01 08:30:25');
+$alt_h = Period\hour(2012, 4, 1, 8);
+$alt_h->equals($hour); //return true;
 
 $day = Period\day(2012, 4, 1);
 $day_string = Period\day('2012-04-01 08:30:25');

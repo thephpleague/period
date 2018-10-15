@@ -27,34 +27,46 @@ use function filter_var;
 use function get_class;
 use function gettype;
 use function intdiv;
+use function is_int;
 use function is_object;
 use function is_string;
 use function sprintf;
 
 /**
  * Returns a DateTimeImmutable object.
+ *
+ * @param int ...$indexes date and time indexes from month to microseconds
  */
-function datepoint($datepoint): DateTimeImmutable
+function datepoint($int_or_datepoint, int ...$indexes): DateTimeImmutable
 {
-    if ($datepoint instanceof DateTimeImmutable) {
-        return $datepoint;
+    if ($int_or_datepoint instanceof DateTimeImmutable) {
+        return $int_or_datepoint;
     }
 
-    if ($datepoint instanceof DateTime) {
-        return DateTimeImmutable::createFromMutable($datepoint);
+    if ($int_or_datepoint instanceof DateTime) {
+        return DateTimeImmutable::createFromMutable($int_or_datepoint);
     }
 
-    if (false !== ($res = filter_var($datepoint, FILTER_VALIDATE_INT))) {
+    if (is_int($int_or_datepoint) && [] !== $indexes) {
+        $indexes = $indexes + [1, 1, 0, 0, 0, 0];
+
+        return (new DateTimeImmutable())
+            ->setTime($indexes[2], $indexes[3], $indexes[4], $indexes[5])
+            ->setDate($int_or_datepoint, $indexes[0], $indexes[1])
+        ;
+    }
+
+    if (false !== ($res = filter_var($int_or_datepoint, FILTER_VALIDATE_INT))) {
         return new DateTimeImmutable('@'.$res);
     }
 
-    if (is_string($datepoint)) {
-        return new DateTimeImmutable($datepoint);
+    if (is_string($int_or_datepoint)) {
+        return new DateTimeImmutable($int_or_datepoint);
     }
 
     throw new TypeError(sprintf(
         'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
-        is_object($datepoint) ? get_class($datepoint) : gettype($datepoint)
+        is_object($int_or_datepoint) ? get_class($int_or_datepoint) : gettype($int_or_datepoint)
     ));
 }
 
@@ -150,14 +162,14 @@ function interval_from_dateperiod(DatePeriod $datePeriod): Period
  */
 function year($int_or_datepoint): Period
 {
-    if (is_int($int_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, 1, 1);
+    if (!is_int($int_or_datepoint)) {
+        $datepoint = datepoint($int_or_datepoint);
+        $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
     }
 
-    $datepoint = datepoint($int_or_datepoint);
-    $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
+    $startDate = datepoint($int_or_datepoint, 1, 1);
 
     return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
 }
@@ -169,8 +181,9 @@ function year($int_or_datepoint): Period
  */
 function iso_year($int_or_datepoint): Period
 {
-    if (is_int($int_or_datepoint)) {
-        $datepoint = (new DateTimeImmutable())->setTime(0, 0);
+    if (!is_int($int_or_datepoint)) {
+        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
+        $int_or_datepoint = (int) $datepoint->format('o');
 
         return new Period(
             $datepoint->setISODate($int_or_datepoint, 1),
@@ -178,8 +191,7 @@ function iso_year($int_or_datepoint): Period
         );
     }
 
-    $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
-    $int_or_datepoint = (int) $datepoint->format('o');
+    $datepoint = datepoint($int_or_datepoint, 1, 1);
 
     return new Period(
         $datepoint->setISODate($int_or_datepoint, 1),
@@ -209,13 +221,12 @@ function semester($int_or_datepoint, int $index = 1): Period
     }
 
     if (0 < $index && 2 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0)
-            ->setDate($int_or_datepoint, (($index - 1) * 6) + 1, 1);
+        $startDate = datepoint($int_or_datepoint, (($index - 1) * 6) + 1, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P6M')));
     }
 
-    throw new Exception('The semester index is not contained within the valid range.');
+    throw new Exception(sprintf('The semester `%s` is not contained within the valid range.', $index));
 }
 
 /**
@@ -229,8 +240,8 @@ function semester($int_or_datepoint, int $index = 1): Period
 function quarter($int_or_datepoint, int $index = 1): Period
 {
     if (!is_int($int_or_datepoint)) {
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
-        $startDate = $datepoint->setDate(
+        $datepoint = datepoint($int_or_datepoint);
+        $startDate = $datepoint->setTime(0, 0)->setDate(
             (int) $datepoint->format('Y'),
             (intdiv((int) $datepoint->format('n'), 3) * 3) + 1,
             1
@@ -240,13 +251,12 @@ function quarter($int_or_datepoint, int $index = 1): Period
     }
 
     if (0 < $index && 4 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0)
-            ->setDate($int_or_datepoint, (($index - 1) * 3) + 1, 1);
+        $startDate = datepoint($int_or_datepoint, (($index - 1) * 3) + 1, 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P3M')));
     }
 
-    throw new Exception('The quarter index is not contained within the valid range.');
+    throw new Exception(sprintf('The quarter `%s` is not contained within the valid range.', $index));
 }
 
 /**
@@ -260,19 +270,15 @@ function quarter($int_or_datepoint, int $index = 1): Period
 function month($int_or_datepoint, int $index = 1): Period
 {
     if (!is_int($int_or_datepoint)) {
-        $datepoint = datepoint($int_or_datepoint)->setTime(0, 0);
-        $startDate = $datepoint->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
+        $datepoint = datepoint($int_or_datepoint);
+        $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
 
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
     }
 
-    if (0 < $index && 12 >= $index) {
-        $startDate = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, $index, 1);
+    $startDate = datepoint($int_or_datepoint, $index, 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P1M')));
-    }
-
-    throw new Exception('The month index is not contained within the valid range.');
+    return new Period($startDate, $startDate->add(new DateInterval('P1M')));
 }
 
 /**
@@ -318,18 +324,9 @@ function day($int_or_datepoint, int $month = 1, int $day = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P1D')));
     }
 
-    if (1 > $month || 12 < $month) {
-        throw new Exception('The month index is not contained within the valid range.');
-    }
+    $startDate = datepoint($int_or_datepoint, $month, $day);
 
-    $datepoint = (new DateTimeImmutable())->setTime(0, 0)->setDate($int_or_datepoint, $month, 1);
-    if (0 < $day && (int) $datepoint->format('t') >= $day) {
-        $startDate = $datepoint->setDate($int_or_datepoint, $month, $day);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P1D')));
-    }
-
-    throw new Exception('The day index is not contained within the valid range.');
+    return new Period($startDate, $startDate->add(new DateInterval('P1D')));
 }
 
 /**
@@ -338,10 +335,16 @@ function day($int_or_datepoint, int $month = 1, int $day = 1): Period
  * The starting datepoint represents the beginning of the hour
  * The interval is equal to 1 hour
  */
-function hour($datepoint): Period
+function hour($int_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): Period
 {
-    $datepoint = datepoint($datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
+    if (!is_int($int_or_datepoint)) {
+        $datepoint = datepoint($int_or_datepoint);
+        $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
+
+        return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
+    }
+
+    $startDate = datepoint($int_or_datepoint, $month, $day, $hour);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
 }
@@ -352,10 +355,16 @@ function hour($datepoint): Period
  * The starting datepoint represents the beginning of the minute
  * The interval is equal to 1 minute
  */
-function minute($datepoint): Period
+function minute($int_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): Period
 {
-    $datepoint = datepoint($datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
+    if (!is_int($int_or_datepoint)) {
+        $datepoint = datepoint($int_or_datepoint);
+        $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
+
+        return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
+    }
+
+    $startDate = datepoint($int_or_datepoint, $month, $day, $hour, $minute);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
 }
@@ -366,14 +375,20 @@ function minute($datepoint): Period
  * The starting datepoint represents the beginning of the second
  * The interval is equal to 1 second
  */
-function second($datepoint): Period
+function second($int_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0, int $second = 0): Period
 {
-    $datepoint = datepoint($datepoint);
-    $startDate = $datepoint->setTime(
-        (int) $datepoint->format('H'),
-        (int) $datepoint->format('i'),
-        (int) $datepoint->format('s')
-    );
+    if (!is_int($int_or_datepoint)) {
+        $datepoint = datepoint($int_or_datepoint);
+        $startDate = $datepoint->setTime(
+            (int) $datepoint->format('H'),
+            (int) $datepoint->format('i'),
+            (int) $datepoint->format('s')
+        );
+
+        return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
+    }
+
+    $startDate = datepoint($int_or_datepoint, $month, $day, $hour, $minute, $second);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
 }

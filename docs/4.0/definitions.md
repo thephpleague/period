@@ -23,20 +23,74 @@ Since this package relies heavily on `DateTimeImmutable` and `DateInterval` obje
 ### datepoint
 
 ~~~php
-function League\Period\datepoint(mixed $datepoint): DateTimeImmutable;
+function League\Period\datepoint(mixed $year_or_datepoint, int ...$indexes): DateTimeImmutable;
 ~~~
 
-Converts its single input into a `DateTimeImmutable` object or throws a `TypeError` otherwise.
+Returns a `DateTimeImmutable` object or throws:
 
-#### parameter
+- a `TypeError` if the `$year_or_datepoint` type is not supported.
+- a PHP `Exception` if creating a `DateTimeImmutable` fails.
 
-`$datepoint` can be:
+#### parameters
+
+`$year_or_datepoint` can be:
 
 - a `DateTimeInterface` implementing object
 - a string parsable by the `DateTime` constructor.
 - an integer interpreted as a timestamp.
 
+`$indexes` represents date and time indexes for, in order:
+
+- month,
+- day,
+- hour,
+- minute,
+- second,
+- and microseconds.
+
+**Theses arguments will only be taken into account if `$year_or_datepoint` is an integer and at least the month argument is provided.**
+
+In such case, the other time indexes argument will default to `0` and the day index to `1` if not provided.
+
 <p class="message-notice">If no timezone information is given, the returned <code>DateTimeImmutable</code> object will use the current timezone.</p>
+
+#### examples
+
+Using the `$year_or_datepoint` argument
+
+~~~php
+use function League\Period\datepoint;
+
+datepoint('yesterday'); // returns new DateTimeImmutable('yesterday')
+datepoint('2018');      // returns new DateTimeImmutable('@2018')
+datepoint(new DateTime('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
+datepoint(new DateTimeImmutable('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
+~~~
+
+Using `$indexes` extra arguments:
+
+~~~php
+use function League\Period\datepoint;
+
+datepoint(2018, 2, 1); // returns new DateTimeImmutable('2018-02-01')
+datepoint(2018, 2);    // returns new DateTimeImmutable('2018-02-01')
+~~~
+
+<p class="message-notice">Because you must provide at least the month index, to get the first day of the year using this function you must provide at least the month index.</p>
+
+~~~php
+use function League\Period\datepoint;
+
+datepoint(2018, 1); // returns new DateTimeImmutable('2018-01-01')
+~~~
+
+<p class="message-warning">If you only supply a single parameter which is an integer it will be evaluated as a timestamp.</p>
+
+~~~php
+use function League\Period\datepoint;
+
+datepoint(2018); // is equivalent to new DateTimeImmutable('@2018')
+~~~
 
 ### duration
 

@@ -40,8 +40,8 @@ The following methods were already marked as deprecated is the `3.x` line. They 
 
 To reduce code and allow more flexibility all named constructors have been removed from the `Period` class. They are replaced by functions defined in the same namespace as the `Period` class.
 
-| previous named constructors           |  new functions                  |
-| ------------------------------------- | ------------------------------- |
+| removed named constructors            |  new functions    |
+| ------------------------------------- | ----------------- |
 | `Period::createFromYear`              | `year`            |
 | `Period::createFromMonth`             | `month`           |
 | `Period::createFromWeek`              | `iso_week`        |
@@ -73,7 +73,7 @@ $period = interval_after('2014-03-01', '1 MONTH');
 
 To remove ambiguity, the following methods have been renamed
 
-| previous method name          |  new method name                 |
+| previous name                 |  new name                        |
 | ----------------------------- | -------------------------------- |
 | `Period::sameValueAs`         | `Period::equals`                 |
 | `Period::sameDurationAs`      | `Period::durationEquals`         |
