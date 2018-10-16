@@ -14,7 +14,6 @@
 
 namespace LeagueTest\Period;
 
-use ArgumentCountError;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -85,7 +84,7 @@ class FunctionTest extends TestCase
 
     public function testDatepointThrowsException()
     {
-        self::expectException(ArgumentCountError::class);
+        self::expectException(TypeError::class);
         datepoint(2018, 12);
     }
 

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace League\Period;
 
-use ArgumentCountError;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -62,12 +61,8 @@ function datepoint(
         ;
     }
 
-    if (1 !== ($nb_args = func_num_args())) {
-        throw new ArgumentCountError(sprintf(
-            '%s expects 1 datepoint or at least 3 date and time related parameters, %s given.',
-            __FUNCTION__,
-            $nb_args
-        ));
+    if (1 !== func_num_args()) {
+        throw new TypeError(__FUNCTION__.' accepts either a single datepoint argument OR at least 3 date and time related integer arguments.');
     }
 
     if ($year_or_datepoint instanceof DateTimeImmutable) {
@@ -201,7 +196,7 @@ function year($year_or_datepoint): Period
 /**
  * Creates new instance for a specific ISO year.
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
 function iso_year($year_or_datepoint): Period
 {
@@ -221,8 +216,7 @@ function iso_year($year_or_datepoint): Period
 /**
  * Creates new instance for a specific semester in a given year.
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
- * @param int   $index             a semester index from 1 to 2 included
+ * @param int $index semester index
  */
 function semester($year_or_datepoint, int $index = 1): Period
 {
@@ -245,8 +239,7 @@ function semester($year_or_datepoint, int $index = 1): Period
 /**
  * Creates new instance for a specific quarter in a given year.
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
- * @param int   $index             quarter index
+ * @param int $index quarter index
  */
 function quarter($year_or_datepoint, int $index = 1): Period
 {
@@ -269,8 +262,7 @@ function quarter($year_or_datepoint, int $index = 1): Period
 /**
  * Creates new instance for a specific year and month.
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
- * @param int   $index             month index from 1 to 12 included
+ * @param int $index month index
  */
 function month($year_or_datepoint, int $index = 1): Period
 {
@@ -293,8 +285,7 @@ function month($year_or_datepoint, int $index = 1): Period
 /**
  * Creates new instance for a specific ISO8601 week.
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
- * @param int   $index             iso week index
+ * @param int $index iso week index
  */
 function iso_week($year_or_datepoint, int $index = 1): Period
 {
@@ -315,8 +306,6 @@ function iso_week($year_or_datepoint, int $index = 1): Period
  *
  * The date is truncated so that the time range starts at midnight
  * according to the date timezone and last a full day.
- *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function day($year_or_datepoint, int $month = 1, int $day = 1): Period
 {
