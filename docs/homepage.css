@@ -32,7 +32,7 @@ main div > code {
 
 .homepage header {
     margin:0 auto;
-    padding:3em 0;
+    padding:0 0 3em;
     box-sizing: border-box;
     background:#19242F url(//thephpleague.com/img/header_bg.png) no-repeat top center;
     background-size: cover;
@@ -44,7 +44,7 @@ main div > code {
 .homepage header h1 {
     margin:.3em auto;
     font-family: "Museo 300";
-    font-size:96px;
+    font-size:72px;
     font-weight: normal;
 }
 
@@ -61,6 +61,7 @@ main div > code {
     padding:.3em 1em;
     background-color:rgba(0, 0, 0, .3);
     color:#fff;
+    font-size:.9rem;
     font-family: Consolas, Monaco ,'Andale Mono', monospace;
     line-height: 140%;
     text-align: left;
@@ -240,6 +241,20 @@ main div > code {
 
 .questions a:hover {
     text-decoration: none;
+}
+
+@media screen and (min-width: 404px) {
+    .homepage header {
+        padding:3em 0;
+    }
+
+    .homepage header h1 {
+        font-size:96px;
+    }
+
+    .homepage .composer span {
+        font-size:1rem;
+    }
 }
 
 @media screen and (min-width: 549px) {
