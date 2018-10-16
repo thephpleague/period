@@ -51,7 +51,7 @@ Returns a `DateTimeImmutable` object or throws:
     - a string parsable by the `DateTime` constructor.
     - an integer interpreted as a timestamp.
 
-- `$month` the date year as an `int`;
+- `$year` the date year as an `int`;
 - `$month` the date month as an `int`;
 - `$day` the date day as an `int`;
 - `$hour` the date hour as an `int`;
