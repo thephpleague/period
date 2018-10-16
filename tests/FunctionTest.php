@@ -416,6 +416,13 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateInterval('P0D'), $period->getDateInterval());
     }
 
+    public function testAlternateInstant()
+    {
+        $period = instant('2008-07-01 12:03:04');
+        $alt_period = instant(2008, 7, 1, 12, 3, 4);
+        self::assertEquals($period, $alt_period);
+    }
+
     public function testCreateFromWithDateTimeInterface()
     {
         self::assertTrue(iso_week('2008W27')->equals(iso_week(2008, 27)));

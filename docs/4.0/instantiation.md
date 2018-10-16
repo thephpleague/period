@@ -44,26 +44,6 @@ $alt_period = interval_after('YESTERDAY', 180);
 $alt_period->equals($period);
 ~~~
 
-### Helper functions accepting only a datepoint
-
-~~~php
-function League\Period\instant(mixed $datepoint): Period
-~~~
-
-#### Parameter
-
-- `$datepoint`: The datepoint used to defined the interval. It is truncated so that the duration starts at the beginning of the given time period according to the date timezone.
-
-#### Example
-
-~~~php
-use function League\Period\instant;
-
-$instant = instant('2012-04-01 08:30:25.124546');
-$instant->getStartDate() === $instant->getEndDate(); //returns true
-$instant->getDateInterInterval() == new DateInterval('PT0S'); //returns true
-~~~
-
 ### Helper functions accepting a list of integer arguments or a datepoint
 
 #### Using a list of integer arguments
@@ -83,6 +63,7 @@ The time is truncated so that the duration always starts at midnight according t
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
 ~~~php
+function League\Period\instant(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0 [, int $minute = 0 [, int $second = 0[, int $microsecond = 0]]]]]]): Period
 function League\Period\second(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0 [, int $minute = 0 [, int $second = 0]]]]]): Period
 function League\Period\minute(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0 [, int $minute = 0]]]]): Period
 function League\Period\hour(int $year [, int $month = 1 [, int $day = 1 [, int $hour = 0]]]): Period
@@ -100,6 +81,7 @@ function League\Period\iso_year(int $year): Period
 - `$datepoint`: The datepoint is truncated so that the duration starts at midnight according to the timezone at the beginning of the given datetime period.
 
 ~~~php
+function League\Period\instant(mixed $datepoint): Period
 function League\Period\second(mixed $datepoint): Period
 function League\Period\minute(mixed $datepoint): Period
 function League\Period\hour(mixed $datepoint): Period
@@ -117,8 +99,12 @@ function League\Period\iso_year(mixed $datepoint): Period
 ~~~php
 use League\Period;
 
-$second = Period\second('2012-04-01 08:30:25.124546');
-$alt_s  = Period\second(2012, 4, 1, 8, 30, 25, 124546);
+$instant = Period\instant('2012-04-01');
+$alt_in = Period\instant(2012, 4, 1);
+$alt_in->equals($instant); //return true;
+
+$second = Period\second('2012-04-01 08:30:25');
+$alt_s  = Period\second(2012, 4, 1, 8, 30, 25);
 $alt_s->equals($second); //return true;
 
 $minute = Period\minute('2012-04-01 08:30:25');

@@ -377,8 +377,14 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
  * The starting datepoint represents the beginning of the second
  * The interval is equal to 1 second
  */
-function second($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0, int $second = 0): Period
-{
+function second(
+    $year_or_datepoint,
+    int $month = 1,
+    int $day = 1,
+    int $hour = 0,
+    int $minute = 0,
+    int $second = 0
+): Period {
     if (!is_int($year_or_datepoint)) {
         $datepoint = datepoint($year_or_datepoint);
         $startDate = $datepoint->setTime(
@@ -398,9 +404,22 @@ function second($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
 /**
  * Creates new instance for a specific datepoint.
  */
-function instant($datepoint): Period
-{
-    $datepoint = datepoint($datepoint);
+function instant(
+    $year_or_datepoint,
+    int $month = 1,
+    int $day = 1,
+    int $hour = 0,
+    int $minute = 0,
+    int $second = 0,
+    int $microsecond = 0
+): Period {
+    if (!is_int($year_or_datepoint)) {
+        $datepoint = datepoint($year_or_datepoint);
+
+        return new Period($datepoint, $datepoint);
+    }
+
+    $datepoint = datepoint($year_or_datepoint, $month, $day, $hour, $minute, $second, $microsecond);
 
     return new Period($datepoint, $datepoint);
 }
