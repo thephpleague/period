@@ -149,5 +149,3 @@ $datePeriod = new DatePeriod(
     new DateTimeImmutable()
 );
 ~~~
-
-Theses functions are used throughout the package to allow broader input acceptance.
