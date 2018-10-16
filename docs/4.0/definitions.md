@@ -30,7 +30,7 @@ function League\Period\datepoint(
     int $hour = 0,
     int $minute = 0,
     int $second = 0
-    int $microseconds = 0
+    int $microsecond = 0
 ): DateTimeImmutable;
 ~~~
 
@@ -46,20 +46,20 @@ Returns a `DateTimeImmutable` object or throws:
     - a `DateTimeInterface` implementing object
     - a string parsable by the `DateTime` constructor.
     - an integer interpreted as a timestamp **or** the date year.
-- `$month` the date month as an `int` or `null`;
-- `$day` the date day as an `int` or `null`;
+- `$month` the date month as an `int`;
+- `$day` the date day as an `int`;
 - `$hour` the date hour as an `int`;
 - `$minute` the date minute as an `int`;
 - `$second` the date second as an `int`;
-- `$microseconds` the date microseconds as an `int`;
+- `$microsecond` the date microseconds as an `int`;
 
-The `$month`, `$day`, `$hour`, `$minute`, `$second`, `$microseconds` arguments will only be taken into account if:
+The `$month`, `$day`, `$hour`, `$minute`, `$second`, `$microsecond` arguments will only be taken into account if:
 
 - `$year_or_datepoint` is an integer;
 - `$month` is not `null`;
 - `$day` is not `null`;
 
-In such case, `$hour`, `$minute`, `$second`, `$microseconds` values will default to `0` if not provided.
+In such case, `$hour`, `$minute`, `$second`, `$microsecond` values will default to `0` if not provided.
 
 <p class="message-info">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 
@@ -79,7 +79,7 @@ datepoint(new DateTime('2018-10-15'));  // returns new DateTimeImmutable('2018-1
 datepoint(new DateTimeImmutable('2018-10-15'));  // returns new DateTimeImmutable('2018-10-15')
 ~~~
 
-Using `$month`, `$day`, `$hour`, `$minute`, `$second`, `$microseconds` arguments:
+Using `$month`, `$day`, `$hour`, `$minute`, `$second`, `$microsecond` arguments:
 
 ~~~php
 use function League\Period\datepoint;

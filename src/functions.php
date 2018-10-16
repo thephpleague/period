@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace League\Period;
 
+use ArgumentCountError;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -24,6 +25,7 @@ use DateTimeInterface;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function filter_var;
+use function func_num_args;
 use function get_class;
 use function gettype;
 use function intdiv;
@@ -34,6 +36,11 @@ use function sprintf;
 
 /**
  * Returns a DateTimeImmutable object.
+ *
+ * @param mixed $year_or_datepoint the number of year
+ *                                 or a DateTimeInterface object
+ *                                 or a string parsable by DateTime::__construct
+ *                                 or a timestamp as an integer
  */
 function datepoint(
     $year_or_datepoint,
@@ -42,8 +49,23 @@ function datepoint(
     int $hour = 0,
     int $minute = 0,
     int $second = 0,
-    int $microseconds = 0
+    int $microsecond = 0
 ): DateTimeImmutable {
+    if (is_int($year_or_datepoint) && isset($month, $day)) {
+        return (new DateTimeImmutable())
+            ->setDate($year_or_datepoint, $month, $day)
+            ->setTime($hour, $minute, $second, $microsecond)
+        ;
+    }
+
+    if (1 !== ($nb_args = func_num_args())) {
+        throw new ArgumentCountError(sprintf(
+            '%s expects 1 datepoint or at least 3 date and time related parameters, %s given.',
+            __FUNCTION__,
+            $nb_args
+        ));
+    }
+
     if ($year_or_datepoint instanceof DateTimeImmutable) {
         return $year_or_datepoint;
     }
@@ -52,30 +74,18 @@ function datepoint(
         return DateTimeImmutable::createFromMutable($year_or_datepoint);
     }
 
-    $res = filter_var($year_or_datepoint, FILTER_VALIDATE_INT);
-    if (false !== $res && null === $month && null === $day) {
-        return new DateTimeImmutable('@'.$res);
+    if (false !== ($timestamp = filter_var($year_or_datepoint, FILTER_VALIDATE_INT))) {
+        return new DateTimeImmutable('@'.$timestamp);
     }
 
     if (is_string($year_or_datepoint)) {
         return new DateTimeImmutable($year_or_datepoint);
     }
 
-    if (!is_int($year_or_datepoint)) {
-        throw new TypeError(sprintf(
-            'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
-            is_object($year_or_datepoint) ? get_class($year_or_datepoint) : gettype($year_or_datepoint)
-        ));
-    }
-
-    if (null === $month || null === $day) {
-        throw new TypeError('The month and day parameters must be integer, null given');
-    }
-
-    return (new DateTimeImmutable())
-        ->setDate($year_or_datepoint, $month, $day)
-        ->setTime($hour, $minute, $second, $microseconds)
-    ;
+    throw new TypeError(sprintf(
+        'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
+        is_object($year_or_datepoint) ? get_class($year_or_datepoint) : gettype($year_or_datepoint)
+    ));
 }
 
 /**

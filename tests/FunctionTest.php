@@ -14,6 +14,7 @@
 
 namespace LeagueTest\Period;
 
+use ArgumentCountError;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -84,7 +85,7 @@ class FunctionTest extends TestCase
 
     public function testDatepointThrowsException()
     {
-        self::expectException(TypeError::class);
+        self::expectException(ArgumentCountError::class);
         datepoint(2018, 12);
     }
 
@@ -237,20 +238,20 @@ class FunctionTest extends TestCase
         interval_from_dateperiod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
-    public function testISOWeek()
+    public function testIsoWeek()
     {
         $period = iso_week(2014, 3);
         self::assertEquals(new DateTimeImmutable('2014-01-13'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2014-01-20'), $period->getEndDate());
     }
 
-    public function testISOWeekFailedWithInvalidYearIndex()
+    public function testIsoWeekFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
         iso_week([], 1);
     }
 
-    public function testISOWeekWithMissingWeekValue()
+    public function testIsoWeekWithMissingWeekValue()
     {
         self::assertTrue(iso_week(2014)->equals(iso_week(2014, 1)));
     }
