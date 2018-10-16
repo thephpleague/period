@@ -21,8 +21,9 @@
         "php" : ">=7.1.3"
     },
     "require-dev": {
-        "phpunit/phpunit" : "^7.0",
         "friendsofphp/php-cs-fixer": "^2.0",
+        "infection/infection": "^0.10.5",
+        "phpunit/phpunit" : "^7.0",
         "phpstan/phpstan": "^0.10.1",
         "phpstan/phpstan-strict-rules": "^0.10.0",
         "phpstan/phpstan-phpunit": "^0.10.0"
@@ -47,11 +48,13 @@
             "@phpstan-tests"
         ],
         "phpunit": "phpunit --coverage-text",
+        "infection": "infection",
         "test": [
             "@phpunit",
             "@phpcs",
             "@phpstan-src",
-            "@phpstan-tests"
+            "@phpstan-tests",
+            "@infection"
         ]
     },
     "extra": {
