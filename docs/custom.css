@@ -188,6 +188,13 @@ main article div > code {
     border:none;
 }
 
+main article img {
+    box-sizing: border-box;
+    margin:.3em auto;
+    padding:0;
+    display: block;
+}
+
 footer {
     border-top:1px solid #cfe4f9;
     background:#fff;

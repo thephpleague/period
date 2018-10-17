@@ -81,16 +81,16 @@ Converts its single input into a `DateInterval` object or throws a `TypeError` o
 use function League\Period\datepoint;
 use function League\Period\duration;
 
-$datePeriod = new DatePeriod(
-    datepoint(2012, 3, 6),
+$daterange = new DatePeriod(
+    datepoint(123456789),
     duration(600),
     datepoint(new DateTime())
 );
 
 //returns the same object as if you had written
 
-$datePeriod = new DatePeriod(
-    (new DateTimeImmutable())->setDate(2012, 3, 6)->setTime(0, 0),
+$daterange = new DatePeriod(
+    new DateTimeImmutable('@123456789'),
     new DateInterval('PT600S'),
     new DateTimeImmutable()
 );

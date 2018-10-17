@@ -30,7 +30,7 @@ use League\Period\Period;
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
 
-<p class="message-info">Type conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
+<p class="message-info"><code>datepoint</code> conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
 
 
 ## Helper functions
@@ -98,7 +98,7 @@ function League\Period\iso_week(mixed $datepoint): Period
 function League\Period\iso_year(mixed $datepoint): Period
 ~~~
 
-<p class="message-info">Type conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
+<p class="message-info"><code>datepoint</code> conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
 
 #### Examples
 
@@ -175,7 +175,7 @@ function League\Period\interval_around(mixed $datepoint, mixed $duration): Perio
 - The `$datepoint` parameter represent a datepoints
 - The `$duration` represents a duration.
 
-<p class="message-info">Type conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions</p>
+<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
 
 #### Example
 
@@ -204,18 +204,20 @@ function League\Period\interval_from_dateperiod(DatePeriod $datePeriod): Period
 #### Example
 
 ~~~php
-$begin = new DateTime('2012-08-01');
-$end = new DateTime('2012-08-31');
-$interval = new DateInterval('PT1H');
-
-$period = interval_from_dateperiod(new DatePeriod($begin, $interval, $end));
-$period->getStartDate() == $begin;
-$period->getEndDate() == $end;
+$daterange = new DatePeriod(
+	new DateTime('2012-08-01'),
+	new DateInterval('PT1H'),
+	new DateTime('2012-08-31')
+);
+$interval = interval_from_dateperiod($daterange);
+$interval->getStartDate() == $daterange->getStartDate();
+$interval->getEndDate() == $daterange->getEndDate();
 ~~~
 
 <p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
 
 ~~~php
-$period = interval_from_dateperiod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
-//throws a TypeError error
+$daterange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
+$interval = interval_from_dateperiod($daterange);
+//throws a TypeError error because $daterange->getEndDate() returns null
 ~~~

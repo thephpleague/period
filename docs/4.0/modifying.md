@@ -9,6 +9,8 @@ You can manipulate a `Period` object according to their datepoints or durations.
 
 `Period` **is an immutable value object** which means that any change returns a new `Period` object.
 
+<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
+
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>Period\Exception</code> exception.</p>
 
 ## Using datepoints
@@ -16,37 +18,37 @@ You can manipulate a `Period` object according to their datepoints or durations.
 ### Period::startingOn
 
 ~~~php
-public Period::startingOn(mixed $startDate): Period
+public Period::startingOn(mixed $datepoint): Period
 ~~~
 
-Returns a new `Period` object with `$startDate` as the new **starting included datepoint**.
+Returns a new `Period` object with `$datepoint` as the new **starting included datepoint**.
 
 #### Example
 
 ~~~php
-$period    = month(2014, 3);
-$newPeriod = $period->startingOn('2014-02-01');
-$period->getStartDate(); //returns DateTimeImmutable('2014-03-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-02-01');
-// $period->getEndDate() equals $newPeriod->getEndDate();
+$interval = month(2014, 3);
+$new_interval = $interval->startingOn('2014-02-01');
+$interval->getStartDate(); //returns DateTimeImmutable('2014-03-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-02-01');
+// $interval->getEndDate() equals $new_interval->getEndDate();
 ~~~
 
 ### Period::endingOn
 
 ~~~php
-public Period::endingOn(mixed $endDate): Period
+public Period::endingOn(mixed $datepoint): Period
 ~~~
 
-Returns a new `Period` object with `$endDate` as the new **ending excluded datepoint**.
+Returns a new `Period` object with `$datepoint` as the new **ending excluded datepoint**.
 
 #### Example
 
 ~~~php
-$period    = month(2014, 3);
-$newPeriod = $period->EndingOn('2014-03-16');
-$period->getEndDate(); //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
-// $period->getStartDate() equals $newPeriod->getStartDate();
+$interval = month(2014, 3);
+$new_interval = $interval->EndingOn('2014-03-16');
+$interval->getEndDate(); //returns DateTimeImmutable('2014-04-01');
+$new_interval->getEndDate(); //returns DateTimeImmutable('2014-03-16');
+// $interval->getStartDate() equals $new_interval->getStartDate();
 ~~~
 
 ## Using durations
@@ -62,11 +64,11 @@ Returns a new `Period` object by updating its duration. Only the excluded ending
 #### Example
 
 ~~~php
-$period    = month(2014, 3);
-$newPeriod = $period->withDurationAfterStart('2 WEEKS');
-$period->getEndDate();    //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getEndDate(); //returns DateTimeImmutable('2014-03-16');
-// $period->getStartDate() equals $newPeriod->getStartDate();
+$interval = month(2014, 3);
+$new_interval = $interval->withDurationAfterStart('2 WEEKS');
+$interval->getEndDate();    //returns DateTimeImmutable('2014-04-01');
+$new_interval->getEndDate(); //returns DateTimeImmutable('2014-03-16');
+// $interval->getStartDate() equals $new_interval->getStartDate();
 ~~~
 
 ### Period::withDurationBeforeEnd
@@ -80,11 +82,11 @@ Returns a new `Period` object by updating its duration. Only the included starti
 #### Example
 
 ~~~php
-$period    = month(2014, 3);
-$newPeriod = $period->withDurationBeforeEnd('2 DAYS');
-$period->getStartDate();    //returns DateTimeImmutable('2014-03-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-30');
-// $period->getEndDate() equals $newPeriod->getEndDate();
+$interval = month(2014, 3);
+$new_interval = $interval->withDurationBeforeEnd('2 DAYS');
+$interval->getStartDate();    //returns DateTimeImmutable('2014-03-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-03-30');
+// $interval->getEndDate() equals $new_interval->getEndDate();
 ~~~
 
 ### Period::move
@@ -98,12 +100,12 @@ Returns a new `Period` object where the endpoints are moved forward or backward 
 #### Example
 
 ~~~php
-$period = month(2014, 3);
-$newPeriod = $period->move('1 MONTH');
-$period->getStartDate()     //returns DateTimeImmutable('2014-03-01');
-$period->getEndDate();      //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
+$interval = month(2014, 3);
+$new_interval = $interval->move('1 MONTH');
+$interval->getStartDate()     //returns DateTimeImmutable('2014-03-01');
+$interval->getEndDate();      //returns DateTimeImmutable('2014-04-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-04-01');
+$new_interval->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 ~~~
 
 ### Period::moveStartDate
@@ -117,12 +119,12 @@ Returns a new `Period` object where the starting endpoint is moved forward or ba
 #### Example
 
 ~~~php
-$period = month(2014, 3);
-$newPeriod = $period->moveStartDate('-1 MONTH');
-$period->getStartDate()     //returns DateTimeImmutable('2014-03-01');
-$period->getEndDate();      //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-02-01');
-$newPeriod->getEndDate();   //returns DateTimeImmutable('2014-04-01');
+$interval = month(2014, 3);
+$new_interval = $interval->moveStartDate('-1 MONTH');
+$interval->getStartDate()     //returns DateTimeImmutable('2014-03-01');
+$interval->getEndDate();      //returns DateTimeImmutable('2014-04-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-02-01');
+$new_interval->getEndDate();   //returns DateTimeImmutable('2014-04-01');
 ~~~
 
 ### Period::moveEndDate
@@ -136,12 +138,12 @@ Returns a new `Period` object where the ending endpoint is moved forward or back
 #### Example
 
 ~~~php
-$period = month(2014, 3);
-$newPeriod = $period->moveEndtDate('1 MONTH');
-$period->getStartDate()     //returns DateTimeImmutable('2014-03-01');
-$period->getEndDate();      //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-01');
-$newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
+$interval = month(2014, 3);
+$new_interval = $interval->moveEndtDate('1 MONTH');
+$interval->getStartDate()     //returns DateTimeImmutable('2014-03-01');
+$interval->getEndDate();      //returns DateTimeImmutable('2014-04-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-03-01');
+$new_interval->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 ~~~
 
 ### Period::expand
@@ -158,23 +160,23 @@ Returns a new `Period` object where the given interval is:
 #### Example
 
 ~~~php
-$period = month(2014, 3);
-$newPeriod = $period->expand('1 MONTH');
-$period->getStartDate()     //returns DateTimeImmutable('2014-03-01');
-$period->getEndDate();      //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-02-01');
-$newPeriod->getEndDate();   //returns DateTimeImmutable('2014-05-01');
+$interval = month(2014, 3);
+$new_interval = $interval->expand('1 MONTH');
+$interval->getStartDate()     //returns DateTimeImmutable('2014-03-01');
+$interval->getEndDate();      //returns DateTimeImmutable('2014-04-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-02-01');
+$new_interval->getEndDate();   //returns DateTimeImmutable('2014-05-01');
 ~~~
 
 <p class="message-info">If you need to shrink the time range you can simply use a <strong>inverted</strong> <code>DateInterval</code> object</p>
 
 ~~~php
-$period = month(2014, 3);
-$newPeriod = $period->expand('-1 DAY');
-$period->getStartDate();     //returns DateTimeImmutable('2014-03-01');
-$period->getEndDate();      //returns DateTimeImmutable('2014-04-01');
-$newPeriod->getStartDate(); //returns DateTimeImmutable('2014-03-02');
-$newPeriod->getEndDate();   //returns DateTimeImmutable('2014-03-31');
+$interval = month(2014, 3);
+$new_interval = $interval->expand('-1 DAY');
+$interval->getStartDate();     //returns DateTimeImmutable('2014-03-01');
+$interval->getEndDate();      //returns DateTimeImmutable('2014-04-01');
+$new_interval->getStartDate(); //returns DateTimeImmutable('2014-03-02');
+$new_interval->getEndDate();   //returns DateTimeImmutable('2014-03-31');
 ~~~
 
 ## Using another Period object
@@ -182,7 +184,7 @@ $newPeriod->getEndDate();   //returns DateTimeImmutable('2014-03-31');
 ### Period::merge
 
 ~~~php
-public Period::merge(Period ...$period): Period
+public Period::merge(Period $interval, Period ...$intervals): Period
 ~~~
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
@@ -190,10 +192,10 @@ Merges two or more `Period` objects by returning a new `Period` object which eng
 #### Example
 
 ~~~php
-$period = semester(2012, 1);
-$alt    = iso_week(2013, 4);
-$other  = interval_after('2012-03-07 08:10:27', 86000*3);
-$newPeriod = $period->merge($alt, $other);
-// $newPeriod->getStartDate() equals $period->getStartDate();
-// $newPeriod->getEndDate() equals $altPeriod->getEndDate();
+$interval = semester(2012, 1);
+$alt = iso_week(2013, 4);
+$other = interval_after('2012-03-07 08:10:27', 86000*3);
+$merge_interval = $interval->merge($alt, $other);
+// $merge_interval->getStartDate() equals $period->getStartDate();
+// $merge_interval->getEndDate() equals $altPeriod->getEndDate();
 ~~~

@@ -41,6 +41,8 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 - `$duration` is a interval
 - `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the start date from the set of recurring dates within the period.
 
+<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
+
 #### Examples
 
 ~~~php
@@ -69,12 +71,14 @@ foreach ($datePeriod as $datetime) {
 public Period::split(mixed $duration): Generator
 ~~~
 
-This method splits a given `Period` object in smaller `Period` objects according to the given `$interval` startinf from the object starting datepoint to its ending datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
+This method splits a given `Period` object in smaller `Period` objects according to the given `$duration` starting from the object starting datepoint to its ending datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
 
 - The first returned `Period` will always share the same starting datepoint with the parent object.
 - The last returned `Period` will always share the same ending datepoint with the parent object.
 - The last returned `Period` will have a duration equal or lesser than the submitted interval.
 - If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
+
+<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
 
 #### Example
 
@@ -91,12 +95,14 @@ foreach (year(2012)->split('1 MONTH') as $inner_periods) {
 public Period::splitBackwards(mixed $duration): Generator
 ~~~
 
-This method splits a given `Period` object in smaller `Period` objects according to the given `$interval` starting from the object ending datepoint to its starting datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
+This method splits a given `Period` object in smaller `Period` objects according to the given `$duration` starting from the object ending datepoint to its starting datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
 
 - The first returned `Period` will always share the same ending datepoint with the parent object.
 - The last returned `Period` will always share the same starting datepoint with the parent object.
 - The last returned `Period` will have a duration equal or lesser than the submitted interval.
 - If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
+
+<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
 
 #### Example
 
@@ -126,7 +132,7 @@ $period = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 echo $period; // '2014-04-30T23:00:00.000000Z/2014-05-07T23:00:00.000000Z'
 ~~~
 
-### Json representation
+### JSON representation
 
 ~~~php
 public Period::jsonSerialize(void): array
