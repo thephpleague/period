@@ -48,12 +48,12 @@
             "@phpstan-tests"
         ],
         "phpunit": "phpunit --coverage-text",
-        "infection": "infection",
+        "infection": "infection -j$(nproc) --coverage=build",
         "test": [
-            "@phpunit",
-            "@phpcs",
             "@phpstan-src",
             "@phpstan-tests",
+            "@phpcs",
+            "@phpunit",
             "@infection"
         ]
     },

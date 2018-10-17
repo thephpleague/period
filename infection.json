@@ -3,18 +3,12 @@
     "source": {
         "directories": [
             "src"
-        ],
-        "excludes": [
-            "vendor",
-            "tests"
         ]
     },
     "logs": {
-        "text": "build/reports/infection.log",
-        "summary": "build/reports/summary.log",
-        "debug": "build/reports/debug.log",
-        "badge": {
-            "branch": "master"
-        }
+        "text": "build/infection/infection.log",
+        "summary": "build/infection/summary.log",
+        "debug": "build/infection/debug.log",
+        "perMutator": "build/infection/per-mutator.md"
     }
 }
