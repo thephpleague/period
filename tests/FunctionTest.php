@@ -227,7 +227,7 @@ class FunctionTest extends TestCase
 
     public function testIntervalFromDatePeriodThrowsException()
     {
-        self::expectException(Exception::class);
+        self::expectException(TypeError::class);
         interval_from_dateperiod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
@@ -241,10 +241,10 @@ class FunctionTest extends TestCase
     public function testIsoWeekFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
-        iso_week([], 1);
+        iso_week([]);
     }
 
-    public function testIsoWeekWithMissingWeekValue()
+    public function testIsoWeekWithDefaultArgument()
     {
         self::assertTrue(iso_week(2014)->equals(iso_week(2014, 1)));
     }
@@ -259,10 +259,10 @@ class FunctionTest extends TestCase
     public function testMonthFailedWithInvalidYearIndex()
     {
         self::expectException(TypeError::class);
-        month([], 1);
+        month([]);
     }
 
-    public function testMonthWithMissingValue()
+    public function testMonthWithDefaultArgument()
     {
         self::assertTrue(month(2014)->equals(month(2014, 1)));
     }
@@ -274,15 +274,15 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2014-10-01'), $period->getEndDate());
     }
 
-    public function testQuarterFailedWithInvalidYearIndex()
-    {
-        self::expectException(TypeError::class);
-        quarter([], 1);
-    }
-
-    public function testQuarterWithMissingValue()
+    public function testQuarterWithDefaultArgument()
     {
         self::assertEquals(quarter(2014), quarter(2014, 1));
+    }
+
+    public function testQuarterThrowsWithInvalidYearType()
+    {
+        self::expectException(TypeError::class);
+        quarter([]);
     }
 
     public function testSemester()
@@ -292,15 +292,15 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2015-01-01'), $period->getEndDate());
     }
 
-    public function testSemesterFailedWithInvalidYearIndex()
-    {
-        self::expectException(TypeError::class);
-        semester([], 1);
-    }
-
-    public function testSemesterFailedWithMissingValue()
+    public function testSemesterWithDefaultArgument()
     {
         self::assertEquals(semester(2014), semester(2014, 1));
+    }
+
+    public function testSemesterThrowsWithInvalidYearType()
+    {
+        self::expectException(TypeError::class);
+        semester([]);
     }
 
     public function testYear()
@@ -337,6 +337,12 @@ class FunctionTest extends TestCase
         self::assertEquals($period, $alt_period);
     }
 
+    public function testDayWithDefaultArgument()
+    {
+        self::assertEquals(day(2008), day(2008, 1, 1));
+        self::assertEquals(day(2008, 1), day(2008, 1, 1));
+    }
+
     public function testHour()
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
@@ -356,6 +362,14 @@ class FunctionTest extends TestCase
         self::assertEquals($period, $alt_period);
     }
 
+    public function testHourWithDefaultArgument()
+    {
+        $default = hour(2008, 1, 1, 0);
+        self::assertEquals(hour(2008), $default);
+        self::assertEquals(hour(2008, 1), $default);
+        self::assertEquals(hour(2008, 1, 1), $default);
+    }
+
     public function testMinute()
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
@@ -373,6 +387,15 @@ class FunctionTest extends TestCase
         $period = minute('2008-07-01 12:03:04');
         $alt_period = minute(2008, 7, 1, 12, 3);
         self::assertEquals($period, $alt_period);
+    }
+
+    public function testMinuteWithDefaultArgument()
+    {
+        $default = minute(2008, 1, 1, 0, 0);
+        self::assertEquals(minute(2008), $default);
+        self::assertEquals(minute(2008, 1), $default);
+        self::assertEquals(minute(2008, 1, 1), $default);
+        self::assertEquals(minute(2008, 1, 1, 0), $default);
     }
 
     public function testSecond()
@@ -396,6 +419,16 @@ class FunctionTest extends TestCase
         self::assertEquals($period, $alt_period);
     }
 
+    public function testSecondWithDefaultArgument()
+    {
+        $default = second(2008, 1, 1, 0, 0, 0);
+        self::assertEquals(second(2008), $default);
+        self::assertEquals(second(2008, 1), $default);
+        self::assertEquals(second(2008, 1, 1), $default);
+        self::assertEquals(second(2008, 1, 1, 0), $default);
+        self::assertEquals(second(2008, 1, 1, 0, 0), $default);
+    }
+
     public function testInstant()
     {
         $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
@@ -414,6 +447,17 @@ class FunctionTest extends TestCase
         $period = instant('2008-07-01 12:03:04');
         $alt_period = instant(2008, 7, 1, 12, 3, 4);
         self::assertEquals($period, $alt_period);
+    }
+
+    public function testInstantWithDefaultArgument()
+    {
+        $default = instant(2008, 1, 1, 0, 0, 0, 0);
+        self::assertEquals(instant(2008), $default);
+        self::assertEquals(instant(2008, 1), $default);
+        self::assertEquals(instant(2008, 1, 1), $default);
+        self::assertEquals(instant(2008, 1, 1, 0), $default);
+        self::assertEquals(instant(2008, 1, 1, 0, 0), $default);
+        self::assertEquals(instant(2008, 1, 1, 0, 0, 0), $default);
     }
 
     public function testCreateFromWithDateTimeInterface()

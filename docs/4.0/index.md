@@ -41,8 +41,7 @@ A simple example on how to get all the days from a selected month.
 ~~~php
 use function League\Period\month;
 
-$interval = month(2014, 10);
-foreach ($interval->getDatePeriod('1 DAY') as $day) {
+foreach (month(2014, 10)->getDatePeriod('1 DAY') as $day) {
     $day->format('Y-m-d');
 }
 ~~~

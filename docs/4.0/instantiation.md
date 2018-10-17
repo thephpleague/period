@@ -15,20 +15,23 @@ public Period::__construct(mixed $startDate, mixed $endDate)
 
 #### Parameters
 
-Both `$startDate` and `$endDate` parameters represent the period datepoints.
+Both `$startDate` and `$endDate` parameters are datepoints.
 
-- The `$startDate` datepoint represents **the starting included datepoint**.
-- The `$endDate` datepoint represents **the ending excluded datepoint**.
+- The `$startDate` represents **the starting included datepoint**.
+- The `$endDate` represents **the ending excluded datepoint**.
 
 `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
 
-#### Examples
+#### Example
 
 ~~~php
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
+
+<p class="message-info">Type conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
+
 
 ## Helper functions
 
@@ -95,14 +98,16 @@ function League\Period\iso_week(mixed $datepoint): Period
 function League\Period\iso_year(mixed $datepoint): Period
 ~~~
 
+<p class="message-info">Type conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
+
 #### Examples
 
 ~~~php
 use League\Period;
 
 $instant = Period\instant('2012-04-01');
-$alt_in = Period\instant(2012, 4, 1);
-$alt_in->equals($instant); //return true;
+$alt_i = Period\instant(2012, 4, 1);
+$alt_i->equals($instant); //return true;
 
 $second = Period\second('2012-04-01 08:30:25');
 $alt_s  = Period\second(2012, 4, 1, 8, 30, 25);
@@ -123,7 +128,7 @@ $alt_d->equals($day); //return true;
 $day_string->equals($day); //return true;
 
 $week = Period\iso_week(2013, 23);
-$alt_w  = Period\iso_week('2013-06-05');
+$alt_w = Period\iso_week('2013-06-05');
 $alt_w->equals($week); //return true;
 //this period represents the 23rd week of 2013
 
@@ -138,7 +143,7 @@ $alt_q->equals($quarter); //return true;
 //this period represents the second quarter of 2013
 
 $semester = Period\semester(2013, 2);
-$alt_s    = Period\semester('2013-03-15');
+$alt_s = Period\semester('2013-03-15');
 $alt_s->equals($semester); //return true;
 //this period represents the second semester of 2013
 
@@ -167,8 +172,10 @@ function League\Period\interval_around(mixed $datepoint, mixed $duration): Perio
 
 #### Parameters
 
-- The `$datepoint` parameter represent a time range datepoints.
+- The `$datepoint` parameter represent a datepoints
 - The `$duration` represents a duration.
+
+<p class="message-info">Type conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions</p>
 
 #### Example
 
@@ -206,4 +213,9 @@ $period->getStartDate() == $begin;
 $period->getEndDate() == $end;
 ~~~
 
-<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger and <code>Period\Exception</code>.</p>
+<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
+
+~~~php
+$period = interval_from_dateperiod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+//throws a TypeError error
+~~~
