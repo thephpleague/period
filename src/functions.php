@@ -24,7 +24,6 @@ use DateTimeInterface;
 use TypeError;
 use const FILTER_VALIDATE_INT;
 use function filter_var;
-use function func_num_args;
 use function get_class;
 use function gettype;
 use function intdiv;
@@ -43,47 +42,29 @@ use function sprintf;
  * <li>a integer interpreted as a timestamp
  * </ul>
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param mixed $datepoint a year as an int or a datepoint
  */
-function datepoint(
-    $year_or_datepoint,
-    int $month = null,
-    int $day = null,
-    int $hour = 0,
-    int $minute = 0,
-    int $second = 0,
-    int $microsecond = 0
-): DateTimeImmutable {
-    if (is_int($year_or_datepoint) && isset($month, $day)) {
-        return (new DateTimeImmutable())
-            ->setDate($year_or_datepoint, $month, $day)
-            ->setTime($hour, $minute, $second, $microsecond)
-        ;
+function datepoint($datepoint): DateTimeImmutable
+{
+    if ($datepoint instanceof DateTimeImmutable) {
+        return $datepoint;
     }
 
-    if (1 !== func_num_args()) {
-        throw new TypeError(__FUNCTION__.' accepts either a single datepoint argument OR at least 3 date and time related integer arguments.');
+    if ($datepoint instanceof DateTime) {
+        return DateTimeImmutable::createFromMutable($datepoint);
     }
 
-    if ($year_or_datepoint instanceof DateTimeImmutable) {
-        return $year_or_datepoint;
-    }
-
-    if ($year_or_datepoint instanceof DateTime) {
-        return DateTimeImmutable::createFromMutable($year_or_datepoint);
-    }
-
-    if (false !== ($timestamp = filter_var($year_or_datepoint, FILTER_VALIDATE_INT))) {
+    if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
         return new DateTimeImmutable('@'.$timestamp);
     }
 
-    if (is_string($year_or_datepoint)) {
-        return new DateTimeImmutable($year_or_datepoint);
+    if (is_string($datepoint)) {
+        return new DateTimeImmutable($datepoint);
     }
 
     throw new TypeError(sprintf(
         'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
-        is_object($year_or_datepoint) ? get_class($year_or_datepoint) : gettype($year_or_datepoint)
+        is_object($datepoint) ? get_class($datepoint) : gettype($datepoint)
     ));
 }
 
@@ -188,7 +169,7 @@ function year($year_or_datepoint): Period
         return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
     }
 
-    $startDate = datepoint($year_or_datepoint, 1, 1);
+    $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, 1, 1)->setTime(0, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
 }
@@ -215,10 +196,8 @@ function iso_year($year_or_datepoint): Period
 
 /**
  * Creates new instance for a specific semester in a given year.
- *
- * @param int $index semester index
  */
-function semester($year_or_datepoint, int $index = 1): Period
+function semester($year_or_datepoint, int $semester = 1): Period
 {
     if (!is_int($year_or_datepoint)) {
         $datepoint = datepoint($year_or_datepoint);
@@ -231,17 +210,17 @@ function semester($year_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P6M')));
     }
 
-    $startDate = datepoint($year_or_datepoint, (($index - 1) * 6) + 1, 1);
+    $startDate = (new DateTimeImmutable())
+        ->setDate($year_or_datepoint, (($semester - 1) * 6) + 1, 1)
+        ->setTime(0, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('P6M')));
 }
 
 /**
  * Creates new instance for a specific quarter in a given year.
- *
- * @param int $index quarter index
  */
-function quarter($year_or_datepoint, int $index = 1): Period
+function quarter($year_or_datepoint, int $quarter = 1): Period
 {
     if (!is_int($year_or_datepoint)) {
         $datepoint = datepoint($year_or_datepoint);
@@ -254,17 +233,17 @@ function quarter($year_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P3M')));
     }
 
-    $startDate = datepoint($year_or_datepoint, (($index - 1) * 3) + 1, 1);
+    $startDate = (new DateTimeImmutable())
+        ->setDate($year_or_datepoint, (($quarter - 1) * 3) + 1, 1)
+        ->setTime(0, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('P3M')));
 }
 
 /**
  * Creates new instance for a specific year and month.
- *
- * @param int $index month index
  */
-function month($year_or_datepoint, int $index = 1): Period
+function month($year_or_datepoint, int $month = 1): Period
 {
     if (!is_int($year_or_datepoint)) {
         $datepoint = datepoint($year_or_datepoint);
@@ -277,17 +256,17 @@ function month($year_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
     }
 
-    $startDate = datepoint($year_or_datepoint, $index, 1);
+    $startDate = (new DateTimeImmutable())
+        ->setDate($year_or_datepoint, $month, 1)
+        ->setTime(0, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('P1M')));
 }
 
 /**
  * Creates new instance for a specific ISO8601 week.
- *
- * @param int $index iso week index
  */
-function iso_week($year_or_datepoint, int $index = 1): Period
+function iso_week($year_or_datepoint, int $week = 1): Period
 {
     if (!is_int($year_or_datepoint)) {
         $datepoint = datepoint($year_or_datepoint)->setTime(0, 0);
@@ -296,7 +275,7 @@ function iso_week($year_or_datepoint, int $index = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
-    $startDate = (new DateTimeImmutable())->setTime(0, 0)->setISODate($year_or_datepoint, $index, 1);
+    $startDate = (new DateTimeImmutable())->setTime(0, 0)->setISODate($year_or_datepoint, $week, 1);
 
     return new Period($startDate, $startDate->add(new DateInterval('P7D')));
 }
@@ -315,7 +294,7 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
         return new Period($startDate, $startDate->add(new DateInterval('P1D')));
     }
 
-    $startDate = datepoint($year_or_datepoint, $month, $day);
+    $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, $day)->setTime(0, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('P1D')));
 }
@@ -335,7 +314,7 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
         return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
     }
 
-    $startDate = datepoint($year_or_datepoint, $month, $day, $hour);
+    $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, $day)->setTime($hour, 0);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
 }
@@ -355,7 +334,7 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
         return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
     }
 
-    $startDate = datepoint($year_or_datepoint, $month, $day, $hour, $minute);
+    $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, $day)->setTime($hour, $minute);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
 }
@@ -385,7 +364,9 @@ function second(
         return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
     }
 
-    $startDate = datepoint($year_or_datepoint, $month, $day, $hour, $minute, $second);
+    $startDate = (new DateTimeImmutable())
+        ->setDate($year_or_datepoint, $month, $day)
+        ->setTime($hour, $minute, $second);
 
     return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
 }
@@ -408,7 +389,9 @@ function instant(
         return new Period($datepoint, $datepoint);
     }
 
-    $datepoint = datepoint($year_or_datepoint, $month, $day, $hour, $minute, $second, $microsecond);
+    $datepoint = (new DateTimeImmutable())
+        ->setDate($year_or_datepoint, $month, $day)
+        ->setTime($hour, $minute, $second, $microsecond);
 
     return new Period($datepoint, $datepoint);
 }

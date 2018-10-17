@@ -160,32 +160,32 @@ class PeriodTest extends TestCase
     public function overlapsDataProvider()
     {
         return [
-            'testOverlapsReturnsFalseWithAbutsIntervals' => [
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2014-04-01'), new DateTimeImmutable('2014-05-01')),
-                false,
-            ],
-            'testContainsReturnsFalseWithGappedIntervals' => [
+            'overlaps returns false with gapped intervals' => [
                 new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 new Period(new DateTimeImmutable('2013-04-01'), new DateTimeImmutable('2013-05-01')),
                 false,
             ],
-            'testOverlapsReturnsTrue' => [
+            'overlaps returns false with abuts intervals' => [
+                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                new Period(new DateTimeImmutable('2014-04-01'), new DateTimeImmutable('2014-05-01')),
+                false,
+            ],
+            'overlaps returns' => [
                 new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 new Period(new DateTimeImmutable('2014-03-15'), new DateTimeImmutable('2014-04-07')),
                 true,
             ],
-            'testOverlapsReturnsTureWithSameDatepointsIntervals' => [
+            'overlaps returns with equals intervals' => [
                 new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 true,
             ],
-            'testOverlapsReturnsTrueContainedIntervals' => [
+            'overlaps returns with contained intervals' => [
                 new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 true,
             ],
-            'testOverlapsReturnsTrueContainedIntervalsBackward' => [
+            'overlaps returns with contained intervals backwards' => [
                 new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 true,
@@ -204,42 +204,42 @@ class PeriodTest extends TestCase
     public function containsDataProvider()
     {
         return [
-            'testContainsReturnsTrueWithADateTimeInterfaceObject' => [
+            'contains returns true with a DateTimeInterface object' => [
                 new Period(new DateTimeImmutable('2014-03-10'), new DateTimeImmutable('2014-03-15')),
                 new DateTime('2014-03-12'),
                 true,
             ],
-            'testContainsReturnsTrueWithIntervalObject' => [
+            'contains returns true with a Period object' => [
                 new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-06-01')),
                 new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-04-01')),
                 true,
             ],
-            'testContainsReturnsFalseWithADateTimeInterfaceObject' => [
+            'contains returns false with a DateTimeInterface object' => [
                 new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 new DateTime('2015-03-12'),
                 false,
             ],
-            'testContainsReturnsFalseWithADateTimeInterfaceObjectAfterInterval' => [
+            'contains returns false with a DateTimeInterface object after the interval' => [
                 new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 '2012-03-12',
                 false,
             ],
-            'testContainsReturnsFalseWithADateTimeInterfaceObjectBeforeInterval' => [
+            'contains returns false with a DateTimeInterface object before the interval' => [
                 new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 '2014-04-01',
                 false,
             ],
-            'testContainsReturnsFalseWithAbutsIntervals' => [
+            'contains returns false with abuts interval' => [
                 new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-04-01')),
                 new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-06-01')),
                 false,
             ],
-            'testContainsReturnsTrueWithIntervalObjectWhichShareTheSameEndDate' => [
+            'contains returns true with a Period objects sharing the same end date' => [
                 new Period(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01')),
                 new Period(new DateTimeImmutable('2015-12-01'), new DateTimeImmutable('2016-01-01')),
                 true,
             ],
-            'testContainsReturnsFalseWithAZeroDurationObject' => [
+            'contains returns false with O duration Period object' => [
                 new Period(new DateTimeImmutable('2012-03-12'), new DateTimeImmutable('2012-03-12')),
                 new DateTime('2012-03-12'),
                 false,
@@ -258,19 +258,19 @@ class PeriodTest extends TestCase
     public function durationCompareDataProvider()
     {
         return [
-            'testDurationLessThan' => [
+            'duration less than' => [
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
                 new Period(new DateTime('2013-01-01'), new DateTime('2013-01-16')),
                 -1,
             ],
-            'testDurationGreaterThanReturnsTrue' => [
+            'duration greater than' => [
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
                 1,
             ],
-            'testdurationEqualsReturnsTrueWithMicroseconds' => [
-                new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
-                new Period(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
+            'duration equals with microsecond' => [
+                new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00.123456')),
+                new Period(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
                 0,
             ],
         ];
@@ -287,17 +287,17 @@ class PeriodTest extends TestCase
     public function equalsDataProvider()
     {
         return [
-            'testSameValueAsReturnsTrue' => [
+            'returns true' => [
                 new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
                 new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
                 true,
             ],
-            'testSameValueAsReturnsFalse' => [
+            'returns false' => [
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
                 false,
             ],
-            'testSameValueAsReturnsFalseArgumentOrderIndependent' => [
+            'returns false is argument order independent' => [
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
                 false,
@@ -333,11 +333,13 @@ class PeriodTest extends TestCase
     public function testSplitWithLargeInterval()
     {
         $period = new Period(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->split(new DateInterval('P1Y'));
-        foreach ($range as $expectedPeriod) {
-            self::assertInstanceOf(Period::class, $expectedPeriod);
-            self::assertTrue($expectedPeriod->equals($period));
+        $range = [];
+        foreach ($period->split(new DateInterval('P1Y')) as $innerPeriod) {
+            $range[] = $innerPeriod;
         }
+        self::assertCount(1, $range);
+        self::assertInstanceOf(Period::class, $range[0]);
+        self::assertTrue($range[0]->equals($period));
     }
 
     public function testSplitWithInconsistentInterval()
@@ -399,7 +401,7 @@ class PeriodTest extends TestCase
 
     public function testStartingOn()
     {
-        $expected  = new DateTime('2012-03-02');
+        $expected = new DateTime('2012-03-02');
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->startingOn($expected);
         self::assertTrue($newInterval->getStartDate() == $expected);
@@ -717,7 +719,7 @@ class PeriodTest extends TestCase
         self::assertEquals($expected, $period->withDurationAfterStart('1 MONTH'));
     }
 
-    public function testWithDurationThrowsException()
+    public function testWithDurationAfterStartThrowsException()
     {
         self::expectException(Exception::class);
         $period = new Period('2014-03-01', '2014-03-15');
@@ -759,7 +761,7 @@ class PeriodTest extends TestCase
         month(2014, 3)->merge();
     }
 
-    public function testAdd()
+    public function testMoveEndDate()
     {
         $orig = interval_after('2012-01-01', '2 MONTH');
         $period = $orig->moveEndDate('-1 MONTH');
@@ -768,7 +770,7 @@ class PeriodTest extends TestCase
         self::assertEquals($orig->getStartDate(), $period->getStartDate());
     }
 
-    public function testAddThrowsException()
+    public function testMoveEndDateThrowsException()
     {
         self::expectException(Exception::class);
         interval_after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
@@ -800,12 +802,6 @@ class PeriodTest extends TestCase
         interval_after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
     }
 
-    public function testSubThrowsException()
-    {
-        self::expectException(Exception::class);
-        interval_after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
-    }
-
     public function testDateIntervalDiff()
     {
         $orig = interval_after('2012-01-01', '1 HOUR');
@@ -813,7 +809,7 @@ class PeriodTest extends TestCase
         self::assertInstanceOf(DateInterval::class, $orig->dateIntervalDiff($alt));
     }
 
-    public function testTimeIntervalDiff()
+    public function testTimestampIntervalDiff()
     {
         $orig = interval_after('2012-01-01', '1 HOUR');
         $alt = interval_after('2012-01-01', '2 HOUR');

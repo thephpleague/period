@@ -82,12 +82,6 @@ class FunctionTest extends TestCase
         datepoint([]);
     }
 
-    public function testDatepointThrowsException()
-    {
-        self::expectException(TypeError::class);
-        datepoint(2018, 12);
-    }
-
     /**
      * @dataProvider durationProvider
      */
