@@ -50,7 +50,6 @@ foreach (month(2014, 10)->split('1 DAY') as $period) {
 
 The library also allow iterating backwards over the interval.
 
-
 ## compare intervals and datepoints
 
 You can compare time ranges based on their duration and/or their datepoints.
