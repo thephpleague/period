@@ -15,7 +15,7 @@ $interval = interval_around('2014-01-01 08:00:25', '1 HOUR');
 
 //instead of doing
 $date = new DateTimeImmutable('2014-01-01 08:00:25');
-$duration = new DateInterval('P1H');
+$duration = new DateInterval('PT1H');
 $startDate = $date->sub($duration);
 $endDate = $date->add($duration);
 
