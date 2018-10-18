@@ -67,6 +67,19 @@ $period->contains($altPeriod); //returns false
 $period->contains('2014-01-02'); //returns true
 ~~~
 
+## Modifying time ranges
+
+`Period` is an immutable value object. Any change to the object returns a new object.
+
+~~~php
+use function League\Period\interval_before;
+
+$period = interval_before('2014-01-07', '1 WEEK');
+$altPeriod = $period->endingOn('2014-02-03');
+$period->contains($altPeriod); //return false;
+$altPeriod->durationGreaterThan($period); //return true;
+~~~
+
 ## formatting
 
 Format and export your `Period` instance following standardized format.
@@ -83,17 +96,4 @@ echo json_encode($period, JSON_PRETTY_PRINT);
 //     "startDate": "2014-10-03T06:00:00.000000Z",
 //     "endDate": "2014-10-03T07:00:00.000000Z"
 // }
-~~~
-
-## Modifying time ranges
-
-`Period` is an immutable value object. Any change to the object returns a new object.
-
-~~~php
-use function League\Period\interval_before;
-
-$period = interval_before('2014-01-07', '1 WEEK');
-$altPeriod = $period->endingOn('2014-02-03');
-$period->contains($altPeriod); //return false;
-$altPeriod->durationGreaterThan($period); //return true;
 ~~~

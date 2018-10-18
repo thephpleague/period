@@ -25,9 +25,7 @@ You can also use `Period` without using Composer by downloading the library and:
 - using the bundle autoloader script as shown below:
 
 ~~~php
-<?php
-
-require 'path/to/league/period/autoload.php';
+require 'path/to/league/repo/autoload.php';
 
 use function League\Period\day;
 
