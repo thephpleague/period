@@ -119,6 +119,25 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance backwards starting from
+     * the instance ending datepoint.
+     */
+    public function getDatePeriodBackwards($duration, int $option = 0): iterable
+    {
+        $duration = duration($duration);
+        $date = $this->endDate;
+        if ((bool) ($option & DatePeriod::EXCLUDE_START_DATE)) {
+            $date = $this->endDate->sub($duration);
+        }
+
+        while ($date > $this->startDate) {
+            yield $date;
+            $date = $date->sub($duration);
+        }
+    }
+
+    /**
      * Returns the string representation as a ISO8601 interval format.
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals

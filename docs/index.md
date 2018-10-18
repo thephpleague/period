@@ -4,84 +4,95 @@ layout: homepage
 
 # Features
 
-## Multiple named constructors
-
-To help you start working with `Period` objects
+## easy instance creation
 
 ~~~php
 use League\Period\Period;
+use function League\Period\interval_around;
 
-$period = new Period(new DateTime('2014-10-15 08:35:26'), '2014-10-15 08:53:12');
-Period::createFromYear(2014);
-Period::createFromSemester(2014, 1);
-Period::createFromQuarter(2014, 1);
-Period::createFromMonth(2014, 1);
-Period::createFromWeek(2014, 1);
-Period::createFromDay('NOW');
-Period::createFromDuration('2014-01-01 08:00:25', new DateInterval('PT1H'));
-Period::createFromDurationBeforeEnd('2014-01-01 08:00:25', 3600);
+//do
+$interval = interval_around('2014-01-01 08:00:25', '1 HOUR');
+
+//instead of doing
+$date = new DateTimeImmutable('2014-01-01 08:00:25');
+$duration = new DateInterval('P1H');
+$startDate = $date->sub($duration);
+$endDate = $date->add($duration);
+
+$interval = new Period($startDate, $endDate);
 ~~~
 
-## Accessing time range properties
+To help you start working with `Period` objects, the library comes bundled with many more namespaced helper functions to ease manipulating datetime intervals.
 
-Once instantiated, you can access `Period` datepoints and durations easily:
+## iterating over the interval made simple
 
-~~~php
-use League\Period\Period;
-
-$period = Period::createFromDuration('2014-10-03 08:12:37', 3600);
-$start = $period->getStartDate();
-$end = $period->getEndDate();
-$duration = $period->getDateInterval();
-$duration2 = $period->getTimestampInterval();
-echo $period;
-~~~
-
-## Different ways to iterate over the time range
-
-You can return selected datepoints inside the `Period` time range
+You can return selected datepoints inside the interval
 
 ~~~php
-use League\Period\Period;
+use function League\Period\month;
 
-$period = Period::createFromMonth(2014, 10);
-foreach ($period->getDatePeriod('1 DAY') as $datepoint) {
+foreach (month(2014, 10)->getDatePeriod('1 DAY') as $datepoint) {
     echo $datepoint->format('Y-m-d');
 }
 ~~~
 
-or split the given time range into smaller `Period` objects
+or split the interval into smaller `Period` objects
 
 ~~~php
-use League\Period\Period;
+use function League\Period\month;
 
-$period = Period::createFromMonth(2014, 10);
-foreach ($period->split('1 DAY') as $period) {
-    echo $period;
+foreach (month(2014, 10)->split('1 DAY') as $period) {
+    foreach ($period->getDatePeriod('1 HOUR') as $datepoint) {
+    	echo $datepoint->format('Y-m-d H:i:s');
+    }
 }
 ~~~
 
-## Comparing different time ranges simplified
+The library also allow iterating backwards over the interval.
+
+
+## compare intervals and datepoints
 
 You can compare time ranges based on their duration and/or their datepoints.
 
 ~~~php
-use League\Period\Period;
+use function League\Period\interval_after;
+use function League\Period\iso_week;
 
-$period = Period::createFromDuration('2014-01-01', '1 WEEK');
-$altPeriod = Period::createFromWeek(2014, 3);
-$period->sameDurationAs($altPeriod); //will return true because the duration are equals
-$period->sameValueAs($altPeriod); //will return false because the datepoints differ
+$period = interval_after('2014-01-01', '1 WEEK');
+$altPeriod = iso_week(2014, 3);
+$period->durationEquals($altPeriod); //returns true
+$period->equals($altPeriod); //returns false
+$period->contains($altPeriod); //returns false
+$period->contains('2014-01-02'); //returns true
+~~~
+
+## formatting
+
+Format and export your `Period` instance following standardized format.
+
+~~~php
+use function League\Period\interval_after;
+
+$period = interval_after('2014-10-03 08:00:00', 3600);
+
+echo $period; // 2014-10-03T06:00:00.000000Z/2014-10-03T07:00:00.000000Z
+echo $period->format('Y-m-d H:i:s'); // [2014-10-03 08:00:00, 2014-10-03 09:00:00)
+echo json_encode($period, JSON_PRETTY_PRINT);
+// {
+//     "startDate": "2014-10-03T06:00:00.000000Z",
+//     "endDate": "2014-10-03T07:00:00.000000Z"
+// }
 ~~~
 
 ## Modifying time ranges
 
-`Period` is an immutable value object. Any changes to the object returns a new object.
+`Period` is an immutable value object. Any change to the object returns a new object.
 
 ~~~php
-use League\Period\Period;
+use function League\Period\interval_before;
 
-$period = Period::createFromDuration('2014-01-01', '1 WEEK');
+$period = interval_before('2014-01-07', '1 WEEK');
 $altPeriod = $period->endingOn('2014-02-03');
 $period->contains($altPeriod); //return false;
 $altPeriod->durationGreaterThan($period); //return true;

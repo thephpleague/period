@@ -17,6 +17,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::format`
 - `Period::expand`
 - `Period::equals`
+- `Period::getDatePeriodBackwards`
 
 #### Functions
 

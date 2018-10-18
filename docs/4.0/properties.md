@@ -26,6 +26,8 @@ $altduration = $period->getTimestampInterval(); //returns the duration in second
 
 ## Iteration over a Period
 
+<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
+
 ### Period::getDatePeriod
 
 ~~~php
@@ -41,7 +43,6 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 - `$duration` is a interval
 - `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the start date from the set of recurring dates within the period.
 
-<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
 
 #### Examples
 
@@ -49,9 +50,11 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 use function League\Period\year;
 
 foreach (year(2012)->getDatePeriod('1 MONTH') as $datetime) {
-    echo $datetime->format('F, Y');
+    echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
+////the first date is 2012-01-01
+//the last date is 2012-12-01
 ~~~
 
 Using the `$option` parameter
@@ -60,10 +63,56 @@ Using the `$option` parameter
 $interval = year('2012-06-05');
 $datePeriod = $interval->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($datePeriod as $datetime) {
-    echo $datetime->format('F, Y');
+    echo $datetime->format('Y-m-d');
 }
 //will iterate 11 times
+//the first date is 2012-02-01
+//the last date is 2012-12-01
 ~~~
+
+### Period::getDatePeriodBackwards
+
+~~~php
+public Period::getDatePeriodBackwards(mixed $duration, int $option): iterable<DateTimeImmutable>
+~~~
+
+Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.
+
+#### Parameters
+
+- `$duration` is a interval
+- `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the ending datepoint from the set of recurring dates within the interval.
+
+<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
+
+#### Examples
+
+~~~php
+use function League\Period\year;
+
+foreach (year(2012)->getDatePeriodBackwards('1 MONTH') as $datetime) {
+    echo $datetime->format('Y-m-d');
+}
+//will iterate 12 times
+//the first date is 2013-01-01
+//the last date is 2012-02-01
+~~~
+
+Using the `$option` parameter
+
+~~~php
+$interval = year('2012-06-05');
+$datePeriod = $interval->getDatePeriodBackwards('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+foreach ($datePeriod as $datetime) {
+    echo $datetime->format('Y-m-d');
+}
+//will iterate 11 times
+//the first date is 2012-12-01
+//the last date is 2012-02-01
+~~~
+
+
+
 
 ### Period::split
 

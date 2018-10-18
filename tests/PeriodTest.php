@@ -19,6 +19,7 @@ use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
+use Generator;
 use League\Period\Exception;
 use League\Period\Period;
 use PHPUnit\Framework\TestCase;
@@ -57,7 +58,7 @@ class PeriodTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetDatePeriodData
+     * @dataProvider providerGetDatePeriod
      */
     public function testGetDatePeriod($interval, $option, $count)
     {
@@ -67,7 +68,32 @@ class PeriodTest extends TestCase
         self::assertCount($count, iterator_to_array($range));
     }
 
-    public function provideGetDatePeriodData()
+    public function providerGetDatePeriod()
+    {
+        return [
+            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
+            'useString' => ['2 HOUR', 0, 12],
+            'useInt' => [9600, 0, 9],
+            'useFloat' => [14400.0, 0, 6],
+            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
+            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
+            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
+            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetDatePeriodBackwards
+     */
+    public function testGetDatePeriodBackwards($interval, $option, $count)
+    {
+        $period = new Period(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $range = $period->getDatePeriodBackwards($interval, $option);
+        self::assertInstanceOf(Generator::class, $range);
+        self::assertCount($count, iterator_to_array($range));
+    }
+
+    public function providerGetDatePeriodBackwards()
     {
         return [
             'useDateInterval' => [new DateInterval('PT1H'), 0, 24],

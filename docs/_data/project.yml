@@ -4,13 +4,13 @@ description: "Period provides an immutable value object to ease working with Tim
 google_analytics_tracking_id: UA-46050814-11
 repository: 'period'
 releases:
-  next:
+  current:
     version: '4.0'
     requires: 'PHP >= 7.1.3'
     latest: 'TBD'
     supported_until: 'TBD'
     documentation_link: '/4.0/'
-  current:
+  previous:
     version: '3.0'
     requires: 'PHP >= 5.5.9'
     latest: '3.3.0 - 2016-09-19'
@@ -27,8 +27,8 @@ author:
 highlights:
     description: "<code>Period</code> is PHP's Time Range class. It is based on <a href=\"http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/\">Resolving Feature Envy in the Domain</a> by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges."
     features:
-        - Treats Time Range as immutable value objects
-        - Exposes many named constructors to ease time range creation
+        - Treats date and time range as immutable value objects
+        - Exposes namespaced functions to ease time range creation
         - Covers all basic manipulations related to time range
         - Framework-agnostic
 composer: '$ composer require league/period'

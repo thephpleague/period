@@ -188,11 +188,18 @@ main article div > code {
     border:none;
 }
 
-main article img {
+main article p img {
     box-sizing: border-box;
     margin:.3em auto;
     padding:0;
     display: block;
+}
+
+main article p a img {
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+    display:inline;
 }
 
 footer {
