@@ -29,7 +29,7 @@ $start = $interval->getStartDate(); //returns a DateTimeImmutable
 $end = $interval->getEndDate();     //returns a DateTimeImmutable
 $duration = $interval->getDateInterval();       //returns a DateInterval object
 $duration2 = $interval->getTimestampInterval(); //returns the duration in seconds
-echo $interval; //displays '2014-10-03T08:12:37Z/014-10-03T09:12:37Z'
+echo $interval; //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
 ~~~
 
 Learn more about how this all works in the [basic usage](/4.0/properties/).
