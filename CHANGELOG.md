@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## 4.0.0 - TBD
+## 4.0.0 - 2018-10-18
 
 ### Added
 
@@ -43,7 +43,7 @@ All Notable changes to `Period` will be documented in this file
 - The `Period` class is now final
 - `Period::JsonSerialize` now returns datepoint in JavaScript compatible notation
 - `Period::diff` always returns an array containing two values.
-- A Period with a duration equals to `DateInterval('PT0S')` contains no value not even its starting datepoint.
+- An instance with a duration equals to `DateInterval('PT0S')` will contains no datepoint not even its starting datepoint.
 
 ### Deprecated
 
@@ -51,7 +51,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Removed
 
-- Support for PHP 7.0
+- Support for PHP `7.0`
 - `Period::next`
 - `Period::previous`
 - `Period::add`

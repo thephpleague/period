@@ -38,11 +38,9 @@ use function sprintf;
  * A datepoint can be
  * <ul>
  * <li>a DateTimeInterface object
- * <li>a string parsable by DateTime::__construct
  * <li>a integer interpreted as a timestamp
+ * <li>a string parsable by DateTime::__construct
  * </ul>
- *
- * @param mixed $datepoint a year as an int or a datepoint
  */
 function datepoint($datepoint): DateTimeImmutable
 {
@@ -73,10 +71,10 @@ function datepoint($datepoint): DateTimeImmutable
  *
  * The duration can be
  * <ul>
+ * <li>an Period object</li>
  * <li>a DateInterval object</li>
- * <li>an Interval object</li>
- * <li>an int interpreted as the duration expressed in seconds.</li>
- * <li>a string in a format supported by DateInterval::createFromDateString</li>
+ * <li>an integer interpreted as the duration expressed in seconds.</li>
+ * <li>a string parsable by DateInterval::createFromDateString</li>
  * </ul>
  */
 function duration($duration): DateInterval
@@ -139,11 +137,6 @@ function interval_around($datepoint, $duration): Period
 
 /**
  * Creates new instance from a DatePeriod.
- *
- * @throws TypeError If the submitted DatePeriod lacks an end datepoint.
- *                   This is possible if the DatePeriod was created using
- *                   recurrences instead of a end datepoint.
- *                   https://secure.php.net/manual/en/dateperiod.getenddate.php
  */
 function interval_from_dateperiod(DatePeriod $datePeriod): Period
 {
@@ -191,6 +184,8 @@ function iso_year($year_or_datepoint): Period
 
 /**
  * Creates new instance for a specific semester in a given year.
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function semester($year_or_datepoint, int $semester = 1): Period
 {
@@ -211,6 +206,8 @@ function semester($year_or_datepoint, int $semester = 1): Period
 
 /**
  * Creates new instance for a specific quarter in a given year.
+ *
+ * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
 function quarter($year_or_datepoint, int $quarter = 1): Period
 {
@@ -231,6 +228,8 @@ function quarter($year_or_datepoint, int $quarter = 1): Period
 
 /**
  * Creates new instance for a specific year and month.
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function month($year_or_datepoint, int $month = 1): Period
 {
@@ -250,6 +249,8 @@ function month($year_or_datepoint, int $month = 1): Period
 
 /**
  * Creates new instance for a specific ISO8601 week.
+ *
+ * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
 function iso_week($year_or_datepoint, int $week = 1): Period
 {
@@ -270,6 +271,8 @@ function iso_week($year_or_datepoint, int $week = 1): Period
  *
  * The date is truncated so that the time range starts at midnight
  * according to the date timezone and last a full day.
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function day($year_or_datepoint, int $month = 1, int $day = 1): Period
 {
@@ -289,6 +292,8 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
  *
  * The starting datepoint represents the beginning of the hour
  * The interval is equal to 1 hour
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): Period
 {
@@ -309,6 +314,8 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
  *
  * The starting datepoint represents the beginning of the minute
  * The interval is equal to 1 minute
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): Period
 {
@@ -329,6 +336,8 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
  *
  * The starting datepoint represents the beginning of the second
  * The interval is equal to 1 second
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function second(
     $year_or_datepoint,
@@ -358,6 +367,8 @@ function second(
 
 /**
  * Creates new instance for a specific datepoint.
+ *
+ * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function instant(
     $year_or_datepoint,

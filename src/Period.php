@@ -141,12 +141,11 @@ final class Period implements JsonSerializable
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
      *
-     * @return string[]
+     * @return array<string>
      */
     public function jsonSerialize()
     {
-        static $utc;
-        $utc = $utc ?? new DateTimeZone('UTC');
+        $utc = new DateTimeZone('UTC');
 
         return [
             'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
@@ -263,7 +262,8 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether a Interval is entirely before the specified index.
+     * Tells whether an instance is entirely before the specified index.
+     *
      * The index can be a DateTimeInterface object or another Period object.
      *
      * [--------------------)
@@ -279,32 +279,34 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the specified index is fully contained within
-     * the current Period object.
+     * Tells whether an instance fully contains the specified index.
+     *
+     * The index can be a DateTimeInterface object or another Period object.
+     *
      */
     public function contains($index): bool
     {
         if ($index instanceof self) {
-            return $this->containsPeriod($index);
+            return $this->containsInterval($index);
         }
 
         return $this->containsDatePoint(datepoint($index));
     }
 
     /**
-     * Tells whether the an interval is fully contained within the current instance.
+     * Tells whether an instance fully contains another instance.
      *
      * [--------------------)
      *     [----------)
      */
-    private function containsPeriod(self $interval): bool
+    private function containsInterval(self $interval): bool
     {
         return $this->containsDatePoint($interval->startDate)
             && ($interval->endDate >= $this->startDate && $interval->endDate <= $this->endDate);
     }
 
     /**
-     * Tells whether a datepoint is fully contained within the current instance.
+     * Tells whether an instance contains a datepoint.
      *
      * [------|------------)
      */
@@ -324,7 +326,7 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
      *
-     * @return Period[]
+     * @return iterable<Period>
      */
     public function split($duration): iterable
     {
@@ -352,7 +354,7 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
      *
-     * @return Period[]
+     * @return iterable<Period>
      */
     public function splitBackwards($duration): iterable
     {
@@ -370,7 +372,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Computes the intersection between two instances.
+     * Returns the computed intersection between two instances as a new instance.
      *
      * [--------------------)
      *          ∩
@@ -393,9 +395,9 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Computes the difference between two overlapsing instances.
+     * Returns the computed difference between two overlapping instances as
+     * an array containing Period objects or the null value.
      *
-     * Returns an array containing the difference expressed as Period objects
      * The array will always contains 2 elements:
      *
      * <ul>
@@ -409,6 +411,8 @@ final class Period implements JsonSerializable
      *                [-----------)
      *          =
      * [--------------)  +  [-----)
+     *
+     * @return array<null|Period>
      */
     public function diff(self $interval): array
     {
@@ -433,7 +437,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Computes the gap between two instances.
+     * Returns the computed gap between two instances as a new instance.
      *
      * [--------------------)
      *          +
@@ -441,7 +445,7 @@ final class Period implements JsonSerializable
      *          =
      *                      [---)
      *
-     * @throws Exception If both objects overlaps
+     * @throws Exception If both instance overlaps
      */
     public function gap(self $interval): self
     {
@@ -506,6 +510,9 @@ final class Period implements JsonSerializable
 
     /**
      * Returns a new instance with a new ending datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified ending datepoint.
      */
     public function withDurationAfterStart($duration): self
     {
@@ -514,6 +521,9 @@ final class Period implements JsonSerializable
 
     /**
      * Returns a new instance with a new starting datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified starting datepoint.
      */
     public function withDurationBeforeEnd($duration): self
     {
@@ -523,6 +533,9 @@ final class Period implements JsonSerializable
     /**
      * Returns a new instance with a new starting datepoint
      * moved forward or backward by the given interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified starting datepoint.
      */
     public function moveStartDate($duration): self
     {
@@ -532,6 +545,9 @@ final class Period implements JsonSerializable
     /**
      * Returns a new instance with a new ending datepoint
      * moved forward or backward by the given interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified ending datepoint.
      */
     public function moveEndDate($duration): self
     {
@@ -560,10 +576,10 @@ final class Period implements JsonSerializable
      * Returns an instance where the given DateInterval is simultaneously
      * substracted from the starting datepoint and added to the ending datepoint.
      *
+     * Depending on the duration value, the resulting instance duration will be expanded or shrinked.
+     *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
-     *
-     * Depending on the duration value, the resulting instance duration will be expanded or shrinked.
      */
     public function expand($duration): self
     {
@@ -580,6 +596,9 @@ final class Period implements JsonSerializable
      * Merges one or more instances to return a new instance.
      * The resulting instance represents the largest duration possible.
      *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
+     *
      * @param Period ...$intervals
      */
     public function merge(self $interval, self ...$intervals): self
@@ -595,7 +614,7 @@ final class Period implements JsonSerializable
                 $carry = $carry->endingOn($interval->endDate);
             }
         }
-        
+
         return $carry;
     }
 }
