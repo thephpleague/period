@@ -31,10 +31,12 @@ This will edit (or create) your `composer.json` file.
 
 The following methods were already marked as deprecated is the `3.x` line. They are now removed from the class.
 
-- `Period::next`
-- `Period::previous`
-- `Period::add`
-- `Period::sub`
+| removed methods    | possible replacements                        |
+| ------------------ | -------------------------------------------- |
+| `Period::next`     | `Period::move` with positive duration        |
+| `Period::previous` | `Period::move` with negative duration        |
+| `Period::add`      | `Period::moveEndDate` with positive duration |
+| `Period::sub`      | `Period::moveEndDate` with negative duration |
 
 ### Named constructors
 
