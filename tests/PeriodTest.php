@@ -629,6 +629,8 @@ class PeriodTest extends TestCase
         $period = new Period(new DateTimeImmutable('2013-01-01 10:00:00'), new DateTimeImmutable('2013-01-01 13:00:00'));
         $alt = new Period(new DateTimeImmutable('2013-01-01 11:00:00'), new DateTimeImmutable('2013-01-01 14:00:00'));
         [$diff1, $diff2] = $alt->diff($period);
+        self::assertInstanceOf(Period::class, $diff1);
+        self::assertInstanceOf(Period::class, $diff2);
         self::assertSame(3600.0, $diff1->getTimestampInterval());
         self::assertSame(3600.0, $diff2->getTimestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
@@ -849,5 +851,31 @@ class PeriodTest extends TestCase
         $fromOrig = $orig->dateIntervalDiff($alt);
         $fromOrig->invert = 1;
         self::assertEquals($fromOrig, $alt->dateIntervalDiff($orig));
+    }
+
+    public function testSplitDaylightSavingsDayIntoHoursEndInterval()
+    {
+        date_default_timezone_set('Canada/Central');
+        $period = new Period(new DateTime('2018-11-04 00:00:00.000000'), new DateTime('2018-11-04 05:00:00.000000'));
+        $splits = $period->split(new DateInterval('PT30M'));
+        $i = 0;
+        foreach ($splits as $inner_period) {
+            ++$i;
+            self::assertNotNull($inner_period);
+        }
+        self::assertSame(10, $i);
+    }
+
+    public function testSplitBackwardsDaylightSavingsDayIntoHoursStartInterval()
+    {
+        date_default_timezone_set('Canada/Central');
+        $period = new Period(new DateTime('2018-04-11 00:00:00.000000'), new DateTime('2018-04-11 05:00:00.000000'));
+        $splits = $period->splitBackwards(new DateInterval('PT30M'));
+        $i = 0;
+        foreach ($splits as $inner_period) {
+            ++$i;
+            self::assertNotNull($inner_period);
+        }
+        self::assertSame(10, $i);
     }
 }
