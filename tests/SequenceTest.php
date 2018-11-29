@@ -20,6 +20,7 @@ use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
 use function League\Period\day;
 use function League\Period\interval_after;
+use function League\Period\interval_around;
 use function League\Period\iso_week;
 use function League\Period\month;
 
@@ -186,5 +187,64 @@ final class SequenceTest extends TestCase
 
         self::assertTrue($sequence->every($predicate));
         self::assertFalse((new Sequence())->every($predicate));
+    }
+
+    /**
+     * @test
+     *
+     * A              [============]
+     * B                   [==]
+     * C                   [=======]
+     *
+     * OVERLAP             [==]
+     */
+    public function testGetIntersections()
+    {
+        $sequence = new Sequence(
+            new Period('2018-01-01', '2018-01-31'),
+            new Period('2018-01-10', '2018-01-15'),
+            new Period('2018-01-10', '2018-01-31')
+        );
+        $intersections = $sequence->getIntersections();
+        self::assertCount(1, $intersections);
+        self::assertSame('[2018-01-10, 2018-01-15)', $intersections->get(0)->format('Y-m-d'));
+    }
+
+    /**
+     * @test
+     *
+     * A       [========]
+     * B                   [==]
+     * C                           [=====]
+     * D              [===============]
+     *
+     * OVERLAP        [=]   [==]   [==]
+     */
+    public function testGetIntersections2()
+    {
+        $sequence = new Sequence(
+            new Period('2018-01-01', '2018-01-31'),
+            new Period('2018-02-10', '2018-02-20'),
+            new Period('2018-03-01', '2018-03-31'),
+            new Period('2018-01-20', '2018-03-10')
+        );
+        $intersections = $sequence->getIntersections();
+        self::assertCount(3, $intersections);
+        self::assertSame('[2018-01-20, 2018-01-31)', $intersections->get(0)->format('Y-m-d'));
+        self::assertSame('[2018-02-10, 2018-02-20)', $intersections->get(1)->format('Y-m-d'));
+        self::assertSame('[2018-03-01, 2018-03-10)', $intersections->get(2)->format('Y-m-d'));
+    }
+
+    public function testGaps()
+    {
+        $sequence = new Sequence(
+            day('2018-11-29'),
+            interval_after('2018-11-29 + 7 DAYS', '1 DAY'),
+            interval_around('2018-11-29', '4 DAYS')
+        );
+
+        $gaps = $sequence->getGaps();
+        self::assertCount(1, $gaps);
+        self::assertSame('[2018-12-03, 2018-12-06)', $gaps->get(0)->format('Y-m-d'));
     }
 }

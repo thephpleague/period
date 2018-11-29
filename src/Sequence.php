@@ -17,6 +17,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use function array_filter;
+use function array_merge;
 use function count;
 use function reset;
 use function sort;
@@ -127,11 +128,9 @@ final class Sequence implements Countable, IteratorAggregate
      * Adds new interval at the end of the sequence.
      * @param Period... $intervals
      */
-    public function push(Period ...$intervals): void
+    public function push(Period $interval, Period ...$intervals): void
     {
-        foreach ($intervals as $interval) {
-            $this->intervals[] = $interval;
-        }
+        $this->intervals = array_merge($this->intervals, [$interval], ...$intervals);
     }
 
     /**
@@ -298,17 +297,24 @@ final class Sequence implements Countable, IteratorAggregate
         $interval = null;
         $currentInterval = null;
         foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
-            $currentInterval = $period;
             if (null === $interval) {
-                $interval = $currentInterval;
+                $interval = $period;
                 continue;
             }
 
-            if (!$interval->overlaps($currentInterval) && !$interval->abuts($currentInterval)) {
+            if (null !== $currentInterval && $interval->contains($period)) {
+                continue;
+            }
+
+            $currentInterval = $period;
+            if ($interval->overlaps($currentInterval)) {
                 $sequence->push($interval->intersect($currentInterval));
             }
 
-            $interval = $currentInterval;
+            if (!$interval->contains($currentInterval)) {
+                $interval = $currentInterval;
+                $currentInterval = null;
+            }
         }
 
         return $sequence;
