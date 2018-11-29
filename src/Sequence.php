@@ -130,7 +130,7 @@ final class Sequence implements Countable, IteratorAggregate
      */
     public function push(Period $interval, Period ...$intervals): void
     {
-        $this->intervals = array_merge($this->intervals, [$interval], ...$intervals);
+        $this->intervals = array_merge($this->intervals, [$interval], $intervals);
     }
 
     /**
