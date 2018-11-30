@@ -2,6 +2,24 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## Next - TDB
+
+### Added
+
+- `League\Period\Sequence`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 4.0.1 - 2018-11-30
 
 ### Added
