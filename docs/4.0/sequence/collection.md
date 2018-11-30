@@ -1,6 +1,6 @@
 ---
 layout: default
-title: The Sequence class
+title: The Sequence as a Period collection class
 ---
 
 # A Period Collection

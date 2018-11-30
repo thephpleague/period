@@ -1,6 +1,6 @@
 ---
 layout: default
-title: The Sequence class
+title: The Sequence as a Period aware container
 ---
 
 # A Period Container
