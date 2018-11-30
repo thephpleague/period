@@ -125,7 +125,20 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
+     * Adds new interval at the front of the sequence.
+     *
+     * The sequence is re-indexed after addition
+     *
+     * @param Period... $intervals
+     */
+    public function unshift(Period $interval, Period ...$intervals): void
+    {
+        $this->intervals = array_merge([$interval], $intervals, $this->intervals);
+    }
+
+    /**
      * Adds new interval at the end of the sequence.
+     *
      * @param Period... $intervals
      */
     public function push(Period $interval, Period ...$intervals): void

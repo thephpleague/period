@@ -100,15 +100,30 @@ foreach ($sequence as $offset => $interval) {
 Adds new intervals at the end of the sequence.
 
 ~~~php
-$sequence = new Sequence();
-count($sequence); // 0
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
 $sequence->push(
     new Period('2018-01-01', '2018-01-31'),
     new Period('2018-02-10', '2018-02-20'),
     new Period('2018-03-01', '2018-03-31'),
     new Period('2018-01-20', '2018-03-10')
 );
-count($sequence); // 4
+$sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
+~~~
+
+### Sequence::unshift
+
+Adds new intervals at the start of the sequence.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
+$sequence->unshift(
+    new Period('2018-02-10', '2018-02-20'),
+    new Period('2018-03-01', '2018-03-31'),
+    new Period('2018-01-20', '2018-03-10')
+);
+$sequence->get(0)->format('Y-m-d'); // [2018-02-10, 2018-02-20)
 ~~~
 
 ### Sequence::set

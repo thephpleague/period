@@ -81,6 +81,9 @@ final class SequenceTest extends TestCase
         $sequence->push($event3);
         self::assertCount(3, $sequence);
         self::assertSame(2, $sequence->indexOf($event3));
+        $sequence->unshift(day('2018-08-08'));
+        self::assertCount(4, $sequence);
+        self::assertTrue(day('2018-08-08')->equals($sequence->get(0)));
         $sequence->clear();
         self::assertTrue($sequence->isEmpty());
         self::assertNull($sequence->getBoundaries());
