@@ -2,6 +2,24 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## 4.0.1 - 2018-11-30
+
+### Added
+
+- None
+
+### Fixed
+
+- Period::split does not work with daylight saving see [issue #68](https://github.com/thephpleague/period/issues/68)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 4.0.0 - 2018-10-18
 
 ### Added
