@@ -3,10 +3,7 @@
 $header = <<<EOF
 League.Period (https://period.thephpleague.com)
 
-@author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
-@license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
-@version 4.0.1
-@link    https://github.com/thephpleague/period
+(c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
 
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
@@ -35,8 +32,9 @@ return PhpCsFixer\Config::create()
         'no_leading_import_slash' => true,
         'no_superfluous_phpdoc_tags' => true,
         'no_trailing_comma_in_singleline_array' => true,
+        'no_superfluous_phpdoc_tags' => true,
         'no_unused_imports' => true,
-        'ordered_imports' => ['imports_order' => null, 'sort_algorithm' => 'alpha'],
+        'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'alpha'],
         'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
         'phpdoc_align' => true,
         'phpdoc_no_empty_return' => true,

@@ -96,3 +96,20 @@ echo json_encode($period, JSON_PRETTY_PRINT);
 //     "endDate": "2014-10-03T07:00:00.000000Z"
 // }
 ~~~
+
+## Accessing Gaps between intervals
+
+~~~php
+use League\Period\Period;
+use League\Period\Sequence;
+
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+$gaps = $sequence->getGaps(); // a new Sequence object
+count($gaps); // 2
+~~~
+
+`Sequence` is a `Period` container and collection class.

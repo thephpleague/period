@@ -3,10 +3,7 @@
 /**
  * League.Period (https://period.thephpleague.com).
  *
- * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @license https://github.com/thephpleague/period/blob/master/LICENSE (MIT License)
- * @version 4.0.1
- * @link    https://github.com/thephpleague/period
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,7 +19,6 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use TypeError;
-use const FILTER_VALIDATE_INT;
 use function filter_var;
 use function get_class;
 use function gettype;
@@ -31,6 +27,7 @@ use function is_int;
 use function is_object;
 use function is_string;
 use function sprintf;
+use const FILTER_VALIDATE_INT;
 
 /**
  * Returns a DateTimeImmutable object.

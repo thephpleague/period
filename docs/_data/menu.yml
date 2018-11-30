@@ -4,12 +4,17 @@ version:
             Overview: '/4.0/'
             Installation: '/4.0/installation/'
             Upgrading from 3.x: '/4.0/upgrading/'
-        The API:
+        Definitions:
             Arguments: '/4.0/definitions/'
+        Period:
             Instantiation: '/4.0/instantiation/'
             Properties: '/4.0/properties/'
             Comparing: '/4.0/comparing/'
             Modifying: '/4.0/modifying/'
+        Sequence:
+            Overview: '/4.0/sequence/'
+            Period Container: '/4.0/sequence/container/'
+            Period Collection: '/4.0/sequence/collection/'
     '3.0':
         Getting Started:
             Overview: '/3.0/'
