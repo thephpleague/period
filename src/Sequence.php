@@ -289,20 +289,18 @@ final class Sequence implements Countable, IteratorAggregate
     {
         $sequence = new self();
         $interval = null;
-        $currentInterval = null;
         foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
-            $currentInterval = $period;
             if (null === $interval) {
-                $interval = $currentInterval;
+                $interval = $period;
                 continue;
             }
 
-            if (!$interval->overlaps($currentInterval) && !$interval->abuts($currentInterval)) {
-                $sequence->push($interval->gap($currentInterval));
+            if (!$interval->overlaps($period) && !$interval->abuts($period)) {
+                $sequence->push($interval->gap($period));
             }
 
-            if (!$interval->contains($currentInterval)) {
-                $interval = $currentInterval;
+            if (!$interval->contains($period)) {
+                $interval = $period;
             }
         }
 
@@ -323,26 +321,26 @@ final class Sequence implements Countable, IteratorAggregate
     public function getIntersections(): self
     {
         $sequence = new self();
-        $interval = null;
-        $currentInterval = null;
+        $current = null;
+        $isPreviouslyContained = false;
         foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
-            if (null === $interval) {
-                $interval = $period;
+            if (null === $current) {
+                $current = $period;
                 continue;
             }
 
-            if (null !== $currentInterval && $interval->contains($period)) {
+            $isContained = $current->contains($period);
+            if ($isContained && $isPreviouslyContained) {
                 continue;
             }
-
-            $currentInterval = $period;
-            if ($interval->overlaps($currentInterval)) {
-                $sequence->push($interval->intersect($currentInterval));
+            
+            if ($current->overlaps($period)) {
+                $sequence->push($current->intersect($period));
             }
 
-            if (!$interval->contains($currentInterval)) {
-                $interval = $currentInterval;
-                $currentInterval = null;
+            $isPreviouslyContained = $isContained;
+            if (!$isContained) {
+                $current = $period;
             }
         }
 
