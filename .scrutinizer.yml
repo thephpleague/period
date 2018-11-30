@@ -1,6 +1,14 @@
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
 filter:
-    paths: [src/*]
-    excluded_paths: [tests/*]
+    paths:
+        - "src/"
+    excluded_paths:
+        - "tests/"
 checks:
     php:
         code_rating: true
