@@ -34,11 +34,11 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence();
         self::assertTrue($sequence->isEmpty());
         self::assertCount(0, $sequence);
-        self::assertNull($sequence->getInterval());
+        self::assertNull($sequence->getBoundaries());
         $sequence->push(day('2012-06-23'));
         self::assertFalse($sequence->isEmpty());
         self::assertCount(1, $sequence);
-        self::assertInstanceOf(Period::class, $sequence->getInterval());
+        self::assertInstanceOf(Period::class, $sequence->getBoundaries());
     }
 
     public function testConstructor(): void
@@ -71,19 +71,19 @@ final class SequenceTest extends TestCase
         $event2 = day('2012-06-23');
         $event3 = day('2012-06-25');
         $sequence = new Sequence($event1, $event2);
-        self::assertInstanceOf(Period::class, $sequence->getInterval());
+        self::assertInstanceOf(Period::class, $sequence->getBoundaries());
         self::assertTrue($sequence->contains($event2));
         self::assertTrue($sequence->contains($event1));
         self::assertTrue($sequence->contains(day('2012-06-23')));
         self::assertSame($event2, $sequence->get(1));
-        self::assertSame(0, $sequence->find(day('2012-06-23')));
-        self::assertNull($sequence->find(day('2014-06-23')));
+        self::assertSame(0, $sequence->indexOf(day('2012-06-23')));
+        self::assertNull($sequence->indexOf(day('2014-06-23')));
         $sequence->push($event3);
         self::assertCount(3, $sequence);
-        self::assertSame(2, $sequence->find($event3));
+        self::assertSame(2, $sequence->indexOf($event3));
         $sequence->clear();
         self::assertTrue($sequence->isEmpty());
-        self::assertNull($sequence->getInterval());
+        self::assertNull($sequence->getBoundaries());
     }
 
     public function testGetThrowsException(): void

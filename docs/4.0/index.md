@@ -16,6 +16,8 @@ redirect_from: /examples/
 
 <p class="message-info">In your code, you will always have to typehint against the <code>League\Period\Period</code> class directly because it is a immutable value object class marked as final and the library does not provide an interface.</p>
 
+<p class="message-info">Since <code>version 4.1</code> a <code>League\Period\Sequence</code> class is added to improve manipulating a collection of <code>Period</code> objects.</p>
+
 ## Accessing the interval properties
 
 ~~~php
@@ -74,3 +76,18 @@ $altPeriod->durationGreaterThan($period); //return true;
 ~~~
 
 `Period` is an immutable value object. Any changes to the object returns a new object. The class has more [modifying methods](/4.0/modifying/).
+
+## Accessing all gaps between intervals
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+$gaps = $sequence->getGaps(); // a new Sequence object
+count($gaps); // 2
+~~~
+
+`Sequence` is a `Period` container and collection. The class has more [methods](/4.0/sequence/).
+

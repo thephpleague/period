@@ -75,7 +75,7 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
-     * Removes all intervals from the collection.
+     * Removes all intervals from the sequence.
      */
     public function clear(): void
     {
@@ -152,7 +152,7 @@ final class Sequence implements Countable, IteratorAggregate
     {
         $intervals[] = $interval;
         foreach ($intervals as $period) {
-            if (null === $this->find($period)) {
+            if (null === $this->indexOf($period)) {
                 return false;
             }
         }
@@ -167,7 +167,7 @@ final class Sequence implements Countable, IteratorAggregate
      *
      * @return ?int
      */
-    public function find(Period $interval): ?int
+    public function indexOf(Period $interval): ?int
     {
         foreach ($this->intervals as $offset => $period) {
             if ($period->equals($interval)) {
@@ -185,7 +185,7 @@ final class Sequence implements Countable, IteratorAggregate
      *
      * @return ?Period
      */
-    public function getInterval(): ?Period
+    public function getBoundaries(): ?Period
     {
         $period = reset($this->intervals);
         if (false === $period) {
@@ -241,7 +241,7 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
-     * Tells whether some interval in the current instance satisfies the predicate.
+     * Tells whether some intervals in the current instance satisfies the predicate.
      */
     public function some(callable $predicate): bool
     {
@@ -255,7 +255,7 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
-     * Tells whether all interval in the current instance satisfies the predicate.
+     * Tells whether all intervals in the current instance satisfies the predicate.
      */
     public function every(callable $predicate): bool
     {
