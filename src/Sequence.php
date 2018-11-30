@@ -95,7 +95,7 @@ final class Sequence implements Countable, IteratorAggregate
     /**
      * Returns the interval specified at a given offset.
      *
-     * @throws Exception If the offset is illegal for the current sequence
+     * @throws InvalidIndex If the offset is illegal for the current sequence
      */
     public function get(int $offset): Period
     {
@@ -104,24 +104,24 @@ final class Sequence implements Countable, IteratorAggregate
             return $period;
         }
 
-        throw new Exception(sprintf('%s is an invalid offset in the current sequence', $offset));
+        throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
     }
 
     /**
-     * Removes from the sequence and returns the interval at the given offset.
+     * Removes an interval from the sequence at the given offset and returns it.
      *
      * The sequence is re-indexed after removal
      *
-     * @throws Exception If the offset is illegal for the current sequence.
+     * @throws InvalidIndex If the offset is illegal for the current sequence.
      */
     public function remove(int $offset): Period
     {
-        $period = $this->get($offset);
+        $interval = $this->get($offset);
         unset($this->intervals[$offset]);
 
         $this->intervals = array_values($this->intervals);
 
-        return $period;
+        return $interval;
     }
 
     /**
@@ -134,22 +134,30 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
-     * Update the interval at the specify offset.
+     * Updates the interval at the specify offset.
      *
-     * @throws Exception If the offset is illegal for the current sequence.
+     * @throws InvalidIndex If the offset is illegal for the current sequence.
      */
     public function set(int $offset, Period $interval): void
     {
-        $period = $this->get($offset);
+        $this->get($offset);
         $this->intervals[$offset] = $interval;
     }
 
     /**
      * Tells whether the given interval is present in the sequence.
+     * @param Period... $intervals
      */
-    public function contains(Period $interval): bool
+    public function contains(Period $interval, Period ... $intervals): bool
     {
-        return null !== $this->find($interval);
+        $intervals[] = $interval;
+        foreach ($intervals as $period) {
+            if (null === $this->find($period)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -171,7 +179,9 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
-     * Returns the collection boundaries as a Period instance.
+     * Returns the sequence boundaries as a Period instance.
+     *
+     * If the sequence contains no interval null is returned.
      *
      * @return ?Period
      */
@@ -222,7 +232,12 @@ final class Sequence implements Countable, IteratorAggregate
      */
     public function filter(callable $predicate): self
     {
-        return new self(...array_filter($this->intervals, $predicate));
+        $intervals = array_filter($this->intervals, $predicate);
+        if ($intervals === $this->intervals) {
+            return $this;
+        }
+
+        return new self(...$intervals);
     }
 
     /**

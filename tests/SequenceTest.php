@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace LeagueTest\Period;
 
 use DateTimeImmutable;
-use League\Period\Exception;
+use League\Period\InvalidIndex;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ use function League\Period\month;
  */
 final class SequenceTest extends TestCase
 {
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $sequence = new Sequence();
         self::assertTrue($sequence->isEmpty());
@@ -41,7 +41,7 @@ final class SequenceTest extends TestCase
         self::assertInstanceOf(Period::class, $sequence->getInterval());
     }
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $sequence = new Sequence(day('2012-06-23'), day('2012-06-23'));
         self::assertCount(2, $sequence);
@@ -50,23 +50,22 @@ final class SequenceTest extends TestCase
         }
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $event1 = day('2012-06-23');
         $event2 = day('2012-06-23');
         $sequence = new Sequence($event1, $event2);
-        self::assertInternalType('array', $sequence->toArray());
         self::assertSame($event1, $sequence->remove(0));
         self::assertTrue($sequence->contains($event1));
         self::assertCount(1, $sequence);
         self::assertSame($event2, $sequence->remove(0));
         self::assertCount(0, $sequence);
         self::assertFalse($sequence->contains($event2));
-        self::expectException(Exception::class);
+        self::expectException(InvalidIndex::class);
         $sequence->remove(1);
     }
 
-    public function testGetter()
+    public function testGetter(): void
     {
         $event1 = day('2012-06-23');
         $event2 = day('2012-06-23');
@@ -87,13 +86,13 @@ final class SequenceTest extends TestCase
         self::assertNull($sequence->getInterval());
     }
 
-    public function testGetThrowsException()
+    public function testGetThrowsException(): void
     {
-        self::expectException(Exception::class);
+        self::expectException(InvalidIndex::class);
         (new Sequence())->get(3);
     }
 
-    public function testSetter()
+    public function testSetter(): void
     {
         $sequence = new Sequence(day('2011-06-23'), day('2011-06-23'));
         $sequence->set(0, day('2011-06-23'));
@@ -102,11 +101,11 @@ final class SequenceTest extends TestCase
         $sequence->set(0, day('2013-06-23'));
         self::assertEquals(day('2012-06-23'), $sequence->get(1));
         self::assertEquals(day('2013-06-23'), $sequence->get(0));
-        self::expectException(Exception::class);
+        self::expectException(InvalidIndex::class);
         $sequence->set(3, day('2013-06-23'));
     }
 
-    public function testFilterReturnsNewInstance()
+    public function testFilterReturnsNewInstance(): void
     {
         $sequence =new Sequence(day('2012-06-23'), day('2012-06-12'));
 
@@ -121,38 +120,38 @@ final class SequenceTest extends TestCase
     }
 
 
-    public function testFilterReturnsSameInstance()
+    public function testFilterReturnsSameInstance(): void
     {
         $sequence = new Sequence(day('2012-06-23'), day('2012-06-12'));
 
-        $filter = static function (Period $event) {
-            return $event instanceof Period;
+        $filter = static function (Period $interval) {
+            return true;
         };
 
-        self::assertInstanceOf(Sequence::class, $sequence->filter($filter));
+        self::assertSame($sequence, $sequence->filter($filter));
     }
 
-    public function testSortedReturnsSameInstance()
+    public function testSortedReturnsSameInstance(): void
     {
         $sequence = new Sequence(day('2012-06-23'), day('2012-06-12'));
         $sort = function (Period $event1, Period $event2) {
             return 0;
         };
 
-        self::assertInstanceOf(Sequence::class, $sequence->sorted($sort));
+        self::assertSame($sequence, $sequence->sorted($sort));
     }
 
-    public function testSortedReturnsNewInstance()
+    public function testSortedReturnsNewInstance(): void
     {
         $sequence = new Sequence(month(2012, 6), day('2012-06-23'), iso_week(2018, 3));
         $sort = static function (Period $event1, Period $event2) {
             return $event1->durationCompare($event2);
         };
 
-        self::assertInstanceOf(Sequence::class, $sequence->sorted($sort));
+        self::assertNotSame($sequence, $sequence->sorted($sort));
     }
 
-    public function testSort()
+    public function testSort(): void
     {
         $day1 = day('2012-06-23');
         $day2 = day('2012-06-12');
@@ -165,7 +164,7 @@ final class SequenceTest extends TestCase
         self::assertSame([1 => $day2, 0 => $day1], $sequence->toArray());
     }
 
-    public function testSome()
+    public function testSome(): void
     {
         $interval = interval_after('2012-02-01 12:00:00', '1 HOUR');
         $predicate = static function (Period $event) use ($interval) {
@@ -176,7 +175,7 @@ final class SequenceTest extends TestCase
         self::assertFalse((new Sequence())->some($predicate));
     }
 
-    public function testEvery()
+    public function testEvery(): void
     {
         $sequence = new Sequence(day('2012-02-01'), day('2013-02-01'), day('2014-02-01'));
 
@@ -190,15 +189,17 @@ final class SequenceTest extends TestCase
     }
 
     /**
-     * @test
+     * Intersections test 1.
      *
-     * A              [============]
-     * B                   [==]
-     * C                   [=======]
+     *               [------------)
+     *                    [--)
+     *                    [-------)
      *
-     * OVERLAP             [==]
+     *                 =
+     *
+     *                    [--)
      */
-    public function testGetIntersections()
+    public function testGetIntersections1(): void
     {
         $sequence = new Sequence(
             new Period('2018-01-01', '2018-01-31'),
@@ -211,16 +212,18 @@ final class SequenceTest extends TestCase
     }
 
     /**
-     * @test
+     * Intersections test 2.
      *
-     * A       [========]
-     * B                   [==]
-     * C                           [=====]
-     * D              [===============]
+     *        [--------)
+     *                     [--)
+     *                            [------)
+     *               [---------------)
      *
-     * OVERLAP        [=]   [==]   [==]
+     *                 =
+     *
+     *               [-)   [--)   [--)
      */
-    public function testGetIntersections2()
+    public function testGetIntersections2(): void
     {
         $sequence = new Sequence(
             new Period('2018-01-01', '2018-01-31'),
@@ -235,7 +238,18 @@ final class SequenceTest extends TestCase
         self::assertSame('[2018-03-01, 2018-03-10)', $intersections->get(2)->format('Y-m-d'));
     }
 
-    public function testGaps()
+    /**
+     * gaps test 1.
+     *
+     *           [--)
+     *                    [----)
+     *        [-------)
+     *
+     *                 =
+     *
+     *                [---)
+     */
+    public function testGaps1(): void
     {
         $sequence = new Sequence(
             day('2018-11-29'),
@@ -246,5 +260,24 @@ final class SequenceTest extends TestCase
         $gaps = $sequence->getGaps();
         self::assertCount(1, $gaps);
         self::assertSame('[2018-12-03, 2018-12-06)', $gaps->get(0)->format('Y-m-d'));
+    }
+
+    /**
+     * gaps test 2.
+     *
+     * No gaps expected
+     *
+     *          [--)
+     *         [----)
+     */
+    public function testGaps2(): void
+    {
+        $sequence = new Sequence(
+            day('2018-11-29'),
+            interval_around('2018-11-29', '4 DAYS')
+        );
+
+        $gaps = $sequence->getGaps();
+        self::assertTrue($gaps->isEmpty());
     }
 }
