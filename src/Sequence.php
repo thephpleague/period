@@ -41,7 +41,7 @@ final class Sequence implements Countable, IteratorAggregate
     /**
      * new instance.
      *
-     * @param Period... $intervals
+     * @param Period ...$intervals
      */
     public function __construct(Period ...$intervals)
     {
@@ -129,7 +129,7 @@ final class Sequence implements Countable, IteratorAggregate
      *
      * The sequence is re-indexed after addition
      *
-     * @param Period... $intervals
+     * @param Period ...$intervals
      */
     public function unshift(Period $interval, Period ...$intervals): void
     {
@@ -139,7 +139,7 @@ final class Sequence implements Countable, IteratorAggregate
     /**
      * Adds new interval at the end of the sequence.
      *
-     * @param Period... $intervals
+     * @param Period ...$intervals
      */
     public function push(Period $interval, Period ...$intervals): void
     {
@@ -159,7 +159,8 @@ final class Sequence implements Countable, IteratorAggregate
 
     /**
      * Tells whether the given interval is present in the sequence.
-     * @param Period... $intervals
+     *
+     * @param Period ...$intervals
      */
     public function contains(Period $interval, Period ... $intervals): bool
     {

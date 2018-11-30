@@ -7,6 +7,7 @@ All Notable changes to `Period` will be documented in this file
 ### Added
 
 - `League\Period\Sequence`
+- `League\Period\InvalidIndex`
 
 ### Fixed
 

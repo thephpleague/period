@@ -115,6 +115,8 @@ $sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
 
 Adds new intervals at the start of the sequence.
 
+<p class="message-notice">The sequence is re-indexed after the addition.</p>
+
 ~~~php
 $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
 $sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
