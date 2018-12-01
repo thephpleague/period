@@ -108,6 +108,20 @@ final class SequenceTest extends TestCase
         $sequence->set(3, day('2013-06-23'));
     }
 
+    public function testInsert(): void
+    {
+        $sequence = new Sequence();
+        $sequence->insert(0, day('2010-06-23'));
+        self::assertCount(1, $sequence);
+        $sequence->insert(0, day('2011-06-24'));
+        self::assertCount(2, $sequence);
+        $sequence->insert(2, day('2012-06-25'));
+        self::assertCount(3, $sequence);
+        self::assertTrue(day('2011-06-24')->equals($sequence->get(0)));
+        self::expectException(InvalidIndex::class);
+        $sequence->insert(42, day('2011-06-23'));
+    }
+
     public function testFilterReturnsNewInstance(): void
     {
         $sequence =new Sequence(day('2012-06-23'), day('2012-06-12'));

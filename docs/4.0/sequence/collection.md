@@ -128,6 +128,26 @@ $sequence->unshift(
 $sequence->get(0)->format('Y-m-d'); // [2018-02-10, 2018-02-20)
 ~~~
 
+### Sequence::insert
+
+Adds new intervals at the start of the sequence.
+
+<p class="message-notice">The sequence is re-indexed on the right side after the addition.</p>
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-02-01'),
+    new Period('2018-04-01', '2018-05-01'),
+);
+$sequence->get(1)->format('Y-m-d'); // [2018-04-01, 2018-05-01)
+$sequence->insert(1,
+    new Period('2018-02-01', '2018-03-01'),
+    new Period('2018-03-01', '2018-04-01')
+);
+count($sequence); // 4
+$sequence->get(1)->format('Y-m-d'), PHP_EOL; // [2018-02-01, 2018-03-01)
+~~~
+
 ### Sequence::set
 
 Updates the interval at the specify offset.
