@@ -16,6 +16,7 @@ namespace League\Period;
 use Countable;
 use Iterator;
 use IteratorAggregate;
+use JsonSerializable;
 use function array_filter;
 use function array_merge;
 use function count;
@@ -23,6 +24,7 @@ use function reset;
 use function sort;
 use function sprintf;
 use function uasort;
+use const ARRAY_FILTER_USE_BOTH;
 
 /**
  * A class to manipulate interval collection.
@@ -31,7 +33,7 @@ use function uasort;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0
  */
-final class Sequence implements Countable, IteratorAggregate
+final class Sequence implements Countable, IteratorAggregate, JsonSerializable
 {
     /**
      * @var Period[]
@@ -91,7 +93,7 @@ final class Sequence implements Countable, IteratorAggregate
     }
 
     /**
-     * Sort two Interval instance using their start datepoint.
+     * Sorts two Interval instance using their start datepoint.
      */
     private function sortByStartDate(Period $interval1, Period $interval2): int
     {
@@ -164,6 +166,14 @@ final class Sequence implements Countable, IteratorAggregate
      * @return Period[]
      */
     public function toArray(): array
+    {
+        return $this->intervals;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize(): array
     {
         return $this->intervals;
     }
@@ -332,7 +342,7 @@ final class Sequence implements Countable, IteratorAggregate
      */
     public function filter(callable $predicate): self
     {
-        $intervals = array_filter($this->intervals, $predicate);
+        $intervals = array_filter($this->intervals, $predicate, ARRAY_FILTER_USE_BOTH);
         if ($intervals === $this->intervals) {
             return $this;
         }

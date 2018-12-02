@@ -122,6 +122,12 @@ final class SequenceTest extends TestCase
         $sequence->insert(42, day('2011-06-23'));
     }
 
+    public function testJsonSerialize(): void
+    {
+        $day = day('2010-06-23');
+        self::assertSame('['.json_encode($day).']', json_encode(new Sequence($day)));
+    }
+
     public function testFilterReturnsNewInstance(): void
     {
         $sequence =new Sequence(day('2012-06-23'), day('2012-06-12'));

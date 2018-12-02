@@ -11,9 +11,9 @@ The `Sequence` class provides several methods to ease accessing its content usin
 
 ## Getter methods
 
-### Countable, IteratorAggregate
+### Countable, IteratorAggregate, JsonSerializable
 
-The `Sequence` class implements the PHP's `Countable` and `IteratorAggregate` interfaces so you can at any given time know the number of `Period` instance contains in the collection and iterate over each one of them using the `foreach` loop.
+The `Sequence` class implements the PHP's `Countable`, `IteratorAggregate` and `JsonSerializable` interfaces so you can at any given time know the number of `Period` instance contains in the collection and iterate over each one of them using the `foreach` loop as well as export its content using JSON representation.
 
 ~~~php
 $sequence = new Sequence(
@@ -26,6 +26,25 @@ count($sequence); // 4
 foreach ($sequence as $interval) {
 	//$interval is a League\Period\Period object
 }
+echo json_encode($sequence, JSON_PRETTY_PRINT);
+// [
+//    {
+//        "startDate": "2017-12-31T23:00:00.000000Z",
+//        "endDate": "2018-01-30T23:00:00.000000Z"
+//    },
+//    {
+//        "startDate": "2018-02-09T23:00:00.000000Z",
+//        "endDate": "2018-02-19T23:00:00.000000Z"
+//    },
+//    {
+//        "startDate": "2018-02-28T23:00:00.000000Z",
+//        "endDate": "2018-03-30T22:00:00.000000Z"
+//    },
+//    {
+//        "startDate": "2018-01-19T23:00:00.000000Z",
+//        "endDate": "2018-03-09T23:00:00.000000Z"
+//    }
+//]
 ~~~
 
 ### Sequence::toArray

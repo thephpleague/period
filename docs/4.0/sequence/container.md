@@ -87,12 +87,13 @@ Filters the sequence according to the given predicate. This method **MUST** reta
 ~~~php
 $sequence = new Sequence(
     new Period('2018-01-01', '2018-01-31'),
-    new Period('2018-01-01', '2018-01-31'),
+    new Period('2019-01-01', '2019-01-31'),
     new Period('2020-01-01', '2020-01-31')
 );
 
-$predicate = static function (Period $interval): bool {
-    return !$interval->equals(new Period('2018-01-01', '2018-01-31'));
+$predicate = static function (Period $interval, int $offset): bool {
+    return !$interval->equals(new Period('2018-01-01', '2018-01-31'))
+        || $offset != 1;
 };
 
 $newSequence = $sequence->filter($predicate);
