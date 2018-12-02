@@ -137,8 +137,8 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
      */
     public function some(callable $predicate): bool
     {
-        foreach ($this->intervals as $interval) {
-            if (true === $predicate($interval)) {
+        foreach ($this->intervals as $offset => $interval) {
+            if (true === $predicate($interval, $offset)) {
                 return true;
             }
         }
@@ -151,8 +151,8 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
      */
     public function every(callable $predicate): bool
     {
-        foreach ($this->intervals as $interval) {
-            if (true !== $predicate($interval)) {
+        foreach ($this->intervals as $offset => $interval) {
+            if (true !== $predicate($interval, $offset)) {
                 return false;
             }
         }

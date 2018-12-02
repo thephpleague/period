@@ -11,9 +11,9 @@ The `Sequence` class provides several methods to ease accessing its content usin
 
 ## Getter methods
 
-### Countable, IteratorAggregate, JsonSerializable
+### Countable, IteratorAggregate
 
-The `Sequence` class implements the PHP's `Countable`, `IteratorAggregate` and `JsonSerializable` interfaces so you can at any given time know the number of `Period` instance contains in the collection and iterate over each one of them using the `foreach` loop as well as export its content using JSON representation.
+The `Sequence` class implements PHP's `Countable`, `IteratorAggregate` interfaces so you can at any given time know the number of `Period` instances contains in the collection and iterate over each one of them using the `foreach` loop.
 
 ~~~php
 $sequence = new Sequence(
@@ -26,48 +26,6 @@ count($sequence); // 4
 foreach ($sequence as $interval) {
 	//$interval is a League\Period\Period object
 }
-echo json_encode($sequence, JSON_PRETTY_PRINT);
-// [
-//    {
-//        "startDate": "2017-12-31T23:00:00.000000Z",
-//        "endDate": "2018-01-30T23:00:00.000000Z"
-//    },
-//    {
-//        "startDate": "2018-02-09T23:00:00.000000Z",
-//        "endDate": "2018-02-19T23:00:00.000000Z"
-//    },
-//    {
-//        "startDate": "2018-02-28T23:00:00.000000Z",
-//        "endDate": "2018-03-30T22:00:00.000000Z"
-//    },
-//    {
-//        "startDate": "2018-01-19T23:00:00.000000Z",
-//        "endDate": "2018-03-09T23:00:00.000000Z"
-//    }
-//]
-~~~
-
-### Sequence::toArray
-
-Returns a native PHP array representation of the collection.
-
-~~~php
-$sequence = new Sequence(
-    new Period('2018-01-01', '2018-01-31'),
-    new Period('2018-02-10', '2018-02-20'),
-    new Period('2018-03-01', '2018-03-31'),
-    new Period('2018-01-20', '2018-03-10')
-);
-$array = $sequence->toArray();
-~~~
-
-### Sequence::isEmpty
-
-Tells whether the sequence contains no interval.
-
-~~~php
-$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
-$sequence->isEmpty(); // false
 ~~~
 
 ### Sequence::get
@@ -85,31 +43,6 @@ $sequence = new Sequence(
 );
 $sequence->get(3)->format('Y-m-d'); //returns [2018-01-20, 2018-03-10)
 $sequence->get(42); //throws an League\Period\InvalidIndex exception
-~~~
-
-### Sequence::sort
-
-Sort the current instance according to the given comparison callable and maintain index association.
-
-~~~php
-$sequence = new Sequence(
-    new Period('2018-01-01', '2018-01-31'),
-    new Period('2017-01-01', '2017-01-31'),
-    new Period('2020-01-01', '2020-01-31')
-);
-
-foreach ($sequence as $offset => $interval) {
-    echo $offset; //0, 1, 2
-}
-
-$compare = static function (Period $interval1, Period $interval2): int {
-    return $interval1->getEndDate() <=> $interval2->getEndDate();
-};
-
-$sequence->sort($compare);
-foreach ($sequence as $offset => $interval) {
-    echo $offset; // 2, 0, 1
-}
 ~~~
 
 ## Setter methods
@@ -215,4 +148,78 @@ $sequence = new Sequence(
 count($sequence); // 4
 $sequence->clear();
 count($sequence); // 0
+~~~
+
+## Conversion methods
+
+### JsonSerializable
+
+The `Sequence` class implements PHP's `JsonSerializable` interfaces so you can export its content using JSON representation.
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2018-02-10', '2018-02-20'),
+    new Period('2018-03-01', '2018-03-31'),
+    new Period('2018-01-20', '2018-03-10')
+);
+
+echo json_encode($sequence, JSON_PRETTY_PRINT);
+// [
+//    {
+//        "startDate": "2017-12-31T23:00:00.000000Z",
+//        "endDate": "2018-01-30T23:00:00.000000Z"
+//    },
+//    {
+//        "startDate": "2018-02-09T23:00:00.000000Z",
+//        "endDate": "2018-02-19T23:00:00.000000Z"
+//    },
+//    {
+//        "startDate": "2018-02-28T23:00:00.000000Z",
+//        "endDate": "2018-03-30T22:00:00.000000Z"
+//    },
+//    {
+//        "startDate": "2018-01-19T23:00:00.000000Z",
+//        "endDate": "2018-03-09T23:00:00.000000Z"
+//    }
+//]
+~~~
+
+### Sequence::toArray
+
+Returns a native PHP array representation of the collection.
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2018-02-10', '2018-02-20'),
+    new Period('2018-03-01', '2018-03-31'),
+    new Period('2018-01-20', '2018-03-10')
+);
+$array = $sequence->toArray();
+~~~
+
+### Sequence::sort
+
+Sorts the current instance according to the given comparison callable and maintain index association.
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+foreach ($sequence as $offset => $interval) {
+    echo $offset; //0, 1, 2
+}
+
+$compare = static function (Period $interval1, Period $interval2): int {
+    return $interval1->getEndDate() <=> $interval2->getEndDate();
+};
+
+$sequence->sort($compare);
+foreach ($sequence as $offset => $interval) {
+    echo $offset; // 2, 0, 1
+}
 ~~~

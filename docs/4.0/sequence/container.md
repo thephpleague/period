@@ -9,6 +9,15 @@ The `Sequence` class is design to ease gathering information about multiple `Per
 
 ## Accessing intervals information
 
+### Sequence::isEmpty
+
+Tells whether the sequence contains no interval.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->isEmpty(); // false
+~~~
+
 ### Sequence::getBoundaries
 
 Returns the sequence boundaries as a `Period` instance. If the sequence is empty `null` is returned.
@@ -80,9 +89,78 @@ $sequence->contains(
 ); // false
 ~~~
 
+### Sequence::some
+
+Tells whether some intervals in the current instance satisfies the predicate.
+
+The predicate is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): bool
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$predicate = static function (Period $interval): bool {
+    return $interval->contains('2018-01-15');
+};
+
+$sequence->some($predicate); // true
+~~~
+
+### Sequence::every
+
+Tells whether all intervals in the current instance satisfies the predicate.
+
+The predicate is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): bool
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$predicate = static function (Period $interval): bool {
+    return $interval->contains('2018-01-15');
+};
+
+$sequence->every($predicate); // false
+~~~
+
 ### Sequence::filter
 
 Filters the sequence according to the given predicate. This method **MUST** retain the state of the current instance, and return an instance that contains the filtered intervals with their keys re-indexed.
+
+The predicate is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): bool
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
 
 ~~~php
 $sequence = new Sequence(
@@ -91,9 +169,8 @@ $sequence = new Sequence(
     new Period('2020-01-01', '2020-01-31')
 );
 
-$predicate = static function (Period $interval, int $offset): bool {
-    return !$interval->equals(new Period('2018-01-01', '2018-01-31'))
-        || $offset != 1;
+$predicate = static function (Period $interval): bool {
+    return $interval->equals(new Period('2018-01-01', '2018-01-31'));
 };
 
 $newSequence = $sequence->filter($predicate);
@@ -125,40 +202,3 @@ foreach ($newSequence as $offset => $interval) {
     echo $offset; // 2, 0, 1
 }
 ~~~
-
-### Sequence::some
-
-Tells whether some intervals in the current instance satisfies the predicate.
-
-~~~php
-$sequence = new Sequence(
-    new Period('2018-01-01', '2018-01-31'),
-    new Period('2017-01-01', '2017-01-31'),
-    new Period('2020-01-01', '2020-01-31')
-);
-
-$predicate = static function (Period $interval): bool {
-    return $interval->contains('2018-01-15');
-};
-
-$sequence->some($predicate); // true
-~~~
-
-### Sequence::every
-
-Tells whether all intervals in the current instance satisfies the predicate.
-
-~~~php
-$sequence = new Sequence(
-    new Period('2018-01-01', '2018-01-31'),
-    new Period('2017-01-01', '2017-01-31'),
-    new Period('2020-01-01', '2020-01-31')
-);
-
-$predicate = static function (Period $interval): bool {
-    return $interval->contains('2018-01-15');
-};
-
-$sequence->every($predicate); // false
-~~~
-
