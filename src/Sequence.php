@@ -118,7 +118,7 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
             if ($isContained && $isPreviouslyContained) {
                 continue;
             }
-            
+
             if ($current->overlaps($period)) {
                 $sequence->push($current->intersect($period));
             }
@@ -130,6 +130,26 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
         }
 
         return $sequence;
+    }
+
+    /**
+     * Returns the computed difference between a sequence and an interval.
+     */
+    public function diff(Period $interval): self
+    {
+        $predicate = static function (Period $period) use ($interval): bool {
+            return $interval->overlaps($period);
+        };
+
+        $sequence = $this->filter($predicate);
+        if ($sequence->isEmpty()) {
+            return $sequence;
+        }
+
+        $sequence->push(new Period($interval->getStartDate(), $interval->getStartDate()));
+        $sequence->push(new Period($interval->getEndDate(), $interval->getEndDate()));
+
+        return $sequence->getGaps();
     }
 
     /**

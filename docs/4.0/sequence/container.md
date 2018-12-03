@@ -89,6 +89,8 @@ $sequence->contains(
 ); // false
 ~~~
 
+## Performing sequence manipulations
+
 ### Sequence::some
 
 Tells whether some intervals in the current instance satisfies the predicate.
@@ -201,4 +203,22 @@ foreach ($sequence as $offset => $interval) {
 foreach ($newSequence as $offset => $interval) {
     echo $offset; // 2, 0, 1
 }
+~~~
+
+### Sequence::diff
+
+Returns the computed difference between a sequence and an interval. This methods returns a new `Sequence` instance containing the differences expressed as `Period` instance between a sequence and a given `Period` instance. If the sequence is empty or contains no overlapsing interval with the given `Period` an empty sequence is returned.
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-15', '2018-01-20'),
+    new Period('2018-01-05', '2018-01-10')
+);
+
+$interval = new Period('2018-01-01', '2018-02-01');
+$diff = $sequence->diff($interval);
+
+$diff->get(0); // new Period('2018-01-01', '2018-01-05');
+$diff->get(1); // new Period('2018-01-10', '2018-01-15');
+$diff->get(2); // new Period('2018-01-20', '2018-02-01');
 ~~~
