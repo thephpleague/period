@@ -9,7 +9,8 @@ title: Concepts and arguments
 
 - **interval** - `Period` is a PHP implementation of a left closed right open datetime interval which consists of two datepoints and the duration between them. This means that:
 
-    - The starting datepoint is included into the interval whereas the ending datepoint is excluded from it.
+    - The starting datepoint is included in the interval.
+    - The ending datepoint is excluded from the interval.
     - The starting datepoint is always less than or equal to the ending datepoint.
 
 - **datepoint** - A position in time expressed as a `DateTimeImmutable` object.

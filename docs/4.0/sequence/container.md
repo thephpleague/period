@@ -184,6 +184,14 @@ count($newSequence); //1
 
 Returns an instance sorted according to the given comparison callable but does not maintain index association. This method **MUST** retain the state of the current instance, and return an instance that contains the sorted intervals with their keys re-indexed.
 
+The comparison algorithm is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval1, Period $interval2): int
+~~~
+
+It must return an integer less than, equal to, or greater than zero if the first argument is considered to be respectively less than, equal to, or greater than the second.
+
 ~~~php
 $sequence = new Sequence(
     new Period('2018-01-01', '2018-01-31'),
