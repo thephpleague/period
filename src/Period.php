@@ -613,6 +613,13 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
      *
+     * [--------------------)
+     *          U
+     *                 [----------)
+     *          =
+     * [--------------------------)
+     *
+     *
      * @param Period ...$intervals
      */
     public function merge(self $interval, self ...$intervals): self

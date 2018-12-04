@@ -133,26 +133,6 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * Returns the computed difference between a sequence and an interval.
-     */
-    public function diff(Period $interval): self
-    {
-        $predicate = static function (Period $period) use ($interval): bool {
-            return $interval->overlaps($period);
-        };
-
-        $sequence = $this->filter($predicate);
-        if ($sequence->isEmpty()) {
-            return $sequence;
-        }
-
-        $sequence->push(new Period($interval->getStartDate(), $interval->getStartDate()));
-        $sequence->push(new Period($interval->getEndDate(), $interval->getEndDate()));
-
-        return $sequence->getGaps();
-    }
-
-    /**
      * Tells whether some intervals in the current instance satisfies the predicate.
      */
     public function some(callable $predicate): bool
