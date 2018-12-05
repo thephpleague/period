@@ -421,7 +421,7 @@ final class Period implements JsonSerializable
      * </ul>
      *
      * [--------------------)
-     *          -
+     *          \
      *                [-----------)
      *          =
      * [--------------)  +  [-----)

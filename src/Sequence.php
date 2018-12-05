@@ -19,11 +19,15 @@ use IteratorAggregate;
 use JsonSerializable;
 use function array_filter;
 use function array_merge;
+use function array_splice;
+use function array_unshift;
+use function array_values;
 use function count;
 use function reset;
 use function sort;
 use function sprintf;
 use function uasort;
+use function usort;
 use const ARRAY_FILTER_USE_BOTH;
 
 /**
@@ -209,7 +213,7 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
      *
      * @param Period ...$intervals
      */
-    public function contains(Period $interval, Period ... $intervals): bool
+    public function contains(Period $interval, Period ...$intervals): bool
     {
         $intervals[] = $interval;
         foreach ($intervals as $period) {
