@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TDB
+## 4.1.0 - 2018-12-07
 
 ### Added
 
