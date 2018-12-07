@@ -217,7 +217,7 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
     {
         $intervals[] = $interval;
         foreach ($intervals as $period) {
-            if (null === $this->indexOf($period)) {
+            if (false === $this->indexOf($period)) {
                 return false;
             }
         }
@@ -228,11 +228,11 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
     /**
      * Attempts to find the first offset attached to the submitted interval.
      *
-     * If no offset is found the method returns null.
+     * If no offset is found the method returns boolean false.
      *
-     * @return ?int
+     * @return int|bool
      */
-    public function indexOf(Period $interval): ?int
+    public function indexOf(Period $interval)
     {
         foreach ($this->intervals as $offset => $period) {
             if ($period->equals($interval)) {
@@ -240,7 +240,7 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
             }
         }
 
-        return null;
+        return false;
     }
 
     /**

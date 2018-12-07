@@ -65,12 +65,12 @@ $intersections->isEmpty(); // true
 
 ### Sequence::indexOf
 
-Returns the offset of the given `Period` object. The comparison of two intervals is done using `Period::equals` method. If no offset is found `null` is returned.
+Returns the offset of the given `Period` object. The comparison of two intervals is done using `Period::equals` method. If no offset is found `false` is returned.
 
 ~~~php
 $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
 $sequence->indexOf(new Period('2018-03-01', '2018-03-31')); // 0
-$sequence->indexOf(day('2012-06-03')); // null
+$sequence->indexOf(day('2012-06-03')); // false
 ~~~
 
 ### Sequence::contains

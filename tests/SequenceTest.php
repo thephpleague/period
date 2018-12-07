@@ -77,7 +77,7 @@ final class SequenceTest extends TestCase
         self::assertTrue($sequence->contains(day('2012-06-23')));
         self::assertSame($event2, $sequence->get(1));
         self::assertSame(0, $sequence->indexOf(day('2012-06-23')));
-        self::assertNull($sequence->indexOf(day('2014-06-23')));
+        self::assertFalse($sequence->indexOf(day('2014-06-23')));
         $sequence->push($event3);
         self::assertCount(3, $sequence);
         self::assertSame(2, $sequence->indexOf($event3));
