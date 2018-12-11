@@ -878,4 +878,10 @@ class PeriodTest extends TestCase
         }
         self::assertSame(10, $i);
     }
+
+    public function testFromCalendarFails(): void
+    {
+        self::expectException(Exception::class);
+        Period::fromCalendar('now', 'foobar');
+    }
 }

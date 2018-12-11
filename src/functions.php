@@ -15,256 +15,216 @@ namespace League\Period;
 
 use DateInterval;
 use DatePeriod;
-use DateTime;
 use DateTimeImmutable;
-use DateTimeInterface;
-use TypeError;
-use function filter_var;
-use function get_class;
-use function gettype;
-use function intdiv;
 use function is_int;
-use function is_object;
-use function is_string;
-use function sprintf;
-use const FILTER_VALIDATE_INT;
 
 /**
  * Returns a DateTimeImmutable object.
  *
- * A datepoint can be
- * <ul>
- * <li>a DateTimeInterface object
- * <li>a integer interpreted as a timestamp
- * <li>a string parsable by DateTime::__construct
- * </ul>
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Datepoint::create
  */
 function datepoint($datepoint): DateTimeImmutable
 {
-    if ($datepoint instanceof DateTimeImmutable) {
-        return $datepoint;
-    }
-
-    if ($datepoint instanceof DateTime) {
-        return DateTimeImmutable::createFromMutable($datepoint);
-    }
-
-    if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
-        return new DateTimeImmutable('@'.$timestamp);
-    }
-
-    if (is_string($datepoint)) {
-        return new DateTimeImmutable($datepoint);
-    }
-
-    throw new TypeError(sprintf(
-        'The datepoint must be expressed using an integer, a string or a DateTimeInterface object %s given',
-        is_object($datepoint) ? get_class($datepoint) : gettype($datepoint)
-    ));
+    return Datepoint::create($datepoint);
 }
 
 /**
  * Returns a DateInval object.
  *
- * The duration can be
- * <ul>
- * <li>an Period object</li>
- * <li>a DateInterval object</li>
- * <li>an integer interpreted as the duration expressed in seconds.</li>
- * <li>a string parsable by DateInterval::createFromDateString</li>
- * </ul>
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Duration::create
  */
 function duration($duration): DateInterval
 {
-    if ($duration instanceof Period) {
-        return $duration->getDateInterval();
-    }
-
-    if ($duration instanceof DateInterval) {
-        return $duration;
-    }
-
-    if (false !== ($second = filter_var($duration, FILTER_VALIDATE_INT))) {
-        return new DateInterval('PT'.$second.'S');
-    }
-
-    if (is_string($duration)) {
-        return DateInterval::createFromDateString($duration);
-    }
-
-    throw new TypeError(sprintf(
-        'The duration must be expressed using an integer, a string, a DateInterval or a Period object %s given',
-        is_object($duration) ? get_class($duration) : gettype($duration)
-    ));
+    return Duration::create($duration);
 }
 
 /**
  * Creates new instance from a starting point and an interval.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::after
  */
 function interval_after($datepoint, $duration): Period
 {
-    $datepoint = datepoint($datepoint);
-    $duration = duration($duration);
-
-    return new Period($datepoint, $datepoint->add($duration));
+    return Period::after($datepoint, $duration);
 }
 
 /**
  * Creates new instance from a ending excluded datepoint and an interval.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::before
  */
 function interval_before($datepoint, $duration): Period
 {
-    $datepoint = datepoint($datepoint);
-    $duration = duration($duration);
-
-    return new Period($datepoint->sub($duration), $datepoint);
+    return Period::before($datepoint, $duration);
 }
 
 /**
  * Creates new instance where the given duration is simultaneously
  * substracted from and added to the datepoint.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::around
  */
 function interval_around($datepoint, $duration): Period
 {
-    $datepoint = datepoint($datepoint);
-    $duration = duration($duration);
-
-    return new Period($datepoint->sub($duration), $datepoint->add($duration));
+    return Period::around($datepoint, $duration);
 }
 
 /**
  * Creates new instance from a DatePeriod.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromDatePeriod
  */
 function interval_from_dateperiod(DatePeriod $datePeriod): Period
 {
-    return new Period($datePeriod->getStartDate(), $datePeriod->getEndDate());
+    return Period::fromDatePeriod($datePeriod);
 }
 
 /**
  * Creates new instance for a specific year.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromYear
+ * @see Period::fromCalendar
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function year($year_or_datepoint): Period
 {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, 1, 1)->setTime(0, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
+        return Period::fromYear($year_or_datepoint);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $startDate = $datepoint->setDate((int) $datepoint->format('Y'), 1, 1)->setTime(0, 0);
-
-    return new Period($startDate, $startDate->add(new DateInterval('P1Y')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_YEAR);
 }
 
 /**
  * Creates new instance for a specific ISO year.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromIsoYear
+ * @see Period::fromCalendar
  *
  * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
 function iso_year($year_or_datepoint): Period
 {
     if (is_int($year_or_datepoint)) {
-        return new Period(
-            (new DateTimeImmutable())->setISODate($year_or_datepoint, 1)->setTime(0, 0),
-            (new DateTimeImmutable())->setISODate(++$year_or_datepoint, 1)->setTime(0, 0)
-        );
+        return Period::fromIsoYear($year_or_datepoint);
     }
 
-    $datepoint = datepoint($year_or_datepoint)->setTime(0, 0);
-    $iso_year = (int) $datepoint->format('o');
-
-    return new Period($datepoint->setISODate($iso_year, 1), $datepoint->setISODate(++$iso_year, 1));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_ISOYEAR);
 }
 
 /**
  * Creates new instance for a specific semester in a given year.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromSemester
+ * @see Period::fromCalendar
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function semester($year_or_datepoint, int $semester = 1): Period
 {
     if (is_int($year_or_datepoint)) {
-        $month = (($semester - 1) * 6) + 1;
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, 1)->setTime(0, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P6M')));
+        return Period::fromSemester($year_or_datepoint, $semester);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $year = (int) $datepoint->format('Y');
-    $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
-    $startDate = $datepoint->setDate($year, $month, 1)->setTime(0, 0);
-
-    return new Period($startDate, $startDate->add(new DateInterval('P6M')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_SEMESTER);
 }
 
 /**
  * Creates new instance for a specific quarter in a given year.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromQuarter
+ * @see Period::fromCalendar
  *
  * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
 function quarter($year_or_datepoint, int $quarter = 1): Period
 {
     if (is_int($year_or_datepoint)) {
-        $month = (($quarter - 1) * 3) + 1;
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, 1)->setTime(0, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P3M')));
+        return Period::fromQuarter($year_or_datepoint, $quarter);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $year = (int) $datepoint->format('Y');
-    $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
-    $startDate = $datepoint->setDate($year, $month, 1)->setTime(0, 0);
-
-    return new Period($startDate, $startDate->add(new DateInterval('P3M')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_QUARTER);
 }
 
 /**
  * Creates new instance for a specific year and month.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromMonth
+ * @see Period::fromCalendar
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
 function month($year_or_datepoint, int $month = 1): Period
 {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, 1)->setTime(0, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P1M')));
+        return Period::fromMonth($year_or_datepoint, $month);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $startDate = $datepoint
-        ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1)
-        ->setTime(0, 0);
-
-    return new Period($startDate, $startDate->add(new DateInterval('P1M')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_MONTH);
 }
 
 /**
  * Creates new instance for a specific ISO8601 week.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromIsoWeek
+ * @see Period::fromCalendar
  *
  * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
 function iso_week($year_or_datepoint, int $week = 1): Period
 {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setISODate($year_or_datepoint, $week, 1)->setTime(0, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P7D')));
+        return Period::fromIsoWeek($year_or_datepoint, $week);
     }
 
-    $datepoint = datepoint($year_or_datepoint)->setTime(0, 0);
-    $startDate = $datepoint->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
-
-    return new Period($startDate, $startDate->add(new DateInterval('P7D')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_ISOWEEK);
 }
 
 /**
  * Creates new instance for a specific date.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromIsoWeek
+ * @see Period::fromCalendar
  *
  * The date is truncated so that the time range starts at midnight
  * according to the date timezone and last a full day.
@@ -274,18 +234,20 @@ function iso_week($year_or_datepoint, int $week = 1): Period
 function day($year_or_datepoint, int $month = 1, int $day = 1): Period
 {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, $day)->setTime(0, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('P1D')));
+        return Period::fromDay($year_or_datepoint, $month, $day);
     }
 
-    $startDate = datepoint($year_or_datepoint)->setTime(0, 0);
-
-    return new Period($startDate, $startDate->add(new DateInterval('P1D')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_DAY);
 }
 
 /**
  * Creates new instance for a specific date and hour.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromHour
+ * @see Period::fromCalendar
  *
  * The starting datepoint represents the beginning of the hour
  * The interval is equal to 1 hour
@@ -295,19 +257,20 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
 function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): Period
 {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, $day)->setTime($hour, 0);
-
-        return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
+        return Period::fromHour($year_or_datepoint, $month, $day, $hour);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
-
-    return new Period($startDate, $startDate->add(new DateInterval('PT1H')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_HOUR);
 }
 
 /**
  * Creates new instance for a specific date, hour and minute.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromMinute
+ * @see Period::fromCalendar
  *
  * The starting datepoint represents the beginning of the minute
  * The interval is equal to 1 minute
@@ -317,19 +280,20 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
 function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): Period
 {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())->setDate($year_or_datepoint, $month, $day)->setTime($hour, $minute);
-
-        return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
+        return Period::fromMinute($year_or_datepoint, $month, $day, $hour, $minute);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
-
-    return new Period($startDate, $startDate->add(new DateInterval('PT1M')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_MINUTE);
 }
 
 /**
  * Creates new instance for a specific date, hour, minute and second.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::fromSecond
+ * @see Period::fromCalendar
  *
  * The starting datepoint represents the beginning of the second
  * The interval is equal to 1 second
@@ -345,21 +309,10 @@ function second(
     int $second = 0
 ): Period {
     if (is_int($year_or_datepoint)) {
-        $startDate = (new DateTimeImmutable())
-            ->setDate($year_or_datepoint, $month, $day)
-            ->setTime($hour, $minute, $second);
-
-        return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
+        return Period::fromSecond($year_or_datepoint, $month, $day, $hour, $minute, $second);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-    $startDate = $datepoint->setTime(
-        (int) $datepoint->format('H'),
-        (int) $datepoint->format('i'),
-        (int) $datepoint->format('s')
-    );
-
-    return new Period($startDate, $startDate->add(new DateInterval('PT1S')));
+    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_SECOND);
 }
 
 /**
@@ -384,7 +337,5 @@ function instant(
         return new Period($datepoint, $datepoint);
     }
 
-    $datepoint = datepoint($year_or_datepoint);
-
-    return new Period($datepoint, $datepoint);
+    return Period::fromDatepoint($year_or_datepoint);
 }
