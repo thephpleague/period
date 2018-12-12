@@ -43,19 +43,6 @@ final class Period implements JsonSerializable
     public const CALENDAR_MINUTE = 'MINUTE';
     public const CALENDAR_SECOND = 'SECOND';
 
-    private const CALENDAR_LIST = [
-        self::CALENDAR_SECOND => 1,
-        self::CALENDAR_MINUTE => 1,
-        self::CALENDAR_HOUR => 1,
-        self::CALENDAR_DAY => 1,
-        self::CALENDAR_ISOWEEK => 1,
-        self::CALENDAR_MONTH => 1,
-        self::CALENDAR_QUARTER => 1,
-        self::CALENDAR_SEMESTER => 1,
-        self::CALENDAR_YEAR => 1,
-        self::CALENDAR_ISOYEAR => 1,
-    ];
-
     /**
      * The starting included datepoint.
      *
@@ -235,77 +222,76 @@ final class Period implements JsonSerializable
      * The datepoint is contained or start the interval and the duration is
      * equals to the calendar reference duration.
      */
-    public static function fromCalendar($datepoint, string $precision): self
+    public static function fromCalendar($datepoint, string $calendar): self
     {
-        if (!isset(self::CALENDAR_LIST[$precision])) {
-            throw new Exception('Unknown Calendar interval');
-        }
-
         $datepoint = Datepoint::create($datepoint);
-        if (self::CALENDAR_HOUR === $precision) {
-            $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
+        switch ($calendar) {
+            case self::CALENDAR_HOUR:
+                $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
 
-            return new self($startDate, $startDate->add(new DateInterval('PT1H')));
+                return new self($startDate, $startDate->add(new DateInterval('PT1H')));
+
+            case self::CALENDAR_MINUTE:
+                $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
+
+                return new self($startDate, $startDate->add(new DateInterval('PT1M')));
+
+            case self::CALENDAR_SECOND:
+                $startDate = $datepoint->setTime(
+                    (int) $datepoint->format('H'),
+                    (int) $datepoint->format('i'),
+                    (int) $datepoint->format('s')
+                );
+
+                return new self($startDate, $startDate->add(new DateInterval('PT1S')));
+
+            case self::CALENDAR_DAY:
+                $startDate = $datepoint->setTime(0, 0);
+
+                return new self($startDate, $startDate->add(new DateInterval('P1D')));
+
+            case self::CALENDAR_ISOWEEK:
+                $startDate = $datepoint
+                    ->setTime(0, 0)
+                    ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
+
+                return new self($startDate, $startDate->add(new DateInterval('P7D')));
+
+            case self::CALENDAR_MONTH:
+                $startDate = $datepoint
+                    ->setTime(0, 0)
+                    ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
+
+                return new self($startDate, $startDate->add(new DateInterval('P1M')));
+
+            case self::CALENDAR_QUARTER:
+                $startDate = $datepoint
+                    ->setTime(0, 0)
+                    ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 3) * 3) + 1, 1);
+
+                return new self($startDate, $startDate->add(new DateInterval('P3M')));
+
+            case self::CALENDAR_SEMESTER:
+                $startDate = $datepoint
+                    ->setTime(0, 0)
+                    ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 6) * 6) + 1, 1);
+
+                return new self($startDate, $startDate->add(new DateInterval('P6M')));
+
+            case self::CALENDAR_YEAR:
+                $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
+
+                return new self($startDate, $startDate->add(new DateInterval('P1Y')));
+
+            case self::CALENDAR_ISOYEAR:
+                $datepoint = $datepoint->setTime(0, 0);
+                $year = (int) $datepoint->format('o');
+
+                return new self($datepoint->setISODate($year, 1), $datepoint->setISODate(++$year, 1));
+
+            default:
+                throw new Exception('Unknown Calendar interval');
         }
-
-        if (self::CALENDAR_MINUTE === $precision) {
-            $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
-
-            return new self($startDate, $startDate->add(new DateInterval('PT1M')));
-        }
-
-        if (self::CALENDAR_SECOND === $precision) {
-            $startDate = $datepoint->setTime(
-                (int) $datepoint->format('H'),
-                (int) $datepoint->format('i'),
-                (int) $datepoint->format('s')
-            );
-
-            return new self($startDate, $startDate->add(new DateInterval('PT1S')));
-        }
-
-        $datepoint = $datepoint->setTime(0, 0);
-
-        if (self::CALENDAR_DAY === $precision) {
-            return new self($datepoint, $datepoint->add(new DateInterval('P1D')));
-        }
-
-        if (self::CALENDAR_ISOWEEK === $precision) {
-            $startDate = $datepoint->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P7D')));
-        }
-
-        $year = (int) $datepoint->format('Y');
-        if (self::CALENDAR_MONTH === $precision) {
-            $startDate = $datepoint->setDate($year, (int) $datepoint->format('n'), 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P1M')));
-        }
-
-        if (self::CALENDAR_QUARTER === $precision) {
-            $month = (intdiv((int) $datepoint->format('n'), 3) * 3) + 1;
-            $startDate = $datepoint->setDate($year, $month, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P3M')));
-        }
-
-        if (self::CALENDAR_SEMESTER === $precision) {
-            $month = (intdiv((int) $datepoint->format('n'), 6) * 6) + 1;
-            $startDate = $datepoint->setDate($year, $month, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P6M')));
-        }
-
-        if (self::CALENDAR_YEAR === $precision) {
-            $startDate = $datepoint->setDate($year, 1, 1);
-
-            return new self($startDate, $startDate->add(new DateInterval('P1Y')));
-        }
-
-        $iso_year = (int) $datepoint->format('o');
-
-        return new self($datepoint->setISODate($iso_year, 1), $datepoint->setISODate(++$iso_year, 1));
     }
 
     /**
