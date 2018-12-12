@@ -14,13 +14,7 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
-use TypeError;
 use function filter_var;
-use function get_class;
-use function gettype;
-use function is_object;
-use function is_string;
-use function sprintf;
 use const FILTER_VALIDATE_INT;
 
 /**
@@ -30,15 +24,8 @@ use const FILTER_VALIDATE_INT;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
  */
-final class Duration
+final class Duration extends DateInterval
 {
-    /**
-     * @codeCoverageIgnore
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
      *
@@ -63,16 +50,9 @@ final class Duration
         }
 
         if (false !== ($second = filter_var($duration, FILTER_VALIDATE_INT))) {
-            return new DateInterval('PT'.$second.'S');
+            return new self('PT'.$second.'S');
         }
 
-        if (is_string($duration)) {
-            return DateInterval::createFromDateString($duration);
-        }
-
-        throw new TypeError(sprintf(
-            'The duration must be expressed using an integer, a string, a DateInterval or a Period object %s given',
-            is_object($duration) ? get_class($duration) : gettype($duration)
-        ));
+        return self::createFromDateString($duration);
     }
 }

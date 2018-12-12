@@ -17,9 +17,11 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception as PhpException;
+use League\Period\Duration;
 use League\Period\Exception;
 use PHPUnit\Framework\TestCase;
 use TypeError;
+use function get_object_vars;
 use function League\Period\datepoint;
 use function League\Period\day;
 use function League\Period\duration;
@@ -83,11 +85,12 @@ class FunctionTest extends TestCase
     /**
      * @dataProvider durationProvider
      *
+     * @param mixed                   $expected DateInterval object
      * @param int|DateInterval|string $duration
      */
-    public function testDuration(DateInterval $expected, $duration): void
+    public function testDuration($expected, $duration): void
     {
-        self::assertEquals($expected, duration($duration));
+        self::assertEquals(get_object_vars($expected), get_object_vars(duration($duration)));
     }
 
     public function durationProvider(): array
@@ -98,7 +101,7 @@ class FunctionTest extends TestCase
                 'input' => new DateInterval('P1D'),
             ],
             'string' => [
-                'expected' => new DateInterval('P1D'),
+                'expected' => new Duration('P1D'),
                 'input' => '+1 DAY',
             ],
             'int' => [
