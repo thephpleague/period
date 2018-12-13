@@ -264,7 +264,10 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
         return Period::after($startDate, new DateInterval('PT1H'));
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::HOUR);
+    $datepoint = Datepoint::create($year_or_datepoint);
+    $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
+
+    return Period::after($startDate, new DateInterval('PT1H'));
 }
 
 /**
@@ -291,7 +294,14 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
         return Period::after($startDate, new DateInterval('PT1M'));
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::MINUTE);
+    $datepoint = Datepoint::create($year_or_datepoint);
+    $startDate = $datepoint->setTime(
+        (int) $datepoint->format('H'),
+        (int) $datepoint->format('i'),
+        0
+    );
+
+    return Period::after($startDate, new DateInterval('PT1M'));
 }
 
 /**
@@ -324,7 +334,14 @@ function second(
         return Period::after($startDate, new DateInterval('PT1S'));
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::SECOND);
+    $datepoint = Datepoint::create($year_or_datepoint);
+    $startDate = $datepoint->setTime(
+        (int) $datepoint->format('H'),
+        (int) $datepoint->format('i'),
+        (int) $datepoint->format('s')
+    );
+
+    return Period::after($startDate, new DateInterval('PT1S'));
 }
 
 /**

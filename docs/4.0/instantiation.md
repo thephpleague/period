@@ -127,9 +127,6 @@ public static Period::fromCalendar(mixed $datepoint, string $calendar): Period
 	- `Period::MONTH`
 	- `Period::ISOWEEK`
 	- `Period::DAY`
-	- `Period::HOUR`
-	- `Period::MINUTE`
-	- `Period::SECOND`
 
 #### Examples
 

@@ -8,14 +8,13 @@ All Notable changes to `Period` will be documented in this file
 
 - `League\Period\Datepoint`
 - `League\Period\Duration`
+- `Period::fromIsoYear`
 - `Period::fromYear`
 - `Period::fromSemester`
 - `Period::fromQuarter`
 - `Period::fromMonth`
-- `Period::fromDay`
-- `Period::fromDatepoint`
-- `Period::fromIsoYear`
 - `Period::fromIsoWeek`
+- `Period::fromDay`
 - `Period::after`
 - `Period::before`
 - `Period::around`
@@ -24,16 +23,13 @@ All Notable changes to `Period` will be documented in this file
 
 added the following constants
 
-- `Period::YEAR`
 - `Period::ISOYEAR`
+- `Period::YEAR`
 - `Period::SEMESTER`
 - `Period::QUARTER`
 - `Period::MONTH`
 - `Period::ISOWEEK`
 - `Period::DAY`
-- `Period::HOUR`
-- `Period::MINUTE`
-- `Period::SECOND`
 
 ### Fixed
 

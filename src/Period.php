@@ -178,67 +178,41 @@ final class Period implements JsonSerializable
      */
     public static function fromCalendar($datepoint, string $calendar): self
     {
-        $datepoint = Datepoint::create($datepoint);
+        $datepoint = Datepoint::create($datepoint)->setTime(0, 0);
         switch ($calendar) {
-            case self::HOUR:
-                $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
-
-                return new self($startDate, $startDate->add(new DateInterval('PT1H')));
-
-            case self::MINUTE:
-                $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
-
-                return new self($startDate, $startDate->add(new DateInterval('PT1M')));
-
-            case self::SECOND:
-                $startDate = $datepoint->setTime(
-                    (int) $datepoint->format('H'),
-                    (int) $datepoint->format('i'),
-                    (int) $datepoint->format('s')
-                );
-
-                return new self($startDate, $startDate->add(new DateInterval('PT1S')));
-
             case self::DAY:
-                $startDate = $datepoint->setTime(0, 0);
-
-                return new self($startDate, $startDate->add(new DateInterval('P1D')));
+                return new self($datepoint, $datepoint->add(new DateInterval('P1D')));
 
             case self::ISOWEEK:
                 $startDate = $datepoint
-                    ->setTime(0, 0)
                     ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P7D')));
 
             case self::MONTH:
                 $startDate = $datepoint
-                    ->setTime(0, 0)
                     ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P1M')));
 
             case self::QUARTER:
                 $startDate = $datepoint
-                    ->setTime(0, 0)
                     ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 3) * 3) + 1, 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P3M')));
 
             case self::SEMESTER:
                 $startDate = $datepoint
-                    ->setTime(0, 0)
                     ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 6) * 6) + 1, 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P6M')));
 
             case self::YEAR:
-                $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
+                $startDate = $datepoint->setDate((int) $datepoint->format('Y'), 1, 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P1Y')));
 
             case self::ISOYEAR:
-                $datepoint = $datepoint->setTime(0, 0);
                 $year = (int) $datepoint->format('o');
 
                 return new self($datepoint->setISODate($year, 1), $datepoint->setISODate(++$year, 1));
