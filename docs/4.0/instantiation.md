@@ -74,9 +74,6 @@ $interval = Period::fromDatePeriod($daterange);
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
 ~~~php
-public static Period::fromSecond(int $year, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0, int $second = 0): Period
-public static Period::fromMinute(int $year, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): Period
-public static Period::fromHour(int $year, int $month = 1, int $day = 1, int $hour = 0): Period
 public static Period::fromDay(int $year, int $month = 1, int $day = 1): Period
 public static Period::fromIsoWeek(int $year, int $week = 1): Period
 public static Period::fromMonth(int $year, int $month = 1): Period
@@ -89,18 +86,13 @@ public static Period::fromIsoYear(int $year): Period
 #### Parameters
 
 - `$year` parameter is always required;
-- the `$year`, `$semester`, `$quarter`, `$month`, `$day` arguments will default to `1`;
-- the `$hour`, `$minute`, `$second` arguments will default to `0`;
+- the `$semester`, `$quarter`, `$month`, `$week`, `$day` arguments will default to `1`;
 
 <p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
 
 #### Examples
 
 ~~~php
-$hour  = Period::fromHour(2012, 4, 1, 8);
-$alt_hour = new Period('2012-04-01 08:00:00', '2012-04-01 09:00:00');
-$alt_hour->equals($hour); //return true;
-
 $day = Period::fromDay(2012);
 $daybis = Period::fromDay(2012, 1);
 $day->equals($daybis); //return true;
@@ -110,14 +102,12 @@ $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 ### Named constructors accepting a datepoint and/or a duration
 
 ~~~php
-public static Period::fromDatepoint(mixed $datepoint): Period
 public static Period::after(mixed $datepoint, mixed $duration): Period
 public static Period::before(mixed $datepoint, mixed $duration): Period
 public static Period::around(mixed $datepoint, mixed $duration): Period
 public static Period::fromCalendar(mixed $datepoint, string $calendar): Period
 ~~~
 
-- `Period::fromDatepoint` returns a `Period` instance which represents an instant
 - `Period::after` returns a `Period` object which starts at `$datepoint`
 - `Period::before` returns a `Period` object which ends at `$datepoint`
 - `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
@@ -130,28 +120,18 @@ public static Period::fromCalendar(mixed $datepoint, string $calendar): Period
 - `$datepoint`: represents a datepoint
 - `$duration` represents a duration.
 - `$calendar`: a calendar reference to determine the period datepoint. In can be set to the following constants:
-	- `Period::CALENDAR_YEAR`
-	- `Period::CALENDAR_ISOYEAR`
-	- `Period::CALENDAR_SEMESTER`
-	- `Period::CALENDAR_QUARTER`
-	- `Period::CALENDAR_MONTH`
-	- `Period::CALENDAR_ISOWEEK`
-	- `Period::CALENDAR_DAY`
-	- `Period::CALENDAR_HOUR`
-	- `Period::CALENDAR_MINUTE`
-	- `Period::CALENDAR_SECOND`
+	- `Period::YEAR`
+	- `Period::ISOYEAR`
+	- `Period::SEMESTER`
+	- `Period::QUARTER`
+	- `Period::MONTH`
+	- `Period::ISOWEEK`
+	- `Period::DAY`
+	- `Period::HOUR`
+	- `Period::MINUTE`
+	- `Period::SECOND`
 
 #### Examples
-
-Using `Period::fromDatepoint`:
-
-~~~php
-use League\Period;
-
-$period = Period::fromDatepoint('2018-12-15 08:37:12');
-
-$period->getStartDate() == $period->getEndate(); // true
-~~~
 
 Using `Period::after`, `Period::around`, `Period::before`:
 
@@ -172,7 +152,7 @@ Using `Period::fromCalendar`:
 ~~~php
 use League\Period;
 
-$period = Period::fromCalendar('2018-12-15 08:37:12', Period::CALENDAR_HOUR);
+$period = Period::fromCalendar('2018-12-15 08:37:12', Period::HOUR);
 $alt_period = new Period('2018-12-15 08:00:00', '2018-12-15 09:00:00');
 
 $alt_period->equals($period);

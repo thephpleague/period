@@ -13,9 +13,6 @@ All Notable changes to `Period` will be documented in this file
 - `Period::fromQuarter`
 - `Period::fromMonth`
 - `Period::fromDay`
-- `Period::fromHour`
-- `Period::fromMinute`
-- `Period::fromSecond`
 - `Period::fromDatepoint`
 - `Period::fromIsoYear`
 - `Period::fromIsoWeek`
@@ -24,6 +21,19 @@ All Notable changes to `Period` will be documented in this file
 - `Period::around`
 - `Period::fromDatePeriod`
 - `Period::fromCalendar`
+
+added the following constants
+
+- `Period::YEAR`
+- `Period::ISOYEAR`
+- `Period::SEMESTER`
+- `Period::QUARTER`
+- `Period::MONTH`
+- `Period::ISOWEEK`
+- `Period::DAY`
+- `Period::HOUR`
+- `Period::MINUTE`
+- `Period::SECOND`
 
 ### Fixed
 

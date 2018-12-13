@@ -32,16 +32,16 @@ final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
-    public const CALENDAR_YEAR = 'YEAR';
-    public const CALENDAR_ISOYEAR = 'ISOYEAR';
-    public const CALENDAR_SEMESTER = 'SEMESTER';
-    public const CALENDAR_QUARTER = 'QUARTER';
-    public const CALENDAR_MONTH = 'MONTH';
-    public const CALENDAR_ISOWEEK = 'ISOWEEK';
-    public const CALENDAR_DAY = 'DAY';
-    public const CALENDAR_HOUR = 'HOUR';
-    public const CALENDAR_MINUTE = 'MINUTE';
-    public const CALENDAR_SECOND = 'SECOND';
+    public const YEAR = 'YEAR';
+    public const ISOYEAR = 'ISOYEAR';
+    public const SEMESTER = 'SEMESTER';
+    public const QUARTER = 'QUARTER';
+    public const MONTH = 'MONTH';
+    public const ISOWEEK = 'ISOWEEK';
+    public const DAY = 'DAY';
+    public const HOUR = 'HOUR';
+    public const MINUTE = 'MINUTE';
+    public const SECOND = 'SECOND';
 
     /**
      * The starting included datepoint.
@@ -171,72 +171,26 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance for a specific year, month, day and hour.
-     */
-    public static function fromHour(int $year, int $month = 1, int $day = 1, int $hour = 0): self
-    {
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, $day)->setTime($hour, 0);
-
-        return new self($startDate, $startDate->add(new DateInterval('PT1H')));
-    }
-
-    /**
-     * Creates new instance for a specific year, month, day, hour and minute.
-     */
-    public static function fromMinute(int $year, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): self
-    {
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, $day)->setTime($hour, $minute);
-
-        return new self($startDate, $startDate->add(new DateInterval('PT1M')));
-    }
-
-    /**
-     * Creates new instance for a specific year, month, day, hour, minute and second.
-     */
-    public static function fromSecond(
-        int $year,
-        int $month = 1,
-        int $day = 1,
-        int $hour = 0,
-        int $minute = 0,
-        int $second = 0
-    ): self {
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, $day)->setTime($hour, $minute, $second);
-
-        return new self($startDate, $startDate->add(new DateInterval('PT1S')));
-    }
-
-    /**
-     * Creates new instance corresponding to a specific datepoint.
-     */
-    public static function fromDatepoint($datepoint): self
-    {
-        $datepoint = Datepoint::create($datepoint);
-
-        return new self($datepoint, $datepoint);
-    }
-
-    /**
      * Creates a new instance from a datepoint and a calendar reference.
      *
-     * The datepoint is contained or start the interval and the duration is
-     * equals to the calendar reference duration.
+     * The datepoint is contained or start the referenced calendar interval.
+     * The duration is equals to that of the calendar reference.
      */
     public static function fromCalendar($datepoint, string $calendar): self
     {
         $datepoint = Datepoint::create($datepoint);
         switch ($calendar) {
-            case self::CALENDAR_HOUR:
+            case self::HOUR:
                 $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
 
                 return new self($startDate, $startDate->add(new DateInterval('PT1H')));
 
-            case self::CALENDAR_MINUTE:
+            case self::MINUTE:
                 $startDate = $datepoint->setTime((int) $datepoint->format('H'), (int) $datepoint->format('i'));
 
                 return new self($startDate, $startDate->add(new DateInterval('PT1M')));
 
-            case self::CALENDAR_SECOND:
+            case self::SECOND:
                 $startDate = $datepoint->setTime(
                     (int) $datepoint->format('H'),
                     (int) $datepoint->format('i'),
@@ -245,45 +199,45 @@ final class Period implements JsonSerializable
 
                 return new self($startDate, $startDate->add(new DateInterval('PT1S')));
 
-            case self::CALENDAR_DAY:
+            case self::DAY:
                 $startDate = $datepoint->setTime(0, 0);
 
                 return new self($startDate, $startDate->add(new DateInterval('P1D')));
 
-            case self::CALENDAR_ISOWEEK:
+            case self::ISOWEEK:
                 $startDate = $datepoint
                     ->setTime(0, 0)
                     ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P7D')));
 
-            case self::CALENDAR_MONTH:
+            case self::MONTH:
                 $startDate = $datepoint
                     ->setTime(0, 0)
                     ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P1M')));
 
-            case self::CALENDAR_QUARTER:
+            case self::QUARTER:
                 $startDate = $datepoint
                     ->setTime(0, 0)
                     ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 3) * 3) + 1, 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P3M')));
 
-            case self::CALENDAR_SEMESTER:
+            case self::SEMESTER:
                 $startDate = $datepoint
                     ->setTime(0, 0)
                     ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 6) * 6) + 1, 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P6M')));
 
-            case self::CALENDAR_YEAR:
+            case self::YEAR:
                 $startDate = $datepoint->setTime(0, 0)->setDate((int) $datepoint->format('Y'), 1, 1);
 
                 return new self($startDate, $startDate->add(new DateInterval('P1Y')));
 
-            case self::CALENDAR_ISOYEAR:
+            case self::ISOYEAR:
                 $datepoint = $datepoint->setTime(0, 0);
                 $year = (int) $datepoint->format('o');
 

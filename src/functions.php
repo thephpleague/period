@@ -114,7 +114,7 @@ function year($year_or_datepoint): Period
         return Period::fromYear($year_or_datepoint);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_YEAR);
+    return Period::fromCalendar($year_or_datepoint, Period::YEAR);
 }
 
 /**
@@ -134,7 +134,7 @@ function iso_year($year_or_datepoint): Period
         return Period::fromIsoYear($year_or_datepoint);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_ISOYEAR);
+    return Period::fromCalendar($year_or_datepoint, Period::ISOYEAR);
 }
 
 /**
@@ -154,7 +154,7 @@ function semester($year_or_datepoint, int $semester = 1): Period
         return Period::fromSemester($year_or_datepoint, $semester);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_SEMESTER);
+    return Period::fromCalendar($year_or_datepoint, Period::SEMESTER);
 }
 
 /**
@@ -174,7 +174,7 @@ function quarter($year_or_datepoint, int $quarter = 1): Period
         return Period::fromQuarter($year_or_datepoint, $quarter);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_QUARTER);
+    return Period::fromCalendar($year_or_datepoint, Period::QUARTER);
 }
 
 /**
@@ -194,7 +194,7 @@ function month($year_or_datepoint, int $month = 1): Period
         return Period::fromMonth($year_or_datepoint, $month);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_MONTH);
+    return Period::fromCalendar($year_or_datepoint, Period::MONTH);
 }
 
 /**
@@ -214,7 +214,7 @@ function iso_week($year_or_datepoint, int $week = 1): Period
         return Period::fromIsoWeek($year_or_datepoint, $week);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_ISOWEEK);
+    return Period::fromCalendar($year_or_datepoint, Period::ISOWEEK);
 }
 
 /**
@@ -237,7 +237,7 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
         return Period::fromDay($year_or_datepoint, $month, $day);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_DAY);
+    return Period::fromCalendar($year_or_datepoint, Period::DAY);
 }
 
 /**
@@ -246,7 +246,6 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
  * @deprecated deprecated since version 4.2
- * @see Period::fromHour
  * @see Period::fromCalendar
  *
  * The starting datepoint represents the beginning of the hour
@@ -257,10 +256,15 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
 function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): Period
 {
     if (is_int($year_or_datepoint)) {
-        return Period::fromHour($year_or_datepoint, $month, $day, $hour);
+        $startDate = (new DateTimeImmutable())
+            ->setDate($year_or_datepoint, $month, $day)
+            ->setTime($hour, 0)
+        ;
+
+        return Period::after($startDate, new DateInterval('PT1H'));
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_HOUR);
+    return Period::fromCalendar($year_or_datepoint, Period::HOUR);
 }
 
 /**
@@ -269,7 +273,6 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
  * @deprecated deprecated since version 4.2
- * @see Period::fromMinute
  * @see Period::fromCalendar
  *
  * The starting datepoint represents the beginning of the minute
@@ -280,10 +283,15 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
 function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): Period
 {
     if (is_int($year_or_datepoint)) {
-        return Period::fromMinute($year_or_datepoint, $month, $day, $hour, $minute);
+        $startDate = (new DateTimeImmutable())
+            ->setDate($year_or_datepoint, $month, $day)
+            ->setTime($hour, $minute)
+        ;
+
+        return Period::after($startDate, new DateInterval('PT1M'));
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_MINUTE);
+    return Period::fromCalendar($year_or_datepoint, Period::MINUTE);
 }
 
 /**
@@ -292,7 +300,6 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
  * @deprecated deprecated since version 4.2
- * @see Period::fromSecond
  * @see Period::fromCalendar
  *
  * The starting datepoint represents the beginning of the second
@@ -309,10 +316,15 @@ function second(
     int $second = 0
 ): Period {
     if (is_int($year_or_datepoint)) {
-        return Period::fromSecond($year_or_datepoint, $month, $day, $hour, $minute, $second);
+        $startDate = (new DateTimeImmutable())
+            ->setDate($year_or_datepoint, $month, $day)
+            ->setTime($hour, $minute, $second)
+        ;
+
+        return Period::after($startDate, new DateInterval('PT1S'));
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::CALENDAR_SECOND);
+    return Period::fromCalendar($year_or_datepoint, Period::SECOND);
 }
 
 /**
@@ -330,12 +342,10 @@ function instant(
     int $microsecond = 0
 ): Period {
     if (is_int($year_or_datepoint)) {
-        $datepoint = (new DateTimeImmutable())
+        $year_or_datepoint = (new DateTimeImmutable())
             ->setDate($year_or_datepoint, $month, $day)
             ->setTime($hour, $minute, $second, $microsecond);
-
-        return new Period($datepoint, $datepoint);
     }
 
-    return Period::fromDatepoint($year_or_datepoint);
+    return new Period($year_or_datepoint, $year_or_datepoint);
 }
