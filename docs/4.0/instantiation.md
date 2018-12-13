@@ -105,13 +105,11 @@ $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 public static Period::after(mixed $datepoint, mixed $duration): Period
 public static Period::before(mixed $datepoint, mixed $duration): Period
 public static Period::around(mixed $datepoint, mixed $duration): Period
-public static Period::fromCalendar(mixed $datepoint, string $calendar): Period
 ~~~
 
 - `Period::after` returns a `Period` object which starts at `$datepoint`
 - `Period::before` returns a `Period` object which ends at `$datepoint`
 - `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
-- `Period::fromCalendar`returns the closest `Period` containing the submitted datepoint depending on the referenced calendar.
 
 #### Parameters
 
@@ -119,14 +117,6 @@ public static Period::fromCalendar(mixed $datepoint, string $calendar): Period
 
 - `$datepoint`: represents a datepoint
 - `$duration` represents a duration.
-- `$calendar`: a calendar reference to determine the period datepoint. In can be set to the following constants:
-	- `Period::YEAR`
-	- `Period::ISOYEAR`
-	- `Period::SEMESTER`
-	- `Period::QUARTER`
-	- `Period::MONTH`
-	- `Period::ISOWEEK`
-	- `Period::DAY`
 
 #### Examples
 

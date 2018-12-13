@@ -28,6 +28,10 @@ use function is_int;
  */
 function datepoint($datepoint): DateTimeImmutable
 {
+    if ($datepoint instanceof DateTimeImmutable) {
+        return $datepoint;
+    }
+
     return Datepoint::create($datepoint);
 }
 
@@ -114,7 +118,7 @@ function year($year_or_datepoint): Period
         return Period::fromYear($year_or_datepoint);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::YEAR);
+    return Datepoint::create($year_or_datepoint)->extractYear();
 }
 
 /**
@@ -134,7 +138,7 @@ function iso_year($year_or_datepoint): Period
         return Period::fromIsoYear($year_or_datepoint);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::ISOYEAR);
+    return Datepoint::create($year_or_datepoint)->extractIsoYear();
 }
 
 /**
@@ -154,7 +158,7 @@ function semester($year_or_datepoint, int $semester = 1): Period
         return Period::fromSemester($year_or_datepoint, $semester);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::SEMESTER);
+    return Datepoint::create($year_or_datepoint)->extractSemester();
 }
 
 /**
@@ -174,7 +178,7 @@ function quarter($year_or_datepoint, int $quarter = 1): Period
         return Period::fromQuarter($year_or_datepoint, $quarter);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::QUARTER);
+    return Datepoint::create($year_or_datepoint)->extractQuarter();
 }
 
 /**
@@ -194,7 +198,7 @@ function month($year_or_datepoint, int $month = 1): Period
         return Period::fromMonth($year_or_datepoint, $month);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::MONTH);
+    return Datepoint::create($year_or_datepoint)->extractMonth();
 }
 
 /**
@@ -214,7 +218,7 @@ function iso_week($year_or_datepoint, int $week = 1): Period
         return Period::fromIsoWeek($year_or_datepoint, $week);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::ISOWEEK);
+    return Datepoint::create($year_or_datepoint)->extractIsoWeek();
 }
 
 /**
@@ -237,7 +241,7 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
         return Period::fromDay($year_or_datepoint, $month, $day);
     }
 
-    return Period::fromCalendar($year_or_datepoint, Period::DAY);
+    return Datepoint::create($year_or_datepoint)->extractDay();
 }
 
 /**

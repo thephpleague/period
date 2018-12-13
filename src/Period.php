@@ -19,7 +19,6 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
-use function intdiv;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -31,17 +30,6 @@ use function intdiv;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
-
-    public const YEAR = 'YEAR';
-    public const ISOYEAR = 'ISOYEAR';
-    public const SEMESTER = 'SEMESTER';
-    public const QUARTER = 'QUARTER';
-    public const MONTH = 'MONTH';
-    public const ISOWEEK = 'ISOWEEK';
-    public const DAY = 'DAY';
-    public const HOUR = 'HOUR';
-    public const MINUTE = 'MINUTE';
-    public const SECOND = 'SECOND';
 
     /**
      * The starting included datepoint.
@@ -70,8 +58,10 @@ final class Period implements JsonSerializable
      */
     public static function after($datepoint, $duration): self
     {
-        $datepoint = Datepoint::create($datepoint);
-
+        if (!$datepoint instanceof DateTimeImmutable) {
+            $datepoint = Datepoint::create($datepoint);
+        }
+        
         return new self($datepoint, $datepoint->add(Duration::create($duration)));
     }
 
@@ -80,7 +70,9 @@ final class Period implements JsonSerializable
      */
     public static function before($datepoint, $duration): self
     {
-        $datepoint = Datepoint::create($datepoint);
+        if (!$datepoint instanceof DateTimeImmutable) {
+            $datepoint = Datepoint::create($datepoint);
+        }
 
         return new self($datepoint->sub(Duration::create($duration)), $datepoint);
     }
@@ -91,7 +83,9 @@ final class Period implements JsonSerializable
      */
     public static function around($datepoint, $duration): self
     {
-        $datepoint = Datepoint::create($datepoint);
+        if (!$datepoint instanceof DateTimeImmutable) {
+            $datepoint = Datepoint::create($datepoint);
+        }
         $duration = Duration::create($duration);
 
         return new self($datepoint->sub($duration), $datepoint->add($duration));
@@ -102,7 +96,7 @@ final class Period implements JsonSerializable
      */
     public static function fromYear(int $year): self
     {
-        $startDate = (new DateTimeImmutable())->setDate($year, 1, 1)->setTime(0, 0);
+        $startDate = (new Datepoint())->setDate($year, 1, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1Y')));
     }
@@ -113,8 +107,8 @@ final class Period implements JsonSerializable
     public static function fromIsoYear(int $year): self
     {
         return new self(
-            (new DateTimeImmutable())->setISODate($year, 1)->setTime(0, 0),
-            (new DateTimeImmutable())->setISODate(++$year, 1)->setTime(0, 0)
+            (new Datepoint())->setISODate($year, 1)->setTime(0, 0),
+            (new Datepoint())->setISODate(++$year, 1)->setTime(0, 0)
         );
     }
 
@@ -124,7 +118,7 @@ final class Period implements JsonSerializable
     public static function fromSemester(int $year, int $semester = 1): self
     {
         $month = (($semester - 1) * 6) + 1;
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
+        $startDate = (new Datepoint())->setDate($year, $month, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P6M')));
     }
@@ -135,7 +129,7 @@ final class Period implements JsonSerializable
     public static function fromQuarter(int $year, int $quarter = 1): self
     {
         $month = (($quarter - 1) * 3) + 1;
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
+        $startDate = (new Datepoint())->setDate($year, $month, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P3M')));
     }
@@ -145,7 +139,7 @@ final class Period implements JsonSerializable
      */
     public static function fromMonth(int $year, int $month = 1): self
     {
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
+        $startDate = (new Datepoint())->setDate($year, $month, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')));
     }
@@ -155,7 +149,7 @@ final class Period implements JsonSerializable
      */
     public static function fromIsoWeek(int $year, int $week = 1): self
     {
-        $startDate = (new DateTimeImmutable())->setISODate($year, $week, 1)->setTime(0, 0);
+        $startDate = (new Datepoint())->setISODate($year, $week, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P7D')));
     }
@@ -165,61 +159,9 @@ final class Period implements JsonSerializable
      */
     public static function fromDay(int $year, int $month = 1, int $day = 1): self
     {
-        $startDate = (new DateTimeImmutable())->setDate($year, $month, $day)->setTime(0, 0);
+        $startDate = (new Datepoint())->setDate($year, $month, $day)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1D')));
-    }
-
-    /**
-     * Creates a new instance from a datepoint and a calendar reference.
-     *
-     * The datepoint is contained or start the referenced calendar interval.
-     * The duration is equals to that of the calendar reference.
-     */
-    public static function fromCalendar($datepoint, string $calendar): self
-    {
-        $datepoint = Datepoint::create($datepoint)->setTime(0, 0);
-        switch ($calendar) {
-            case self::DAY:
-                return new self($datepoint, $datepoint->add(new DateInterval('P1D')));
-
-            case self::ISOWEEK:
-                $startDate = $datepoint
-                    ->setISODate((int) $datepoint->format('o'), (int) $datepoint->format('W'), 1);
-
-                return new self($startDate, $startDate->add(new DateInterval('P7D')));
-
-            case self::MONTH:
-                $startDate = $datepoint
-                    ->setDate((int) $datepoint->format('Y'), (int) $datepoint->format('n'), 1);
-
-                return new self($startDate, $startDate->add(new DateInterval('P1M')));
-
-            case self::QUARTER:
-                $startDate = $datepoint
-                    ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 3) * 3) + 1, 1);
-
-                return new self($startDate, $startDate->add(new DateInterval('P3M')));
-
-            case self::SEMESTER:
-                $startDate = $datepoint
-                    ->setDate((int) $datepoint->format('Y'), (intdiv((int) $datepoint->format('n'), 6) * 6) + 1, 1);
-
-                return new self($startDate, $startDate->add(new DateInterval('P6M')));
-
-            case self::YEAR:
-                $year = (int) $datepoint->format('Y');
-
-                return new self($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1));
-
-            case self::ISOYEAR:
-                $year = (int) $datepoint->format('o');
-
-                return new self($datepoint->setISODate($year, 1), $datepoint->setISODate(++$year, 1));
-
-            default:
-                throw new Exception('Unknown Calendar interval');
-        }
     }
 
     /**
@@ -240,8 +182,14 @@ final class Period implements JsonSerializable
      */
     public function __construct($startDate, $endDate)
     {
-        $startDate = Datepoint::create($startDate);
-        $endDate = Datepoint::create($endDate);
+        if (!$startDate instanceof DateTimeImmutable) {
+            $startDate = Datepoint::create($startDate);
+        }
+
+        if (!$endDate instanceof DateTimeImmutable) {
+            $endDate = Datepoint::create($endDate);
+        }
+
         if ($startDate > $endDate) {
             throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
         }

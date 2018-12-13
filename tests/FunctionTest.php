@@ -331,8 +331,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2008-07-02T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
     public function testAlternateDay(): void
@@ -356,8 +354,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2008-07-01T23:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
     public function testAlternateHour(): void
@@ -383,8 +379,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:36:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
     public function testAlternateMinute(): void
@@ -413,8 +407,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:35:18+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
     public function testAlternateSecond(): void
@@ -442,8 +434,6 @@ class FunctionTest extends TestCase
         self::assertEquals($today, $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
         self::assertEquals(new DateInterval('P0D'), $period->getDateInterval());
     }
 
@@ -482,8 +472,6 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2008-08-01T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 
     public function testYearWithDateTimeInterface(): void
@@ -494,7 +482,5 @@ class FunctionTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2009-01-01T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
-        self::assertInstanceOf(ExtendedDate::class, $period->getStartDate());
-        self::assertInstanceOf(ExtendedDate::class, $period->getEndDate());
     }
 }
