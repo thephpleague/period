@@ -208,9 +208,9 @@ final class Period implements JsonSerializable
                 return new self($startDate, $startDate->add(new DateInterval('P6M')));
 
             case self::YEAR:
-                $startDate = $datepoint->setDate((int) $datepoint->format('Y'), 1, 1);
+                $year = (int) $datepoint->format('Y');
 
-                return new self($startDate, $startDate->add(new DateInterval('P1Y')));
+                return new self($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1));
 
             case self::ISOYEAR:
                 $year = (int) $datepoint->format('o');
