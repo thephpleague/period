@@ -47,9 +47,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 #### Examples
 
 ~~~php
-use function League\Period\year;
-
-foreach (year(2012)->getDatePeriod('1 MONTH') as $datetime) {
+foreach (Period::fromYear(2012)->getDatePeriod('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -60,7 +58,7 @@ foreach (year(2012)->getDatePeriod('1 MONTH') as $datetime) {
 Using the `$option` parameter
 
 ~~~php
-$interval = year('2012-06-05');
+$interval = Period::fromYear('2012-06-05');
 $datePeriod = $interval->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($datePeriod as $datetime) {
     echo $datetime->format('Y-m-d');
@@ -88,9 +86,7 @@ Returns a `Generator` to allow iteration over the instance datepoints, recurring
 #### Examples
 
 ~~~php
-use function League\Period\year;
-
-foreach (year(2012)->getDatePeriodBackwards('1 MONTH') as $datetime) {
+foreach (Period::fromYear(2012)->getDatePeriodBackwards('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -101,7 +97,7 @@ foreach (year(2012)->getDatePeriodBackwards('1 MONTH') as $datetime) {
 Using the `$option` parameter
 
 ~~~php
-$interval = year('2012-06-05');
+$interval = Period::fromYear('2012-06-05');
 $datePeriod = $interval->getDatePeriodBackwards('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($datePeriod as $datetime) {
     echo $datetime->format('Y-m-d');
@@ -132,7 +128,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
-foreach (year(2012)->split('1 MONTH') as $inner_periods) {
+foreach (Period::fromYear(2012)->split('1 MONTH') as $inner_periods) {
     echo $inner_period; //returns Period object whose interval is 1 MONTH
 }
 //will iterate 12 times
@@ -158,7 +154,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 ~~~php
 date_default_timezone_set('Africa/Kinshasa');
 
-$collection = iterator_to_array(year(2012)->splitBackwards('5 MONTH'));
+$collection = iterator_to_array(Period::fromYear(2012)->splitBackwards('5 MONTH'));
 echo $collection[0]; // 2012-07-31T23:00:00Z/2012-12-31T23:00:00Z (5 months interval)
 echo $collection[1]; // 2012-02-29T23:00:00Z/2012-07-31T23:00:00Z (5 months interval)
 echo $collection[2]; // 2011-12-31T23:00:00Z/2012-02-29T23:00:00Z (2 months interval)

@@ -2,6 +2,52 @@
 
 All Notable changes to `Period` will be documented in this file
 
+## Next - TBD
+
+### Added
+
+- `League\Period\Datepoint`
+- `League\Period\Duration`
+- `Period::fromIsoYear`
+- `Period::fromYear`
+- `Period::fromSemester`
+- `Period::fromQuarter`
+- `Period::fromMonth`
+- `Period::fromIsoWeek`
+- `Period::fromDay`
+- `Period::after`
+- `Period::before`
+- `Period::around`
+- `Period::fromDatePeriod`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- `League\Period\datepoint`
+- `League\Period\duration`
+- `League\Period\year`
+- `League\Period\semester`
+- `League\Period\quarter`
+- `League\Period\month`
+- `League\Period\day`
+- `League\Period\hour`
+- `League\Period\minute`
+- `League\Period\second`
+- `League\Period\instant`
+- `League\Period\iso_year`
+- `League\Period\iso_week`
+- `League\Period\interval_after`
+- `League\Period\interval_before`
+- `League\Period\interval_around`
+- `League\Period\interval_from_dateperiod`
+
+### Removed
+
+- None
+
 ## 4.1.0 - 2018-12-07
 
 ### Added

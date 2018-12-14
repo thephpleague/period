@@ -21,6 +21,8 @@ title: Concepts and arguments
 
 Since this package relies heavily on `DateTimeImmutable` and `DateInterval` objects and because it is sometimes complicated to get your hands on such objects the package comes bundled with two simple functions that are used throughout the library to ensure typesafety. These functions are defined under the `League\Period` namespace.
 
+<p class="message-notice">the <code>datepoint</code> and <code>duration</code> functions are deprecated since <code>version 4.2</code> Your encouraged to use the <a href="/4.0/datepoint/">Datepoint</a> and <a href="/4.0/duration/">Duration</a> classes instead.</p>
+
 ### datepoint
 
 ~~~php
@@ -79,20 +81,12 @@ Converts its single input into a `DateInterval` object or throws a `TypeError` o
 ### Examples
 
 ~~~php
-use function League\Period\datepoint;
+use League\Period\Period;
 use function League\Period\duration;
 
-$daterange = new DatePeriod(
-    datepoint(123456789),
-    duration(600),
-    datepoint(new DateTime())
-);
-
-//returns the same object as if you had written
-
-$daterange = new DatePeriod(
-    new DateTimeImmutable('@123456789'),
-    new DateInterval('PT600S'),
-    new DateTimeImmutable()
-);
+duration('1 DAY');                  // returns new DateInterval('P1D')
+duration(2018);                     // returns new DateInterval('PT2018S')
+duration(new DateInterval('PT1H')); // returns new DateInterval('PT1H')
+duration(new Period('now', 'tomorrow'));
+// returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~

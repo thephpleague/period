@@ -70,7 +70,7 @@ Returns the offset of the given `Period` object. The comparison of two intervals
 ~~~php
 $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
 $sequence->indexOf(new Period('2018-03-01', '2018-03-31')); // 0
-$sequence->indexOf(day('2012-06-03')); // false
+$sequence->indexOf(Period::fromCalendar('2012-06-03', Period::DAY)); // false
 ~~~
 
 ### Sequence::contains

@@ -41,9 +41,7 @@ Learn more about how this all works in the [basic usage](/4.0/properties/).
 A simple example on how to get all the days from a selected month.
 
 ~~~php
-use function League\Period\month;
-
-foreach (month(2014, 10)->getDatePeriod('1 DAY') as $day) {
+foreach (Period::fromMonth(2014, 10)->getDatePeriod('1 DAY') as $day) {
     $day->format('Y-m-d');
 }
 ~~~
@@ -53,11 +51,8 @@ To help easily instantiate your time range and manipulating it, the package come
 ## Comparing intervals
 
 ~~~php
-use function League\Period\interval_after;
-use function League\Period\iso_week;
-
-$interval = interval_after('2014-01-01', '1 WEEK');
-$alt_interval = iso_week(2014, 1);
+$interval = Period::after('2014-01-01', '1 WEEK');
+$alt_interval = Period::fromIsoWeek(2014, 1);
 $interval->durationEquals($alt_interval); //returns true
 $interval->equals($alt_interval);         //returns false
 ~~~
@@ -67,9 +62,7 @@ The class comes with other ways to [compare time ranges](/4.0/comparing/) based 
 ## Modifying interval
 
 ~~~php
-use function League\Period\interval_after;
-
-$period = interval_after('2014-01-01', '1 WEEK');
+$period = Period::after('2014-01-01', '1 WEEK');
 $altPeriod = $period->endingOn('2014-02-03');
 $period->contains($altPeriod); //return false;
 $altPeriod->durationGreaterThan($period); //return true;

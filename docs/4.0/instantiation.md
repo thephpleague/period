@@ -32,8 +32,122 @@ $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'))
 
 <p class="message-info"><code>datepoint</code> conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
 
+## Named constructors
+
+<p class="message-notice">Since <code>version 4.2</code></p>
+
+Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors to return a new `Period` object.
+
+### Named constructors accepting a DatePeriod object
+
+~~~php
+function Period::fromDatePeriod(DatePeriod $datePeriod): Period
+~~~
+
+#### Parameter
+
+- `$datePeriod` is a `DatePeriod` object.
+
+#### Example
+
+~~~php
+$daterange = new DatePeriod(
+	new DateTime('2012-08-01'),
+	new DateInterval('PT1H'),
+	new DateTime('2012-08-31')
+);
+$interval = Period::fromDatePeriod($daterange);
+$interval->getStartDate() == $daterange->getStartDate();
+$interval->getEndDate() == $daterange->getEndDate();
+~~~
+
+<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
+
+~~~php
+$daterange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
+$interval = Period::fromDatePeriod($daterange);
+//throws a TypeError error because $daterange->getEndDate() returns null
+~~~
+
+### Named constructors accepting a list of integer arguments
+
+<p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
+
+~~~php
+public static Period::fromDay(int $year, int $month = 1, int $day = 1): Period
+public static Period::fromIsoWeek(int $year, int $week = 1): Period
+public static Period::fromMonth(int $year, int $month = 1): Period
+public static Period::fromQuarter(int $year, int $quarter = 1): Period
+public static Period::fromSemester(int $year, int $semester = 1): Period
+public static Period::fromYear(int $year): Period
+public static Period::fromIsoYear(int $year): Period
+~~~
+
+#### Parameters
+
+- `$year` parameter is always required;
+- the `$semester`, `$quarter`, `$month`, `$week`, `$day` arguments will default to `1`;
+
+<p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
+
+#### Examples
+
+~~~php
+$day = Period::fromDay(2012);
+$daybis = Period::fromDay(2012, 1);
+$day->equals($daybis); //return true;
+$day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
+~~~
+
+### Named constructors accepting a datepoint and/or a duration
+
+~~~php
+public static Period::after(mixed $datepoint, mixed $duration): Period
+public static Period::before(mixed $datepoint, mixed $duration): Period
+public static Period::around(mixed $datepoint, mixed $duration): Period
+~~~
+
+- `Period::after` returns a `Period` object which starts at `$datepoint`
+- `Period::before` returns a `Period` object which ends at `$datepoint`
+- `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
+
+#### Parameters
+
+<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
+
+- `$datepoint`: represents a datepoint
+- `$duration` represents a duration.
+
+#### Examples
+
+Using `Period::after`, `Period::around`, `Period::before`:
+
+~~~php
+$date = datepoint('2012-04-01 08:30:25');
+$duration = duration('1 DAY');
+$half_duration = duration('12 HOURS');
+
+$interval_after = Period::after($date, $duration);
+$interval_before = Period::before($date->add($duration), $duration);
+$interval_after->equals($interval_before); //returns true
+$interval_around = Period::around($date->add($half_duration), $half_duration);
+$interval_around->equals($interval_before); //returns true
+~~~
+
+Using `Period::fromCalendar`:
+
+~~~php
+use League\Period;
+
+$period = Period::fromCalendar('2018-12-15 08:37:12', Period::HOUR);
+$alt_period = new Period('2018-12-15 08:00:00', '2018-12-15 09:00:00');
+
+$alt_period->equals($period);
+~~~
 
 ## Helper functions
+
+<p class="message-notice">The following functions are deprecated since <code>version 4.2</code> and will be remove in the next major release. Please consider using the named constructors instead.</p>
 
 Apart from its constructor, to ease the class instantiation you can rely on many built in helper functions to return a new `Period` object. All helper functions are declared under the `League\Period` namespace.
 
