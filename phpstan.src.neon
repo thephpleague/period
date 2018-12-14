@@ -4,4 +4,6 @@ parameters:
     ignoreErrors:
         - '#Method League\\Period\\Period::[a-z][A-Za-z_]+\(\) has parameter \$(datepoint|duration|index) with no typehint specified.#'
         - '#Function League\\Period\\[a-z][A-Za-z_]+\(\) has parameter \$(datepoint|duration|year_or_datepoint) with no typehint specified.#'
+        # Iterating over a DateInterval is permitted to enable clean extension of DateInterval
+        - '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
     reportUnmatchedIgnoredErrors: true

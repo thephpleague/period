@@ -39,14 +39,23 @@ final class Duration extends DateInterval
      *
      * @param mixed $duration a continuous portion of time
      */
-    public static function create($duration): DateInterval
+    public static function create($duration): self
     {
+        if ($duration instanceof self) {
+            return $duration;
+        }
+
         if ($duration instanceof Period) {
-            return $duration->getDateInterval();
+            $duration = $duration->getDateInterval();
         }
 
         if ($duration instanceof DateInterval) {
-            return $duration;
+            $new = new self('PT0S');
+            foreach ($duration as $name => $value) {
+                $new->$name = $value;
+            }
+
+            return $new;
         }
 
         if (false !== ($second = filter_var($duration, FILTER_VALIDATE_INT))) {
@@ -64,15 +73,10 @@ final class Duration extends DateInterval
     public static function createFromDateString($duration): self
     {
         $duration = parent::createFromDateString($duration);
-
         $new = new self('PT0S');
-        $new->y = $duration->y;
-        $new->m = $duration->m;
-        $new->d = $duration->d;
-        $new->h = $duration->h;
-        $new->i = $duration->i;
-        $new->s = $duration->s;
-        $new->f = $duration->f;
+        foreach ($duration as $name => $value) {
+            $new->$name = $value;
+        }
 
         return $new;
     }
