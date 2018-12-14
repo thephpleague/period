@@ -17,6 +17,7 @@ use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 use function filter_var;
 use function intdiv;
 use const FILTER_VALIDATE_INT;
@@ -59,14 +60,97 @@ final class Datepoint extends DateTimeImmutable
         return new self($datepoint);
     }
 
-    public function extractDay(): Period
+    /**
+     * @inheritdoc
+     *
+     * @param string $format
+     * @param string $datetime
+     *
+     * @return self|bool
+     */
+    public static function createFromFormat($format, $datetime, DateTimeZone $timezone = null)
+    {
+        $datepoint = parent::createFromFormat($format, $datetime, $timezone);
+        if (false !== $datepoint) {
+            return self::create($datepoint);
+        }
+
+        return $datepoint;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param DateTime $datetime
+     */
+    public static function createFromMutable($datetime): self
+    {
+        return self::create(parent::createFromMutable($datetime));
+    }
+
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint second
+     *  - the duration is equal to 1 second
+     */
+    public function getSecond(): Period
+    {
+        $datepoint = $this->setTime(
+            (int) $this->format('H'),
+            (int) $this->format('i'),
+            (int) $this->format('s')
+        );
+
+        return new Period($datepoint, $datepoint->add(new DateInterval('PT1S')));
+    }
+
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint minute
+     *  - the duration is equal to 1 minute
+     */
+    public function getMinute(): Period
+    {
+        $datepoint = $this->setTime((int) $this->format('H'), (int) $this->format('i'), 0);
+
+        return new Period($datepoint, $datepoint->add(new DateInterval('PT1M')));
+    }
+
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint hour
+     *  - the duration is equal to 1 hour
+     */
+    public function getHour(): Period
+    {
+        $datepoint = $this->setTime((int) $this->format('H'), 0);
+
+        return new Period($datepoint, $datepoint->add(new DateInterval('PT1H')));
+    }
+
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint day
+     *  - the duration is equal to 1 day
+     */
+    public function getDay(): Period
     {
         $datepoint = $this->setTime(0, 0);
 
         return new Period($datepoint, $datepoint->add(new DateInterval('P1D')));
     }
 
-    public function extractIsoWeek(): Period
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint iso week day
+     *  - the duration is equal to 7 days
+     */
+    public function getIsoWeek(): Period
     {
         $startDate = $this
             ->setTime(0, 0)
@@ -75,7 +159,13 @@ final class Datepoint extends DateTimeImmutable
         return new Period($startDate, $startDate->add(new DateInterval('P7D')));
     }
 
-    public function extractMonth(): Period
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint month
+     *  - the duration is equal to 1 month
+     */
+    public function getMonth(): Period
     {
         $startDate = $this
             ->setTime(0, 0)
@@ -84,7 +174,13 @@ final class Datepoint extends DateTimeImmutable
         return new Period($startDate, $startDate->add(new DateInterval('P1M')));
     }
 
-    public function extractQuarter(): Period
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint quarter
+     *  - the duration is equal to 3 months
+     */
+    public function getQuarter(): Period
     {
         $startDate = $this
             ->setTime(0, 0)
@@ -93,7 +189,13 @@ final class Datepoint extends DateTimeImmutable
         return new Period($startDate, $startDate->add(new DateInterval('P3M')));
     }
 
-    public function extractSemester(): Period
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint semester
+     *  - the duration is equal to 6 months
+     */
+    public function getSemester(): Period
     {
         $startDate = $this
             ->setTime(0, 0)
@@ -102,7 +204,13 @@ final class Datepoint extends DateTimeImmutable
         return new Period($startDate, $startDate->add(new DateInterval('P6M')));
     }
 
-    public function extractYear(): Period
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint year
+     *  - the duration is equal to 1 year
+     */
+    public function getYear(): Period
     {
         $year = (int) $this->format('Y');
         $datepoint = $this->setTime(0, 0);
@@ -110,8 +218,13 @@ final class Datepoint extends DateTimeImmutable
         return new Period($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1));
     }
 
-
-    public function extractIsoYear(): Period
+    /**
+     * Returns a Period instance.
+     *
+     *  - the starting datepoint represents the beginning of the current datepoint iso year
+     *  - the duration is equal to 1 iso year
+     */
+    public function getIsoYear(): Period
     {
         $year = (int) $this->format('o');
         $datepoint = $this->setTime(0, 0);

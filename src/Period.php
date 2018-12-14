@@ -61,7 +61,7 @@ final class Period implements JsonSerializable
         if (!$datepoint instanceof DateTimeImmutable) {
             $datepoint = Datepoint::create($datepoint);
         }
-        
+
         return new self($datepoint, $datepoint->add(Duration::create($duration)));
     }
 

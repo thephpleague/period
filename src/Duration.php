@@ -55,4 +55,25 @@ final class Duration extends DateInterval
 
         return self::createFromDateString($duration);
     }
+
+    /**
+     * @inheritdoc
+     *
+     * @param mixed $duration a date with relative parts
+     */
+    public static function createFromDateString($duration): self
+    {
+        $duration = parent::createFromDateString($duration);
+
+        $new = new self('PT0S');
+        $new->y = $duration->y;
+        $new->m = $duration->m;
+        $new->d = $duration->d;
+        $new->h = $duration->h;
+        $new->i = $duration->i;
+        $new->s = $duration->s;
+        $new->f = $duration->f;
+
+        return $new;
+    }
 }

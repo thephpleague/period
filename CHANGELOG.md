@@ -19,17 +19,6 @@ All Notable changes to `Period` will be documented in this file
 - `Period::before`
 - `Period::around`
 - `Period::fromDatePeriod`
-- `Period::fromCalendar`
-
-added the following constants
-
-- `Period::ISOYEAR`
-- `Period::YEAR`
-- `Period::SEMESTER`
-- `Period::QUARTER`
-- `Period::MONTH`
-- `Period::ISOWEEK`
-- `Period::DAY`
 
 ### Fixed
 

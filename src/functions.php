@@ -118,7 +118,7 @@ function year($year_or_datepoint): Period
         return Period::fromYear($year_or_datepoint);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractYear();
+    return Datepoint::create($year_or_datepoint)->getYear();
 }
 
 /**
@@ -138,7 +138,7 @@ function iso_year($year_or_datepoint): Period
         return Period::fromIsoYear($year_or_datepoint);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractIsoYear();
+    return Datepoint::create($year_or_datepoint)->getIsoYear();
 }
 
 /**
@@ -158,7 +158,7 @@ function semester($year_or_datepoint, int $semester = 1): Period
         return Period::fromSemester($year_or_datepoint, $semester);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractSemester();
+    return Datepoint::create($year_or_datepoint)->getSemester();
 }
 
 /**
@@ -178,7 +178,7 @@ function quarter($year_or_datepoint, int $quarter = 1): Period
         return Period::fromQuarter($year_or_datepoint, $quarter);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractQuarter();
+    return Datepoint::create($year_or_datepoint)->getQuarter();
 }
 
 /**
@@ -198,7 +198,7 @@ function month($year_or_datepoint, int $month = 1): Period
         return Period::fromMonth($year_or_datepoint, $month);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractMonth();
+    return Datepoint::create($year_or_datepoint)->getMonth();
 }
 
 /**
@@ -218,7 +218,7 @@ function iso_week($year_or_datepoint, int $week = 1): Period
         return Period::fromIsoWeek($year_or_datepoint, $week);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractIsoWeek();
+    return Datepoint::create($year_or_datepoint)->getIsoWeek();
 }
 
 /**
@@ -241,7 +241,7 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
         return Period::fromDay($year_or_datepoint, $month, $day);
     }
 
-    return Datepoint::create($year_or_datepoint)->extractDay();
+    return Datepoint::create($year_or_datepoint)->getDay();
 }
 
 /**
@@ -268,10 +268,7 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
         return Period::after($startDate, new DateInterval('PT1H'));
     }
 
-    $datepoint = Datepoint::create($year_or_datepoint);
-    $startDate = $datepoint->setTime((int) $datepoint->format('H'), 0);
-
-    return Period::after($startDate, new DateInterval('PT1H'));
+    return Datepoint::create($year_or_datepoint)->getHour();
 }
 
 /**
@@ -298,14 +295,7 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
         return Period::after($startDate, new DateInterval('PT1M'));
     }
 
-    $datepoint = Datepoint::create($year_or_datepoint);
-    $startDate = $datepoint->setTime(
-        (int) $datepoint->format('H'),
-        (int) $datepoint->format('i'),
-        0
-    );
-
-    return Period::after($startDate, new DateInterval('PT1M'));
+    return Datepoint::create($year_or_datepoint)->getMinute();
 }
 
 /**
@@ -338,14 +328,7 @@ function second(
         return Period::after($startDate, new DateInterval('PT1S'));
     }
 
-    $datepoint = Datepoint::create($year_or_datepoint);
-    $startDate = $datepoint->setTime(
-        (int) $datepoint->format('H'),
-        (int) $datepoint->format('i'),
-        (int) $datepoint->format('s')
-    );
-
-    return Period::after($startDate, new DateInterval('PT1S'));
+    return Datepoint::create($year_or_datepoint)->getSecond();
 }
 
 /**

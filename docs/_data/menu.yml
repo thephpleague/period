@@ -6,6 +6,8 @@ version:
             Upgrading from 3.x: '/4.0/upgrading/'
         Definitions:
             Arguments: '/4.0/definitions/'
+            Datepoint: '/4.0/datepoint/'
+            Duration: '/4.0/duration/'
         Period:
             Instantiation: '/4.0/instantiation/'
             Properties: '/4.0/properties/'
