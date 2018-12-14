@@ -83,4 +83,3 @@ count($gaps); // 2
 ~~~
 
 `Sequence` is a `Period` container and collection. The class has more [methods](/4.0/sequence/).
-

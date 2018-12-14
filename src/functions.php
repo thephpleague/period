@@ -262,8 +262,7 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
     if (is_int($year_or_datepoint)) {
         $startDate = (new DateTimeImmutable())
             ->setDate($year_or_datepoint, $month, $day)
-            ->setTime($hour, 0)
-        ;
+            ->setTime($hour, 0);
 
         return Period::after($startDate, new DateInterval('PT1H'));
     }
@@ -289,8 +288,7 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
     if (is_int($year_or_datepoint)) {
         $startDate = (new DateTimeImmutable())
             ->setDate($year_or_datepoint, $month, $day)
-            ->setTime($hour, $minute)
-        ;
+            ->setTime($hour, $minute);
 
         return Period::after($startDate, new DateInterval('PT1M'));
     }
@@ -322,8 +320,7 @@ function second(
     if (is_int($year_or_datepoint)) {
         $startDate = (new DateTimeImmutable())
             ->setDate($year_or_datepoint, $month, $day)
-            ->setTime($hour, $minute, $second)
-        ;
+            ->setTime($hour, $minute, $second);
 
         return Period::after($startDate, new DateInterval('PT1S'));
     }
