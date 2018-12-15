@@ -44,4 +44,10 @@ class DatepointTest extends TestCase
         $date = new DateTime();
         self::assertTrue(Datepoint::createFromMutable($date) == DateTimeImmutable::createFromMutable($date));
     }
+
+    public function testCreateReturnsTheSameInstance(): void
+    {
+        $date = new Datepoint('now');
+        self::assertSame($date, Datepoint::create($date));
+    }
 }

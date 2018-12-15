@@ -39,4 +39,10 @@ class DurationTest extends TestCase
         $altduration = Duration::createFromDateString('foobar');
         self::assertSame(0, $altduration->s);
     }
+
+    public function testCreateReturnsTheSameInstance(): void
+    {
+        $duration = new Duration('PT3S');
+        self::assertSame($duration, Duration::create($duration));
+    }
 }

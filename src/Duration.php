@@ -15,6 +15,7 @@ namespace League\Period;
 
 use DateInterval;
 use function filter_var;
+use function property_exists;
 use const FILTER_VALIDATE_INT;
 
 /**
@@ -52,7 +53,9 @@ final class Duration extends DateInterval
         if ($duration instanceof DateInterval) {
             $new = new self('PT0S');
             foreach ($duration as $name => $value) {
-                $new->$name = $value;
+                if (property_exists($new, $name)) {
+                    $new->$name = $value;
+                }
             }
 
             return $new;
