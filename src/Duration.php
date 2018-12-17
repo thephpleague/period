@@ -15,7 +15,11 @@ namespace League\Period;
 
 use DateInterval;
 use function filter_var;
+use function preg_match;
 use function property_exists;
+use function rtrim;
+use function sprintf;
+use function str_pad;
 use const FILTER_VALIDATE_INT;
 
 /**
@@ -27,6 +31,10 @@ use const FILTER_VALIDATE_INT;
  */
 final class Duration extends DateInterval
 {
+    private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
+
+    private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
+
     /**
      * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
      *
@@ -42,10 +50,6 @@ final class Duration extends DateInterval
      */
     public static function create($duration): self
     {
-        if ($duration instanceof self) {
-            return $duration;
-        }
-
         if ($duration instanceof Period) {
             $duration = $duration->getDateInterval();
         }
@@ -82,5 +86,71 @@ final class Duration extends DateInterval
         }
 
         return $new;
+    }
+
+    /**
+     * New instance.
+     *
+     * Returns a new instance from an Interval specification
+     */
+    public function __construct(string $interval_spec)
+    {
+        if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
+            parent::__construct($matches['interval'].'S');
+            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
+            return;
+        }
+
+        if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
+            parent::__construct($matches['interval']);
+            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
+            return;
+        }
+
+        parent::__construct($interval_spec);
+    }
+
+    /**
+     * Returns the ISO8601 interval string representation.
+     *
+     * Microseconds fractions are included
+     */
+    public function __toString(): string
+    {
+        $date = 'P';
+        foreach (['Y' => $this->y, 'M' => $this->m, 'D' => $this->d] as $key => $value) {
+            if (0 !== $value) {
+                $date .= $value.$key;
+            }
+        }
+
+        $time = 'T';
+        foreach (['H' => $this->h, 'M' => $this->i] as $key => $value) {
+            if (0 !== $value) {
+                $time .= $value.$key;
+            }
+        }
+
+        if (0.0 !== $this->f) {
+            $time .= rtrim(sprintf('%f', $this->s + $this->f), '0').'S';
+
+            return $date.$time;
+        }
+
+        if (0 !== $this->s) {
+            $time .= $this->s.'S';
+
+            return $date.$time;
+        }
+
+        if ('T' !== $time) {
+            return $date.$time;
+        }
+
+        if ('P' !== $date) {
+            return $date;
+        }
+
+        return 'PT0S';
     }
 }

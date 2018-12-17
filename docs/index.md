@@ -21,7 +21,7 @@ $endDate = $date->add($duration);
 $interval = new Period($startDate, $endDate);
 ~~~
 
-To help you start working with `Period` objects, the library comes bundled with many more namespaced helper functions to ease manipulating datetime intervals.
+To help you start working with `Period` objects, the library comes bundled with many more named constructors to ease manipulating datetime intervals.
 
 ## iterating over the interval made simple
 

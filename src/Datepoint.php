@@ -45,10 +45,6 @@ final class Datepoint extends DateTimeImmutable
      */
     public static function create($datepoint): self
     {
-        if ($datepoint instanceof self) {
-            return $datepoint;
-        }
-
         if ($datepoint instanceof DateTimeInterface) {
             return new self($datepoint->format('Y-m-d H:i:s.u'), $datepoint->getTimezone());
         }

@@ -22,7 +22,6 @@ public Datepoint::create($datepoint): self
 Returns a `Datepoint` object or throws:
 
 - a `TypeError` if the submitted parameter have the wrong type.
-- a PHP `Exception` if creating a `Datepoint` fails.
 
 #### parameters
 

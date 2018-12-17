@@ -44,3 +44,35 @@ Duration::create(new DateInterval('PT1H')); // returns new DateInterval('PT1H')
 Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
+
+## Duration::__construct
+
+The constructor supports fraction on the smallest value.
+
+For instance, the following is works while throwing an Exception on `DateInterval`.
+
+~~~php
+use League\Period\Duration;
+
+$duration = new Duration('PT5M0.5S');
+$duration->f; //0.5;
+
+new DateInterval('PT5M0.5S'); // will throw an Exception
+~~~
+
+## Duration representations
+
+### String representation
+
+~~~php
+public Duration::__toString(void): string
+~~~
+
+Returns the string representation of a `Duration` object using [ISO8601 time interval representation](http://en.wikipedia.org/wiki/ISO_8601#Durations).
+
+~~~php
+$duration = new Duration('PT5M0.5S');
+echo $duration; // 'PT5M0.5S'
+~~~
+
+As per the specification the smallest value (ie the second) can accept a decimal fraction.

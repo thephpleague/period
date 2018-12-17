@@ -107,9 +107,6 @@ foreach ($datePeriod as $datetime) {
 //the last date is 2012-02-01
 ~~~
 
-
-
-
 ### Period::split
 
 ~~~php
