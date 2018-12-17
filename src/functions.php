@@ -25,6 +25,8 @@ use function is_int;
  *
  * @deprecated deprecated since version 4.2
  * @see Datepoint::create
+ *
+ * @param mixed $datepoint a datepoint
  */
 function datepoint($datepoint): DateTimeImmutable
 {
@@ -42,6 +44,8 @@ function datepoint($datepoint): DateTimeImmutable
  *
  * @deprecated deprecated since version 4.2
  * @see Duration::create
+ *
+ * @param mixed $duration a Duration
  */
 function duration($duration): DateInterval
 {
@@ -55,10 +59,13 @@ function duration($duration): DateInterval
  *
  * @deprecated deprecated since version 4.2
  * @see Period::after
+ *
+ * @param mixed $startDate the starting included datepoint
+ * @param mixed $duration  a Duration
  */
-function interval_after($datepoint, $duration): Period
+function interval_after($startDate, $duration): Period
 {
-    return Period::after($datepoint, $duration);
+    return Period::after($startDate, $duration);
 }
 
 /**
@@ -68,10 +75,13 @@ function interval_after($datepoint, $duration): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::before
+ *
+ * @param mixed $endDate  the ending excluded datepoint
+ * @param mixed $duration a Duration
  */
-function interval_before($datepoint, $duration): Period
+function interval_before($endDate, $duration): Period
 {
-    return Period::before($datepoint, $duration);
+    return Period::before($endDate, $duration);
 }
 
 /**
@@ -82,6 +92,9 @@ function interval_before($datepoint, $duration): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::around
+ *
+ * @param mixed $datepoint a datepoint at the center of the returned instance
+ * @param mixed $duration  a Duration
  */
 function interval_around($datepoint, $duration): Period
 {
