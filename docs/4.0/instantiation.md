@@ -134,17 +134,6 @@ $interval_around = Period::around($date->add($half_duration), $half_duration);
 $interval_around->equals($interval_before); //returns true
 ~~~
 
-Using `Period::fromCalendar`:
-
-~~~php
-use League\Period;
-
-$period = Period::fromCalendar('2018-12-15 08:37:12', Period::HOUR);
-$alt_period = new Period('2018-12-15 08:00:00', '2018-12-15 09:00:00');
-
-$alt_period->equals($period);
-~~~
-
 ## Helper functions
 
 <p class="message-notice">The following functions are deprecated since <code>version 4.2</code> and will be remove in the next major release. Please consider using the named constructors instead.</p>

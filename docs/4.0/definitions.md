@@ -3,7 +3,7 @@ layout: default
 title: Concepts and arguments
 ---
 
-# Definition and Argument
+# Definitions
 
 ## Concepts
 
@@ -19,11 +19,20 @@ title: Concepts and arguments
 
 ## Arguments
 
-Since this package relies heavily on `DateTimeImmutable` and `DateInterval` objects and because it is sometimes complicated to get your hands on such objects the package comes bundled with two simple functions that are used throughout the library to ensure typesafety. These functions are defined under the `League\Period` namespace.
+Since this package relies heavily on `DateTimeImmutable` and `DateInterval` objects and because it is sometimes complicated to get your hands on such objects the package comes bundled with:
 
-<p class="message-notice">the <code>datepoint</code> and <code>duration</code> functions are deprecated since <code>version 4.2</code> Your encouraged to use the <a href="/4.0/datepoint/">Datepoint</a> and <a href="/4.0/duration/">Duration</a> classes instead.</p>
+- Two classes:
+	-  [League\Period\Datepoint](/4.0/datepoint/)
+	-  [League\Period\Duration](/4.0/duration/)
+
+- two simple functions defined under the `League\Period` namespace:
+	- League\Period\datepoint;
+	- League\Period\duration;
 
 ### datepoint
+
+<p class="message-notice">the <code>League\Period\datepoint</code> function is deprecated since <code>version 4.2</code>. Your encouraged to use the <code>League\Period\Datepoint</code> class instead.</p>
+
 
 ~~~php
 function League\Period\datepoint(mixed $datepoint): DateTimeImmutable;
@@ -60,6 +69,8 @@ datepoint(new DateTimeImmutable('2018-10-15'));  // returns new DateTimeImmutabl
 ~~~
 
 ### duration
+
+<p class="message-notice">The <code>League\Period\duration</code> function is deprecated since <code>version 4.2</code>. Your encouraged to use the <code>League\Period\Duration</code> class instead.</p>
 
 ~~~php
 function League\Period\duration(mixed $duration): DateInterval;

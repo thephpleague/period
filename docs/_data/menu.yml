@@ -4,8 +4,8 @@ version:
             Overview: '/4.0/'
             Installation: '/4.0/installation/'
             Upgrading from 3.x: '/4.0/upgrading/'
-        Definitions:
-            Arguments: '/4.0/definitions/'
+        Building Blocks:
+            Definitions: '/4.0/definitions/'
             Datepoint: '/4.0/datepoint/'
             Duration: '/4.0/duration/'
         Period:

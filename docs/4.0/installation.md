@@ -27,9 +27,9 @@ You can also use `Period` without using Composer by downloading the library and:
 ~~~php
 require 'path/to/league/repo/autoload.php';
 
-use function League\Period\day;
+use League\Period\Datepoint;
 
-day('2012-05-23')->getEnDate();
+Datepoint::create('2012-05-23')->getDay()->getEndDate();
 //returns DateTimeImmutable('2012-05-24 00:00:00.000000');
 ~~~
 
