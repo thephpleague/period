@@ -49,6 +49,10 @@ function datepoint($datepoint): DateTimeImmutable
  */
 function duration($duration): DateInterval
 {
+    if ($duration instanceof DateInterval) {
+        return $duration;
+    }
+
     return Duration::create($duration);
 }
 
@@ -121,7 +125,7 @@ function interval_from_dateperiod(DatePeriod $datePeriod): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromYear
- * @see Period::fromCalendar
+ * @see Datepoint::getYear
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
@@ -141,7 +145,7 @@ function year($year_or_datepoint): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromIsoYear
- * @see Period::fromCalendar
+ * @see Datepoint::getIsoYear
  *
  * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
@@ -161,7 +165,7 @@ function iso_year($year_or_datepoint): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromSemester
- * @see Period::fromCalendar
+ * @see Datepoint::getSemester
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
@@ -181,7 +185,7 @@ function semester($year_or_datepoint, int $semester = 1): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromQuarter
- * @see Period::fromCalendar
+ * @see Datepoint::getQuarter
  *
  * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
@@ -201,7 +205,7 @@ function quarter($year_or_datepoint, int $quarter = 1): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromMonth
- * @see Period::fromCalendar
+ * @see Datepoint::getMonth
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
@@ -221,7 +225,7 @@ function month($year_or_datepoint, int $month = 1): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromIsoWeek
- * @see Period::fromCalendar
+ * @see Datepoint::getIsoWeek
  *
  * @param mixed $year_or_datepoint an iso year as an int or a datepoint
  */
@@ -241,7 +245,7 @@ function iso_week($year_or_datepoint, int $week = 1): Period
  *
  * @deprecated deprecated since version 4.2
  * @see Period::fromIsoWeek
- * @see Period::fromCalendar
+ * @see Datepoint::getDay
  *
  * The date is truncated so that the time range starts at midnight
  * according to the date timezone and last a full day.
@@ -263,7 +267,7 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
  * @deprecated deprecated since version 4.2
- * @see Period::fromCalendar
+ * @see Datepoint::getHour
  *
  * The starting datepoint represents the beginning of the hour
  * The interval is equal to 1 hour
@@ -289,7 +293,7 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
  * @deprecated deprecated since version 4.2
- * @see Period::fromCalendar
+ * @see Datepoint::getMinute
  *
  * The starting datepoint represents the beginning of the minute
  * The interval is equal to 1 minute
@@ -315,7 +319,7 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
  * @deprecated deprecated since version 4.2
- * @see Period::fromCalendar
+ * @see Datepoint::getSecond
  *
  * The starting datepoint represents the beginning of the second
  * The interval is equal to 1 second
@@ -343,6 +347,11 @@ function second(
 
 /**
  * Creates new instance for a specific datepoint.
+ *
+ * DEPRECATION WARNING! This function will be removed in the next major point release
+ *
+ * @deprecated deprecated since version 4.2
+ * @see Period::__construct
  *
  * @param mixed $year_or_datepoint a year as an int or a datepoint
  */
