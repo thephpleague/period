@@ -379,4 +379,26 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
 
         return new self(...$intervals);
     }
+
+    /**
+     * Returns an instance where the given function is applied to each element in
+     * the collection. The callable MUST return a Period object and takes a Period
+     * and its associated key as argument.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the returned intervals.
+     */
+    public function map(callable $func): self
+    {
+        $intervals = [];
+        foreach ($this->intervals as $offset => $interval) {
+            $intervals[$offset] = $func($interval, $offset);
+        }
+
+        if ($intervals === $this->intervals) {
+            return $this;
+        }
+
+        return new self(...$intervals);
+    }
 }

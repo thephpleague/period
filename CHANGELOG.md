@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.2.0 - 2018-12-19
 
 ### Added
 
@@ -19,6 +19,7 @@ All Notable changes to `Period` will be documented in this file
 - `Period::before`
 - `Period::around`
 - `Period::fromDatePeriod`
+- `Sequence::map`
 
 ### Fixed
 

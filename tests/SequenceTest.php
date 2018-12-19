@@ -303,4 +303,37 @@ final class SequenceTest extends TestCase
         $gaps = $sequence->getGaps();
         self::assertTrue($gaps->isEmpty());
     }
+
+    public function testMap(): void
+    {
+        $sequence = new Sequence(
+            Period::fromMonth(2018, 1),
+            Period::fromDay(2018, 1, 1)
+        );
+
+        $newSequence = $sequence->map(function (Period $period, int $offset): Period {
+            if (1 === $offset) {
+                return $period;
+            }
+
+            return $period->startingOn('2018-01-15');
+        });
+
+        self::assertSame($newSequence->get(1), $sequence->get(1));
+        self::assertSame('[2018-01-15, 2018-02-01)', $newSequence->get(0)->format('Y-m-d'));
+    }
+
+    public function testMapReturnSameInstance(): void
+    {
+        $sequence = new Sequence(
+            Period::fromMonth(2018, 1),
+            Period::fromDay(2018, 1, 1)
+        );
+
+        $newSequence = $sequence->map(function (Period $period): Period {
+            return $period;
+        });
+
+        self::assertSame($newSequence, $sequence);
+    }
 }

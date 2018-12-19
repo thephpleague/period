@@ -212,3 +212,37 @@ foreach ($newSequence as $offset => $interval) {
     echo $offset; // 2, 0, 1
 }
 ~~~
+
+### Sequence::map
+
+<p class="message-info">new since <code>version 4.2</code></p>
+
+Map the sequence according to the given function. This method **MUST** retain the state of the current instance, and return an instance that contains the mapped intervals. The keys are not indexed.
+
+The mapper is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): Period
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2019-01-01', '2019-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$func = static function (Period $interval): Period {
+    return $interval->moveEndDate('+ 1 DAY');
+};
+
+$newSequence = $sequence->map($func);
+count($sequence); // 3
+count($newSequence); //3
+$newSequence->get(2)->format('Y-m-d'); // [2020-01-01, 2020-02-01)
+~~~
