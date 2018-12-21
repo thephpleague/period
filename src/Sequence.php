@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period;
 
+use ArrayAccess;
 use Countable;
 use Iterator;
 use IteratorAggregate;
@@ -37,7 +38,7 @@ use const ARRAY_FILTER_USE_BOTH;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0
  */
-final class Sequence implements Countable, IteratorAggregate, JsonSerializable
+final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
     /**
      * @var Period[]
@@ -198,6 +199,52 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
     public function count(): int
     {
         return count($this->intervals);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param int $offset
+     */
+    public function offsetExists($offset): bool
+    {
+        return isset($this->intervals[$offset]);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param int $offset
+     */
+    public function offsetGet($offset): Period
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param int $offset
+     */
+    public function offsetUnset($offset): void
+    {
+        $this->remove($offset);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param mixed|int $offset
+     * @param Period    $interval
+     */
+    public function offsetSet($offset, $interval): void
+    {
+        if (null !== $offset) {
+            $this->set($offset, $interval);
+            return;
+        }
+
+        $this->push($interval);
     }
 
     /**
@@ -399,6 +446,9 @@ final class Sequence implements Countable, IteratorAggregate, JsonSerializable
             return $this;
         }
 
-        return new self(...$intervals);
+        $mapped = new self();
+        $mapped->intervals = $intervals;
+
+        return $mapped;
     }
 }

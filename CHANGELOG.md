@@ -2,15 +2,15 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TDB
+## 4.3.0 - 2018-12-21
 
 ### Added
 
-- None
+- `Sequence` implements the `ArrayAccess` interface
 
 ### Fixed
 
-- None
+- `Sequence::map` must preserve offset index after modification.
 
 ### Deprecated
 

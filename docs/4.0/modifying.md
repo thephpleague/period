@@ -9,7 +9,7 @@ You can manipulate a `Period` object according to their datepoints or durations.
 
 `Period` **is an immutable value object** which means that any change returns a new `Period` object.
 
-<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
+<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/datepoint">League\Period\Datepoint</a> and the <a href="/4.0/datepoint">League\Period\Duration</a> classes.</p>
 
 <p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>Period\Exception</code> exception.</p>
 

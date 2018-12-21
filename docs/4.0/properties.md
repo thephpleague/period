@@ -26,7 +26,7 @@ $altduration = $period->getTimestampInterval(); //returns the duration in second
 
 ## Iteration over a Period
 
-<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
+<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/duration">League\Period\Duration</a> class.</p>
 
 ### Period::getDatePeriod
 
@@ -81,8 +81,6 @@ Returns a `Generator` to allow iteration over the instance datepoints, recurring
 - `$duration` is a interval
 - `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the ending datepoint from the set of recurring dates within the interval.
 
-<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
-
 #### Examples
 
 ~~~php
@@ -120,8 +118,6 @@ This method splits a given `Period` object in smaller `Period` objects according
 - The last returned `Period` will have a duration equal or lesser than the submitted interval.
 - If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
 
-<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
-
 #### Example
 
 ~~~php
@@ -143,8 +139,6 @@ This method splits a given `Period` object in smaller `Period` objects according
 - The last returned `Period` will always share the same starting datepoint with the parent object.
 - The last returned `Period` will have a duration equal or lesser than the submitted interval.
 - If `$interval` is greater than the parent `Period` interval, the generator will contain a single `Period` whose datepoints equals those of the parent `Period`.
-
-<p class="message-info"><code>duration</code> conversion is done internally using the <a href="/4.0/definitions/#duration">League\Period\duration</a> function</p>
 
 #### Example
 

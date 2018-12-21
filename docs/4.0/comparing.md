@@ -7,7 +7,7 @@ title: Comparing Period objects
 
 You can compare different `Period` objects according to their datepoints or durations.
 
-<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
+<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/datepoint">League\Period\Datepoint</a> and the <a href="/4.0/datepoint">League\Period\Duration</a> classes.</p>
 
 ## Using datepoints
 

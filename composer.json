@@ -48,7 +48,7 @@
             "@phpstan-tests"
         ],
         "phpunit": "phpunit --coverage-text",
-        "infection": "infection -j$(nproc) --coverage=build",
+        "infection": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations",
         "test": [
             "@phpstan-src",
             "@phpstan-tests",

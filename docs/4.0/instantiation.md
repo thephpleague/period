@@ -7,6 +7,8 @@ title: Period instantiation using named constructors or helper functions
 
 To instantiate a `Period` object you can rely on its constructor or on several helper functions describe below.
 
+<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/datepoint">League\Period\Datepoint</a> and the <a href="/4.0/datepoint">League\Period\Duration</a> classes.</p>
+
 ## The constructor
 
 ~~~php
@@ -29,8 +31,6 @@ use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
 ~~~
-
-<p class="message-info"><code>datepoint</code> conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
 
 ## Named constructors
 
@@ -112,8 +112,6 @@ public static Period::around(mixed $datepoint, mixed $duration): Period
 - `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
 
 #### Parameters
-
-<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
 
 - `$datepoint`: represents a datepoint
 - `$duration` represents a duration.
@@ -201,8 +199,6 @@ function League\Period\iso_week(mixed $datepoint): Period
 function League\Period\iso_year(mixed $datepoint): Period
 ~~~
 
-<p class="message-info"><code>datepoint</code> conversion is done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> function</p>
-
 #### Examples
 
 ~~~php
@@ -277,8 +273,6 @@ function League\Period\interval_around(mixed $datepoint, mixed $duration): Perio
 
 - The `$datepoint` parameter represent a datepoints
 - The `$duration` represents a duration.
-
-<p class="message-info"><code>datepoint</code> and <code>duration</code> conversions are done internally using the <a href="/4.0/definitions/#datepoint">League\Period\datepoint</a> and the <a href="/4.0/definitions/#duration">League\Period\duration</a> functions.</p>
 
 #### Example
 

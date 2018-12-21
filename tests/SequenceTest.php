@@ -18,6 +18,7 @@ use League\Period\InvalidIndex;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 use function League\Period\day;
 use function League\Period\interval_after;
 use function League\Period\interval_around;
@@ -335,5 +336,52 @@ final class SequenceTest extends TestCase
         });
 
         self::assertSame($newSequence, $sequence);
+    }
+
+    public function testMapperDoesNotReIndexAfterModification(): void
+    {
+        $sequence = new Sequence(Period::fromDay(2018, 3), Period::fromDay(2018, 1));
+        $sequence->sort(function (Period $interval1, Period $interval2): int {
+            return $interval1->getStartDate() <=> $interval2->getStartDate();
+        });
+
+        $retval = $sequence->map(function (Period $interval): Period {
+            return $interval->moveEndDate('+1 DAY');
+        });
+
+        self::assertSame(array_keys($sequence->toArray()), array_keys($retval->toArray()));
+    }
+
+
+    public function testArrayAccess(): void
+    {
+        $sequence = new Sequence();
+        $sequence[] = Period::fromMonth(2018, 1);
+        self::assertTrue(isset($sequence[0]));
+        self::assertEquals(Period::fromMonth(2018, 1), $sequence[0]);
+        $sequence[0] = Period::fromMonth(2017, 1);
+        self::assertNotEquals(Period::fromMonth(2018, 1), $sequence[0]);
+        unset($sequence[0]);
+    }
+
+    public function testArrayAccessThrowsTypeError(): void
+    {
+        self::expectException(TypeError::class);
+        $sequence = new Sequence();
+        $sequence['foo'] = Period::fromMonth(2017, 1);
+    }
+
+    public function testArrayAccessThrowsInvalidIndex(): void
+    {
+        self::expectException(InvalidIndex::class);
+        $sequence = new Sequence();
+        $sequence[0] = Period::fromMonth(2017, 1);
+    }
+
+    public function testArrayAccessThrowsInvalidIndex2(): void
+    {
+        self::expectException(InvalidIndex::class);
+        $sequence = new Sequence();
+        unset($sequence[0]);
     }
 }
