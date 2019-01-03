@@ -27,7 +27,7 @@ $period->getStartDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
 $period->getEndDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
 $duration = $period->getDateInterval(); //returns a DateInterval object
 $altduration = $period->getTimestampInterval(); //returns the duration in seconds
-$period->getBoundaryType(); //returns Period::EXCLUDE_END_INCLUDE_START 
+$period->getBoundaryType(); //returns Period::INCLUDE_START_EXCLUDE_END 
 $period->isStartDateExcluded(); //returns false
 $period->isStartDateIncluded(); //returns true
 $period->isEndDateExcluded(); //returns true

@@ -12,26 +12,28 @@ To instantiate a `Period` object you can rely on its constructor or on several h
 ## The constructor
 
 ~~~php
-public Period::__construct(mixed $startDate, mixed $endDate, string $boundaryType = self::EXCLUDE_END_INCLUDE_START)
+public Period::__construct(
+    mixed $startDate,
+    mixed $endDate,
+    string $boundaryType = self::INCLUDE_START_EXCLUDE_END
+)
 ~~~
 
 <p class="message-info">Since <code>version 4.4</code> the <code>$boundaryType</code> argument is added.</p>
 
 #### Parameters
 
-Both `$startDate` and `$endDate` parameters are datepoints.
+Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
 
 - The `$startDate` represents **the starting datepoint**.
 - The `$endDate` represents **the ending datepoint**.
-- The `$boundaryType` represents **the interval boundary type**. It can take one of the following constants:
-	- `Period::EXCLUDE_NONE` : the starting and ending datepoint **are included** in the interval;
-	- `Period::EXCLUDE_ALL` :  the starting and ending datepoint **are excluded** in the interval;
-	- `Period::EXCLUDE_START_INCLUDE_END` : the starting datepoint **is excluded** and the ending datepoint **is included** from the interval;
-	- `Period::EXCLUDE_END_INCLUDE_START` : the starting datepoint **is included** and the ending datepoint **is excluded** from the interval; 
+- The `$boundaryType` represents **the interval boundary type** like [explain in the definition section](/4.0/definitions/#concepts). It can take one of the following constants:
+    - `Period::INCLUDE_ALL` : the starting and ending datepoints **are included** in the interval;
+    - `Period::EXCLUDE_ALL` : the starting and ending datepoints **are excluded** from the interval;
+    - `Period::EXCLUDE_START_INCLUDE_END` : the starting datepoint **is excluded from** and the ending datepoint **is included in** the interval;
+    - `Period::INCLUDE_START_EXCLUDE_END` : the starting datepoint **is included in** and the ending datepoint **is excluded from** the interval; 
 
-
-`$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
-<p class="message-info">By default and to avoid BC break the <code>$boundaryType</code> is <code>Period::EXCLUDE_END_INCLUDE_START</code>.</p>
+<p class="message-info">By default and to avoid BC break the <code>$boundaryType</code> is <code>Period::INCLUDE_START_EXCLUDE_END</code>.</p>
 
 #### Example
 
@@ -41,7 +43,6 @@ use League\Period\Period;
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'), Period::EXCLUDE_ALL);
 ~~~
 
-
 ## Named constructors
 
 <p class="message-notice">Since <code>version 4.2</code></p>
@@ -50,12 +51,10 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 
 ### Named constructors accepting a DatePeriod object
 
-<p class="message-notice">Since <code>version 4.4</code> the <code>$boundaryType</code> argument is added.</p>
-
 ~~~php
 function Period::fromDatePeriod(
-	DatePeriod $datePeriod,
-	string $boundaryType = self::EXCLUDE_END_INCLUDE_START
+    DatePeriod $datePeriod,
+    string $boundaryType = self::INCLUDE_START_EXCLUDE_END
 ): self
 ~~~
 
@@ -64,13 +63,15 @@ function Period::fromDatePeriod(
 - `$datePeriod` is a `DatePeriod` object.
 - `$boundaryType`, the interval boundary type.
 
+<p class="message-info">Since <code>version 4.4</code> the <code>$boundaryType</code> argument is added.</p>
+
 #### Example
 
 ~~~php
 $daterange = new DatePeriod(
-	new DateTime('2012-08-01'),
-	new DateInterval('PT1H'),
-	new DateTime('2012-08-31')
+    new DateTime('2012-08-01'),
+    new DateInterval('PT1H'),
+    new DateTime('2012-08-31')
 );
 $interval = Period::fromDatePeriod($daterange);
 $interval->getStartDate() == $daterange->getStartDate();
@@ -83,6 +84,42 @@ $interval->getEndDate() == $daterange->getEndDate();
 $daterange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
 $interval = Period::fromDatePeriod($daterange);
 //throws a TypeError error because $daterange->getEndDate() returns null
+~~~
+
+### Named constructors accepting a datepoint and/or a duration
+
+~~~php
+public static Period::after(mixed $datepoint, mixed $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::before(mixed $datepoint, mixed $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::around(mixed $datepoint, mixed $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+~~~
+
+- `Period::after` returns a `Period` object which starts at `$datepoint`
+- `Period::before` returns a `Period` object which ends at `$datepoint`
+- `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
+
+#### Parameters
+
+- `$datepoint` represents a datepoint.
+- `$duration` represents a duration.
+- `$boundaryType` the interval boundary type.
+
+<p class="message-info">Since <code>version 4.4</code> the <code>$boundaryType</code> argument is added.</p>
+
+#### Examples
+
+Using `Period::after`, `Period::around`, `Period::before`:
+
+~~~php
+$date = Datepoint::create('2012-04-01 08:30:25');
+$duration = Duration::create('1 DAY');
+$half_duration = Duration::create('12 HOURS');
+
+$interval_after = Period::after($date, $duration);
+$interval_before = Period::before($date->add($duration), $duration);
+$interval_after->equals($interval_before); //returns true
+$interval_around = Period::around($date->add($half_duration), $half_duration);
+$interval_around->equals($interval_before); //returns true
 ~~~
 
 ### Named constructors accepting a list of integer arguments
@@ -106,7 +143,7 @@ public static Period::fromIsoYear(int $year): Period
 
 <p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
 
-<p class="message-info">The following named constructors always returns a <code>Period</code> instance with the following boundary type <code>Period::EXCLUDE_END_INCLUDE_START</code>.</p>
+<p class="message-info">The following named constructors always returns a <code>Period</code> instance with the following boundary type <code>Period::INCLUDE_START_EXCLUDE_END</code>.</p>
 
 #### Examples
 
@@ -115,40 +152,6 @@ $day = Period::fromDay(2012);
 $daybis = Period::fromDay(2012, 1);
 $day->equals($daybis); //return true;
 $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
-~~~
-
-### Named constructors accepting a datepoint and/or a duration
-
-~~~php
-public static Period::after(mixed $datepoint, mixed $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): Period
-public static Period::before(mixed $datepoint, mixed $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): Period
-public static Period::around(mixed $datepoint, mixed $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): Period
-~~~
-
-- `Period::after` returns a `Period` object which starts at `$datepoint`
-- `Period::before` returns a `Period` object which ends at `$datepoint`
-- `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
-
-#### Parameters
-
-- `$datepoint` represents a datepoint.
-- `$duration` represents a duration.
-- `$boundaryType` the interval boundary type.
-
-#### Examples
-
-Using `Period::after`, `Period::around`, `Period::before`:
-
-~~~php
-$date = datepoint('2012-04-01 08:30:25');
-$duration = duration('1 DAY');
-$half_duration = duration('12 HOURS');
-
-$interval_after = Period::after($date, $duration);
-$interval_before = Period::before($date->add($duration), $duration);
-$interval_after->equals($interval_before); //returns true
-$interval_around = Period::around($date->add($half_duration), $half_duration);
-$interval_around->equals($interval_before); //returns true
 ~~~
 
 ## Helper functions
@@ -321,9 +324,9 @@ function League\Period\interval_from_dateperiod(DatePeriod $datePeriod): Period
 
 ~~~php
 $daterange = new DatePeriod(
-	new DateTime('2012-08-01'),
-	new DateInterval('PT1H'),
-	new DateTime('2012-08-31')
+    new DateTime('2012-08-01'),
+    new DateInterval('PT1H'),
+    new DateTime('2012-08-31')
 );
 $interval = interval_from_dateperiod($daterange);
 $interval->getStartDate() == $daterange->getStartDate();

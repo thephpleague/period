@@ -13,7 +13,7 @@ title: Concepts and arguments
 
 - two datepoints;
 - the duration between them;
-- a boundary type. By default, and to avoid any BC break the package returns a left close right open interval;
+- a boundary type. 
 
 The starting datepoint is always less than or equal to the ending datepoint.
 
@@ -21,11 +21,11 @@ The starting datepoint is always less than or equal to the ending datepoint.
 
 - **duration** - The continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
 
-- **boundary type** - The package supports the following boundary type:
-	- `[)` : left close, right open using `Period::EXCLUDE_END_INCLUDE_START`;
-	- `(]` : left open, right close using `Period::EXCLUDE_START_INCLUDE_END`;
-	- `[]` : left close, right close using `Period::EXCLUDE_NONE`;
-	- `()` : left open, right open using `Period::EXCLUDE_ALL`;
+- **boundary type** - The package supports inclusive and exclusive datepoint.
+	- An inclusive starting datepoint is represented by `[`;
+	- An exclusive starting datepoint is represented by `(`;
+	- An inclusive ending datepoint is represented by `]`;
+	- An exclusive ending datepoint is represented by `)`;
 
 ## Arguments
 

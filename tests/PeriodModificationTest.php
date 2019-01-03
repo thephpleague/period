@@ -63,7 +63,7 @@ class PeriodModificationTest extends TestCase
         $altInterval = $interval->withBoundaryType(Period::EXCLUDE_ALL);
         self::assertEquals($interval->getDateInterval(), $interval->getDateInterval());
         self::assertNotEquals($interval->getBoundaryType(), $altInterval->getBoundaryType());
-        self::assertSame($interval, $interval->withBoundaryType(Period::EXCLUDE_END_INCLUDE_START));
+        self::assertSame($interval, $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END));
     }
 
     public function testWithBoundaryTypeFails(): void

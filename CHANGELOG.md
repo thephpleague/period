@@ -6,27 +6,28 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- Added support for the boundary type on all relations methods
-- `Period::EXCLUDE_START_INCLUDE_END`
-- `Period::EXCLUDE_END_INCLUDE_START`
-- `Period::EXCLUDE_ALL`
-- `Period::EXCLUDE_NONE`
-- `Period::getBoundaryType`
-- `Period::withBoundaryType`
-- `Period::isStartDateIncluded`
-- `Period::isStartDateExcluded`
-- `Period::isEndDateIncluded`
-- `Period::isEndDateExcluded`
-- `Period::meets`
-- `Period::metBy`
-- `Period::isDuring`
-- `Period::starts`
-- `Period::finishes`
-- `Period::after` supports the `$boundaryType` argument;
-- `Period::before` supports the `$boundaryType` argument;
-- `Period::around` supports the `$boundaryType` argument;
-- `Period::fromDatePeriod` supports the `$boundaryType` argument;
-- `Period::__construct` supports the `$boundaryType` argument;
+- Added support for the boundary types on the package
+    - `Period::EXCLUDE_START_INCLUDE_END`
+    - `Period::INCLUDE_START_EXCLUDE_END`
+    - `Period::EXCLUDE_ALL`
+    - `Period::INCLUDE_ALL`
+    - `Period::getBoundaryType`
+    - `Period::isStartDateExcluded`
+    - `Period::isStartDateIncluded`
+    - `Period::isEndDateExcluded`
+    - `Period::isEndDateIncluded`
+    - `Period::withBoundaryType`
+    - `Period::__construct` adds the `$boundaryType` argument;
+    - `Period::after` adds the `$boundaryType` argument;
+    - `Period::before` adds the `$boundaryType` argument;
+    - `Period::around` adds the `$boundaryType` argument;
+    - `Period::fromDatePeriod` adds the `$boundaryType` argument;
+- Added missing [Allen's Algebra intervals](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html)
+    - `Period::meets`
+    - `Period::metBy`
+    - `Period::isDuring`
+    - `Period::starts`
+    - `Period::finishes`
 - `Sequence::getUnions`
 
 ### Fixed

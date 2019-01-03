@@ -63,6 +63,22 @@ $intersections = $sequence->getIntersections(); // a new Sequence object
 $intersections->isEmpty(); // true
 ~~~
 
+### Sequence::getUnions
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+Returns the unions inside the instance. The method returns a new `Sequence` object containing the calculated unions expressed as `Period` objects.
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2018-01-15', '2018-02-15')
+);
+$unions = $sequence->getUnions(); // a new Sequence object
+count($unions); // returns 2
+~~~
+
 ### Sequence::indexOf
 
 Returns the offset of the given `Period` object. The comparison of two intervals is done using `Period::equals` method. If no offset is found `false` is returned.

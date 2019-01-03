@@ -67,7 +67,7 @@ class PeriodPropertiesTest extends TestCase
         return [
             'left open right close' => [
                 'interval' => Period::fromDay(2012, 8, 12),
-                'rangeType' => Period::EXCLUDE_END_INCLUDE_START,
+                'rangeType' => Period::INCLUDE_START_EXCLUDE_END,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => false,
@@ -82,8 +82,8 @@ class PeriodPropertiesTest extends TestCase
                 'endExcluded' => false,
             ],
             'left open right open' => [
-                'interval' => Period::after('2012-08-12', '1 DAY', Period::EXCLUDE_NONE),
-                'rangeType' => Period::EXCLUDE_NONE,
+                'interval' => Period::after('2012-08-12', '1 DAY', Period::INCLUDE_ALL),
+                'rangeType' => Period::INCLUDE_ALL,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => true,

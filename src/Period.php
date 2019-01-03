@@ -31,20 +31,20 @@ final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
-    public const EXCLUDE_END_INCLUDE_START = '[)';
+    private const BOUNDARY_TYPE = [
+        self::INCLUDE_ALL => 1,
+        self::EXCLUDE_ALL => 1,
+        self::INCLUDE_START_EXCLUDE_END => 1,
+        self::EXCLUDE_START_INCLUDE_END => 1,
+    ];
+
+    public const INCLUDE_START_EXCLUDE_END = '[)';
 
     public const EXCLUDE_START_INCLUDE_END = '(]';
 
     public const EXCLUDE_ALL = '()';
 
-    public const EXCLUDE_NONE = '[]';
-
-    private const RANGE_TYPE = [
-        self::EXCLUDE_NONE => 1,
-        self::EXCLUDE_ALL => 1,
-        self::EXCLUDE_END_INCLUDE_START => 1,
-        self::EXCLUDE_START_INCLUDE_END => 1,
-    ];
+    public const INCLUDE_ALL = '[]';
 
     /**
      * The starting datepoint.
@@ -66,32 +66,6 @@ final class Period implements JsonSerializable
      * @var string
      */
     private $boundaryType;
-
-
-    /**************************************************
-     * Named constructors
-     **************************************************/
-
-    /**
-     * @inheritdoc
-     */
-    public static function __set_state(array $interval)
-    {
-        return new self($interval['startDate'], $interval['endDate'], $interval['boundaryType'] ?? self::EXCLUDE_END_INCLUDE_START);
-    }
-
-    /**
-     * Creates new instance from a starting datepoint and a duration.
-     *
-     * @param mixed $startDate the starting included datepoint
-     * @param mixed $duration  a Duration
-     */
-    public static function after($startDate, $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): self
-    {
-        $startDate = self::getDatepoint($startDate);
-
-        return new self($startDate, $startDate->add(self::getDuration($duration)), $boundaryType);
-    }
 
     /**
      * Returns a DateTimeImmutable instance.
@@ -121,13 +95,38 @@ final class Period implements JsonSerializable
         return Duration::create($duration);
     }
 
+    /**************************************************
+     * Named constructors
+     **************************************************/
+
+    /**
+     * @inheritdoc
+     */
+    public static function __set_state(array $interval)
+    {
+        return new self($interval['startDate'], $interval['endDate'], $interval['boundaryType'] ?? self::INCLUDE_START_EXCLUDE_END);
+    }
+
+    /**
+     * Creates new instance from a starting datepoint and a duration.
+     *
+     * @param mixed $startDate the starting included datepoint
+     * @param mixed $duration  a Duration
+     */
+    public static function after($startDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    {
+        $startDate = self::getDatepoint($startDate);
+
+        return new self($startDate, $startDate->add(self::getDuration($duration)), $boundaryType);
+    }
+
     /**
      * Creates new instance from a ending datepoint and a duration.
      *
      * @param mixed $endDate  the ending excluded datepoint
      * @param mixed $duration a Duration
      */
-    public static function before($endDate, $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): self
+    public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $endDate = self::getDatepoint($endDate);
         $duration = self::getDuration($duration);
@@ -142,12 +141,20 @@ final class Period implements JsonSerializable
      * @param mixed $datepoint a Datepoint
      * @param mixed $duration  a Duration
      */
-    public static function around($datepoint, $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): self
+    public static function around($datepoint, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $datepoint = self::getDatepoint($datepoint);
         $duration = self::getDuration($duration);
 
         return new self($datepoint->sub($duration), $datepoint->add($duration), $boundaryType);
+    }
+
+    /**
+     * Creates new instance from a DatePeriod.
+     */
+    public static function fromDatePeriod(DatePeriod $datePeriod, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    {
+        return new self($datePeriod->getStartDate(), $datePeriod->getEndDate(), $boundaryType);
     }
 
     /**
@@ -224,14 +231,6 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance from a DatePeriod.
-     */
-    public static function fromDatePeriod(DatePeriod $datePeriod, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): self
-    {
-        return new self($datePeriod->getStartDate(), $datePeriod->getEndDate(), $boundaryType);
-    }
-
-    /**
      * Creates a new instance.
      *
      * @param mixed $startDate the starting datepoint
@@ -239,7 +238,7 @@ final class Period implements JsonSerializable
      *
      * @throws Exception If $startDate is greater than $endDate
      */
-    public function __construct($startDate, $endDate, string $boundaryType = self::EXCLUDE_END_INCLUDE_START)
+    public function __construct($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
     {
         $startDate = self::getDatepoint($startDate);
         $endDate = self::getDatepoint($endDate);
@@ -247,8 +246,8 @@ final class Period implements JsonSerializable
             throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
         }
 
-        if (!isset(self::RANGE_TYPE[$boundaryType])) {
-            throw new Exception('The submitted range type is unknown');
+        if (!isset(self::BOUNDARY_TYPE[$boundaryType])) {
+            throw new Exception('The boundary `%s` is unknown or not supported');
         }
 
         $this->startDate = $startDate;
@@ -626,17 +625,17 @@ final class Period implements JsonSerializable
     private function containsDatepoint(DateTimeInterface $datepoint, string $boundaryType): bool
     {
         switch ($boundaryType) {
-            case self::EXCLUDE_END_INCLUDE_START:
-                return $datepoint >= $this->startDate && $datepoint < $this->endDate;
-            case self::EXCLUDE_START_INCLUDE_END:
-                return $datepoint > $this->startDate && $datepoint <= $this->endDate;
             case self::EXCLUDE_ALL:
                 return $datepoint > $this->startDate && $datepoint < $this->endDate;
-            default:
+            case self::INCLUDE_ALL:
                 return $datepoint >= $this->startDate && $datepoint <= $this->endDate;
+            case self::EXCLUDE_START_INCLUDE_END:
+                return $datepoint > $this->startDate && $datepoint <= $this->endDate;
+            case self::INCLUDE_START_EXCLUDE_END:
+            default:
+                return $datepoint >= $this->startDate && $datepoint < $this->endDate;
         }
     }
-
 
     /**************************************************
      * operation on duration methods
@@ -959,7 +958,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns an instance with the specified range type.
+     * Returns an instance with the specified boundary type.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance with the specified range type.

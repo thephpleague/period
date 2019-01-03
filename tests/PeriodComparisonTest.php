@@ -192,13 +192,13 @@ class PeriodComparisonTest extends TestCase
                 false,
             ],
             'test abuts returns true with equal datepoints by if boundary is inclusif (1)' => [
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::EXCLUDE_NONE),
-                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::EXCLUDE_NONE),
+                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::INCLUDE_ALL),
+                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::INCLUDE_ALL),
                 false,
             ],
             'test abuts returns true with equal datepoints by if boundary is inclusif (2)' => [
-                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::EXCLUDE_NONE),
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::EXCLUDE_NONE),
+                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::INCLUDE_ALL),
+                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::INCLUDE_ALL),
                 false,
             ],
         ];
@@ -304,12 +304,12 @@ class PeriodComparisonTest extends TestCase
                 new Period(
                     new DateTimeImmutable('2014-03-01'),
                     new DateTimeImmutable('2014-06-01'),
-                    Period::EXCLUDE_NONE
+                    Period::INCLUDE_ALL
                 ),
                 new Period(
                     new DateTimeImmutable('2014-05-01'),
                     new DateTimeImmutable('2014-06-01'),
-                    Period::EXCLUDE_NONE
+                    Period::INCLUDE_ALL
                 ),
                 true,
             ],
@@ -369,8 +369,8 @@ class PeriodComparisonTest extends TestCase
                 true,
             ],
             'contains period same duration + boundary type OLOR vs OLOR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_NONE),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_NONE),
+                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
+                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
                 true,
             ],
             'contains period same duration + boundary type CLOR vs CLOR' => [
@@ -380,21 +380,21 @@ class PeriodComparisonTest extends TestCase
             ],
             'contains period same duration + boundary type CLOR vs OLCR' => [
                 Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_END_INCLUDE_START),
+                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_START_EXCLUDE_END),
                 false,
             ],
             'contains period same duration + boundary type OLCR vs CLOR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_END_INCLUDE_START),
+                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_START_EXCLUDE_END),
                 Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
                 false,
             ],
             'contains period same duration + boundary type CLCR vs OLOR' => [
                 Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_NONE),
+                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
                 false,
             ],
             'contains period same duration + boundary type OLOR vs CLCR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_NONE),
+                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
                 Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
                 true,
             ],
@@ -423,13 +423,13 @@ class PeriodComparisonTest extends TestCase
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_NONE),
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_ALL),
                 new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
                 true,
             ],
             [
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16'), Period::EXCLUDE_NONE),
+                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16'), Period::INCLUDE_ALL),
                 false,
             ],
         ];
@@ -463,7 +463,7 @@ class PeriodComparisonTest extends TestCase
             ],
             [
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_NONE),
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
                 false,
             ],
         ];
@@ -525,7 +525,7 @@ class PeriodComparisonTest extends TestCase
                 false,
             ],
             'returns false with different range type' => [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_NONE),
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_ALL),
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
                 false,
             ],

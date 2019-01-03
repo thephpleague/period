@@ -67,6 +67,44 @@ $period->isAfter('1982-06-02'); //returns true
 $period->isAfter($period->getStartDate()); //returns false
 ~~~
 
+### Period::starts
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+~~~php
+public Period::starts(Period $interval): bool
+~~~
+
+Tells whether both `Period` objects starts at the same datepoint.
+
+#### Examples
+
+~~~php
+$period = Period::fromMonth(2014, 3);
+$alt = Period::after('2014-03-01', '2 DAYS');
+$period->starts($alt); //return true
+//in this case $period->getStartDate() == $alt->getStartDate();
+~~~
+
+### Period::finishes
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+~~~php
+public Period::finishes(Period $interval): bool
+~~~
+
+Tells whether both `Period` objects ends at the same datepoint.
+
+#### Examples
+
+~~~php
+$period = Period::fromMonth(2014, 3);
+$alt = Period::before('2014-04-01', '2 DAYS');
+$period->finishes($alt); //return true
+//in this case $period->getEndDate() == $alt->getEndDate();
+~~~
+
 ### Period::abuts
 
 ~~~php
@@ -83,7 +121,7 @@ A `Period` abuts if it starts immediately after, or ends immediately before the 
 $period = Period::fromMonth(2014, 3);
 $alt = Period::fromMonth(2014, 4);
 $period->abuts($alt); //return true
-//in this case $period->getEndDate() === $alt->getStartDate();
+//in this case $period->getEndDate() == $alt->getStartDate();
 ~~~
 
 ### Period::meets
