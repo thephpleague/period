@@ -6,11 +6,30 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- Added support for the boundary type on all relations methods
+- `Period::EXCLUDE_START_INCLUDE_END`
+- `Period::EXCLUDE_END_INCLUDE_START`
+- `Period::EXCLUDE_ALL`
+- `Period::EXCLUDE_NONE`
+- `Period::getBoundaryType`
+- `Period::withBoundaryType`
+- `Period::isStartDateIncluded`
+- `Period::isStartDateExcluded`
+- `Period::isEndDateIncluded`
+- `Period::isEndDateExcluded`
+- `Period::meets`
+- `Period::metBy`
+- `Period::isDuring`
+- `Period::after` supports the `$boundaryType` argument;
+- `Period::before` supports the `$boundaryType` argument;
+- `Period::around` supports the `$boundaryType` argument;
+- `Period::fromDatePeriod` supports the `$boundaryType` argument;
+- `Period::__construct` supports the `$boundaryType` argument;
+- `Sequence::getUnions`
 
 ### Fixed
 
-- None
+- `Datepoint::createFromFormat` see issue [#72](https://github.com/thephpleague/period/issues/72)
 
 ### Deprecated
 

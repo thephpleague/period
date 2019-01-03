@@ -12,25 +12,35 @@ To instantiate a `Period` object you can rely on its constructor or on several h
 ## The constructor
 
 ~~~php
-public Period::__construct(mixed $startDate, mixed $endDate)
+public Period::__construct(mixed $startDate, mixed $endDate, string $boundaryType = self::EXCLUDE_END_INCLUDE_START)
 ~~~
+
+<p class="message-info">Since <code>version 4.4</code> the <code>$boundaryType</code> argument is added.</p>
 
 #### Parameters
 
 Both `$startDate` and `$endDate` parameters are datepoints.
 
-- The `$startDate` represents **the starting included datepoint**.
-- The `$endDate` represents **the ending excluded datepoint**.
+- The `$startDate` represents **the starting datepoint**.
+- The `$endDate` represents **the ending datepoint**.
+- The `$boundaryType` represents **the interval boundary type**. It can take one of the following constants:
+	- `Period::EXCLUDE_NONE` : the starting and ending datepoint **are included** in the interval;
+	- `Period::EXCLUDE_ALL` :  the starting and ending datepoint **are excluded** in the interval;
+	- `Period::EXCLUDE_START_INCLUDE_END` : the starting datepoint **is excluded** and the ending datepoint **is included** from the interval;
+	- `Period::EXCLUDE_END_INCLUDE_START` : the starting datepoint **is included** and the ending datepoint **is excluded** from the interval; 
+
 
 `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
+<p class="message-info">By default and to avoid BC break the <code>$boundaryType</code> is <code>Period::EXCLUDE_END_INCLUDE_START</code>.</p>
 
 #### Example
 
 ~~~php
 use League\Period\Period;
 
-$period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
+$period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'), Period::EXCLUDE_ALL);
 ~~~
+
 
 ## Named constructors
 
@@ -40,13 +50,19 @@ Apart from its constructor, to ease the class instantiation you can rely on many
 
 ### Named constructors accepting a DatePeriod object
 
+<p class="message-notice">Since <code>version 4.4</code> the <code>$boundaryType</code> argument is added.</p>
+
 ~~~php
-function Period::fromDatePeriod(DatePeriod $datePeriod): Period
+function Period::fromDatePeriod(
+	DatePeriod $datePeriod,
+	string $boundaryType = self::EXCLUDE_END_INCLUDE_START
+): self
 ~~~
 
 #### Parameter
 
 - `$datePeriod` is a `DatePeriod` object.
+- `$boundaryType`, the interval boundary type.
 
 #### Example
 
@@ -90,6 +106,8 @@ public static Period::fromIsoYear(int $year): Period
 
 <p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
 
+<p class="message-info">The following named constructors always returns a <code>Period</code> instance with the following boundary type <code>Period::EXCLUDE_END_INCLUDE_START</code>.</p>
+
 #### Examples
 
 ~~~php
@@ -102,9 +120,9 @@ $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 ### Named constructors accepting a datepoint and/or a duration
 
 ~~~php
-public static Period::after(mixed $datepoint, mixed $duration): Period
-public static Period::before(mixed $datepoint, mixed $duration): Period
-public static Period::around(mixed $datepoint, mixed $duration): Period
+public static Period::after(mixed $datepoint, mixed $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): Period
+public static Period::before(mixed $datepoint, mixed $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): Period
+public static Period::around(mixed $datepoint, mixed $duration, string $boundaryType = self::EXCLUDE_END_INCLUDE_START): Period
 ~~~
 
 - `Period::after` returns a `Period` object which starts at `$datepoint`
@@ -113,8 +131,9 @@ public static Period::around(mixed $datepoint, mixed $duration): Period
 
 #### Parameters
 
-- `$datepoint`: represents a datepoint
+- `$datepoint` represents a datepoint.
 - `$duration` represents a duration.
+- `$boundaryType` the interval boundary type.
 
 #### Examples
 

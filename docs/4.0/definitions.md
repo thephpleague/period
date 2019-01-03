@@ -7,15 +7,25 @@ title: Concepts and arguments
 
 ## Concepts
 
-- **interval** - `Period` is a PHP implementation of a left closed right open datetime interval which consists of two datepoints and the duration between them. This means that:
+<p class="message-info">Since <code>version 4.4</code> all basic boundary types are supported by the library.</p>
 
-    - The starting datepoint is included in the interval.
-    - The ending datepoint is excluded from the interval.
-    - The starting datepoint is always less than or equal to the ending datepoint.
+- **interval** - `Period` is a PHP implementation of a datetime interval which consists of:
+
+- two datepoints;
+- the duration between them;
+- a boundary type. By default, and to avoid any BC break the package returns a left close right open interval;
+
+The starting datepoint is always less than or equal to the ending datepoint.
 
 - **datepoint** - A position in time expressed as a `DateTimeImmutable` object.
 
 - **duration** - The continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
+
+- **boundary type** - The package supports the following boundary type:
+	- `[)` : left close, right open using `Period::EXCLUDE_END_INCLUDE_START`;
+	- `(]` : left open, right close using `Period::EXCLUDE_START_INCLUDE_END`;
+	- `[]` : left close, right close using `Period::EXCLUDE_NONE`;
+	- `()` : left open, right open using `Period::EXCLUDE_ALL`;
 
 ## Arguments
 

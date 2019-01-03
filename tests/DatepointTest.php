@@ -1,7 +1,7 @@
 <?php
 
 /**
- * League.Period (https://period.thephpleague.com).
+ * League.Period (https://period.thephpleague.com)
  *
  * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *
@@ -14,25 +14,9 @@ namespace LeagueTest\Period;
 use DateTime;
 use DateTimeImmutable;
 use League\Period\Datepoint;
-use PHPUnit\Framework\TestCase;
 
 class DatepointTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected $timezone;
-
-    public function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    public function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testCreateFromFormat(): void
     {
         self::assertInstanceOf(Datepoint::class, Datepoint::createFromFormat('Y-m-d', '2018-12-01'));

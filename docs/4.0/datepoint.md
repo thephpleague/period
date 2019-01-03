@@ -67,6 +67,7 @@ public Datepoint::getIsoYear(): Period
 
 For each a these methods a `Period` object is returned with:
 
+- the `Period::EXCLUDE_END_INCLUDE_START` boundary type;
 - the starting datepoint represents the beginning of the current datepoint calendar interval;
 - the duration associated with the given calendar interval;
 

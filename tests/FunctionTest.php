@@ -1,7 +1,7 @@
 <?php
 
 /**
- * League.Period (https://period.thephpleague.com).
+ * League.Period (https://period.thephpleague.com)
  *
  * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *
@@ -19,7 +19,6 @@ use DateTimeInterface;
 use Exception as PhpException;
 use League\Period\Duration;
 use League\Period\Exception;
-use PHPUnit\Framework\TestCase;
 use TypeError;
 use function get_object_vars;
 use function League\Period\datepoint;

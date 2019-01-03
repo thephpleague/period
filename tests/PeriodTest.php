@@ -1,7 +1,7 @@
 <?php
 
 /**
- * League.Period (https://period.thephpleague.com).
+ * League.Period (https://period.thephpleague.com)
  *
  * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *

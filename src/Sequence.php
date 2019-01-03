@@ -1,7 +1,7 @@
 <?php
 
 /**
- * League.Period (https://period.thephpleague.com).
+ * League.Period (https://period.thephpleague.com)
  *
  * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *
@@ -132,6 +132,35 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             if (!$isContained) {
                 $current = $period;
             }
+        }
+
+        return $sequence;
+    }
+
+    /**
+     * Returns the uninon inside the instance.
+     */
+    public function getUnions(): self
+    {
+        $sequence = new self();
+        foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
+            if ($sequence->isEmpty()) {
+                $sequence->push($period);
+                continue;
+            }
+
+            $index = $sequence->count() - 1;
+            $interval = $sequence->get($index);
+            if ($interval->overlaps($period) || $interval->abuts($period)) {
+                $sequence->set($index, $interval->merge($period));
+                continue;
+            }
+
+            $sequence->push($period);
+        }
+
+        if ($sequence->intervals === $this->intervals) {
+            return $this;
         }
 
         return $sequence;

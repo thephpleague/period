@@ -86,6 +86,48 @@ $period->abuts($alt); //return true
 //in this case $period->getEndDate() === $alt->getStartDate();
 ~~~
 
+### Period::meets
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+~~~php
+public Period::meets(Period $interval): bool
+~~~
+
+A `Period` meets another one if its ending datepoint is immediately before the submitted `Period` starting datepoint without overlapping.
+
+#### Examples
+
+~~~php
+//comparing a datetime
+$period = Period::fromMonth(1983, 4);
+
+//comparing two Period objects
+$alt = Period::fromMonth(1983, 3);
+$alt->meets($period); //return true;
+~~~
+
+### Period::metBy
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+~~~php
+public Period::metBy(Period $interval): bool
+~~~
+
+A `Period` is met by another one if its starting datepoint is immediately after the submitted `Period` end datepoint without overlapping.
+
+#### Examples
+
+~~~php
+//comparing a datetime
+$period = Period::fromMonth(1983, 4);
+
+//comparing two Period objects
+$alt = Period::fromMonth(1983, 3);
+$period->metBy($alt); //return true;
+~~~
+
 ### Period::overlaps
 
 ~~~php
@@ -151,6 +193,28 @@ $period->contains($period->getEndDate());   //returns false;
 $alt = Period::after('1983-04-12', '12 DAYS');
 $period->contains($alt); //return true;
 $alt->contains($period); //return false;
+~~~
+
+### Period::isDuring
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+~~~php
+public Period::isDuring(Period $interval): bool
+~~~
+
+A `Period` is contained into another if its datetime continuum is completely contained within the submitted `Period` datetime continuum.
+
+#### Examples
+
+~~~php
+//comparing a datetime
+$period = Period::fromMonth(1983, 4);
+
+//comparing two Period objects
+$alt = Period::after('1983-04-12', '12 DAYS');
+$period->contains($alt); //return true;
+$alt->isDuring($period); //return true;
 ~~~
 
 ### Period::diff
