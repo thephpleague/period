@@ -20,6 +20,8 @@ All Notable changes to `Period` will be documented in this file
 - `Period::meets`
 - `Period::metBy`
 - `Period::isDuring`
+- `Period::starts`
+- `Period::finishes`
 - `Period::after` supports the `$boundaryType` argument;
 - `Period::before` supports the `$boundaryType` argument;
 - `Period::around` supports the `$boundaryType` argument;
