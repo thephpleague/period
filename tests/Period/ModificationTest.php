@@ -9,19 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace LeagueTest\Period\Period;
 
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use League\Period\Exception;
 use League\Period\Period;
+use LeagueTest\Period\TestCase;
 use TypeError;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class PeriodModificationTest extends TestCase
+class ModificationTest extends TestCase
 {
     public function testStartingOn(): void
     {
@@ -55,22 +56,6 @@ class PeriodModificationTest extends TestCase
         self::expectException(Exception::class);
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->endingOn(new DateTime('2012-03-02'));
-    }
-
-    public function testWithBoundaryType(): void
-    {
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->withBoundaryType(Period::EXCLUDE_ALL);
-        self::assertEquals($interval->getDateInterval(), $interval->getDateInterval());
-        self::assertNotEquals($interval->getBoundaryType(), $altInterval->getBoundaryType());
-        self::assertSame($interval, $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END));
-    }
-
-    public function testWithBoundaryTypeFails(): void
-    {
-        self::expectException(Exception::class);
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->withBoundaryType('foobar');
     }
 
     public function testExpand(): void

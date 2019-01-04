@@ -9,18 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace LeagueTest\Period\Period;
 
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use League\Period\Exception;
 use League\Period\Period;
+use LeagueTest\Period\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class PeriodComparisonTest extends TestCase
+class IntervalRelationTest extends TestCase
 {
     /**
      * @dataProvider isBeforeProvider
@@ -470,35 +471,6 @@ class PeriodComparisonTest extends TestCase
     }
 
     /**
-     * @dataProvider durationCompareDataProvider
-     */
-    public function testDurationCompare(Period $interval1, Period $interval2, int $expected): void
-    {
-        self::assertSame($expected, $interval1->durationCompare($interval2));
-    }
-
-    public function durationCompareDataProvider(): array
-    {
-        return [
-            'duration less than' => [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2013-01-01'), new DateTime('2013-01-16')),
-                -1,
-            ],
-            'duration greater than' => [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
-                1,
-            ],
-            'duration equals with microsecond' => [
-                new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00.123456')),
-                new Period(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
-                0,
-            ],
-        ];
-    }
-
-    /**
      * @dataProvider equalsDataProvider
      */
     public function testEquals(Period  $interval1, Period $interval2, bool $expected): void
@@ -642,37 +614,5 @@ class PeriodComparisonTest extends TestCase
         self::assertSame(3600.0, $diff1->getTimestampInterval());
         self::assertSame(3600.0, $diff2->getTimestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
-    }
-
-    /**
-     * @dataProvider durationCompareInnerMethodsDataProvider
-     */
-    public function testDurationCompareInnerMethods(Period $period1, Period $period2, string $method, bool $expected): void
-    {
-        self::assertSame($expected, $period1->$method($period2));
-    }
-
-    public function durationCompareInnerMethodsDataProvider(): array
-    {
-        return [
-            'testDurationLessThan' => [
-                new Period('2012-01-01', '2012-01-07'),
-                new Period('2013-01-01', '2013-02-01'),
-                'durationLessThan',
-                true,
-            ],
-            'testDurationGreaterThanReturnsTrue' => [
-                new Period('2012-01-01', '2012-02-01'),
-                new Period('2012-01-01', '2012-01-07'),
-                'durationGreaterThan',
-                true,
-            ],
-            'testdurationEqualsReturnsTrueWithMicroseconds' => [
-                new Period('2012-01-01 00:00:00', '2012-01-03 00:00:00'),
-                new Period('2012-02-02 00:00:00', '2012-02-04 00:00:00'),
-                'durationEquals',
-                true,
-            ],
-        ];
     }
 }

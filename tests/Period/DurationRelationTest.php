@@ -9,29 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace LeagueTest\Period\Period;
 
 use DateInterval;
 use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
-use DateTimeZone;
 use Generator;
-use League\Period\Exception;
 use League\Period\Period;
-use TypeError;
+use LeagueTest\Period\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class PeriodPropertiesTest extends TestCase
+class DurationRelationTest extends TestCase
 {
-    public function testConstructorThrowExceptionIfUnknownBounday(): void
-    {
-        self::expectException(Exception::class);
-        new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
-    }
-
     public function testGetDateInterval(): void
     {
         $interval = new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
@@ -42,62 +34,6 @@ class PeriodPropertiesTest extends TestCase
     {
         $interval = new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
         self::assertSame(86400.0, $interval->getTimestampInterval());
-    }
-
-    /**
-     * @dataProvider providerGetRangType
-     */
-    public function testGetRangeType(
-        Period $interval,
-        string $rangeType,
-        bool $startIncluded,
-        bool $startExcluded,
-        bool $endIncluded,
-        bool $endExcluded
-    ): void {
-        self::assertSame($rangeType, $interval->getBoundaryType());
-        self::assertSame($startIncluded, $interval->isStartDateIncluded());
-        self::assertSame($startExcluded, $interval->isStartDateExcluded());
-        self::assertSame($endIncluded, $interval->isEndDateIncluded());
-        self::assertSame($endExcluded, $interval->isEndDateExcluded());
-    }
-
-    public function providerGetRangType(): array
-    {
-        return [
-            'left open right close' => [
-                'interval' => Period::fromDay(2012, 8, 12),
-                'rangeType' => Period::INCLUDE_START_EXCLUDE_END,
-                'startIncluded' => true,
-                'startExcluded' => false,
-                'endIncluded' => false,
-                'endExcluded' => true,
-            ],
-            'left close right open' => [
-                'interval' => Period::around('2012-08-12', '1 HOUR', Period::EXCLUDE_START_INCLUDE_END),
-                'rangeType' => Period::EXCLUDE_START_INCLUDE_END,
-                'startIncluded' => false,
-                'startExcluded' => true,
-                'endIncluded' => true,
-                'endExcluded' => false,
-            ],
-            'left open right open' => [
-                'interval' => Period::after('2012-08-12', '1 DAY', Period::INCLUDE_ALL),
-                'rangeType' => Period::INCLUDE_ALL,
-                'startIncluded' => true,
-                'startExcluded' => false,
-                'endIncluded' => true,
-                'endExcluded' => false,
-            ],
-            'left close right close' => [
-                'interval' => Period::before('2012-08-12', '1 WEEK', Period::EXCLUDE_ALL),
-                'rangeType' => Period::EXCLUDE_ALL,
-                'startIncluded' => false,
-                'startExcluded' => true,
-                'endIncluded' => false,
-                'endExcluded' => true,
-            ],
-        ];
     }
 
     /**
@@ -152,79 +88,65 @@ class PeriodPropertiesTest extends TestCase
             'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
         ];
     }
-    public function testToString(): void
+    /**
+     * @dataProvider durationCompareDataProvider
+     */
+    public function testDurationCompare(Period $interval1, Period $interval2, int $expected): void
     {
-        date_default_timezone_set('Africa/Nairobi');
-        $period = new Period('2014-05-01', '2014-05-08');
-        $res = (string) $period;
-        self::assertContains('2014-04-30T21:00:00', $res);
-        self::assertContains('2014-05-07T21:00:00', $res);
+        self::assertSame($expected, $interval1->durationCompare($interval2));
     }
 
-    public function testJsonSerialize(): void
+    public function durationCompareDataProvider(): array
     {
-        $period = Period::fromMonth(2015, 4);
-        $json = json_encode($period);
-        self::assertInternalType('string', $json);
-        $res = json_decode($json);
-
-        self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));
-        self::assertEquals($period->getEndDate(), new DateTimeImmutable($res->endDate));
+        return [
+            'duration less than' => [
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
+                new Period(new DateTime('2013-01-01'), new DateTime('2013-01-16')),
+                -1,
+            ],
+            'duration greater than' => [
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
+                1,
+            ],
+            'duration equals with microsecond' => [
+                new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00.123456')),
+                new Period(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
+                0,
+            ],
+        ];
     }
 
-    public function testFormat(): void
+    /**
+     * @dataProvider durationCompareInnerMethodsDataProvider
+     */
+    public function testDurationCompareInnerMethods(Period $period1, Period $period2, string $method, bool $expected): void
     {
-        date_default_timezone_set('Africa/Nairobi');
-        self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->format('Y-m'));
-        self::assertSame(
-            '[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)',
-            (new Period('2015-04-01', '2015-04-01'))->format('Y-m-d e')
-        );
+        self::assertSame($expected, $period1->$method($period2));
     }
 
-    public function testConstructorThrowTypeError(): void
+    public function durationCompareInnerMethodsDataProvider(): array
     {
-        self::expectException(TypeError::class);
-        new Period(new DateTime(), []);
-    }
-
-    public function testSetState(): void
-    {
-        $period = new Period('2014-05-01', '2014-05-08');
-        $generatedPeriod = eval('return '.var_export($period, true).';');
-        self::assertTrue($generatedPeriod->equals($period));
-        self::assertEquals($generatedPeriod, $period);
-    }
-
-    public function testConstructor(): void
-    {
-        $period = new Period('2014-05-01', '2014-05-08');
-        self::assertEquals(new DateTimeImmutable('2014-05-01'), $period->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2014-05-08'), $period->getEndDate());
-    }
-
-    public function testConstructorWithMicroSecondsSucceed(): void
-    {
-        $period = new Period('2014-05-01 00:00:00', '2014-05-01 00:00:00');
-        self::assertEquals(new DateInterval('PT0S'), $period->getDateInterval());
-    }
-
-    public function testConstructorThrowException(): void
-    {
-        self::expectException(Exception::class);
-        new Period(
-            new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
-            new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
-        );
-    }
-
-    public function testConstructorWithDateTimeInterface(): void
-    {
-        $start = '2014-05-01';
-        $end = new DateTime('2014-05-08');
-        $period = new Period($start, $end);
-        self::assertSame($start, $period->getStartDate()->format('Y-m-d'));
-        self::assertEquals($end, $period->getEndDate());
+        return [
+            'testDurationLessThan' => [
+                new Period('2012-01-01', '2012-01-07'),
+                new Period('2013-01-01', '2013-02-01'),
+                'durationLessThan',
+                true,
+            ],
+            'testDurationGreaterThanReturnsTrue' => [
+                new Period('2012-01-01', '2012-02-01'),
+                new Period('2012-01-01', '2012-01-07'),
+                'durationGreaterThan',
+                true,
+            ],
+            'testdurationEqualsReturnsTrueWithMicroseconds' => [
+                new Period('2012-01-01 00:00:00', '2012-01-03 00:00:00'),
+                new Period('2012-02-02 00:00:00', '2012-02-04 00:00:00'),
+                'durationEquals',
+                true,
+            ],
+        ];
     }
 
     public function testDateIntervalDiff(): void

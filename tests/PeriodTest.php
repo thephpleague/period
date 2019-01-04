@@ -12,15 +12,12 @@
 namespace LeagueTest\Period;
 
 use DateInterval;
-use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Generator;
 use League\Period\Exception;
 use League\Period\Period;
-use PHPUnit\Framework\TestCase;
 use TypeError;
 use function League\Period\instant;
 use function League\Period\interval_after;
@@ -28,86 +25,6 @@ use function League\Period\month;
 
 class PeriodTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected $timezone;
-
-    public function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    public function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
-    public function testGetDateInterval(): void
-    {
-        $interval = new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
-        self::assertSame(1, $interval->getDateInterval()->days);
-    }
-
-    public function testGetTimestampInterval(): void
-    {
-        $interval = new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
-        self::assertSame(86400.0, $interval->getTimestampInterval());
-    }
-
-    /**
-     * @dataProvider providerGetDatePeriod
-     *
-     * @param DateInterval|int|string $interval
-     */
-    public function testGetDatePeriod($interval, int $option, int $count): void
-    {
-        $period = new Period(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->getDatePeriod($interval, $option);
-        self::assertCount($count, iterator_to_array($range));
-    }
-
-    public function providerGetDatePeriod(): array
-    {
-        return [
-            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
-            'useString' => ['2 HOUR', 0, 12],
-            'useInt' => [9600, 0, 9],
-            'useFloat' => [14400.0, 0, 6],
-            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
-            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
-            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
-            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
-        ];
-    }
-
-    /**
-     * @dataProvider providerGetDatePeriodBackwards
-     *
-     * @param DateInterval|int|string $interval
-     */
-    public function testGetDatePeriodBackwards($interval, int $option, int $count): void
-    {
-        $period = new Period(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->getDatePeriodBackwards($interval, $option);
-        self::assertInstanceOf(Generator::class, $range);
-        self::assertCount($count, iterator_to_array($range));
-    }
-
-    public function providerGetDatePeriodBackwards(): array
-    {
-        return [
-            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
-            'useString' => ['2 HOUR', 0, 12],
-            'useInt' => [9600, 0, 9],
-            'useFloat' => [14400.0, 0, 6],
-            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
-            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
-            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
-            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
-        ];
-    }
-
     public function testIsBeforeDateTimeInterface(): void
     {
         $orig = new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'));
