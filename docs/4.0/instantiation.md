@@ -23,24 +23,37 @@ public Period::__construct(
 
 #### Parameters
 
-Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
-
 - The `$startDate` represents **the starting datepoint**.
 - The `$endDate` represents **the ending datepoint**.
-- The `$boundaryType` represents **the interval boundary type** like [explain in the definition section](/4.0/definitions/#concepts). It can take one of the following constants:
-    - `Period::INCLUDE_ALL` : the starting and ending datepoints **are included** in the interval;
-    - `Period::EXCLUDE_ALL` : the starting and ending datepoints **are excluded** from the interval;
-    - `Period::EXCLUDE_START_INCLUDE_END` : the starting datepoint **is excluded from** and the ending datepoint **is included in** the interval;
-    - `Period::INCLUDE_START_EXCLUDE_END` : the starting datepoint **is included in** and the ending datepoint **is excluded from** the interval; 
+- The `$boundaryType` represents **the interval boundary type**. 
 
-<p class="message-info">By default and to avoid BC break the <code>$boundaryType</code> is <code>Period::INCLUDE_START_EXCLUDE_END</code>.</p>
+Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\Exception`.
+
+The `$boundaryType` can only take one of the following values:
+
+- `[]` : the starting and ending datepoints **are included** in the interval;
+- `()` : the starting and ending datepoints **are excluded** from the interval;
+- `(]` : the starting datepoint **is excluded from** and the ending datepoint **is included in** the interval;
+- `[)` : the starting datepoint **is included in** and the ending datepoint **is excluded from** the interval;
+
+To ease remembering those values the following constants are introduced:
+
+- `Period::INCLUDE_ALL` whose value is `[]`;
+- `Period::EXCLUDE_ALL` whose value is `()`;
+- `Period::EXCLUDE_START_INCLUDE_END` whose value is `(]`;
+- `Period::INCLUDE_START_EXCLUDE_END` whose value is `[)`; 
+
+<p class="message-warning">By default and to avoid BC break the <code>$boundaryType</code> is <code>Period::INCLUDE_START_EXCLUDE_END</code> when not explicitly provided.</p>
 
 #### Example
 
 ~~~php
 use League\Period\Period;
 
-$period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'), Period::EXCLUDE_ALL);
+$period1 = new Period('2012-04-01 08:30:25', '2013-09-04 12:35:21', '()');
+$period2 = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'), Period::EXCLUDE_ALL);
+
+$period1->equals($period2); // true
 ~~~
 
 ## Named constructors

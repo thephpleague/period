@@ -19,6 +19,9 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
+use function array_keys;
+use function implode;
+use function sprintf;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -32,10 +35,10 @@ final class Period implements JsonSerializable
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
     private const BOUNDARY_TYPE = [
-        self::INCLUDE_ALL => 1,
-        self::EXCLUDE_ALL => 1,
         self::INCLUDE_START_EXCLUDE_END => 1,
+        self::INCLUDE_ALL => 1,
         self::EXCLUDE_START_INCLUDE_END => 1,
+        self::EXCLUDE_ALL => 1,
     ];
 
     public const INCLUDE_START_EXCLUDE_END = '[)';
@@ -247,7 +250,11 @@ final class Period implements JsonSerializable
         }
 
         if (!isset(self::BOUNDARY_TYPE[$boundaryType])) {
-            throw new Exception('The boundary `%s` is unknown or not supported');
+            throw new Exception(sprintf(
+                'The boundary type `%s` is invalid. The only valid values are %s',
+                $boundaryType,
+                '`'.implode('`, `', array_keys(self::BOUNDARY_TYPE)).'`'
+            ));
         }
 
         $this->startDate = $startDate;
