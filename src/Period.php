@@ -132,9 +132,8 @@ final class Period implements JsonSerializable
     public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $endDate = self::getDatepoint($endDate);
-        $duration = self::getDuration($duration);
 
-        return new self($endDate->sub($duration), $endDate, $boundaryType);
+        return new self($endDate->sub(self::getDuration($duration)), $endDate, $boundaryType);
     }
 
     /**
@@ -279,7 +278,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the instance range type.
+     * Returns the instance boundary type.
      */
     public function getBoundaryType(): string
     {
@@ -348,7 +347,7 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * Tells whether the start datepoint is included in the range.
+     * Tells whether the start datepoint is included in the boundary.
      */
     public function isStartDateIncluded(): bool
     {
@@ -356,7 +355,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the start datepoint is excluded from the range.
+     * Tells whether the start datepoint is excluded from the boundary.
      */
     public function isStartDateExcluded(): bool
     {
@@ -364,7 +363,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the end datepoint is included in the range.
+     * Tells whether the end datepoint is included in the boundary.
      */
     public function isEndDateIncluded(): bool
     {
@@ -372,7 +371,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the end datepoint is excluded from the range.
+     * Tells whether the end datepoint is excluded from the boundary.
      */
     public function isEndDateExcluded(): bool
     {
@@ -421,7 +420,6 @@ final class Period implements JsonSerializable
     {
         return -1 === $this->durationCompare($interval);
     }
-
 
     /**************************************************
      * relation methods
@@ -474,8 +472,7 @@ final class Period implements JsonSerializable
      */
     public function metBy(self $interval): bool
     {
-        return $this->startDate == $interval->endDate
-            && '][' !== $interval->boundaryType[1].$this->boundaryType[0];
+        return $interval->meets($this);
     }
 
     /**
@@ -486,7 +483,7 @@ final class Period implements JsonSerializable
      *
      * or
      *
-     *    [------------------------------)
+     *    [--------------------)
      *    [---------)
      */
     public function starts(self $interval): bool
@@ -503,8 +500,8 @@ final class Period implements JsonSerializable
      *
      * or
      *
-     *    [------------------------------)
-     *                         [---------)
+     *    [--------------------)
+     *               [---------)
      */
     public function finishes(self $interval): bool
     {
@@ -559,8 +556,7 @@ final class Period implements JsonSerializable
     public function isAfter($index): bool
     {
         if ($index instanceof self) {
-            return $this->startDate > $index->endDate
-                || ($this->startDate == $index->endDate && $this->boundaryType[1] !== $index->boundaryType[0]);
+            return $index->isBefore($this);
         }
 
         $datepoint = self::getDatepoint($index);
