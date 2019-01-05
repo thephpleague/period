@@ -64,7 +64,7 @@ final class Period implements JsonSerializable
     private $endDate;
 
     /**
-     * Range type.
+     * The boundary type.
      *
      * @var string
      */
