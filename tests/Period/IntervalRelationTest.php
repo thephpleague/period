@@ -519,6 +519,16 @@ class IntervalRelationTest extends TestCase
         $orig->intersect($alt);
     }
 
+    /**
+     * @dataProvider gapBoundaryResultProvider
+     */
+    public function testIntersectBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
+    {
+        $interval0 = new Period('2014-03-01', '2014-06-01', $boundary1);
+        $interval1 = new Period('2014-05-01', '2014-08-01', $boundary2);
+        self::assertSame($expected, $interval0->intersect($interval1)->getBoundaryType());
+    }
+
     public function testGap(): void
     {
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
@@ -559,6 +569,102 @@ class IntervalRelationTest extends TestCase
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2012-02-01'), new DateTime('2012-02-02'));
         self::assertEquals(0, $orig->gap($alt)->getTimestampInterval());
+    }
+
+    /**
+     * @dataProvider gapBoundaryResultProvider
+     */
+    public function testGapBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
+    {
+        $interval0 = new Period('2014-03-01', '2014-06-01', $boundary1);
+        $interval1 = new Period('2014-07-01', '2014-09-01', $boundary2);
+        self::assertSame($expected, $interval0->gap($interval1)->getBoundaryType());
+    }
+
+    public function gapBoundaryResultProvider(): array
+    {
+        return [
+            '() + ()' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '() + []' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '() + [)' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '() + (]' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '[] + []' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '[] + [)' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '[] + (]' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '[] + ()' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '[) + ()' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '[) + []' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '[) + (]' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '[) + [)' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '(] + ()' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '(] + []' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '(] + (]' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '(] + [)' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+        ];
     }
 
     public function testDiffThrowsException(): void
@@ -614,5 +720,128 @@ class IntervalRelationTest extends TestCase
         self::assertSame(3600.0, $diff1->getTimestampInterval());
         self::assertSame(3600.0, $diff2->getTimestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
+    }
+
+    /**
+     * @dataProvider diffBoundaryResultProvider
+     */
+    public function testDiffBoundaryTypeResult(
+        string $boundary1,
+        string $boundary2,
+        string $expected1,
+        string $expected2
+    ): void {
+        $interval0 = new Period('2014-03-01', '2014-06-01', $boundary1);
+        $interval1 = new Period('2014-05-01', '2014-09-01', $boundary2);
+        [$diff1, $diff2] = $interval0->diff($interval1);
+        if (null !== $diff1) {
+            self::assertSame($expected1, $diff1->getBoundaryType());
+        }
+
+        if (null !== $diff2) {
+            self::assertSame($expected2, $diff2->getBoundaryType());
+        }
+    }
+
+    public function diffBoundaryResultProvider(): array
+    {
+        return [
+            '() + ()' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '() + []' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_ALL,
+            ],
+            '() + [)' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::EXCLUDE_ALL,
+            ],
+            '() + (]' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '[] + []' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '[] + [)' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '[] + (]' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::INCLUDE_ALL,
+            ],
+            '[] + ()' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::INCLUDE_ALL,
+            ],
+            '[) + ()' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::INCLUDE_ALL,
+            ],
+            '[) + []' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '[) + (]' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::INCLUDE_ALL,
+            ],
+            '[) + [)' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '(] + ()' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '(] + []' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::EXCLUDE_ALL,
+            ],
+            '(] + (]' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '(] + [)' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_ALL,
+            ],
+        ];
     }
 }
