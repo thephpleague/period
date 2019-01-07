@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.3.1 - 2019-01-07
 
 ### Added
 
@@ -10,7 +10,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Fixed
 
-- None
+- `Datepoint::createFromFormat` see issue [#72](https://github.com/thephpleague/period/issues/72)
 
 ### Deprecated
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * League.Period (https://period.thephpleague.com).
+ * League.Period (https://period.thephpleague.com)
  *
  * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *
@@ -59,12 +59,13 @@ final class Datepoint extends DateTimeImmutable
     /**
      * @inheritdoc
      *
-     * @param string $format
-     * @param string $datetime
+     * @param string       $format
+     * @param string       $datetime
+     * @param DateTimeZone $timezone
      *
      * @return self|bool
      */
-    public static function createFromFormat($format, $datetime, DateTimeZone $timezone = null)
+    public static function createFromFormat($format, $datetime, $timezone = null)
     {
         $datepoint = parent::createFromFormat($format, $datetime, $timezone);
         if (false !== $datepoint) {

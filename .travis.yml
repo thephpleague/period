@@ -16,7 +16,7 @@ matrix:
       env:
         - COLLECT_COVERAGE=true
         - IGNORE_PLATFORMS=false
-        - RUN_PHPSTAN=false
+        - RUN_PHPSTAN=true
         - RUN_INFECTION=false
         - VALIDATE_CODING_STYLE=false
     - php: 7.2
@@ -30,7 +30,7 @@ matrix:
       env:
         - COLLECT_COVERAGE=true
         - IGNORE_PLATFORMS=true
-        - RUN_PHPSTAN=false
+        - RUN_PHPSTAN=true
         - RUN_INFECTION=false
         - VALIDATE_CODING_STYLE=false
     - php: nightly
