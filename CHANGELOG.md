@@ -23,8 +23,8 @@ All Notable changes to `Period` will be documented in this file
     - `Period::around` adds the `$boundaryType` argument;
     - `Period::fromDatePeriod` adds the `$boundaryType` argument;
 - Added missing [Allen's Algebra intervals](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html)
-    - `Period::meets`
-    - `Period::metBy`
+    - `Period::borderOnStart`
+    - `Period::borderOnEnd`
     - `Period::isDuring`
     - `Period::starts`
     - `Period::finishes`

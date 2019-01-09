@@ -16,6 +16,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use League\Period\Exception;
 use League\Period\Period;
+use League\Period\Sequence;
 use LeagueTest\Period\TestCase;
 
 /**
@@ -520,7 +521,7 @@ class IntervalRelationTest extends TestCase
     }
 
     /**
-     * @dataProvider gapBoundaryResultProvider
+     * @dataProvider intersectBoundaryResultProvider
      */
     public function testIntersectBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
     {
@@ -528,6 +529,94 @@ class IntervalRelationTest extends TestCase
         $interval1 = new Period('2014-05-01', '2014-08-01', $boundary2);
         self::assertSame($expected, $interval0->intersect($interval1)->getBoundaryType());
     }
+
+    public function intersectBoundaryResultProvider(): array
+    {
+        return [
+            '() + ()' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '() + []' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '() + [)' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '() + (]' => [
+                'boundary1' => Period::EXCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '[] + []' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '[] + [)' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '[] + (]' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '[] + ()' => [
+                'boundary1' => Period::INCLUDE_ALL,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '[) + ()' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '[) + []' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '[) + (]' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::EXCLUDE_ALL,
+            ],
+            '[) + [)' => [
+                'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::INCLUDE_START_EXCLUDE_END,
+            ],
+            '(] + ()' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::EXCLUDE_ALL,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '(] + []' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::INCLUDE_ALL,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+            '(] + (]' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected' => Period::EXCLUDE_START_INCLUDE_END,
+            ],
+            '(] + [)' => [
+                'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
+                'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected' => Period::INCLUDE_ALL,
+            ],
+        ];
+    }
+
+
 
     public function testGap(): void
     {
@@ -749,62 +838,62 @@ class IntervalRelationTest extends TestCase
             '() + ()' => [
                 'boundary1' => Period::EXCLUDE_ALL,
                 'boundary2' => Period::EXCLUDE_ALL,
-                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
-                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
             ],
             '() + []' => [
                 'boundary1' => Period::EXCLUDE_ALL,
                 'boundary2' => Period::INCLUDE_ALL,
-                'expected1' => Period::INCLUDE_ALL,
-                'expected2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::INCLUDE_ALL,
             ],
             '() + [)' => [
                 'boundary1' => Period::EXCLUDE_ALL,
                 'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
-                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
-                'expected2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
             ],
             '() + (]' => [
                 'boundary1' => Period::EXCLUDE_ALL,
                 'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
-                'expected1' => Period::INCLUDE_ALL,
-                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::INCLUDE_ALL,
             ],
             '[] + []' => [
                 'boundary1' => Period::INCLUDE_ALL,
                 'boundary2' => Period::INCLUDE_ALL,
-                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
-                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
             ],
             '[] + [)' => [
                 'boundary1' => Period::INCLUDE_ALL,
                 'boundary2' => Period::INCLUDE_START_EXCLUDE_END,
-                'expected1' => Period::EXCLUDE_ALL,
-                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::EXCLUDE_ALL,
             ],
             '[] + (]' => [
                 'boundary1' => Period::INCLUDE_ALL,
                 'boundary2' => Period::EXCLUDE_START_INCLUDE_END,
-                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
-                'expected2' => Period::INCLUDE_ALL,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
             ],
             '[] + ()' => [
                 'boundary1' => Period::INCLUDE_ALL,
                 'boundary2' => Period::EXCLUDE_ALL,
-                'expected1' => Period::EXCLUDE_ALL,
-                'expected2' => Period::INCLUDE_ALL,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_ALL,
             ],
             '[) + ()' => [
                 'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
                 'boundary2' => Period::EXCLUDE_ALL,
-                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
-                'expected2' => Period::INCLUDE_ALL,
+                'expected1' => Period::INCLUDE_ALL,
+                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
             ],
             '[) + []' => [
                 'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
                 'boundary2' => Period::INCLUDE_ALL,
-                'expected1' => Period::INCLUDE_ALL,
-                'expected2' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected1' => Period::INCLUDE_START_EXCLUDE_END,
+                'expected2' => Period::INCLUDE_ALL,
             ],
             '[) + (]' => [
                 'boundary1' => Period::INCLUDE_START_EXCLUDE_END,
@@ -821,14 +910,14 @@ class IntervalRelationTest extends TestCase
             '(] + ()' => [
                 'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
                 'boundary2' => Period::EXCLUDE_ALL,
-                'expected1' => Period::EXCLUDE_ALL,
-                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
+                'expected2' => Period::EXCLUDE_ALL,
             ],
             '(] + []' => [
                 'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
                 'boundary2' => Period::INCLUDE_ALL,
-                'expected1' => Period::EXCLUDE_START_INCLUDE_END,
-                'expected2' => Period::EXCLUDE_ALL,
+                'expected1' => Period::EXCLUDE_ALL,
+                'expected2' => Period::EXCLUDE_START_INCLUDE_END,
             ],
             '(] + (]' => [
                 'boundary1' => Period::EXCLUDE_START_INCLUDE_END,
@@ -843,5 +932,31 @@ class IntervalRelationTest extends TestCase
                 'expected2' => Period::EXCLUDE_ALL,
             ],
         ];
+    }
+
+    public function testDiffAndIntersect(): void
+    {
+        foreach (['[]', '[)', '()', '(]'] as $bound1) {
+            foreach (['[]', '[)', '()', '(]'] as $bound2) {
+                $interval0 = new Period('2014-03-01', '2014-06-01', $bound1);
+                $interval1 = new Period('2014-05-01', '2014-08-01', $bound2);
+                [$diff1, $diff2] = $interval0->diff($interval1);
+                $intersect = $interval0->intersect($interval1);
+
+                if (null !== $diff1) {
+                    self::assertTrue($diff1->borderOnStart($intersect));
+                }
+
+                if (null !== $diff2) {
+                    self::assertTrue($diff2->borderOnEnd($intersect));
+                }
+
+                $seq = new Sequence(...array_filter([$diff1, $diff2, $intersect]));
+                $boundaries = $seq->getBoundaries();
+                if (null !== $boundaries) {
+                    self::assertTrue($boundaries->equals($interval0->merge($interval1)));
+                }
+            }
+        }
     }
 }

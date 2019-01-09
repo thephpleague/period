@@ -124,12 +124,12 @@ $period->abuts($alt); //return true
 //in this case $period->getEndDate() == $alt->getStartDate();
 ~~~
 
-### Period::meets
+### Period::borderOnStart
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::meets(Period $interval): bool
+public Period::borderOnStart(Period $interval): bool
 ~~~
 
 A `Period` meets another one if its ending datepoint is immediately before the submitted `Period` starting datepoint without overlapping.
@@ -142,15 +142,15 @@ $period = Period::fromMonth(1983, 4);
 
 //comparing two Period objects
 $alt = Period::fromMonth(1983, 3);
-$alt->meets($period); //return true;
+$alt->borderOnStart($period); //return true;
 ~~~
 
-### Period::metBy
+### Period::borderOnEnd
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::metBy(Period $interval): bool
+public Period::borderOnEnd(Period $interval): bool
 ~~~
 
 A `Period` is met by another one if its starting datepoint is immediately after the submitted `Period` end datepoint without overlapping.
@@ -163,7 +163,7 @@ $period = Period::fromMonth(1983, 4);
 
 //comparing two Period objects
 $alt = Period::fromMonth(1983, 3);
-$period->metBy($alt); //return true;
+$period->borderOnEnd($alt); //return true;
 ~~~
 
 ### Period::overlaps

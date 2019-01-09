@@ -449,7 +449,7 @@ final class Period implements JsonSerializable
      */
     public function abuts(self $interval): bool
     {
-        return $this->meets($interval) || $this->metBy($interval);
+        return $this->borderOnStart($interval) || $this->borderOnEnd($interval);
     }
 
     /**
@@ -458,7 +458,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *                      [--------------------)
      */
-    public function meets(self $interval): bool
+    public function borderOnStart(self $interval): bool
     {
         return $this->endDate == $interval->startDate
             && '][' !== $this->boundaryType[1].$interval->boundaryType[0];
@@ -470,9 +470,9 @@ final class Period implements JsonSerializable
      *                      [--------------------)
      * [--------------------)
      */
-    public function metBy(self $interval): bool
+    public function borderOnEnd(self $interval): bool
     {
-        return $interval->meets($this);
+        return $interval->borderOnStart($this);
     }
 
     /**
@@ -791,13 +791,14 @@ final class Period implements JsonSerializable
 
         $startDate = $this->startDate;
         $endDate = $this->endDate;
-        $boundaryType = $this->isEndDateExcluded() ? '[' : '(';
-        $boundaryType .= $interval->isStartDateExcluded() ? ']' : ')';
+        $boundaryType = $this->boundaryType;
         if ($interval->startDate > $this->startDate) {
+            $boundaryType[0] = $interval->boundaryType[0];
             $startDate = $interval->startDate;
         }
 
         if ($interval->endDate < $this->endDate) {
+            $boundaryType[1] = $interval->boundaryType[1];
             $endDate = $interval->endDate;
         }
 
@@ -838,23 +839,28 @@ final class Period implements JsonSerializable
         $intersect = $this->intersect($interval);
         $merge = $this->merge($interval);
         if ($merge->startDate == $intersect->startDate) {
-            $lastBoundary = $merge->boundaryType[0].$intersect->boundaryType[1];
+            $first = ')' === $intersect->boundaryType[1] ? '[' : '(';
+            $boundary = $first.$merge->boundaryType[1];
 
-            return [$merge->startingOn($intersect->endDate)->withBoundaryType($lastBoundary), null];
+            return [$merge->startingOn($intersect->endDate)->withBoundaryType($boundary), null];
         }
 
         if ($merge->endDate == $intersect->endDate) {
-            $firstBoundary = $intersect->boundaryType[0].$merge->boundaryType[1];
+            $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
+            $boundary = $merge->boundaryType[0].$last;
 
-            return [$merge->endingOn($intersect->startDate)->withBoundaryType($firstBoundary), null];
+            return [$merge->endingOn($intersect->startDate)->withBoundaryType($boundary), null];
         }
 
-        $firstBoundary = $intersect->boundaryType[0].$merge->boundaryType[1];
-        $lastBoundary = $merge->boundaryType[0].$intersect->boundaryType[1];
+        $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
+        $lastBoundary = $merge->boundaryType[0].$last;
+
+        $first = ')' === $intersect->boundaryType[1] ? '[' : '(';
+        $firstBoundary = $first.$merge->boundaryType[1];
 
         return [
-            $merge->endingOn($intersect->startDate)->withBoundaryType($firstBoundary),
-            $merge->startingOn($intersect->endDate)->withBoundaryType($lastBoundary),
+            $merge->endingOn($intersect->startDate)->withBoundaryType($lastBoundary),
+            $merge->startingOn($intersect->endDate)->withBoundaryType($firstBoundary),
         ];
     }
 
