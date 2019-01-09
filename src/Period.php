@@ -349,7 +349,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the start datepoint is included in the boundary.
      */
-    public function isStartDateIncluded(): bool
+    public function isStartIncluded(): bool
     {
         return '[' === $this->boundaryType[0];
     }
@@ -357,7 +357,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the start datepoint is excluded from the boundary.
      */
-    public function isStartDateExcluded(): bool
+    public function isStartExcluded(): bool
     {
         return '(' === $this->boundaryType[0];
     }
@@ -365,7 +365,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the end datepoint is included in the boundary.
      */
-    public function isEndDateIncluded(): bool
+    public function isEndIncluded(): bool
     {
         return ']' === $this->boundaryType[1];
     }
@@ -373,7 +373,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the end datepoint is excluded from the boundary.
      */
-    public function isEndDateExcluded(): bool
+    public function isEndExcluded(): bool
     {
         return ')' === $this->boundaryType[1];
     }
@@ -881,8 +881,8 @@ final class Period implements JsonSerializable
             throw new Exception('Both '.self::class.' objects must not overlaps');
         }
 
-        $boundaryType = $this->isEndDateExcluded() ? '[' : '(';
-        $boundaryType .= $interval->isStartDateExcluded() ? ']' : ')';
+        $boundaryType = $this->isEndExcluded() ? '[' : '(';
+        $boundaryType .= $interval->isStartExcluded() ? ']' : ')';
         if ($interval->startDate > $this->startDate) {
             return new self($this->endDate, $interval->startDate, $boundaryType);
         }

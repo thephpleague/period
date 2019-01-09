@@ -33,10 +33,10 @@ class BoundaryTest extends TestCase
         bool $endExcluded
     ): void {
         self::assertSame($rangeType, $interval->getBoundaryType());
-        self::assertSame($startIncluded, $interval->isStartDateIncluded());
-        self::assertSame($startExcluded, $interval->isStartDateExcluded());
-        self::assertSame($endIncluded, $interval->isEndDateIncluded());
-        self::assertSame($endExcluded, $interval->isEndDateExcluded());
+        self::assertSame($startIncluded, $interval->isStartIncluded());
+        self::assertSame($startExcluded, $interval->isStartExcluded());
+        self::assertSame($endIncluded, $interval->isEndIncluded());
+        self::assertSame($endExcluded, $interval->isEndExcluded());
     }
 
     public function providerGetRangType(): array
