@@ -12,10 +12,10 @@ All Notable changes to `Period` will be documented in this file
     - `Period::EXCLUDE_ALL`
     - `Period::INCLUDE_ALL`
     - `Period::getBoundaryType`
-    - `Period::isStartDateExcluded`
-    - `Period::isStartDateIncluded`
-    - `Period::isEndDateExcluded`
-    - `Period::isEndDateIncluded`
+    - `Period::isStartExcluded`
+    - `Period::isStartIncluded`
+    - `Period::isEndExcluded`
+    - `Period::isEndIncluded`
     - `Period::withBoundaryType`
     - `Period::__construct` adds the `$boundaryType` argument;
     - `Period::after` adds the `$boundaryType` argument;
