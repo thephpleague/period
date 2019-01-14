@@ -27,8 +27,11 @@ All Notable changes to `Period` will be documented in this file
     - `Period::borderOnEnd`
     - `Period::isDuring`
     - `Period::starts`
-    - `Period::finishes`
-- `Sequence::getUnions`
+    - `Period::ends`
+- `Sequence::unions`
+- `Sequence::intersections`
+- `Sequence::gaps`
+- `Sequence::boundaries`
 
 ### Fixed
 
@@ -36,7 +39,9 @@ All Notable changes to `Period` will be documented in this file
 
 ### Deprecated
 
-- None
+- `Sequence::getIntersections`
+- `Sequence::getGaps`
+- `Sequence::getBoundaries`
 
 ### Removed
 

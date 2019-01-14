@@ -62,7 +62,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @return ?Period
      */
-    public function getBoundaries(): ?Period
+    public function boundaries(): ?Period
     {
         $period = reset($this->intervals);
         if (false === $period) {
@@ -75,7 +75,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the gaps inside the instance.
      */
-    public function getGaps(): self
+    public function gaps(): self
     {
         $sequence = new self();
         $interval = null;
@@ -108,7 +108,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the intersections inside the instance.
      */
-    public function getIntersections(): self
+    public function intersections(): self
     {
         $sequence = new self();
         $current = null;
@@ -138,9 +138,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns the uninon inside the instance.
+     * Returns the unions inside the instance.
      */
-    public function getUnions(): self
+    public function unions(): self
     {
         $sequence = new self();
         foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
@@ -164,6 +164,49 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         return $sequence;
+    }
+
+    /**
+     * Returns the sequence boundaries as a Period instance.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.4.0
+     * @see        ::boundaries
+     *
+     * If the sequence contains no interval null is returned.
+     *
+     * @return ?Period
+     */
+    public function getBoundaries(): ?Period
+    {
+        return $this->boundaries();
+    }
+
+    /**
+     * Returns the intersections inside the instance.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.4.0
+     * @see        ::intersections
+     */
+    public function getIntersections(): self
+    {
+        return $this->intersections();
+    }
+
+    /**
+     * Returns the gaps inside the instance.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.4.0
+     * @see        ::gaps
+     */
+    public function getGaps(): self
+    {
+        return $this->gaps();
     }
 
     /**

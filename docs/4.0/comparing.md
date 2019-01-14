@@ -86,12 +86,12 @@ $period->starts($alt); //return true
 //in this case $period->getStartDate() == $alt->getStartDate();
 ~~~
 
-### Period::finishes
+### Period::ends
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::finishes(Period $interval): bool
+public Period::ends(Period $interval): bool
 ~~~
 
 Tells whether both `Period` objects ends at the same datepoint.
@@ -101,7 +101,7 @@ Tells whether both `Period` objects ends at the same datepoint.
 ~~~php
 $period = Period::fromMonth(2014, 3);
 $alt = Period::before('2014-04-01', '2 DAYS');
-$period->finishes($alt); //return true
+$period->ends($alt); //return true
 //in this case $period->getEndDate() == $alt->getEndDate();
 ~~~
 

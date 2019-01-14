@@ -503,7 +503,7 @@ final class Period implements JsonSerializable
      *    [--------------------)
      *               [---------)
      */
-    public function finishes(self $interval): bool
+    public function ends(self $interval): bool
     {
         return $this->endDate == $interval->endDate
             && $this->boundaryType[1] === $interval->boundaryType[1];

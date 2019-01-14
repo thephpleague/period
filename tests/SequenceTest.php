@@ -311,7 +311,7 @@ final class SequenceTest extends TestCase
     public function testUnionReturnsSameInstance(): void
     {
         $sequence = new Sequence(Datepoint::create('2018-11-29')->getDay());
-        self::assertSame($sequence, $sequence->getUnions());
+        self::assertSame($sequence, $sequence->unions());
     }
 
     public function testUnion(): void
@@ -322,7 +322,7 @@ final class SequenceTest extends TestCase
             Period::around('2016-06-01', '3 MONTHS')
         );
 
-        $unions = $sequence->getUnions();
+        $unions = $sequence->unions();
         self::assertEquals($sequence->getBoundaries(), $unions->getBoundaries());
         self::assertTrue($unions->getIntersections()->isEmpty());
         self::assertEquals($sequence->getGaps(), $unions->getGaps());

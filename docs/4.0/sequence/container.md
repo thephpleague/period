@@ -63,7 +63,7 @@ $intersections = $sequence->getIntersections(); // a new Sequence object
 $intersections->isEmpty(); // true
 ~~~
 
-### Sequence::getUnions
+### Sequence::unions
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
@@ -75,7 +75,7 @@ $sequence = new Sequence(
     new Period('2017-01-01', '2017-01-31'),
     new Period('2018-01-15', '2018-02-15')
 );
-$unions = $sequence->getUnions(); // a new Sequence object
+$unions = $sequence->unions(); // a new Sequence object
 count($unions); // returns 2
 ~~~
 
