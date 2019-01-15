@@ -113,7 +113,7 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance from a starting datepoint and a duration.
      *
-     * @param mixed $startDate the starting included datepoint
+     * @param mixed $startDate the starting datepoint
      * @param mixed $duration  a Duration
      */
     public static function after($startDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
@@ -126,7 +126,7 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance from a ending datepoint and a duration.
      *
-     * @param mixed $endDate  the ending excluded datepoint
+     * @param mixed $endDate  the ending datepoint
      * @param mixed $duration a Duration
      */
     public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self

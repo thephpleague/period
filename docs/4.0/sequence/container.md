@@ -18,7 +18,10 @@ $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
 $sequence->isEmpty(); // false
 ~~~
 
-### Sequence::getBoundaries
+### Sequence::boundaries
+
+<p class="message-info">Since <code>version 4.4</code>.</p>
+<p class="message-warning"><code>Sequence::getBoundaries</code> is deprecated and will be remove in the next major release.</p>
 
 Returns the sequence boundaries as a `Period` instance. If the sequence is empty `null` is returned.
 
@@ -29,11 +32,14 @@ $sequence = new Sequence(
     new Period('2018-03-01', '2018-03-31'),
     new Period('2018-01-20', '2018-03-10')
 );
-$sequence->getBoundaries()->format('Y-m-d'); // [2018-01-01, 2018-03-10)
-(new Sequence())->getBoundaries(); // null
+$sequence->boundaries()->format('Y-m-d'); // [2018-01-01, 2018-03-10)
+(new Sequence())->boundaries(); // null
 ~~~
 
-### Sequence::getGaps
+### Sequence::gaps
+
+<p class="message-info">Since <code>version 4.4</code>.</p>
+<p class="message-warning"><code>Sequence::getGaps</code> is deprecated and will be remove in the next major release.</p>
 
 Returns the gaps inside the instance. The method returns a new `Sequence` object containing the founded
 gaps expressed as `Period` objects.
@@ -44,11 +50,14 @@ $sequence = new Sequence(
     new Period('2017-01-01', '2017-01-31'),
     new Period('2020-01-01', '2020-01-31')
 );
-$gaps = $sequence->getGaps(); // a new Sequence object
+$gaps = $sequence->gaps(); // a new Sequence object
 count($gaps); // 2
 ~~~
 
-### Sequence::getIntersections
+### Sequence::intersections
+
+<p class="message-info">Since <code>version 4.4</code>.</p>
+<p class="message-warning"><code>Sequence::getIntersections</code> is deprecated and will be remove in the next major release.</p>
 
 Returns the intersections inside the instance. The method returns a new `Sequence` object containing the founded
 intersections expressed as `Period` objects.
@@ -59,7 +68,7 @@ $sequence = new Sequence(
     new Period('2017-01-01', '2017-01-31'),
     new Period('2020-01-01', '2020-01-31')
 );
-$intersections = $sequence->getIntersections(); // a new Sequence object
+$intersections = $sequence->intersections(); // a new Sequence object
 $intersections->isEmpty(); // true
 ~~~
 
@@ -261,4 +270,40 @@ $newSequence = $sequence->map($func);
 count($sequence); // 3
 count($newSequence); //3
 $newSequence->get(2)->format('Y-m-d'); // [2020-01-01, 2020-02-01)
+~~~
+
+### Sequence::reduce
+
+<p class="message-info">new since <code>version 4.4</code></p>
+
+Iteratively reduces the sequence to a single value using a callback. The returned value is the carry value of the final iteration, or the initial value if the sequence was empty.
+
+The reducer is a `callable` whose signature is as follows:
+
+~~~php
+function($carry, Period $interval [, int $offset]): mixed
+~~~
+
+It takes up to three (3) parameters:
+
+- `$carry` : the optional initial carry value or null
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2019-01-01', '2019-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$func = static function ($carry, Period $interval): Period {
+    if (null === $carry) {
+        return $interval;
+    }
+    return $carry->merge($interval);
+};
+
+$mergePeriod = $sequence->reduce($func);
+$mergePeriod->format('Y-m-d'); // [2018-01-01, 2020-01-31)
 ~~~

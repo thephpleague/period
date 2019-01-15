@@ -142,26 +142,38 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function unions(): self
     {
-        $sequence = new self();
-        foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
-            if ($sequence->isEmpty()) {
-                $sequence->push($period);
-                continue;
-            }
-
-            $index = $sequence->count() - 1;
-            $interval = $sequence->get($index);
-            if ($interval->overlaps($period) || $interval->abuts($period)) {
-                $sequence->set($index, $interval->merge($period));
-                continue;
-            }
-
-            $sequence->push($period);
-        }
+        $sequence = $this
+            ->sorted([$this, 'sortByStartDate'])
+            ->reduce([$this, 'calculateUnion'], new self())
+        ;
 
         if ($sequence->intervals === $this->intervals) {
             return $this;
         }
+
+        return $sequence;
+    }
+
+    /**
+     * Iteratively calculate the union sequence.
+     */
+    private function calculateUnion(Sequence $sequence, Period $period): Sequence
+    {
+        if ($sequence->isEmpty()) {
+            $sequence->push($period);
+
+            return $sequence;
+        }
+
+        $index = $sequence->count() - 1;
+        $interval = $sequence->get($index);
+        if ($interval->overlaps($period) || $interval->abuts($period)) {
+            $sequence->set($index, $interval->merge($period));
+
+            return $sequence;
+        }
+
+        $sequence->push($period);
 
         return $sequence;
     }
@@ -522,5 +534,25 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         $mapped->intervals = $intervals;
 
         return $mapped;
+    }
+
+    /**
+     * Iteratively reduces the sequence to a single value using a callback.
+     *
+     * @param callable $func Accepts the carry, the current value and the current offset, and
+     *                       returns an updated carry value.
+     *
+     * @param mixed|null $carry Optional initial carry value.
+     *
+     * @return mixed The carry value of the final iteration, or the initial
+     *               value if the sequence was empty.
+     */
+    public function reduce(callable $func, $carry = null)
+    {
+        foreach ($this->intervals as $offset => $interval) {
+            $carry = $func($carry, $interval, $offset);
+        }
+
+        return $carry;
     }
 }

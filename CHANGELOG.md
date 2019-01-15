@@ -32,6 +32,7 @@ All Notable changes to `Period` will be documented in this file
 - `Sequence::intersections`
 - `Sequence::gaps`
 - `Sequence::boundaries`
+- `Sequence::reduce`
 
 ### Fixed
 
