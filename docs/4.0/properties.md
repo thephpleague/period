@@ -14,6 +14,11 @@ public Period::getStartDate(void): DateTimeImmutable
 public Period::getEndDate(void): DateTimeImmutable
 public Period::getDateInterval(void): DateInterval
 public Period::getTimestampInterval(void): float
+public Period::getBoundaryType(void): string
+public Period::isStartIncluded(): bool
+public Period::isStartExcluded(): bool
+public Period::isEndIncluded(): bool
+public Period::isEndExcluded(): bool
 ~~~
 
 ~~~php
@@ -22,6 +27,11 @@ $period->getStartDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
 $period->getEndDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
 $duration = $period->getDateInterval(); //returns a DateInterval object
 $altduration = $period->getTimestampInterval(); //returns the duration in seconds
+$period->getBoundaryType(); //returns Period::INCLUDE_START_EXCLUDE_END 
+$period->isStartExcluded(); //returns false
+$period->isStartIncluded(); //returns true
+$period->isEndExcluded(); //returns true
+$period->isEndIncluded(); //returns false
 ~~~
 
 ## Iteration over a Period

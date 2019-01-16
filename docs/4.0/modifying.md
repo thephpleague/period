@@ -179,6 +179,27 @@ $new_interval->getStartDate(); //returns DateTimeImmutable('2014-03-02');
 $new_interval->getEndDate();   //returns DateTimeImmutable('2014-03-31');
 ~~~
 
+## Using the boundary information
+
+### Period::withBoundaryType
+
+<p class="message-info">Since <code>version 4.4</code></p>
+
+~~~php
+public Period::withBoundaryType(string $boundaryType): Period
+~~~
+
+Returns a new `Period` object with a different boundary type.
+
+#### Example
+
+~~~php
+$interval = Period::fromMonth(2014, 3);
+$new_interval = $interval->withBoundaryType(Period::INCLUDE_ALL);
+$interval->format('Y-m-d'); // '[2014-03-01, 2014-04-01)'
+$new_interval->format('Y-m-d'); // '[2014-03-01, 2014-04-01]'
+~~~
+
 ## Using another Period object
 
 ### Period::merge

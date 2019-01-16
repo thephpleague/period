@@ -14,25 +14,9 @@ namespace LeagueTest\Period;
 use DateInterval;
 use League\Period\Duration;
 use League\Period\Period;
-use PHPUnit\Framework\TestCase;
 
 class DurationTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected $timezone;
-
-    public function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    public function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testCreateFromDateString(): void
     {
         $duration = Duration::createFromDateString('+1 DAY');

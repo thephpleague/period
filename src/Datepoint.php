@@ -63,7 +63,7 @@ final class Datepoint extends DateTimeImmutable
      * @param string       $datetime
      * @param DateTimeZone $timezone
      *
-     * @return self|bool
+     * @return self|false
      */
     public static function createFromFormat($format, $datetime, $timezone = null)
     {
@@ -144,7 +144,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * Returns a Period instance.
      *
-     *  - the starting datepoint represents the beginning of the current datepoint iso week day
+     *  - the starting datepoint represents the beginning of the current datepoint iso week
      *  - the duration is equal to 7 days
      */
     public function getIsoWeek(): Period

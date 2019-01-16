@@ -62,7 +62,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @return ?Period
      */
-    public function getBoundaries(): ?Period
+    public function boundaries(): ?Period
     {
         $period = reset($this->intervals);
         if (false === $period) {
@@ -75,7 +75,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the gaps inside the instance.
      */
-    public function getGaps(): self
+    public function gaps(): self
     {
         $sequence = new self();
         $interval = null;
@@ -108,7 +108,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the intersections inside the instance.
      */
-    public function getIntersections(): self
+    public function intersections(): self
     {
         $sequence = new self();
         $current = null;
@@ -135,6 +135,90 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         return $sequence;
+    }
+
+    /**
+     * Returns the unions inside the instance.
+     */
+    public function unions(): self
+    {
+        $sequence = $this
+            ->sorted([$this, 'sortByStartDate'])
+            ->reduce([$this, 'calculateUnion'], new self())
+        ;
+
+        if ($sequence->intervals === $this->intervals) {
+            return $this;
+        }
+
+        return $sequence;
+    }
+
+    /**
+     * Iteratively calculate the union sequence.
+     */
+    private function calculateUnion(Sequence $sequence, Period $period): Sequence
+    {
+        if ($sequence->isEmpty()) {
+            $sequence->push($period);
+
+            return $sequence;
+        }
+
+        $index = $sequence->count() - 1;
+        $interval = $sequence->get($index);
+        if ($interval->overlaps($period) || $interval->abuts($period)) {
+            $sequence->set($index, $interval->merge($period));
+
+            return $sequence;
+        }
+
+        $sequence->push($period);
+
+        return $sequence;
+    }
+
+    /**
+     * Returns the sequence boundaries as a Period instance.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.4.0
+     * @see        ::boundaries
+     *
+     * If the sequence contains no interval null is returned.
+     *
+     * @return ?Period
+     */
+    public function getBoundaries(): ?Period
+    {
+        return $this->boundaries();
+    }
+
+    /**
+     * Returns the intersections inside the instance.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.4.0
+     * @see        ::intersections
+     */
+    public function getIntersections(): self
+    {
+        return $this->intersections();
+    }
+
+    /**
+     * Returns the gaps inside the instance.
+     *
+     * DEPRECATION WARNING! This method will be removed in the next major point release
+     *
+     * @deprecated deprecated since version 4.4.0
+     * @see        ::gaps
+     */
+    public function getGaps(): self
+    {
+        return $this->gaps();
     }
 
     /**
@@ -450,5 +534,25 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         $mapped->intervals = $intervals;
 
         return $mapped;
+    }
+
+    /**
+     * Iteratively reduces the sequence to a single value using a callback.
+     *
+     * @param callable $func Accepts the carry, the current value and the current offset, and
+     *                       returns an updated carry value.
+     *
+     * @param mixed|null $carry Optional initial carry value.
+     *
+     * @return mixed The carry value of the final iteration, or the initial
+     *               value if the sequence was empty.
+     */
+    public function reduce(callable $func, $carry = null)
+    {
+        foreach ($this->intervals as $offset => $interval) {
+            $carry = $func($carry, $interval, $offset);
+        }
+
+        return $carry;
     }
 }

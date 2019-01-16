@@ -6,15 +6,43 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- Added support for the boundary types on the package
+    - `Period::EXCLUDE_START_INCLUDE_END`
+    - `Period::INCLUDE_START_EXCLUDE_END`
+    - `Period::EXCLUDE_ALL`
+    - `Period::INCLUDE_ALL`
+    - `Period::getBoundaryType`
+    - `Period::isStartExcluded`
+    - `Period::isStartIncluded`
+    - `Period::isEndExcluded`
+    - `Period::isEndIncluded`
+    - `Period::withBoundaryType`
+    - `Period::__construct` adds the `$boundaryType` argument;
+    - `Period::after` adds the `$boundaryType` argument;
+    - `Period::before` adds the `$boundaryType` argument;
+    - `Period::around` adds the `$boundaryType` argument;
+    - `Period::fromDatePeriod` adds the `$boundaryType` argument;
+- Added missing [Allen's Algebra intervals](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html)
+    - `Period::bordersOnStart`
+    - `Period::bordersOnEnd`
+    - `Period::isDuring`
+    - `Period::startsBy`
+    - `Period::endsBy`
+- `Sequence::unions`
+- `Sequence::intersections`
+- `Sequence::gaps`
+- `Sequence::boundaries`
+- `Sequence::reduce`
 
 ### Fixed
 
-- None
+- `Datepoint::createFromFormat` see issue [#72](https://github.com/thephpleague/period/issues/72)
 
 ### Deprecated
 
-- None
+- `Sequence::getIntersections`
+- `Sequence::getGaps`
+- `Sequence::getBoundaries`
 
 ### Removed
 
