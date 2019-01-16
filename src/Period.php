@@ -449,7 +449,7 @@ final class Period implements JsonSerializable
      */
     public function abuts(self $interval): bool
     {
-        return $this->borderOnStart($interval) || $this->borderOnEnd($interval);
+        return $this->bordersOnStart($interval) || $this->bordersOnEnd($interval);
     }
 
     /**
@@ -458,7 +458,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *                      [--------------------)
      */
-    public function borderOnStart(self $interval): bool
+    public function bordersOnStart(self $interval): bool
     {
         return $this->endDate == $interval->startDate
             && '][' !== $this->boundaryType[1].$interval->boundaryType[0];
@@ -470,9 +470,9 @@ final class Period implements JsonSerializable
      *                      [--------------------)
      * [--------------------)
      */
-    public function borderOnEnd(self $interval): bool
+    public function bordersOnEnd(self $interval): bool
     {
-        return $interval->borderOnStart($this);
+        return $interval->bordersOnStart($this);
     }
 
     /**

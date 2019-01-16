@@ -944,11 +944,11 @@ class IntervalRelationTest extends TestCase
                 $intersect = $interval0->intersect($interval1);
 
                 if (null !== $diff1) {
-                    self::assertTrue($diff1->borderOnStart($intersect));
+                    self::assertTrue($diff1->bordersOnStart($intersect));
                 }
 
                 if (null !== $diff2) {
-                    self::assertTrue($diff2->borderOnEnd($intersect));
+                    self::assertTrue($diff2->bordersOnEnd($intersect));
                 }
 
                 $seq = new Sequence(...array_filter([$diff1, $diff2, $intersect]));
