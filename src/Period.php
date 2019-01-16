@@ -476,7 +476,8 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two intervals share the same start datepoint.
+     * Tells whether two intervals share the same start datepoint
+     * and the same starting boundary type.
      *
      *    [----------)
      *    [--------------------)
@@ -486,14 +487,15 @@ final class Period implements JsonSerializable
      *    [--------------------)
      *    [---------)
      */
-    public function starts(self $interval): bool
+    public function startsBy(self $interval): bool
     {
         return $this->startDate == $interval->startDate
             && $this->boundaryType[0] === $interval->boundaryType[0];
     }
 
     /**
-     * Tells whether two intervals share the same end datepoint.
+     * Tells whether two intervals share the same end datepoint
+     * and the same ending boundary type.
      *
      *              [----------)
      *    [--------------------)
@@ -503,7 +505,7 @@ final class Period implements JsonSerializable
      *    [--------------------)
      *               [---------)
      */
-    public function ends(self $interval): bool
+    public function endsBy(self $interval): bool
     {
         return $this->endDate == $interval->endDate
             && $this->boundaryType[1] === $interval->boundaryType[1];

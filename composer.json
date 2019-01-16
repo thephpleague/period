@@ -50,9 +50,9 @@
         "phpunit": "phpunit --coverage-text",
         "infection": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations",
         "test": [
+            "@phpcs",
             "@phpstan-src",
             "@phpstan-tests",
-            "@phpcs",
             "@phpunit",
             "@infection"
         ]

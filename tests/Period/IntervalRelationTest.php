@@ -408,7 +408,7 @@ class IntervalRelationTest extends TestCase
      */
     public function testStarts(Period $interval1, Period $interval2, bool $expected): void
     {
-        self::assertSame($expected, $interval1->starts($interval2));
+        self::assertSame($expected, $interval1->startsBy($interval2));
     }
 
     public function startsDataProvider(): array
@@ -442,7 +442,7 @@ class IntervalRelationTest extends TestCase
      */
     public function testFinishes(Period $interval1, Period $interval2, bool $expected): void
     {
-        self::assertSame($expected, $interval1->ends($interval2));
+        self::assertSame($expected, $interval1->endsBy($interval2));
     }
 
     public function finishesDataProvider(): array

@@ -67,12 +67,12 @@ $period->isAfter('1982-06-02'); //returns true
 $period->isAfter($period->getStartDate()); //returns false
 ~~~
 
-### Period::starts
+### Period::startsBy
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::starts(Period $interval): bool
+public Period::startsBy(Period $interval): bool
 ~~~
 
 Tells whether both `Period` objects starts at the same datepoint.
@@ -82,16 +82,16 @@ Tells whether both `Period` objects starts at the same datepoint.
 ~~~php
 $period = Period::fromMonth(2014, 3);
 $alt = Period::after('2014-03-01', '2 DAYS');
-$period->starts($alt); //return true
+$period->startsBy($alt); //return true
 //in this case $period->getStartDate() == $alt->getStartDate();
 ~~~
 
-### Period::ends
+### Period::endsBy
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::ends(Period $interval): bool
+public Period::endsBy(Period $interval): bool
 ~~~
 
 Tells whether both `Period` objects ends at the same datepoint.
@@ -101,7 +101,7 @@ Tells whether both `Period` objects ends at the same datepoint.
 ~~~php
 $period = Period::fromMonth(2014, 3);
 $alt = Period::before('2014-04-01', '2 DAYS');
-$period->ends($alt); //return true
+$period->endsBy($alt); //return true
 //in this case $period->getEndDate() == $alt->getEndDate();
 ~~~
 
