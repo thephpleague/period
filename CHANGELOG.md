@@ -6,7 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- Added support for the boundary types on the package
+- Added support for the boundary type
     - `Period::EXCLUDE_START_INCLUDE_END`
     - `Period::INCLUDE_START_EXCLUDE_END`
     - `Period::EXCLUDE_ALL`
@@ -28,21 +28,22 @@ All Notable changes to `Period` will be documented in this file
     - `Period::isDuring`
     - `Period::startsBy`
     - `Period::endsBy`
-- `Sequence::unions`
-- `Sequence::intersections`
-- `Sequence::gaps`
-- `Sequence::boundaries`
-- `Sequence::reduce`
+- Added additional methods to the Sequence class
+    - `Sequence::unions`
+    - `Sequence::intersections`
+    - `Sequence::gaps`
+    - `Sequence::boundaries`
+    - `Sequence::reduce`
 
 ### Fixed
 
-- `Datepoint::createFromFormat` see issue [#72](https://github.com/thephpleague/period/issues/72)
+- None
 
 ### Deprecated
 
-- `Sequence::getIntersections`
-- `Sequence::getGaps`
-- `Sequence::getBoundaries`
+- `Sequence::getIntersections` use `Sequence::intersections` instead
+- `Sequence::getGaps` use `Sequence::gaps` instead
+- `Sequence::getBoundaries` use `Sequence::boundaries` instead
 
 ### Removed
 
