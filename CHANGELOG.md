@@ -26,8 +26,8 @@ All Notable changes to `Period` will be documented in this file
     - `Period::bordersOnStart`
     - `Period::bordersOnEnd`
     - `Period::isDuring`
-    - `Period::startsBy`
-    - `Period::endsBy`
+    - `Period::isStartedBy`
+    - `Period::isEndedBy`
 - Added additional methods to the Sequence class
     - `Sequence::unions`
     - `Sequence::intersections`

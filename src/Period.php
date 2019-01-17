@@ -486,11 +486,19 @@ final class Period implements JsonSerializable
      *
      *    [--------------------)
      *    [---------)
+     *
+     * @param mixed $index a datepoint or a Period object
      */
-    public function startsBy(self $interval): bool
+    public function isStartedBy($index): bool
     {
-        return $this->startDate == $interval->startDate
-            && $this->boundaryType[0] === $interval->boundaryType[0];
+        if ($index instanceof self) {
+            return $this->startDate == $index->startDate
+                && $this->boundaryType[0] === $index->boundaryType[0];
+        }
+
+        $index = self::getDatepoint($index);
+
+        return $index == $this->startDate && '[' === $this->boundaryType[0];
     }
 
     /**
@@ -504,11 +512,19 @@ final class Period implements JsonSerializable
      *
      *    [--------------------)
      *               [---------)
+     *
+     * @param mixed $index a datepoint or a Period object
      */
-    public function endsBy(self $interval): bool
+    public function isEndedBy($index): bool
     {
-        return $this->endDate == $interval->endDate
-            && $this->boundaryType[1] === $interval->boundaryType[1];
+        if ($index instanceof self) {
+            return $this->endDate == $index->endDate
+                && $this->boundaryType[1] === $index->boundaryType[1];
+        }
+
+        $index = self::getDatepoint($index);
+
+        return $index == $this->endDate && ']' === $this->boundaryType[1];
     }
 
     /**
