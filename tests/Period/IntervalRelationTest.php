@@ -405,10 +405,11 @@ class IntervalRelationTest extends TestCase
 
     /**
      * @dataProvider startsDataProvider
+     * @param DateTimeInterface|Period $index
      */
-    public function testStarts(Period $interval1, Period $interval2, bool $expected): void
+    public function testStarts(Period $interval1, $index, bool $expected): void
     {
-        self::assertSame($expected, $interval1->startsBy($interval2));
+        self::assertSame($expected, $interval1->isStartedBy($index));
     }
 
     public function startsDataProvider(): array
@@ -434,15 +435,26 @@ class IntervalRelationTest extends TestCase
                 new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16'), Period::INCLUDE_ALL),
                 false,
             ],
+            [
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
+                new DateTime('2012-01-01'),
+                false,
+            ],
+            [
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_START_EXCLUDE_END),
+                new DateTime('2012-01-01'),
+                true,
+            ],
         ];
     }
 
     /**
      * @dataProvider finishesDataProvider
+     * @param DateTimeInterface|Period $index
      */
-    public function testFinishes(Period $interval1, Period $interval2, bool $expected): void
+    public function testFinishes(Period $interval1, $index, bool $expected): void
     {
-        self::assertSame($expected, $interval1->endsBy($interval2));
+        self::assertSame($expected, $interval1->isEndedBy($index));
     }
 
     public function finishesDataProvider(): array
@@ -467,6 +479,16 @@ class IntervalRelationTest extends TestCase
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
                 new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
                 false,
+            ],
+            [
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
+                new DateTime('2012-01-16'),
+                false,
+            ],
+            [
+                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
+                new DateTime('2012-01-16'),
+                true,
             ],
         ];
     }

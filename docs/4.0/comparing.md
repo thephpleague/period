@@ -67,41 +67,51 @@ $period->isAfter('1982-06-02'); //returns true
 $period->isAfter($period->getStartDate()); //returns false
 ~~~
 
-### Period::startsBy
+### Period::isStartedBy
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::startsBy(Period $interval): bool
+public Period::isStartedBy(mixed $index): bool
 ~~~
 
-Tells whether both `Period` objects starts at the same datepoint.
+- Tells whether both `Period` objects starts at the same datepoint.
+- Tells whethter the submitted `DateTimeInterface` object is the interval included starting datepoint 
+
+#### Parameter
+
+The `$index` argument can be another `Period` object or a datepoint.
 
 #### Examples
 
 ~~~php
 $period = Period::fromMonth(2014, 3);
 $alt = Period::after('2014-03-01', '2 DAYS');
-$period->startsBy($alt); //return true
+$period->isStartedBy($alt); //return true
 //in this case $period->getStartDate() == $alt->getStartDate();
 ~~~
 
-### Period::endsBy
+### Period::isEndedBy
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
 ~~~php
-public Period::endsBy(Period $interval): bool
+public Period::isEndedBy(mixed $index): bool
 ~~~
 
-Tells whether both `Period` objects ends at the same datepoint.
+- Tells whether both `Period` objects ends at the same datepoint.
+- Tells whether the submitted `DateTimeInterface` object is the interval included ending datepoint 
+
+#### Parameter
+
+The `$index` argument can be another `Period` object or a datepoint.
 
 #### Examples
 
 ~~~php
 $period = Period::fromMonth(2014, 3);
 $alt = Period::before('2014-04-01', '2 DAYS');
-$period->endsBy($alt); //return true
+$period->isEndedBy($alt); //return true
 //in this case $period->getEndDate() == $alt->getEndDate();
 ~~~
 
