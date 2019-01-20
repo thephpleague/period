@@ -11,11 +11,11 @@ The `Sequence` class provides several methods to ease accessing its content usin
 
 ## Getter methods
 
-### ArrayAccess, Countable, IteratorAggregate
+### ArrayAccess, IteratorAggregate
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
 
-The `Sequence` class implements PHP's `ArrayAccess`, `Countable`, `IteratorAggregate` interfaces so you can at any given time know the number of `Period` instances contains in the collection and iterate over each one of them using the `foreach` loop.
+The `Sequence` class implements PHP's `ArrayAccess`, `IteratorAggregate` interfaces so you can at any given time iterate over each interval using the `foreach` loop or access any individual `Period` instance according to its offset using array notation.
 
 ~~~php
 $sequence = new Sequence(
@@ -24,7 +24,6 @@ $sequence = new Sequence(
     new Period('2018-03-01', '2018-03-31'),
     new Period('2018-01-20', '2018-03-10')
 );
-count($sequence); // 4
 foreach ($sequence as $interval) {
 	//$interval is a League\Period\Period object
 }
@@ -38,7 +37,7 @@ Returns the interval found at the given offset.
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
 
-<p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method.</p>
+<p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
 
 ~~~php
 $sequence = new Sequence(
@@ -94,7 +93,7 @@ $sequence->get(0)->format('Y-m-d'); // [2018-02-10, 2018-02-20)
 
 ### Sequence::insert
 
-Adds new intervals at the start of the sequence.
+Adds intervals at a specify offset.
 
 <p class="message-notice">The sequence is re-indexed on the right side after the addition.</p>
 
@@ -118,7 +117,7 @@ Updates the interval at the specify offset.
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
 
-<p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method.</p>
+<p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
 
 ~~~php
 $sequence = new Sequence(
@@ -127,7 +126,7 @@ $sequence = new Sequence(
 );
 $sequence->set(0, new Period('2012-01-01', '2012-01-31'));
 $sequence->set(42, new Period('2012-01-01', '2012-01-31')); //throws InvalidIndex
-$sequence[1] = new Period('2012-01-01', '2012-01-31'));
+$sequence[1] = new Period('2012-01-01', '2012-01-31');
 $sequence[42] = new Period('2012-01-01', '2012-01-31')); //throws InvalidIndex
 ~~~
 
@@ -139,7 +138,7 @@ Removes an interval from the collection at the given offset and returns it.
 
 <p class="message-notice">The sequence is re-indexed after removal.</p>
 
-<p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method.</p>
+<p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
 
 ~~~php
 $sequence = new Sequence(
@@ -168,6 +167,52 @@ $sequence = new Sequence(
 count($sequence); // 4
 $sequence->clear();
 count($sequence); // 0
+~~~
+
+## Sequence information
+
+### Sequence::count
+
+Returns the number of `Period` instance contains in the `Sequence` object. The object implements PHP's `Countable` interface.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+count($sequence); // returns 1
+~~~
+
+### Sequence::isEmpty
+
+Tells whether the sequence contains no interval.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->isEmpty(); // false
+~~~
+
+### Sequence::indexOf
+
+Returns the offset of the given `Period` object. The comparison of two intervals is done using `Period::equals` method. If no offset is found `false` is returned.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->indexOf(new Period('2018-03-01', '2018-03-31')); // 0
+$sequence->indexOf(Datepoint::create('2012-06-03')->getDay()); // false
+~~~
+
+### Sequence::contains
+
+~~~php
+public function Sequence::contains(Period $interval, Period ...$intervals);
+~~~
+
+Tells whether the sequence contains all the submitted intervals.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->contains(
+    new Period('2018-03-01', '2018-03-31'),
+    new Period('2018-01-20', '2018-03-10')
+); // false
 ~~~
 
 ## Conversion methods
@@ -219,11 +264,79 @@ $sequence = new Sequence(
 $array = $sequence->toArray();
 ~~~
 
+## Filtering the sequence
+
+### Sequence::some
+
+Tells whether some intervals in the current instance satisfies the predicate.
+
+The predicate is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): bool
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$predicate = static function (Period $interval): bool {
+    return $interval->contains('2018-01-15');
+};
+
+$sequence->some($predicate); // true
+~~~
+
+### Sequence::every
+
+Tells whether all intervals in the current instance satisfies the predicate.
+
+The predicate is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): bool
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2017-01-01', '2017-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$predicate = static function (Period $interval): bool {
+    return $interval->contains('2018-01-15');
+};
+
+$sequence->every($predicate); // false
+~~~
+
 ## Manipulations methods
 
 ### Sequence::sort
 
 Sorts the current instance according to the given comparison callable and maintain index association.
+
+The comparison algorithm is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval1, Period $interval2): int
+~~~
+
+It must return an integer less than, equal to, or greater than zero if the first argument is considered to be respectively less than, equal to, or greater than the second.
 
 ~~~php
 $sequence = new Sequence(
@@ -277,6 +390,37 @@ foreach ($sequence as $offset => $interval) {
 foreach ($newSequence as $offset => $interval) {
     echo $offset, ' -> ', $interval->format('Y-m-d'), PHP_EOL; //0 -> [2017-01-01, 2017-01-31)...
 }
+~~~
+
+### Sequence::filter
+
+Filters the sequence according to the given predicate. This method **MUST** retain the state of the current instance, and return an instance that contains the filtered intervals with their keys re-indexed.
+
+The predicate is a `callable` whose signature is as follows:
+
+~~~php
+function(Period $interval [, int $offset]): bool
+~~~
+
+It takes up to two (2) parameters:
+
+- `$interval` : the Sequence value which is a `Period` object
+- `$offset` : the Sequence value corresponding offset
+
+~~~php
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2019-01-01', '2019-01-31'),
+    new Period('2020-01-01', '2020-01-31')
+);
+
+$predicate = static function (Period $interval): bool {
+    return $interval->equals(new Period('2018-01-01', '2018-01-31'));
+};
+
+$newSequence = $sequence->filter($predicate);
+count($sequence); // 3
+count($newSequence); //1
 ~~~
 
 ### Sequence::map

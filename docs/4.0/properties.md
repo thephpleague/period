@@ -12,9 +12,9 @@ Once you have a instantiated `Period` object you can access the object datepoint
 ~~~php
 public Period::getStartDate(void): DateTimeImmutable
 public Period::getEndDate(void): DateTimeImmutable
+public Period::getBoundaryType(void): string
 public Period::getDateInterval(void): DateInterval
 public Period::getTimestampInterval(void): float
-public Period::getBoundaryType(void): string
 public Period::isStartIncluded(): bool
 public Period::isStartExcluded(): bool
 public Period::isEndIncluded(): bool
@@ -207,7 +207,10 @@ $res = json_decode(json_encode($period), true);
 public Period::format(string $format): string
 ~~~
 
-You can use the `format` method to represent a `Period` object in its mathematical representation as a [left closed, right open interval](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as show below. the `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
+You can use the `format` method to represent a `Period` object in its [mathematical representation](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as shown below.
+
+- The `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
+- The boundary representation depends on the `Period` boundaries property.
 
 ~~~php
 $interval = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');

@@ -213,6 +213,7 @@ final class SequenceTest extends TestCase
 
         self::assertTrue($sequence->every($predicate));
         self::assertFalse((new Sequence())->every($predicate));
+        self::assertFalse((new Sequence(Datepoint::create('1988-02-01')->getDay()))->every($predicate));
     }
 
     /**

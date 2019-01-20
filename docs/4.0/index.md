@@ -46,7 +46,7 @@ foreach (Period::fromMonth(2014, 10)->getDatePeriod('1 DAY') as $day) {
 }
 ~~~
 
-To help easily instantiate your time range and manipulating it, the package comes bundle with [helper](/4.0/instantiation/) [functions](/4.0/definitions/).
+To help easily instantiate your time range and manipulating it, the package comes bundle with [named constructors](/4.0/instantiation/) and [helper classes](/4.0/definitions/#arguments).
 
 ## Comparing intervals
 
@@ -78,7 +78,7 @@ $sequence = new Sequence(
     new Period('2017-01-01', '2017-01-31'),
     new Period('2020-01-01', '2020-01-31')
 );
-$gaps = $sequence->getGaps(); // a new Sequence object
+$gaps = $sequence->gaps(); // a new Sequence object
 count($gaps); // 2
 ~~~
 

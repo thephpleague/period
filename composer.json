@@ -26,7 +26,8 @@
         "phpunit/phpunit" : "^7.0",
         "phpstan/phpstan": "^0.10.1",
         "phpstan/phpstan-strict-rules": "^0.10.0",
-        "phpstan/phpstan-phpunit": "^0.10.0"
+        "phpstan/phpstan-phpunit": "^0.10.0",
+        "symfony/var-dumper": "^4.2"
     },
     "autoload": {
         "psr-4": {

@@ -96,7 +96,7 @@ $sequence = new Sequence(
     new Period('2017-01-01', '2017-01-31'),
     new Period('2020-01-01', '2020-01-31')
 );
-$gaps = $sequence->getGaps(); // a new Sequence object
+$gaps = $sequence->gaps(); // a new Sequence object
 count($gaps); // 2
 ~~~
 

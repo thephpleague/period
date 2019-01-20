@@ -58,7 +58,7 @@ $period1->equals($period2); // true
 
 ## Named constructors
 
-<p class="message-notice">Since <code>version 4.2</code></p>
+<p class="message-info">Since <code>version 4.2</code></p>
 
 Apart from its constructor, to ease the class instantiation you can rely on many built in named constructors to return a new `Period` object.
 
@@ -169,7 +169,7 @@ $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 
 ## Helper functions
 
-<p class="message-notice">The following functions are deprecated since <code>version 4.2</code> and will be remove in the next major release. Please consider using the named constructors instead.</p>
+<p class="message-warning">The following functions are deprecated since <code>version 4.2</code> and will be remove in the next major release. Please consider using the named constructors instead.</p>
 
 Apart from its constructor, to ease the class instantiation you can rely on many built in helper functions to return a new `Period` object. All helper functions are declared under the `League\Period` namespace.
 
