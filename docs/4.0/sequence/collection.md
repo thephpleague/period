@@ -9,6 +9,26 @@ The `Sequence` class provides several methods to ease accessing its content usin
 
 <p class="message-warning">Values are <strong>always</strong> indexed which means that whenever a value is removed the list is either re-indexed to avoid missing indexes or a new instance is returned.</p>
 
+## Sequence status
+
+### Sequence::isEmpty
+
+Tells whether the sequence contains no interval.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->isEmpty(); // false
+~~~
+
+### Sequence::count
+
+Returns the number of `Period` instance contains in the `Sequence` object. The object implements PHP's `Countable` interface.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+count($sequence); // returns 1
+~~~
+
 ## Getter methods
 
 ### ArrayAccess, IteratorAggregate
@@ -169,52 +189,6 @@ $sequence->clear();
 count($sequence); // 0
 ~~~
 
-## Sequence information
-
-### Sequence::count
-
-Returns the number of `Period` instance contains in the `Sequence` object. The object implements PHP's `Countable` interface.
-
-~~~php
-$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
-count($sequence); // returns 1
-~~~
-
-### Sequence::isEmpty
-
-Tells whether the sequence contains no interval.
-
-~~~php
-$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
-$sequence->isEmpty(); // false
-~~~
-
-### Sequence::indexOf
-
-Returns the offset of the given `Period` object. The comparison of two intervals is done using `Period::equals` method. If no offset is found `false` is returned.
-
-~~~php
-$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
-$sequence->indexOf(new Period('2018-03-01', '2018-03-31')); // 0
-$sequence->indexOf(Datepoint::create('2012-06-03')->getDay()); // false
-~~~
-
-### Sequence::contains
-
-~~~php
-public function Sequence::contains(Period $interval, Period ...$intervals);
-~~~
-
-Tells whether the sequence contains all the submitted intervals.
-
-~~~php
-$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
-$sequence->contains(
-    new Period('2018-03-01', '2018-03-31'),
-    new Period('2018-01-20', '2018-03-10')
-); // false
-~~~
-
 ## Conversion methods
 
 ### JsonSerializable
@@ -324,8 +298,6 @@ $predicate = static function (Period $interval): bool {
 $sequence->every($predicate); // false
 ~~~
 
-## Manipulations methods
-
 ### Sequence::sort
 
 Sorts the current instance according to the given comparison callable and maintain index association.
@@ -358,6 +330,8 @@ foreach ($sequence as $offset => $interval) {
     echo $offset, ' -> ', $interval->format('Y-m-d'), PHP_EOL; //1 -> [2017-01-01, 2017-01-31)...
 }
 ~~~
+
+## Manipulations methods
 
 ### Sequence::sorted
 

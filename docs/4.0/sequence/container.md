@@ -7,11 +7,41 @@ title: The Sequence as a Period aware container
 
 The `Sequence` class is design to ease gathering information about multiple `Period` instance.
 
+## Period detection
+
+Because `Period` is a value object, comparison between two instances is done using the `Period::equals` method instead of `==` or `===`.
+
+### Sequence::indexOf
+
+Returns the first offset of the a `Period` object who's equals to the submitted instance.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->indexOf(new Period('2018-03-01', '2018-03-31')); // 0
+$sequence->indexOf(Datepoint::create('2012-06-03')->getDay()); // false
+~~~
+
+### Sequence::contains
+
+~~~php
+public function Sequence::contains(Period $interval, Period ...$intervals);
+~~~
+
+Tells whether the sequence contains all the submitted intervals.
+
+~~~php
+$sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
+$sequence->contains(
+    new Period('2018-03-01', '2018-03-31'),
+    new Period('2018-01-20', '2018-03-10')
+); // false
+~~~
+
 ## Sequence information
 
-### Sequence::boundaries
+### Sequence boundaries
 
-<p class="message-info">Since <code>version 4.4</code>.</p>
+<p class="message-info"><code>Sequence::boundaries</code> since <code>version 4.4</code>.</p>
 <p class="message-warning"><code>Sequence::getBoundaries</code> is deprecated and will be remove in the next major release.</p>
 
 Returns the sequence boundaries as a `Period` instance. If the sequence is empty `null` is returned.
@@ -27,9 +57,9 @@ $sequence->boundaries()->format('Y-m-d'); // [2018-01-01, 2018-03-10)
 (new Sequence())->boundaries(); // null
 ~~~
 
-### Sequence::gaps
+### Sequence gaps
 
-<p class="message-info">Since <code>version 4.4</code>.</p>
+<p class="message-info"><code>Sequence::gaps</code> since <code>version 4.4</code>.</p>
 <p class="message-warning"><code>Sequence::getGaps</code> is deprecated and will be remove in the next major release.</p>
 
 Returns the gaps inside the instance. The method returns a new `Sequence` object containing the founded
@@ -45,9 +75,9 @@ $gaps = $sequence->gaps(); // a new Sequence object
 count($gaps); // 2
 ~~~
 
-### Sequence::intersections
+### Sequence intersections
 
-<p class="message-info">Since <code>version 4.4</code>.</p>
+<p class="message-info"><code>Sequence::intersections</code> since <code>version 4.4</code>.</p>
 <p class="message-warning"><code>Sequence::getIntersections</code> is deprecated and will be remove in the next major release.</p>
 
 Returns the intersections inside the instance. The method returns a new `Sequence` object containing the founded
@@ -63,7 +93,7 @@ $intersections = $sequence->intersections(); // a new Sequence object
 $intersections->isEmpty(); // true
 ~~~
 
-### Sequence::unions
+### Sequence unions
 
 <p class="message-info">Since <code>version 4.4</code></p>
 
