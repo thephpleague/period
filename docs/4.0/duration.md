@@ -38,14 +38,40 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 use League\Period\Duration;
 use League\Period\Period;
 
-Duration::create('1 DAY');                  // returns new DateInterval('P1D')
-Duration::create(2018);                     // returns new DateInterval('PT2018S')
-Duration::create(new DateInterval('PT1H')); // returns new DateInterval('PT1H')
+Duration::create('1 DAY');                  // returns new Duration('P1D')
+Duration::create(2018);                     // returns new Duration('PT2018S')
+Duration::create(new DateInterval('PT1H')); // returns new Duration('PT1H')
 Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
 
-## Duration::__construct
+### Duration::fromChrono
+
+~~~php
+public Duration::fromChrono(string $chrono): self
+~~~
+
+Converts its single input, a string representation of a chronometer into a `Duration` object or throws a `Exception` otherwise.
+
+#### paramter
+
+`$chrono` is a representation of time without any date part which according to the following format `H:M:S.f`.  
+The chronometer unit are always positive or equal to `0` except for the second unit which accept a fraction part.
+
+When the string is not parsable, an `Exception` is thrown.
+
+### Examples
+
+~~~php
+use League\Period\Duration;
+use League\Period\Period;
+
+Duration::fromChrono('28');         // returns new Duration('PT28S')
+Duration::fromChrono('12:30');      // returns new Duration('PT12M30S')
+Duration::fromChrono('02:03:25.8'); // returns new Duration('PT2H3M25.8S')
+~~~
+
+## Default constructor
 
 The constructor supports fraction on the smallest value.
 

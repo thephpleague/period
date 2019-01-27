@@ -13,6 +13,7 @@ namespace LeagueTest\Period;
 
 use DateInterval;
 use League\Period\Duration;
+use League\Period\Exception;
 use League\Period\Period;
 
 class DurationTest extends TestCase
@@ -76,11 +77,64 @@ class DurationTest extends TestCase
 
     public function testIntervalWithFraction(): void
     {
-        $duration =  new Duration('PT3.1S');
+        $duration = new Duration('PT3.1S');
         self::assertSame('PT3.1S', (string) $duration);
 
         $duration = new Duration('P0000-00-00T00:05:00.023658');
         self::assertSame('PT5M0.023658S', (string) $duration);
         self::assertSame(0.023658, $duration->f);
+    }
+
+    /**
+     * @dataProvider fromChronoProvider
+     */
+    public function testCreateFromTimeString(string $chronometer, string $expected): void
+    {
+        $duration = Duration::fromChrono($chronometer);
+        self::assertSame($expected, (string) $duration);
+    }
+
+    public function fromChronoProvider(): iterable
+    {
+        return [
+            [
+                'chronometer' => '1',
+                'expected' => 'PT1S',
+            ],
+            [
+                'chronometer' => '1:2',
+                'expected' => 'PT1M2S',
+            ],
+            [
+                'chronometer' => '1:2:3',
+                'expected' => 'PT1H2M3S',
+            ],
+            [
+                'chronometer' => '00001',
+                'expected' => 'PT1S',
+            ],
+            [
+                'chronometer' => '00001:00002:000003.0004',
+                'expected' => 'PT1H2M3.0004S',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider fromChronoInvalidStringProvider
+     */
+    public function testCreateFromTimeStringFailsWithUnparsableString(string $chronometer): void
+    {
+        self::expectException(Exception::class);
+        Duration::fromChrono($chronometer);
+    }
+
+    public function fromChronoInvalidStringProvider(): iterable
+    {
+        return [
+            ['PT1H'],
+            ['30 minutes'],
+            ['::30.5'],
+        ];
     }
 }

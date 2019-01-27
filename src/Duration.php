@@ -14,7 +14,10 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
+use function array_pop;
+use function explode;
 use function filter_var;
+use function preg_grep;
 use function preg_match;
 use function property_exists;
 use function rtrim;
@@ -34,6 +37,10 @@ final class Duration extends DateInterval
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
 
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
+
+    private const REGEXP_CHRONO_SECOND = '@^\d+(\.\d+)?$@';
+
+    private const REGEXP_CHRONO_UNIT = '@^\d+$@';
 
     /**
      * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
@@ -86,6 +93,41 @@ final class Duration extends DateInterval
         }
 
         return $new;
+    }
+
+    /**
+     * Sets up a Duration from the string representation of a chronometer.
+     *
+     * The chronometer string is a representation of time
+     * without any date part following the below format
+     * HH:MM:SS.f
+     *
+     * The chronometer unit are always positive or equal to 0
+     * except for the second unit which accept a fraction part.
+     *
+     * @throws Exception If the chrono string can not be parsed
+     */
+    public static function fromChrono(string $chrono): self
+    {
+        $parts = explode(':', $chrono, 3);
+        $second = array_pop($parts);
+        if (null === $second || 1 !== preg_match(self::REGEXP_CHRONO_SECOND, $second)) {
+            throw new Exception(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
+        }
+
+        if ([] === $parts) {
+            return new self('PT'.$second.'S');
+        }
+
+        if ($parts !== preg_grep(self::REGEXP_CHRONO_UNIT, $parts)) {
+            throw new Exception(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
+        }
+
+        if (isset($parts[1])) {
+            return new self('PT'.$parts[0].'H'.$parts[1].'M'.$second.'S');
+        }
+
+        return new self('PT'.$parts[0].'M'.$second.'S');
     }
 
     /**
