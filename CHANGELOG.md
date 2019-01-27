@@ -6,7 +6,8 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `Duration::fromChrono`
+- `League\Period\Duration::fromChrono`
+- `League\Period\InvalidDurationFormat`
 
 ### Fixed
 

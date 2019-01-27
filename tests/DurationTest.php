@@ -13,7 +13,7 @@ namespace LeagueTest\Period;
 
 use DateInterval;
 use League\Period\Duration;
-use League\Period\Exception;
+use League\Period\InvalidDurationFormat;
 use League\Period\Period;
 
 class DurationTest extends TestCase
@@ -125,7 +125,7 @@ class DurationTest extends TestCase
      */
     public function testCreateFromTimeStringFailsWithUnparsableString(string $chronometer): void
     {
-        self::expectException(Exception::class);
+        self::expectException(InvalidDurationFormat::class);
         Duration::fromChrono($chronometer);
     }
 

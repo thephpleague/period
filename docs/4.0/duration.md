@@ -51,14 +51,14 @@ Duration::create(new Period('now', 'tomorrow'));
 public Duration::fromChrono(string $chrono): self
 ~~~
 
-Converts its single input, a string representation of a chronometer into a `Duration` object or throws a `Exception` otherwise.
+Converts its single input, a string representation of a chronometer into a `Duration` object or throws a `InvalidDurationFormat` otherwise.
 
 #### paramter
 
 `$chrono` is a representation of time without any date part which according to the following format `H:M:S.f`.  
 The chronometer unit are always positive or equal to `0` except for the second unit which accept a fraction part.
 
-When the string is not parsable, an `Exception` is thrown.
+When the string is not parsable, an `InvalidDurationFormat` is thrown.
 
 ### Examples
 
@@ -69,6 +69,7 @@ use League\Period\Period;
 Duration::fromChrono('28');         // returns new Duration('PT28S')
 Duration::fromChrono('12:30');      // returns new Duration('PT12M30S')
 Duration::fromChrono('02:03:25.8'); // returns new Duration('PT2H3M25.8S')
+Duration::fromChrono('::1');        // throws a InvalidDurationFormat exception
 ~~~
 
 ## Default constructor

@@ -105,14 +105,14 @@ final class Duration extends DateInterval
      * The chronometer unit are always positive or equal to 0
      * except for the second unit which accept a fraction part.
      *
-     * @throws Exception If the chrono string can not be parsed
+     * @throws InvalidDurationFormat If the chrono string can not be parsed
      */
     public static function fromChrono(string $chrono): self
     {
         $parts = explode(':', $chrono, 3);
         $second = array_pop($parts);
         if (null === $second || 1 !== preg_match(self::REGEXP_CHRONO_SECOND, $second)) {
-            throw new Exception(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
+            throw new InvalidDurationFormat(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
         }
 
         if ([] === $parts) {
@@ -120,7 +120,7 @@ final class Duration extends DateInterval
         }
 
         if ($parts !== preg_grep(self::REGEXP_CHRONO_UNIT, $parts)) {
-            throw new Exception(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
+            throw new InvalidDurationFormat(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
         }
 
         if (isset($parts[1])) {
