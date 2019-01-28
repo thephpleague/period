@@ -170,13 +170,16 @@ final class Duration extends DateInterval
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * The epoch time is used as the reference datepoint.
+     * @param mixed $datepoint a Reference datepoint
+     *                         by default will use the epoch time in UTC
      */
-    public function withoutCarryOver(): self
+    public function withoutCarryOver($datepoint = '@0'): self
     {
-        static $now;
-        $now = $now ?? new DateTimeImmutable('@0');
-        $duration = $now->diff($now->add($this));
+        if (!$datepoint instanceof DateTimeImmutable) {
+            $datepoint = Datepoint::create($datepoint);
+        }
+
+        $duration = $datepoint->diff($datepoint->add($this));
         if ($this->toString($duration) === $this->toString($this)) {
             return $this;
         }

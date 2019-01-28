@@ -82,13 +82,15 @@ As per the specification the smallest value (ie the second) can accept a decimal
 ### Removing carry over
 
 ~~~php
-public Duration::withoutCarryOver(void): self
+public Duration::withoutCarryOver($duration = '@0'): self
 ~~~
 
-Returns a new instance with recalculate time and date segments to remove carry over points. If the recalculate interval does not change the current object then it is returned as is, otherwise a new object is returned. In any cases the current object is not changed. The EPOCH time is used as the reference day to perform the calculation.
+Returns a new instance with recalculate time and date segments to remove carry over points according to a reference datepoint. If the recalculate interval does not change the current object then it is returned as is, otherwise a new object is returned. The reference datepoint can be any valid vaue accepted by the `Datepoint::create` named constructor.  
+The epoch time is used as the reference datepoint to perform the calculation if no datepoint is submitted.
 
 ~~~php
-$duration = Duration::create('33 days');
-echo $duration; // 'P33D'
-echo $duration->withoutCarryOver(); // 'P1M2D'
+$duration = Duration::create('29 days');
+echo $duration; // 'P29D'
+echo $duration->withoutCarryOver(); // 'P29D' Using the Epoch time reference
+echo $duration->withoutCarryOver('2020-02-01'); // 'P1M'
 ~~~
