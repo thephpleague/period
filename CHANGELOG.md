@@ -6,7 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- `Duration::withoutCarryOver`
 
 ### Fixed
 

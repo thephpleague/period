@@ -76,3 +76,19 @@ echo $duration; // 'PT5M0.5S'
 ~~~
 
 As per the specification the smallest value (ie the second) can accept a decimal fraction.
+
+## Duration mutation method
+
+### Removing carry over
+
+~~~php
+public Duration::withoutCarryOver(void): self
+~~~
+
+Returns a new instance with recalculate time and date segments to remove carry over points. If the recalculate interval does not change the current object then it is returned as is, otherwise a new object is returned. In any cases the current object is not changed. The EPOCH time is used as the reference day to perform the calculation.
+
+~~~php
+$duration = Duration::create('33 days');
+echo $duration; // 'P33D'
+echo $duration->withoutCarryOver(); // 'P1M2D'
+~~~
