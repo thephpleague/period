@@ -14,6 +14,7 @@ namespace LeagueTest\Period\Period;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use League\Period\Datepoint;
 use League\Period\Exception;
 use League\Period\Period;
 use League\Period\Sequence;
@@ -32,6 +33,9 @@ class IntervalRelationTest extends TestCase
     public function testIsBefore(Period $interval, $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isBefore($input));
+        if ($input instanceof DateTimeInterface) {
+            self::assertSame($expected, Datepoint::create($input)->isAfter($interval));
+        }
     }
 
     public function isBeforeProvider(): array
@@ -108,6 +112,9 @@ class IntervalRelationTest extends TestCase
     public function testIsAfer(Period $interval, $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isAfter($input));
+        if ($input instanceof DateTimeInterface) {
+            self::assertSame($expected, Datepoint::create($input)->isBefore($interval));
+        }
     }
 
 
@@ -206,6 +213,35 @@ class IntervalRelationTest extends TestCase
         ];
     }
 
+    public function testDatepointBorderingOn(): void
+    {
+        $dateString = '2018-01-18 10:00:00';
+        $datepoint = Datepoint::create($dateString);
+        self::assertTrue(
+            $datepoint->isBorderingOnStart(
+                Period::after($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
+            )
+        );
+
+        self::assertFalse(
+            $datepoint->isBorderingOnStart(
+                Period::after($datepoint, '3 minutes', Period::INCLUDE_ALL)
+            )
+        );
+
+        self::assertTrue(
+            $datepoint->isBorderingOnEnd(
+                Period::before($datepoint, '3 minutes', Period::INCLUDE_START_EXCLUDE_END)
+            )
+        );
+
+        self::assertFalse(
+            $datepoint->isBorderingOnEnd(
+                Period::before($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
+            )
+        );
+    }
+
     /**
      * @dataProvider overlapsDataProvider
      */
@@ -258,9 +294,10 @@ class IntervalRelationTest extends TestCase
     public function testContains(Period $interval, $arg, bool $expected): void
     {
         self::assertSame($expected, $interval->contains($arg));
-        if ($arg instanceof Period) {
-            self::assertSame($expected, $arg->isDuring($interval));
+        if (!$arg instanceof Period) {
+            $arg = Datepoint::create($arg);
         }
+        self::assertSame($expected, $arg->isDuring($interval));
     }
 
     public function containsDataProvider(): array
@@ -407,9 +444,12 @@ class IntervalRelationTest extends TestCase
      * @dataProvider startsDataProvider
      * @param DateTimeInterface|Period $index
      */
-    public function testStarts(Period $interval1, $index, bool $expected): void
+    public function testStarts(Period $interval, $index, bool $expected): void
     {
-        self::assertSame($expected, $interval1->isStartedBy($index));
+        self::assertSame($expected, $interval->isStartedBy($index));
+        if ($index instanceof DateTimeInterface) {
+            self::assertSame($expected, Datepoint::create($index)->isStarting($interval));
+        }
     }
 
     public function startsDataProvider(): array
@@ -452,9 +492,12 @@ class IntervalRelationTest extends TestCase
      * @dataProvider finishesDataProvider
      * @param DateTimeInterface|Period $index
      */
-    public function testFinishes(Period $interval1, $index, bool $expected): void
+    public function testFinishes(Period $interval, $index, bool $expected): void
     {
-        self::assertSame($expected, $interval1->isEndedBy($index));
+        self::assertSame($expected, $interval->isEndedBy($index));
+        if ($index instanceof DateTimeInterface) {
+            self::assertSame($expected, Datepoint::create($index)->isEnding($interval));
+        }
     }
 
     public function finishesDataProvider(): array
@@ -637,8 +680,6 @@ class IntervalRelationTest extends TestCase
             ],
         ];
     }
-
-
 
     public function testGap(): void
     {

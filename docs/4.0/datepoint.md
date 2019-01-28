@@ -85,3 +85,46 @@ $month->contains($datepoint); // true
 $hour->contains($datepoint); // true
 $month->contains($hour); // true
 ~~~
+
+## Relational method against interval
+
+<p class="message-info">Since <code>version 4.5</code></p>
+
+A datepoint can also be evaluated in relation to a given interval.  
+The following methods all share the same signature:
+ 
+~~~php
+public function method(Period $interval): bool
+~~~
+ 
+where `method` is one of the basic relation between a datepoint and an interval.
+
+- `Datepoint::isBefore`
+- `Datepoint::isBorderingOnStart`
+- `Datepoint::isStarting`
+- `Datepoint::isDuring`
+- `Datepoint::isEnding`
+- `Datepoint::isBorderingOnEnd`
+- `Datepoint::isAfter`
+
+#### Examples
+
+~~~php
+use League\Period\Datepoint;
+use League\Period\Period;
+
+$datepoint = Datepoint::create('2018-01-18 10:00:00');
+$datepoint->isBorderingOnStart(
+    Period::after($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
+); //  true
+
+
+$datepoint->isBorderingOnStart(
+    Period::after($datepoint, '3 minutes', Period::INCLUDE_ALL)
+); // false
+
+
+$datepoint->isAfter(
+    Period::before('2018-01-13 23:34:28', '3 minutes', Period::INCLUDE_START_EXCLUDE_END)
+);  // true
+~~~
