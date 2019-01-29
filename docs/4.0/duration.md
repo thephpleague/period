@@ -9,9 +9,9 @@ title: The Sequence class
 
 A duration is the continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
 
-The `Duration` class is introduced to ease duration manipulation. This class extends PHP's `DateInterval` class by adding a new named constructor.
+The `Duration` class is introduced to ease duration manipulation. This class extends PHP's `DateInterval` class.
 
-## Named constructor
+## Constructors
 
 ### Duration::create
 
@@ -32,7 +32,7 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 
 <p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the <code>0</code> interval is returned as described in <a href="https://bugs.php.net/bug.php?id=50020">PHP bug #50020</a>.</p>
 
-### Examples
+#### Examples
 
 ~~~php
 use League\Period\Duration;
@@ -45,7 +45,7 @@ Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
 
-## Duration::__construct
+### Duration::__construct
 
 The constructor supports fraction on the smallest value.
 
