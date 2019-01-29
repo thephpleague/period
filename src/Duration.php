@@ -171,9 +171,10 @@ final class Duration extends DateInterval
      * carry over points.
      *
      * @param mixed $datepoint a Reference datepoint
-     *                         by default will use the epoch time in UTC
+     *                         by default will use the epoch time
+     *                         accepts the same input as {@see Duration::create}
      */
-    public function withoutCarryOver($datepoint = '@0'): self
+    public function withoutCarryOver($datepoint = 0): self
     {
         if (!$datepoint instanceof DateTimeImmutable) {
             $datepoint = Datepoint::create($datepoint);
