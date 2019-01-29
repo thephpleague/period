@@ -100,11 +100,11 @@ public function method(Period $interval): bool
 where `method` is one of the basic relation between a datepoint and an interval.
 
 - `Datepoint::isBefore`
-- `Datepoint::isBorderingOnStart`
+- `Datepoint::bordersOnStart`
 - `Datepoint::isStarting`
 - `Datepoint::isDuring`
 - `Datepoint::isEnding`
-- `Datepoint::isBorderingOnEnd`
+- `Datepoint::bordersOnEnd`
 - `Datepoint::isAfter`
 
 #### Examples

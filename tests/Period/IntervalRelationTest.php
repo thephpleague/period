@@ -218,25 +218,25 @@ class IntervalRelationTest extends TestCase
         $dateString = '2018-01-18 10:00:00';
         $datepoint = Datepoint::create($dateString);
         self::assertTrue(
-            $datepoint->isBorderingOnStart(
+            $datepoint->bordersOnStart(
                 Period::after($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
             )
         );
 
         self::assertFalse(
-            $datepoint->isBorderingOnStart(
+            $datepoint->bordersOnStart(
                 Period::after($datepoint, '3 minutes', Period::INCLUDE_ALL)
             )
         );
 
         self::assertTrue(
-            $datepoint->isBorderingOnEnd(
+            $datepoint->bordersOnEnd(
                 Period::before($datepoint, '3 minutes', Period::INCLUDE_START_EXCLUDE_END)
             )
         );
 
         self::assertFalse(
-            $datepoint->isBorderingOnEnd(
+            $datepoint->bordersOnEnd(
                 Period::before($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
             )
         );

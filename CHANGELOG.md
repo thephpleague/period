@@ -7,11 +7,11 @@ All Notable changes to `Period` will be documented in this file
 ### Added
 
 - `Datepoint::isBefore`
-- `Datepoint::isBorderingOnStart`
+- `Datepoint::bordersOnStart`
 - `Datepoint::isStarting`
 - `Datepoint::isDuring`
 - `Datepoint::isEnding`
-- `Datepoint::isBorderingOnEnd`
+- `Datepoint::bordersOnEnd`
 - `Datepoint::isAfter`
 
 ### Fixed
