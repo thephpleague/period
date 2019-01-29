@@ -82,7 +82,7 @@ As per the specification the smallest value (ie the second) can accept a decimal
 ### Removing carry over
 
 ~~~php
-public Duration::withoutCarryOver($duration = '@0'): self
+public Duration::withoutCarryOver($duration = 0): self
 ~~~
 
 Returns a new instance with recalculate time and date segments to remove carry over points according to a reference datepoint. If the recalculate interval does not change the current object then it is returned as is, otherwise a new object is returned. The reference datepoint can be any valid vaue accepted by the `Datepoint::create` named constructor.  
