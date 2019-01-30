@@ -6,6 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Duration::create` now supports chronometer format
 - `Duration::withoutCarryOver`
 - `Datepoint::isBefore`
 - `Datepoint::bordersOnStart`

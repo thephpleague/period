@@ -15,7 +15,11 @@ namespace League\Period;
 
 use DateInterval;
 use DateTimeImmutable;
+use TypeError;
 use function filter_var;
+use function gettype;
+use function is_string;
+use function method_exists;
 use function preg_match;
 use function property_exists;
 use function rtrim;
@@ -35,6 +39,17 @@ final class Duration extends DateInterval
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
 
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
+
+    private const REGEXP_CHRONO_FORMAT = '@^
+        (
+            ((?<hour>\d+):)?
+            (?<minute>\d+):
+        )?
+        (
+            (?<second>\d+)
+            (\.(?<fraction>\d{1,6}))?
+        )
+    $@x';
 
     /**
      * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
@@ -68,6 +83,24 @@ final class Duration extends DateInterval
 
         if (false !== ($second = filter_var($duration, FILTER_VALIDATE_INT))) {
             return new self('PT'.$second.'S');
+        }
+
+        if (!is_string($duration) && !method_exists($duration, '__toString')) {
+            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
+        }
+
+        $duration = (string) $duration;
+        if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
+            $matches['hour'] = $matches['hour'] ?? '0';
+            $matches['minute'] = $matches['minute'] ?? '0';
+            $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
+
+            return self::createFromDateString(
+                $matches['hour'].' hours '.
+                $matches['minute'].' minutes '.
+                $matches['second'].' seconds '.
+                $matches['fraction'].' microseconds'
+            );
         }
 
         return self::createFromDateString($duration);

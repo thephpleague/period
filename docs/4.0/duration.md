@@ -28,6 +28,7 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 - a `League\Period\Period` object;
 - a `DateInterval` object;
 - a string parsable by the `DateInterval::createFromDateString` method.
+- a string representing a chronometer format `HH:MM::SS.FFFFFF`
 - an integer interpreted as the interval expressed in seconds.
 
 <p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the <code>0</code> interval is returned as described in <a href="https://bugs.php.net/bug.php?id=50020">PHP bug #50020</a>.</p>
@@ -38,14 +39,15 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 use League\Period\Duration;
 use League\Period\Period;
 
-Duration::create('1 DAY');                  // returns new DateInterval('P1D')
-Duration::create(2018);                     // returns new DateInterval('PT2018S')
-Duration::create(new DateInterval('PT1H')); // returns new DateInterval('PT1H')
+Duration::create('1 DAY');                  // returns new Duration('P1D')
+Duration::create(2018);                     // returns new Duration('PT2018S')
+Duration::create(new DateInterval('PT1H')); // returns new Duration('PT1H')
+Duration::create('12:30');                  // returns new Duration('PT12M30S')  
 Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
 
-### Duration::__construct
+## Default constructor
 
 The constructor supports fraction on the smallest value.
 

@@ -76,7 +76,7 @@ class DurationTest extends TestCase
 
     public function testIntervalWithFraction(): void
     {
-        $duration =  new Duration('PT3.1S');
+        $duration = new Duration('PT3.1S');
         self::assertSame('PT3.1S', (string) $duration);
 
         $duration = new Duration('P0000-00-00T00:05:00.023658');
@@ -85,8 +85,43 @@ class DurationTest extends TestCase
     }
 
     /**
-     * @dataProvider withoutCarryOverDataProvider
+     * @dataProvider fromChronoProvider
      */
+    public function testCreateFromTimeString(string $chronometer, string $expected): void
+    {
+        $duration = Duration::create($chronometer);
+        self::assertSame($expected, (string) $duration);
+    }
+
+    public function fromChronoProvider(): iterable
+    {
+        return [
+            [
+                'chronometer' => '1',
+                'expected' => 'PT1S',
+            ],
+            [
+                'chronometer' => '1:2',
+                'expected' => 'PT1M2S',
+            ],
+            [
+                'chronometer' => '1:2:3',
+                'expected' => 'PT1H2M3S',
+            ],
+            [
+                'chronometer' => '00001',
+                'expected' => 'PT1S',
+            ],
+            [
+                'chronometer' => '00001:00002:000003.0004',
+                'expected' => 'PT1H2M3.0004S',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider withoutCarryOverDataProvider
+     */ 
     public function testWithoutCarryOver(string $input, string $expected): void
     {
         $duration = new Duration($input);
