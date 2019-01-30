@@ -14,6 +14,7 @@ namespace LeagueTest\Period\Period;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use League\Period\Datepoint;
 use League\Period\Exception;
 use League\Period\Period;
 use League\Period\Sequence;
@@ -109,7 +110,6 @@ class IntervalRelationTest extends TestCase
     {
         self::assertSame($expected, $interval->isAfter($input));
     }
-
 
     public function isAfterProvider(): array
     {
@@ -407,42 +407,53 @@ class IntervalRelationTest extends TestCase
      * @dataProvider startsDataProvider
      * @param DateTimeInterface|Period $index
      */
-    public function testStarts(Period $interval1, $index, bool $expected): void
+    public function testStarts(Period $interval, $index, bool $expected): void
     {
-        self::assertSame($expected, $interval1->isStartedBy($index));
+        self::assertSame($expected, $interval->isStartedBy($index));
+        if ($index instanceof DateTimeInterface) {
+            self::assertSame($expected, Datepoint::create($index)->isStarting($interval));
+        }
     }
 
     public function startsDataProvider(): array
     {
+        $startingDate = new DateTime('2012-01-01');
+        $interval = new Period($startingDate, new DateTime('2012-01-15'));
+
         return [
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
+                $interval,
+                $interval,
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-02'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
-                false,
-            ],
-            [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
+                $interval,
+                $interval->moveEndDate('+3 MINUTES'),
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16'), Period::INCLUDE_ALL),
+                $interval,
+                $interval->moveStartDate('+3 MINUTES'),
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
-                new DateTime('2012-01-01'),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $interval,
+                true,
+            ],
+            [
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_START_EXCLUDE_END),
-                new DateTime('2012-01-01'),
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $startingDate,
+                false,
+            ],
+            [
+                $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END),
+                $startingDate,
                 true,
             ],
         ];
@@ -452,42 +463,44 @@ class IntervalRelationTest extends TestCase
      * @dataProvider finishesDataProvider
      * @param DateTimeInterface|Period $index
      */
-    public function testFinishes(Period $interval1, $index, bool $expected): void
+    public function testFinishes(Period $interval, $index, bool $expected): void
     {
-        self::assertSame($expected, $interval1->isEndedBy($index));
+        self::assertSame($expected, $interval->isEndedBy($index));
     }
 
     public function finishesDataProvider(): array
     {
+        $endingDate = new DateTime('2012-01-16');
+        $interval = new Period(new DateTime('2012-01-01'), $endingDate);
         return [
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16')),
+                $interval,
+                $interval,
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-02'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
+                $interval->moveEndDate('+ 3 MINUTES'),
+                $interval,
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
+                $interval,
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
-                new DateTime('2012-01-16'),
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $endingDate,
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
-                new DateTime('2012-01-16'),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $endingDate,
                 true,
             ],
         ];
@@ -637,8 +650,6 @@ class IntervalRelationTest extends TestCase
             ],
         ];
     }
-
-
 
     public function testGap(): void
     {

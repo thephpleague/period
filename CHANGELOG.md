@@ -6,7 +6,16 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `League\Period\Duration::create` now supports chronometer format
+- `Duration::create` now supports chronometer format
+- `Duration::withoutCarryOver`
+- `Datepoint::isBefore`
+- `Datepoint::bordersOnStart`
+- `Datepoint::isStarting`
+- `Datepoint::isDuring`
+- `Datepoint::isEnding`
+- `Datepoint::bordersOnEnd`
+- `Datepoint::abuts`
+- `Datepoint::isAfter`
 
 ### Fixed
 

@@ -118,4 +118,35 @@ class DurationTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider withoutCarryOverDataProvider
+     */ 
+    public function testWithoutCarryOver(string $input, string $expected): void
+    {
+        $duration = new Duration($input);
+        self::assertSame($expected, (string) $duration->withoutCarryOver());
+    }
+
+    public function withoutCarryOverDataProvider(): iterable
+    {
+        return [
+            [
+                'input' => 'PT3H',
+                'expected' => 'PT3H',
+            ],
+            [
+                'input' => 'PT24H',
+                'expected' => 'P1D',
+            ],
+            [
+                'input' => 'P31D',
+                'expected' => 'P1M',
+            ],
+            [
+                'input' => 'P12M',
+                'expected' => 'P1Y',
+            ],
+        ];
+    }
 }

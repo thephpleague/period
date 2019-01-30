@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
+use DateTimeImmutable;
 use TypeError;
 use function filter_var;
 use function gettype;
@@ -150,28 +151,36 @@ final class Duration extends DateInterval
      */
     public function __toString(): string
     {
+        return $this->toString($this);
+    }
+
+    /**
+     * Generates the ISO8601 interval string representation.
+     */
+    private function toString(DateInterval $interval): string
+    {
         $date = 'P';
-        foreach (['Y' => $this->y, 'M' => $this->m, 'D' => $this->d] as $key => $value) {
+        foreach (['Y' => $interval->y, 'M' => $interval->m, 'D' => $interval->d] as $key => $value) {
             if (0 !== $value) {
                 $date .= $value.$key;
             }
         }
 
         $time = 'T';
-        foreach (['H' => $this->h, 'M' => $this->i] as $key => $value) {
+        foreach (['H' => $interval->h, 'M' => $interval->i] as $key => $value) {
             if (0 !== $value) {
                 $time .= $value.$key;
             }
         }
 
-        if (0.0 !== $this->f) {
-            $time .= rtrim(sprintf('%f', $this->s + $this->f), '0').'S';
+        if (0.0 !== $interval->f) {
+            $time .= rtrim(sprintf('%f', $interval->s + $interval->f), '0').'S';
 
             return $date.$time;
         }
 
-        if (0 !== $this->s) {
-            $time .= $this->s.'S';
+        if (0 !== $interval->s) {
+            $time .= $interval->s.'S';
 
             return $date.$time;
         }
@@ -185,5 +194,30 @@ final class Duration extends DateInterval
         }
 
         return 'PT0S';
+    }
+
+    /**
+     * Returns a new instance with recalculate time and date segments to remove carry over points.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the time and date segments recalculate to remove
+     * carry over points.
+     *
+     * @param mixed $datepoint a Reference datepoint
+     *                         by default will use the epoch time
+     *                         accepts the same input as {@see Duration::create}
+     */
+    public function withoutCarryOver($datepoint = 0): self
+    {
+        if (!$datepoint instanceof DateTimeImmutable) {
+            $datepoint = Datepoint::create($datepoint);
+        }
+
+        $duration = $datepoint->diff($datepoint->add($this));
+        if ($this->toString($duration) === $this->toString($this)) {
+            return $this;
+        }
+
+        return self::create($duration);
     }
 }
