@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
-use function array_pop;
-use function explode;
+use TypeError;
 use function filter_var;
-use function preg_grep;
+use function gettype;
+use function is_string;
+use function method_exists;
 use function preg_match;
 use function property_exists;
 use function rtrim;
@@ -38,9 +39,16 @@ final class Duration extends DateInterval
 
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
 
-    private const REGEXP_CHRONO_SECOND = '@^\d+(\.\d+)?$@';
-
-    private const REGEXP_CHRONO_UNIT = '@^\d+$@';
+    private const REGEXP_CHRONO_FORMAT = '@^
+        (
+            ((?<hour>\d+):)?
+            (?<minute>\d+):
+        )?
+        (
+            (?<second>\d+)
+            (\.(?<fraction>\d{1,6}))?
+        )
+    $@x';
 
     /**
      * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
@@ -76,6 +84,24 @@ final class Duration extends DateInterval
             return new self('PT'.$second.'S');
         }
 
+        if (!is_string($duration) && !method_exists($duration, '__toString')) {
+            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
+        }
+
+        $duration = (string) $duration;
+        if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
+            $matches['hour'] = $matches['hour'] ?? '0';
+            $matches['minute'] = $matches['minute'] ?? '0';
+            $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
+
+            return self::createFromDateString(
+                $matches['hour'].' hours '.
+                $matches['minute'].' minutes '.
+                $matches['second'].' seconds '.
+                $matches['fraction'].' microseconds'
+            );
+        }
+
         return self::createFromDateString($duration);
     }
 
@@ -93,41 +119,6 @@ final class Duration extends DateInterval
         }
 
         return $new;
-    }
-
-    /**
-     * Sets up a Duration from the string representation of a chronometer.
-     *
-     * The chronometer string is a representation of time
-     * without any date part following the below format
-     * HH:MM:SS.f
-     *
-     * The chronometer unit are always positive or equal to 0
-     * except for the second unit which accept a fraction part.
-     *
-     * @throws InvalidDurationFormat If the chrono string can not be parsed
-     */
-    public static function fromChrono(string $chrono): self
-    {
-        $parts = explode(':', $chrono, 3);
-        $second = array_pop($parts);
-        if (null === $second || 1 !== preg_match(self::REGEXP_CHRONO_SECOND, $second)) {
-            throw new InvalidDurationFormat(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
-        }
-
-        if ([] === $parts) {
-            return new self('PT'.$second.'S');
-        }
-
-        if ($parts !== preg_grep(self::REGEXP_CHRONO_UNIT, $parts)) {
-            throw new InvalidDurationFormat(sprintf('%s: Unknown or bad chrono string format (%s)', __METHOD__, $chrono));
-        }
-
-        if (isset($parts[1])) {
-            return new self('PT'.$parts[0].'H'.$parts[1].'M'.$second.'S');
-        }
-
-        return new self('PT'.$parts[0].'M'.$second.'S');
     }
 
     /**

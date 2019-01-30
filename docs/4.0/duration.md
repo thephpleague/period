@@ -28,6 +28,7 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 - a `League\Period\Period` object;
 - a `DateInterval` object;
 - a string parsable by the `DateInterval::createFromDateString` method.
+- a string representing a chronometer format `HH:MM::SS.FFFFFF`
 - an integer interpreted as the interval expressed in seconds.
 
 <p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the <code>0</code> interval is returned as described in <a href="https://bugs.php.net/bug.php?id=50020">PHP bug #50020</a>.</p>
@@ -41,35 +42,9 @@ use League\Period\Period;
 Duration::create('1 DAY');                  // returns new Duration('P1D')
 Duration::create(2018);                     // returns new Duration('PT2018S')
 Duration::create(new DateInterval('PT1H')); // returns new Duration('PT1H')
+Duration::create('12:30');                  // returns new Duration('PT12M30S')  
 Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
-~~~
-
-### Duration::fromChrono
-
-~~~php
-public Duration::fromChrono(string $chrono): self
-~~~
-
-Converts its single input, a string representation of a chronometer into a `Duration` object or throws a `InvalidDurationFormat` otherwise.
-
-#### paramter
-
-`$chrono` is a representation of time without any date part which according to the following format `H:M:S.f`.  
-The chronometer unit are always positive or equal to `0` except for the second unit which accept a fraction part.
-
-When the string is not parsable, an `InvalidDurationFormat` is thrown.
-
-### Examples
-
-~~~php
-use League\Period\Duration;
-use League\Period\Period;
-
-Duration::fromChrono('28');         // returns new Duration('PT28S')
-Duration::fromChrono('12:30');      // returns new Duration('PT12M30S')
-Duration::fromChrono('02:03:25.8'); // returns new Duration('PT2H3M25.8S')
-Duration::fromChrono('::1');        // throws a InvalidDurationFormat exception
 ~~~
 
 ## Default constructor

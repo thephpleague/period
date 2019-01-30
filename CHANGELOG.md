@@ -6,8 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `League\Period\Duration::fromChrono`
-- `League\Period\InvalidDurationFormat`
+- `League\Period\Duration::create` now supports chronometer format
 
 ### Fixed
 
