@@ -83,4 +83,35 @@ class DurationTest extends TestCase
         self::assertSame('PT5M0.023658S', (string) $duration);
         self::assertSame(0.023658, $duration->f);
     }
+
+    /**
+     * @dataProvider withoutCarryOverDataProvider
+     */
+    public function testWithoutCarryOver(string $input, string $expected): void
+    {
+        $duration = new Duration($input);
+        self::assertSame($expected, (string) $duration->withoutCarryOver());
+    }
+
+    public function withoutCarryOverDataProvider(): iterable
+    {
+        return [
+            [
+                'input' => 'PT3H',
+                'expected' => 'PT3H',
+            ],
+            [
+                'input' => 'PT24H',
+                'expected' => 'P1D',
+            ],
+            [
+                'input' => 'P31D',
+                'expected' => 'P1M',
+            ],
+            [
+                'input' => 'P12M',
+                'expected' => 'P1Y',
+            ],
+        ];
+    }
 }
