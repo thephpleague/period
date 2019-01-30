@@ -21,8 +21,8 @@ use function gettype;
 use function is_string;
 use function method_exists;
 use function preg_match;
+use function preg_replace;
 use function property_exists;
-use function rtrim;
 use function sprintf;
 use function str_pad;
 use const FILTER_VALIDATE_INT;
@@ -42,13 +42,10 @@ final class Duration extends DateInterval
 
     private const REGEXP_CHRONO_FORMAT = '@^
         (
-            ((?<hour>\d+):)?
-            (?<minute>\d+):
+            ((?<signH>\+|-)?(?<hour>\d+):)?
+            ((?<signM>\+|-)?(?<minute>\d+)):
         )?
-        (
-            (?<second>\d+)
-            (\.(?<fraction>\d{1,6}))?
-        )
+        ((?<signS>\+|-)?(?<second>\d+)(\.(?<fraction>\d{1,6}))?)
     $@x';
 
     /**
@@ -91,15 +88,17 @@ final class Duration extends DateInterval
 
         $duration = (string) $duration;
         if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
+            $matches['signH'] = $matches['signH'] ?? '+';
             $matches['hour'] = $matches['hour'] ?? '0';
+            $matches['signM'] = $matches['signM'] ?? '+';
             $matches['minute'] = $matches['minute'] ?? '0';
+            $matches['signS'] = $matches['signS'] ?? '+';
             $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
 
             return self::createFromDateString(
-                $matches['hour'].' hours '.
-                $matches['minute'].' minutes '.
-                $matches['second'].' seconds '.
-                $matches['fraction'].' microseconds'
+                $matches['signH'].$matches['hour'].' hours '.
+                $matches['signM'].$matches['minute'].' minutes '.
+                $matches['signS'].$matches['second'].' seconds '.$matches['fraction'].' microseconds'
             );
         }
 
@@ -160,37 +159,37 @@ final class Duration extends DateInterval
     private function toString(DateInterval $interval): string
     {
         $date = 'P';
-        foreach (['Y' => $interval->y, 'M' => $interval->m, 'D' => $interval->d] as $key => $value) {
-            if (0 !== $value) {
-                $date .= $value.$key;
+        foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
+            if (0 !== $interval->$value) {
+                $date .= '%'.$value.$key;
             }
         }
 
         $time = 'T';
-        foreach (['H' => $interval->h, 'M' => $interval->i] as $key => $value) {
-            if (0 !== $value) {
-                $time .= $value.$key;
+        foreach (['H' => 'h', 'M' => 'i'] as $key => $value) {
+            if (0 !== $interval->$value) {
+                $time .= '%'.$value.$key;
             }
         }
 
         if (0.0 !== $interval->f) {
-            $time .= rtrim(sprintf('%f', $interval->s + $interval->f), '0').'S';
+            $time .= '%s.%FS';
 
-            return $date.$time;
+            return (string) preg_replace('/0+S$/', 'S', $interval->format($date.$time));
         }
 
         if (0 !== $interval->s) {
-            $time .= $interval->s.'S';
+            $time .= '%sS';
 
-            return $date.$time;
+            return $interval->format($date.$time);
         }
-
+        
         if ('T' !== $time) {
-            return $date.$time;
+            return $interval->format($date.$time);
         }
 
         if ('P' !== $date) {
-            return $date;
+            return $interval->format($date);
         }
 
         return 'PT0S';

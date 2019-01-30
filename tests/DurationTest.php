@@ -116,12 +116,16 @@ class DurationTest extends TestCase
                 'chronometer' => '00001:00002:000003.0004',
                 'expected' => 'PT1H2M3.0004S',
             ],
+            [
+                'chronometer' => '-12:-28.5',
+                'expected' => 'PT-12M-28.5S',
+            ],
         ];
     }
 
     /**
      * @dataProvider withoutCarryOverDataProvider
-     */ 
+     */
     public function testWithoutCarryOver(string $input, string $expected): void
     {
         $duration = new Duration($input);
