@@ -278,11 +278,19 @@ final class Datepoint extends DateTimeImmutable
     }
 
     /**
-     * Tell whether the datepoint borders on end the interval.
+     * Tells whether the datepoint borders on end the interval.
      */
     public function bordersOnEnd(Period $interval): bool
     {
         return $this == $interval->getEndDate() && $interval->isEndExcluded();
+    }
+
+    /**
+     * Tells whether the datepoint abuts the interval.
+     */
+    public function abuts(Period $interval): bool
+    {
+        return $this->bordersOnEnd($interval) || $this->bordersOnStart($interval);
     }
 
     /**

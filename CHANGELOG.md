@@ -12,6 +12,7 @@ All Notable changes to `Period` will be documented in this file
 - `Datepoint::isDuring`
 - `Datepoint::isEnding`
 - `Datepoint::bordersOnEnd`
+- `Datepoint::abuts`
 - `Datepoint::isAfter`
 
 ### Fixed

@@ -105,6 +105,7 @@ where `method` is one of the basic relation between a datepoint and an interval.
 - `Datepoint::isDuring`
 - `Datepoint::isEnding`
 - `Datepoint::bordersOnEnd`
+- `Datepoint::abuts`
 - `Datepoint::isAfter`
 
 #### Examples

@@ -33,9 +33,6 @@ class IntervalRelationTest extends TestCase
     public function testIsBefore(Period $interval, $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isBefore($input));
-        if ($input instanceof DateTimeInterface) {
-            self::assertSame($expected, Datepoint::create($input)->isAfter($interval));
-        }
     }
 
     public function isBeforeProvider(): array
@@ -112,11 +109,7 @@ class IntervalRelationTest extends TestCase
     public function testIsAfer(Period $interval, $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isAfter($input));
-        if ($input instanceof DateTimeInterface) {
-            self::assertSame($expected, Datepoint::create($input)->isBefore($interval));
-        }
     }
-
 
     public function isAfterProvider(): array
     {
@@ -213,35 +206,6 @@ class IntervalRelationTest extends TestCase
         ];
     }
 
-    public function testDatepointBorderingOn(): void
-    {
-        $dateString = '2018-01-18 10:00:00';
-        $datepoint = Datepoint::create($dateString);
-        self::assertTrue(
-            $datepoint->bordersOnStart(
-                Period::after($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
-            )
-        );
-
-        self::assertFalse(
-            $datepoint->bordersOnStart(
-                Period::after($datepoint, '3 minutes', Period::INCLUDE_ALL)
-            )
-        );
-
-        self::assertTrue(
-            $datepoint->bordersOnEnd(
-                Period::before($datepoint, '3 minutes', Period::INCLUDE_START_EXCLUDE_END)
-            )
-        );
-
-        self::assertFalse(
-            $datepoint->bordersOnEnd(
-                Period::before($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END)
-            )
-        );
-    }
-
     /**
      * @dataProvider overlapsDataProvider
      */
@@ -294,10 +258,9 @@ class IntervalRelationTest extends TestCase
     public function testContains(Period $interval, $arg, bool $expected): void
     {
         self::assertSame($expected, $interval->contains($arg));
-        if (!$arg instanceof Period) {
-            $arg = Datepoint::create($arg);
+        if ($arg instanceof Period) {
+            self::assertSame($expected, $arg->isDuring($interval));
         }
-        self::assertSame($expected, $arg->isDuring($interval));
     }
 
     public function containsDataProvider(): array
@@ -454,35 +417,43 @@ class IntervalRelationTest extends TestCase
 
     public function startsDataProvider(): array
     {
+        $startingDate = new DateTime('2012-01-01');
+        $interval = new Period($startingDate, new DateTime('2012-01-15'));
+
         return [
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
+                $interval,
+                $interval,
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-02'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
-                false,
-            ],
-            [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
+                $interval,
+                $interval->moveEndDate('+3 MINUTES'),
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16'), Period::INCLUDE_ALL),
+                $interval,
+                $interval->moveStartDate('+3 MINUTES'),
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
-                new DateTime('2012-01-01'),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $interval,
+                true,
+            ],
+            [
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_START_EXCLUDE_END),
-                new DateTime('2012-01-01'),
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $startingDate,
+                false,
+            ],
+            [
+                $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END),
+                $startingDate,
                 true,
             ],
         ];
@@ -495,42 +466,41 @@ class IntervalRelationTest extends TestCase
     public function testFinishes(Period $interval, $index, bool $expected): void
     {
         self::assertSame($expected, $interval->isEndedBy($index));
-        if ($index instanceof DateTimeInterface) {
-            self::assertSame($expected, Datepoint::create($index)->isEnding($interval));
-        }
     }
 
     public function finishesDataProvider(): array
     {
+        $endingDate = new DateTime('2012-01-16');
+        $interval = new Period(new DateTime('2012-01-01'), $endingDate);
         return [
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16')),
+                $interval,
+                $interval,
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-02'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2013-01-16')),
+                $interval->moveEndDate('+ 3 MINUTES'),
+                $interval,
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
+                $interval,
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
                 true,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::EXCLUDE_ALL),
-                new DateTime('2012-01-16'),
+                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $endingDate,
                 false,
             ],
             [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-16'), Period::INCLUDE_ALL),
-                new DateTime('2012-01-16'),
+                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $endingDate,
                 true,
             ],
         ];
