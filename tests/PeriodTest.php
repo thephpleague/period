@@ -693,9 +693,9 @@ class PeriodTest extends TestCase
 
     public function testMerge(): void
     {
-        $period = month(2014, 3);
-        $altPeriod = month(2014, 4);
-        $expected = interval_after('2014-03-01', '2 MONTHS');
+        $period = Period::fromMonth(2014, 3);
+        $altPeriod = Period::fromMonth(2014, 4);
+        $expected = Period::after('2014-03-01', '2 MONTHS');
         self::assertEquals($expected, $period->merge($altPeriod));
         self::assertEquals($expected, $altPeriod->merge($period));
         self::assertEquals($expected, $expected->merge($period, $altPeriod));
@@ -704,7 +704,7 @@ class PeriodTest extends TestCase
     public function testMergeThrowsException(): void
     {
         self::expectException(TypeError::class);
-        month(2014, 3)->merge();
+        Period::fromMonth(2014, 3)->merge();
     }
 
     public function testMoveEndDate(): void
@@ -719,7 +719,7 @@ class PeriodTest extends TestCase
     public function testMoveEndDateThrowsException(): void
     {
         self::expectException(Exception::class);
-        interval_after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
+        Period::after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
     public function testMoveStartDateBackward(): void
@@ -745,28 +745,28 @@ class PeriodTest extends TestCase
     public function testMoveStartDateThrowsException(): void
     {
         self::expectException(Exception::class);
-        interval_after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
+        Period::after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
     }
 
     public function testDateIntervalDiff(): void
     {
-        $orig = interval_after('2012-01-01', '1 HOUR');
-        $alt = interval_after('2012-01-01', '2 HOUR');
+        $orig = Period::after('2012-01-01', '1 HOUR');
+        $alt = Period::after('2012-01-01', '2 HOUR');
         self::assertSame(1, $orig->dateIntervalDiff($alt)->h);
         self::assertSame(0, $orig->dateIntervalDiff($alt)->days);
     }
 
     public function testTimestampIntervalDiff(): void
     {
-        $orig = interval_after('2012-01-01', '1 HOUR');
-        $alt = interval_after('2012-01-01', '2 HOUR');
+        $orig = Period::after('2012-01-01', '1 HOUR');
+        $alt = Period::after('2012-01-01', '2 HOUR');
         self::assertEquals(-3600, $orig->timestampIntervalDiff($alt));
     }
 
     public function testDateIntervalDiffPositionIrrelevant(): void
     {
-        $orig = interval_after('2012-01-01', '1 HOUR');
-        $alt = interval_after('2012-01-01', '2 HOUR');
+        $orig = Period::after('2012-01-01', '1 HOUR');
+        $alt = Period::after('2012-01-01', '2 HOUR');
         $fromOrig = $orig->dateIntervalDiff($alt);
         $fromOrig->invert = 1;
         self::assertEquals($fromOrig, $alt->dateIntervalDiff($orig));

@@ -85,6 +85,10 @@ final class Datepoint extends DateTimeImmutable
         return self::create(parent::createFromMutable($datetime));
     }
 
+    /**************************************************
+     * interval constructors
+     **************************************************/
+
     /**
      * Returns a Period instance.
      *
@@ -227,5 +231,73 @@ final class Datepoint extends DateTimeImmutable
         $datepoint = $this->setTime(0, 0);
 
         return new Period($datepoint->setISODate($year, 1, 1), $datepoint->setISODate(++$year, 1, 1));
+    }
+
+    /**************************************************
+     * relation methods
+     **************************************************/
+
+    /**
+     * Tells whether the datepoint is before the interval.
+     */
+    public function isBefore(Period $interval): bool
+    {
+        return $interval->isAfter($this);
+    }
+
+    /**
+     * Tell whether the datepoint borders on start the interval.
+     */
+    public function bordersOnStart(Period $interval): bool
+    {
+        return $this == $interval->getStartDate() && $interval->isStartExcluded();
+    }
+
+    /**
+     * Tells whether the datepoint starts the interval.
+     */
+    public function isStarting(Period $interval): bool
+    {
+        return $interval->isStartedBy($this);
+    }
+
+    /**
+     * Tells whether the datepoint is contained within the interval.
+     */
+    public function isDuring(Period $interval): bool
+    {
+        return $interval->contains($this);
+    }
+
+    /**
+     * Tells whether the datepoint ends the interval.
+     */
+    public function isEnding(Period $interval): bool
+    {
+        return $interval->isEndedBy($this);
+    }
+
+    /**
+     * Tells whether the datepoint borders on end the interval.
+     */
+    public function bordersOnEnd(Period $interval): bool
+    {
+        return $this == $interval->getEndDate() && $interval->isEndExcluded();
+    }
+
+    /**
+     * Tells whether the datepoint abuts the interval.
+     */
+    public function abuts(Period $interval): bool
+    {
+        return $this->bordersOnEnd($interval) || $this->bordersOnStart($interval);
+    }
+
+    /**
+     * Tells whether the datepoint is after the interval.
+     */
+    public function isAfter(Period $interval): bool
+    {
+        return $interval->isBefore($this);
     }
 }
