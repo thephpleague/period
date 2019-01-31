@@ -21,8 +21,8 @@ use function gettype;
 use function is_string;
 use function method_exists;
 use function preg_match;
-use function preg_replace;
 use function property_exists;
+use function rtrim;
 use function sprintf;
 use function str_pad;
 use const FILTER_VALIDATE_INT;
@@ -41,11 +41,9 @@ final class Duration extends DateInterval
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
 
     private const REGEXP_CHRONO_FORMAT = '@^
-        (
-            ((?<signH>\+|-)?(?<hour>\d+):)?
-            ((?<signM>\+|-)?(?<minute>\d+)):
-        )?
-        ((?<signS>\+|-)?(?<second>\d+)(\.(?<fraction>\d{1,6}))?)
+        (?<sign>\+|-)?
+        (((?<hour>\d+):)?(?<minute>\d+):)?
+        ((?<second>\d+)(\.(?<fraction>\d{1,6}))?)
     $@x';
 
     /**
@@ -60,6 +58,8 @@ final class Duration extends DateInterval
      * </ul>
      *
      * @param mixed $duration a continuous portion of time
+     *
+     * @throws TypeError if the duration type is not a supported
      */
     public static function create($duration): self
     {
@@ -87,22 +87,21 @@ final class Duration extends DateInterval
         }
 
         $duration = (string) $duration;
-        if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
-            $matches['signH'] = $matches['signH'] ?? '+';
-            $matches['hour'] = $matches['hour'] ?? '0';
-            $matches['signM'] = $matches['signM'] ?? '+';
-            $matches['minute'] = $matches['minute'] ?? '0';
-            $matches['signS'] = $matches['signS'] ?? '+';
-            $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
-
-            return self::createFromDateString(
-                $matches['signH'].$matches['hour'].' hours '.
-                $matches['signM'].$matches['minute'].' minutes '.
-                $matches['signS'].$matches['second'].' seconds '.$matches['fraction'].' microseconds'
-            );
+        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
+            return self::createFromDateString($duration);
         }
 
-        return self::createFromDateString($duration);
+        $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
+        $instance = self::createFromDateString(
+            $matches['hour'].' hours '.
+            $matches['minute'].' minutes '.
+            $matches['second'].' seconds '.$matches['fraction'].' microseconds'
+        );
+        if ('-' === $matches['sign']) {
+            $instance->invert = 1;
+        }
+
+        return $instance;
     }
 
     /**
@@ -173,9 +172,14 @@ final class Duration extends DateInterval
         }
 
         if (0.0 !== $interval->f) {
-            $time .= '%s.%FS';
+            $second = $interval->s + $interval->f;
+            if (0 > $interval->s) {
+                $second = $interval->s - $interval->f;
+            }
+            
+            $second = rtrim(sprintf('%f', $second), '0');
 
-            return (string) preg_replace('/0+S$/', 'S', $interval->format($date.$time));
+            return $interval->format($date.$time).$second.'S';
         }
 
         if (0 !== $interval->s) {
@@ -204,7 +208,7 @@ final class Duration extends DateInterval
      *
      * @param mixed $reference_date a Reference datepoint
      *                              by default uses the epoch time
-     *                              accepts the same input as {@see Datepoint::create}
+     *                              accepts the same input as {@see \League\Period\Datepoint::create}
      */
     public function withoutCarryOver($reference_date = 0): self
     {

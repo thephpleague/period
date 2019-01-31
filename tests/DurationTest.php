@@ -87,10 +87,11 @@ class DurationTest extends TestCase
     /**
      * @dataProvider fromChronoProvider
      */
-    public function testCreateFromTimeString(string $chronometer, string $expected): void
+    public function testCreateFromTimeString(string $chronometer, string $expected, int $revert): void
     {
         $duration = Duration::create($chronometer);
         self::assertSame($expected, (string) $duration);
+        self::assertSame($revert, $duration->invert);
     }
 
     public function fromChronoProvider(): iterable
@@ -99,26 +100,32 @@ class DurationTest extends TestCase
             [
                 'chronometer' => '1',
                 'expected' => 'PT1S',
+                'invert' => 0,
             ],
             [
                 'chronometer' => '1:2',
                 'expected' => 'PT1M2S',
+                'invert' => 0,
             ],
             [
                 'chronometer' => '1:2:3',
                 'expected' => 'PT1H2M3S',
+                'invert' => 0,
             ],
             [
                 'chronometer' => '00001',
                 'expected' => 'PT1S',
+                'invert' => 0,
             ],
             [
                 'chronometer' => '00001:00002:000003.0004',
                 'expected' => 'PT1H2M3.0004S',
+                'invert' => 0,
             ],
             [
-                'chronometer' => '-12:-28.5',
-                'expected' => 'PT-12M-28.5S',
+                'chronometer' => '-12:28.5',
+                'expected' => 'PT12M28.5S',
+                'invert' => 1,
             ],
         ];
     }
