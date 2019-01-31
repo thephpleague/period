@@ -71,6 +71,35 @@ final class Period implements JsonSerializable
     private $boundaryType;
 
     /**
+     * Creates a new instance.
+     *
+     * @param mixed $startDate the starting datepoint
+     * @param mixed $endDate   the ending datepoint
+     *
+     * @throws Exception If $startDate is greater than $endDate
+     */
+    public function __construct($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
+    {
+        $startDate = self::getDatepoint($startDate);
+        $endDate = self::getDatepoint($endDate);
+        if ($startDate > $endDate) {
+            throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
+        }
+
+        if (!isset(self::BOUNDARY_TYPE[$boundaryType])) {
+            throw new Exception(sprintf(
+                'The boundary type `%s` is invalid. The only valid values are %s',
+                $boundaryType,
+                '`'.implode('`, `', array_keys(self::BOUNDARY_TYPE)).'`'
+            ));
+        }
+
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->boundaryType = $boundaryType;
+    }
+
+    /**
      * Returns a DateTimeImmutable instance.
      *
      * @param mixed $datepoint a Datepoint
@@ -232,34 +261,9 @@ final class Period implements JsonSerializable
         return new self($startDate, $startDate->add(new DateInterval('P1D')));
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param mixed $startDate the starting datepoint
-     * @param mixed $endDate   the ending datepoint
-     *
-     * @throws Exception If $startDate is greater than $endDate
-     */
-    public function __construct($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
-    {
-        $startDate = self::getDatepoint($startDate);
-        $endDate = self::getDatepoint($endDate);
-        if ($startDate > $endDate) {
-            throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
-        }
-
-        if (!isset(self::BOUNDARY_TYPE[$boundaryType])) {
-            throw new Exception(sprintf(
-                'The boundary type `%s` is invalid. The only valid values are %s',
-                $boundaryType,
-                '`'.implode('`, `', array_keys(self::BOUNDARY_TYPE)).'`'
-            ));
-        }
-
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
-        $this->boundaryType = $boundaryType;
-    }
+    /**************************************************
+     * Basic getters
+     **************************************************/
 
     /**
      * Returns the starting datepoint.
@@ -283,6 +287,22 @@ final class Period implements JsonSerializable
     public function getBoundaryType(): string
     {
         return $this->boundaryType;
+    }
+
+    /**
+     * Returns the instance duration as expressed in seconds.
+     */
+    public function getTimestampInterval(): float
+    {
+        return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
+    }
+
+    /**
+     * Returns the instance duration as a DateInterval object.
+     */
+    public function getDateInterval(): DateInterval
+    {
+        return $this->startDate->diff($this->endDate);
     }
 
     /**************************************************
@@ -379,7 +399,7 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * duration comparison methods
+     * Duration comparison methods
      **************************************************/
 
     /**
@@ -422,34 +442,29 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * relation methods
+     * Relation methods
      **************************************************/
 
     /**
-     * Tells whether two intervals share the same datepoints.
+     * Tells whether an instance is entirely before the specified index.
+     *
+     * The index can be a DateTimeInterface object or another Period object.
      *
      * [--------------------)
-     * [--------------------)
+     *                          [--------------------)
+     *
+     * @param mixed $index a datepoint or a Period object
      */
-    public function equals(self $interval): bool
+    public function isBefore($index): bool
     {
-        return $this->startDate == $interval->startDate
-            && $this->endDate == $interval->endDate
-            && $this->boundaryType === $interval->boundaryType;
-    }
+        if ($index instanceof self) {
+            return $this->endDate < $index->startDate
+                || ($this->endDate == $index->startDate && $this->boundaryType[1] !== $index->boundaryType[0]);
+        }
 
-    /**
-     * Tells whether two intervals abuts.
-     *
-     * [--------------------)
-     *                      [--------------------)
-     * or
-     *                      [--------------------)
-     * [--------------------)
-     */
-    public function abuts(self $interval): bool
-    {
-        return $this->bordersOnStart($interval) || $this->bordersOnEnd($interval);
+        $datepoint = self::getDatepoint($index);
+        return $this->endDate < $datepoint
+            || ($this->endDate == $datepoint && ')' === $this->boundaryType[1]);
     }
 
     /**
@@ -462,17 +477,6 @@ final class Period implements JsonSerializable
     {
         return $this->endDate == $interval->startDate
             && '][' !== $this->boundaryType[1].$interval->boundaryType[0];
-    }
-
-    /**
-     * Tells whether the current instance start date meets the interval end date.
-     *
-     *                      [--------------------)
-     * [--------------------)
-     */
-    public function bordersOnEnd(self $interval): bool
-    {
-        return $interval->bordersOnStart($this);
     }
 
     /**
@@ -499,87 +503,6 @@ final class Period implements JsonSerializable
         $index = self::getDatepoint($index);
 
         return $index == $this->startDate && '[' === $this->boundaryType[0];
-    }
-
-    /**
-     * Tells whether two intervals share the same end datepoint
-     * and the same ending boundary type.
-     *
-     *              [----------)
-     *    [--------------------)
-     *
-     * or
-     *
-     *    [--------------------)
-     *               [---------)
-     *
-     * @param mixed $index a datepoint or a Period object
-     */
-    public function isEndedBy($index): bool
-    {
-        if ($index instanceof self) {
-            return $this->endDate == $index->endDate
-                && $this->boundaryType[1] === $index->boundaryType[1];
-        }
-
-        $index = self::getDatepoint($index);
-
-        return $index == $this->endDate && ']' === $this->boundaryType[1];
-    }
-
-    /**
-     * Tells whether two intervals overlaps.
-     *
-     * [--------------------)
-     *          [--------------------)
-     */
-    public function overlaps(self $interval): bool
-    {
-        return !$this->abuts($interval)
-            && $this->startDate < $interval->endDate
-            && $this->endDate > $interval->startDate;
-    }
-
-    /**
-     * Tells whether an instance is entirely before the specified index.
-     *
-     * The index can be a DateTimeInterface object or another Period object.
-     *
-     * [--------------------)
-     *                          [--------------------)
-     *
-     * @param mixed $index a datepoint or a Period object
-     */
-    public function isBefore($index): bool
-    {
-        if ($index instanceof self) {
-            return $this->endDate < $index->startDate
-                || ($this->endDate == $index->startDate && $this->boundaryType[1] !== $index->boundaryType[0]);
-        }
-
-        $datepoint = self::getDatepoint($index);
-        return $this->endDate < $datepoint
-            || ($this->endDate == $datepoint && ')' === $this->boundaryType[1]);
-    }
-
-    /**
-     * Tells whether an interval is entirely after the specified index.
-     * The index can be a DateTimeInterface object or another Period object.
-     *
-     *                          [--------------------)
-     * [--------------------)
-     *
-     * @param mixed $index a datepoint or a Period object
-     */
-    public function isAfter($index): bool
-    {
-        if ($index instanceof self) {
-            return $index->isBefore($this);
-        }
-
-        $datepoint = self::getDatepoint($index);
-        return $this->startDate > $datepoint
-            || ($this->startDate == $datepoint && '(' === $this->boundaryType[0]);
     }
 
     /**
@@ -658,25 +581,106 @@ final class Period implements JsonSerializable
         }
     }
 
+    /**
+     * Tells whether two intervals share the same datepoints.
+     *
+     * [--------------------)
+     * [--------------------)
+     */
+    public function equals(self $interval): bool
+    {
+        return $this->startDate == $interval->startDate
+            && $this->endDate == $interval->endDate
+            && $this->boundaryType === $interval->boundaryType;
+    }
+
+    /**
+     * Tells whether two intervals share the same end datepoint
+     * and the same ending boundary type.
+     *
+     *              [----------)
+     *    [--------------------)
+     *
+     * or
+     *
+     *    [--------------------)
+     *               [---------)
+     *
+     * @param mixed $index a datepoint or a Period object
+     */
+    public function isEndedBy($index): bool
+    {
+        if ($index instanceof self) {
+            return $this->endDate == $index->endDate
+                && $this->boundaryType[1] === $index->boundaryType[1];
+        }
+
+        $index = self::getDatepoint($index);
+
+        return $index == $this->endDate && ']' === $this->boundaryType[1];
+    }
+
+    /**
+     * Tells whether the current instance start date meets the interval end date.
+     *
+     *                      [--------------------)
+     * [--------------------)
+     */
+    public function bordersOnEnd(self $interval): bool
+    {
+        return $interval->bordersOnStart($this);
+    }
+
+    /**
+     * Tells whether two intervals abuts.
+     *
+     * [--------------------)
+     *                      [--------------------)
+     * or
+     *                      [--------------------)
+     * [--------------------)
+     */
+    public function abuts(self $interval): bool
+    {
+        return $this->bordersOnStart($interval) || $this->bordersOnEnd($interval);
+    }
+
+    /**
+     * Tells whether two intervals overlaps.
+     *
+     * [--------------------)
+     *          [--------------------)
+     */
+    public function overlaps(self $interval): bool
+    {
+        return !$this->abuts($interval)
+            && $this->startDate < $interval->endDate
+            && $this->endDate > $interval->startDate;
+    }
+
+    /**
+     * Tells whether an interval is entirely after the specified index.
+     * The index can be a DateTimeInterface object or another Period object.
+     *
+     *                          [--------------------)
+     * [--------------------)
+     *
+     * @param mixed $index a datepoint or a Period object
+     */
+    public function isAfter($index): bool
+    {
+        if ($index instanceof self) {
+            return $index->isBefore($this);
+        }
+
+        $datepoint = self::getDatepoint($index);
+        return $this->startDate > $datepoint
+            || ($this->startDate == $datepoint && '(' === $this->boundaryType[0]);
+    }
+
     /**************************************************
-     * operation on duration methods
+     * Manipulating instance duration
      **************************************************/
-
-    /**
-     * Returns the instance duration as expressed in seconds.
-     */
-    public function getTimestampInterval(): float
-    {
-        return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
-    }
-
-    /**
-     * Returns the instance duration as a DateInterval object.
-     */
-    public function getDateInterval(): DateInterval
-    {
-        return $this->startDate->diff($this->endDate);
-    }
 
     /**
      * Returns the difference between two instances expressed in seconds.
@@ -787,7 +791,7 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * operation on relation methods
+     * Manipulation instance endpoints and boundaries
      **************************************************/
 
     /**
@@ -951,44 +955,8 @@ final class Period implements JsonSerializable
 
 
     /**************************************************
-     * mutation methods
+     * Mutation methods
      **************************************************/
-
-    /**
-     * Returns an instance with the specified starting datepoint.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
-     *
-     * @param mixed $startDate the new starting datepoint
-     */
-    public function startingOn($startDate): self
-    {
-        $startDate = self::getDatepoint($startDate);
-        if ($startDate == $this->startDate) {
-            return $this;
-        }
-
-        return new self($startDate, $this->endDate, $this->boundaryType);
-    }
-
-    /**
-     * Returns an instance with the specified ending datepoint.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
-     *
-     * @param mixed $endDate the new ending datepoint
-     */
-    public function endingOn($endDate): self
-    {
-        $endDate = self::getDatepoint($endDate);
-        if ($endDate == $this->endDate) {
-            return $this;
-        }
-
-        return new self($this->startDate, $endDate, $this->boundaryType);
-    }
 
     /**
      * Returns an instance with the specified boundary type.
@@ -1029,6 +997,42 @@ final class Period implements JsonSerializable
     public function withDurationBeforeEnd($duration): self
     {
         return $this->startingOn($this->endDate->sub(self::getDuration($duration)));
+    }
+
+    /**
+     * Returns an instance with the specified starting datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified starting datepoint.
+     *
+     * @param mixed $startDate the new starting datepoint
+     */
+    public function startingOn($startDate): self
+    {
+        $startDate = self::getDatepoint($startDate);
+        if ($startDate == $this->startDate) {
+            return $this;
+        }
+
+        return new self($startDate, $this->endDate, $this->boundaryType);
+    }
+
+    /**
+     * Returns an instance with the specified ending datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified ending datepoint.
+     *
+     * @param mixed $endDate the new ending datepoint
+     */
+    public function endingOn($endDate): self
+    {
+        $endDate = self::getDatepoint($endDate);
+        if ($endDate == $this->endDate) {
+            return $this;
+        }
+
+        return new self($this->startDate, $endDate, $this->boundaryType);
     }
 
     /**

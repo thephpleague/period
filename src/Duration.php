@@ -47,6 +47,28 @@ final class Duration extends DateInterval
     $@x';
 
     /**
+     * New instance.
+     *
+     * Returns a new instance from an Interval specification
+     */
+    public function __construct(string $interval_spec)
+    {
+        if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
+            parent::__construct($matches['interval'].'S');
+            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
+            return;
+        }
+
+        if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
+            parent::__construct($matches['interval']);
+            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
+            return;
+        }
+
+        parent::__construct($interval_spec);
+    }
+
+    /**
      * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
      *
      * The duration can be
@@ -118,28 +140,6 @@ final class Duration extends DateInterval
         }
 
         return $new;
-    }
-
-    /**
-     * New instance.
-     *
-     * Returns a new instance from an Interval specification
-     */
-    public function __construct(string $interval_spec)
-    {
-        if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
-            parent::__construct($matches['interval'].'S');
-            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
-            return;
-        }
-
-        if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
-            parent::__construct($matches['interval']);
-            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
-            return;
-        }
-
-        parent::__construct($interval_spec);
     }
 
     /**
