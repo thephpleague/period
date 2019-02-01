@@ -959,6 +959,42 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
+     * Returns an instance with the specified starting datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified starting datepoint.
+     *
+     * @param mixed $startDate the new starting datepoint
+     */
+    public function startingOn($startDate): self
+    {
+        $startDate = self::getDatepoint($startDate);
+        if ($startDate == $this->startDate) {
+            return $this;
+        }
+
+        return new self($startDate, $this->endDate, $this->boundaryType);
+    }
+
+    /**
+     * Returns an instance with the specified ending datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified ending datepoint.
+     *
+     * @param mixed $endDate the new ending datepoint
+     */
+    public function endingOn($endDate): self
+    {
+        $endDate = self::getDatepoint($endDate);
+        if ($endDate == $this->endDate) {
+            return $this;
+        }
+
+        return new self($this->startDate, $endDate, $this->boundaryType);
+    }
+
+    /**
      * Returns an instance with the specified boundary type.
      *
      * This method MUST retain the state of the current instance, and return
@@ -997,42 +1033,6 @@ final class Period implements JsonSerializable
     public function withDurationBeforeEnd($duration): self
     {
         return $this->startingOn($this->endDate->sub(self::getDuration($duration)));
-    }
-
-    /**
-     * Returns an instance with the specified starting datepoint.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
-     *
-     * @param mixed $startDate the new starting datepoint
-     */
-    public function startingOn($startDate): self
-    {
-        $startDate = self::getDatepoint($startDate);
-        if ($startDate == $this->startDate) {
-            return $this;
-        }
-
-        return new self($startDate, $this->endDate, $this->boundaryType);
-    }
-
-    /**
-     * Returns an instance with the specified ending datepoint.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
-     *
-     * @param mixed $endDate the new ending datepoint
-     */
-    public function endingOn($endDate): self
-    {
-        $endDate = self::getDatepoint($endDate);
-        if ($endDate == $this->endDate) {
-            return $this;
-        }
-
-        return new self($this->startDate, $endDate, $this->boundaryType);
     }
 
     /**
