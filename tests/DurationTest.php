@@ -127,6 +127,11 @@ class DurationTest extends TestCase
                 'expected' => 'PT12M28.5S',
                 'invert' => 1,
             ],
+            [
+                'chronometer' => '-28.5',
+                'expected' => 'PT28.5S',
+                'invert' => 1,
+            ],
         ];
     }
 
