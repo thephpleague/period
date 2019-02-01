@@ -15,6 +15,8 @@ The `Duration` class is introduced to ease duration manipulation. This class ext
 
 ### Duration::create
 
+<p class="message-info">Since <code>version 4.5</code> chronometer format is supported.</p>
+
 ~~~php
 public Duration::create($duration): self
 ~~~
@@ -65,6 +67,8 @@ new DateInterval('PT5M0.5S'); // will throw an Exception
 ## Duration representations
 
 ### String representation
+
+<p class="message-notice">Deprecated since <code>version 4.5</code>. You should use <code>Duration::format</code> instead.</p>
 
 ~~~php
 public Duration::__toString(void): string

@@ -23,7 +23,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Deprecated
 
-- None
+- `Duration::__toString` use `Duration::format` instead
 
 ### Removed
 

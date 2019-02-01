@@ -143,57 +143,54 @@ final class Duration extends DateInterval
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.5
+     * @see ::format
+     *
      * Returns the ISO8601 interval string representation.
      *
      * Microseconds fractions are included
      */
     public function __toString(): string
     {
-        return $this->toString($this);
-    }
-
-    /**
-     * Generates the ISO8601 interval string representation.
-     */
-    private function toString(DateInterval $interval): string
-    {
         $date = 'P';
         foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
-            if (0 !== $interval->$value) {
+            if (0 !== $this->$value) {
                 $date .= '%'.$value.$key;
             }
         }
 
         $time = 'T';
         foreach (['H' => 'h', 'M' => 'i'] as $key => $value) {
-            if (0 !== $interval->$value) {
+            if (0 !== $this->$value) {
                 $time .= '%'.$value.$key;
             }
         }
 
-        if (0.0 !== $interval->f) {
-            $second = $interval->s + $interval->f;
-            if (0 > $interval->s) {
-                $second = $interval->s - $interval->f;
+        if (0.0 !== $this->f) {
+            $second = $this->s + $this->f;
+            if (0 > $this->s) {
+                $second = $this->s - $this->f;
             }
             
             $second = rtrim(sprintf('%f', $second), '0');
 
-            return $interval->format($date.$time).$second.'S';
+            return $this->format($date.$time).$second.'S';
         }
 
-        if (0 !== $interval->s) {
+        if (0 !== $this->s) {
             $time .= '%sS';
 
-            return $interval->format($date.$time);
+            return $this->format($date.$time);
         }
         
         if ('T' !== $time) {
-            return $interval->format($date.$time);
+            return $this->format($date.$time);
         }
 
         if ('P' !== $date) {
-            return $interval->format($date);
+            return $this->format($date);
         }
 
         return 'PT0S';
@@ -216,11 +213,11 @@ final class Duration extends DateInterval
             $reference_date = Datepoint::create($reference_date);
         }
 
-        $duration = $reference_date->diff($reference_date->add($this));
-        if ($this->toString($duration) === $this->toString($this)) {
+        $duration = self::create($reference_date->diff($reference_date->add($this)));
+        if ($duration == $this) {
             return $this;
         }
 
-        return self::create($duration);
+        return $duration;
     }
 }
