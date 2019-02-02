@@ -62,5 +62,8 @@
         "branch-alias": {
             "dev-master": "4.x-dev"
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }

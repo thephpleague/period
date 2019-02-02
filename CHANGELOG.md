@@ -6,16 +6,16 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `Duration::create` now supports chronometer format
-- `Duration::withoutCarryOver`
 - `Datepoint::isBefore`
 - `Datepoint::bordersOnStart`
 - `Datepoint::isStarting`
 - `Datepoint::isDuring`
 - `Datepoint::isEnding`
 - `Datepoint::bordersOnEnd`
-- `Datepoint::abuts`
 - `Datepoint::isAfter`
+- `Datepoint::abuts`
+- `Duration::create` now supports chronometer format
+- `Duration::withoutCarryOver`
 
 ### Fixed
 
@@ -186,7 +186,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Fixed
 
-- Period::split does not work with daylight saving see [issue #68](https://github.com/thephpleague/period/issues/68)
+- `Period::split` does not work with daylight saving see [issue #68](https://github.com/thephpleague/period/issues/68)
 
 ### Deprecated
 

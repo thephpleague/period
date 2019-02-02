@@ -207,7 +207,7 @@ final class Duration extends DateInterval
      *                              by default uses the epoch time
      *                              accepts the same input as {@see \League\Period\Datepoint::create}
      */
-    public function withoutCarryOver($reference_date = 0): self
+    public function withoutCarryOver($reference_date): self
     {
         if (!$reference_date instanceof DateTimeImmutable) {
             $reference_date = Datepoint::create($reference_date);

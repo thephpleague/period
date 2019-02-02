@@ -632,6 +632,26 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Tells whether an interval is entirely after the specified index.
+     * The index can be a DateTimeInterface object or another Period object.
+     *
+     *                          [--------------------)
+     * [--------------------)
+     *
+     * @param mixed $index a datepoint or a Period object
+     */
+    public function isAfter($index): bool
+    {
+        if ($index instanceof self) {
+            return $index->isBefore($this);
+        }
+
+        $datepoint = self::getDatepoint($index);
+        return $this->startDate > $datepoint
+            || ($this->startDate == $datepoint && '(' === $this->boundaryType[0]);
+    }
+
+    /**
      * Tells whether two intervals abuts.
      *
      * [--------------------)
@@ -656,26 +676,6 @@ final class Period implements JsonSerializable
         return !$this->abuts($interval)
             && $this->startDate < $interval->endDate
             && $this->endDate > $interval->startDate;
-    }
-
-    /**
-     * Tells whether an interval is entirely after the specified index.
-     * The index can be a DateTimeInterface object or another Period object.
-     *
-     *                          [--------------------)
-     * [--------------------)
-     *
-     * @param mixed $index a datepoint or a Period object
-     */
-    public function isAfter($index): bool
-    {
-        if ($index instanceof self) {
-            return $index->isBefore($this);
-        }
-
-        $datepoint = self::getDatepoint($index);
-        return $this->startDate > $datepoint
-            || ($this->startDate == $datepoint && '(' === $this->boundaryType[0]);
     }
 
     /**************************************************
