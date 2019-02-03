@@ -21,7 +21,7 @@ $endDate = $date->add($duration);
 $interval = new Period($startDate, $endDate);
 ~~~
 
-To help you start working with `Period` objects, the library comes bundled with many more named constructors to ease manipulating datetime intervals.
+To help you start working with `Period` objects, the library comes bundled with many more named constructors to ease datepoint, duration and intervals creation.
 
 ## iterating over the interval made simple
 
@@ -47,15 +47,17 @@ The library also allow iterating backwards over the interval.
 
 ## compare intervals and datepoints
 
-You can compare time ranges based on their duration and/or their datepoints.
+You can compare time ranges based on their duration, their datepoints and even their boundary types.
 
 ~~~php
-$period = Period::after('2014-01-01', '1 WEEK');
-$altPeriod = Period::fromIsoWeek(2014, 3);
-$period->durationEquals($altPeriod); //returns true
-$period->equals($altPeriod); //returns false
-$period->contains($altPeriod); //returns false
-$period->contains('2014-01-02'); //returns true
+$period = Period::after('2014-01-01', '1 MONTH', Period::INCLUDE_ALL);
+$altPeriod = Period::after('2014-01-01', '1 MONTH', Period::EXCLUDE_ALL);
+$period->durationEquals($altPeriod), //returns true
+$period->equals($altPeriod), //returns false
+$period->contains($altPeriod), //returns true
+$altPeriod->contains($period), //return false
+$period->contains('2014-01-10'), //returns true
+Datepoint::create('2014-02-10')->isDuring($period) //returns false
 ~~~
 
 ## Modifying time ranges
@@ -74,7 +76,7 @@ $altPeriod->durationGreaterThan($period); //return true;
 Format and export your `Period` instance following standardized format.
 
 ~~~php
-$period = Period::after('2014-10-03 08:00:00', 3600);
+$period = Period::after('2014-10-03 08:00:00', 3600, Period::INCLUDE_START_EXCLUDE_END);
 
 echo $period; // 2014-10-03T06:00:00.000000Z/2014-10-03T07:00:00.000000Z
 echo $period->format('Y-m-d H:i:s'); // [2014-10-03 08:00:00, 2014-10-03 09:00:00)

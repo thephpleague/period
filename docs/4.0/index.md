@@ -12,11 +12,13 @@ redirect_from: /examples/
 [![Build Status](//img.shields.io/travis/thephpleague/period/master.svg?style=flat-square)](//travis-ci.org/thephpleague/period)
 [![Total Downloads](//img.shields.io/packagist/dt/league/period.svg?style=flat-square)](//packagist.org/packages/league/period)
 
-`Period` is PHP's missing time range API. It is based on [Resolving Feature Envy in the Domain](//verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding interval.
+`Period` is PHP's missing time range API. Based on ideas from [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
 
 <p class="message-info">In your code, you will always have to typehint against the <code>League\Period\Period</code> class directly because it is a immutable value object class marked as final and the library does not provide an interface.</p>
 
 <p class="message-info">Since <code>version 4.1</code> a <code>League\Period\Sequence</code> class is added to improve manipulating a collection of <code>Period</code> objects.</p>
+
+<p class="message-info">Since <code>version 4.4</code> the <code>Period</code> objects supports all types of boundary with the exception of unbounded interval.</p>
 
 ## Accessing the interval properties
 
@@ -26,6 +28,7 @@ use League\Period\Period;
 $interval = new Period(
     new DateTime('2014-10-03 08:12:37'),
     new DateTimeImmutable('2014-10-03 08:12:37')
+    Period::INCLUDE_START_EXCLUDE_END
 );
 $start = $interval->getStartDate(); //returns a DateTimeImmutable
 $end = $interval->getEndDate();     //returns a DateTimeImmutable
@@ -51,13 +54,19 @@ To help easily instantiate your time range and manipulating it, the package come
 ## Comparing intervals
 
 ~~~php
-$interval = Period::after('2014-01-01', '1 WEEK');
-$alt_interval = Period::fromIsoWeek(2014, 1);
-$interval->durationEquals($alt_interval); //returns true
-$interval->equals($alt_interval);         //returns false
+$period = Period::after('2014-01-01', '1 MONTH', Period::INCLUDE_ALL);
+$altPeriod = Period::after('2014-01-01', '1 MONTH', Period::EXCLUDE_ALL);
+$period->durationEquals($altPeriod), //returns true
+$period->equals($altPeriod), //returns false
+$period->contains($altPeriod), //returns true
+$altPeriod->contains($period), //return false
+$period->contains('2014-01-10'), //returns true
+Datepoint::create('2014-02-10')->isDuring($period) //returns false
 ~~~
 
-The class comes with other ways to [compare time ranges](/4.0/comparing/) based on their duration and/or their datepoints.
+The class comes with other ways to [compare time ranges](/4.0/comparing/) based on their duration and/or their datepoints.  
+`Datepoint` extends `DateTimeImmutable` and offers more [methods](/4.0/datepoint/).
+
 
 ## Modifying interval
 

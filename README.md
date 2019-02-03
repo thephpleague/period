@@ -8,16 +8,16 @@ Period
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/period.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/period/code-structure)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
 
-`Period` is PHP's missing time range API. It is based on [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes and extends the concept to cover all basic operations regarding time ranges.
+`Period` is PHP's missing time range API. Based on ideas from [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
 
 ## Highlights
 
-- Treats a time range as an immutable value object
-- Exposes many named constructors to ease time range creation
+- Represents Interval, Datepoint, Duration and Collection as value objects
+- Exposes named constructors to ease object creation
 - Covers all basic manipulations related to time range
+- Enables working with simple or complex time ranges logic
 - Fully documented
 - Framework-agnostic
-- Composer ready, [PSR-2], and [PSR-4] compliant
 
 Documentation
 -------
@@ -37,6 +37,22 @@ Install `Period` using Composer.
 ```
 $ composer require league/period
 ```
+
+or download the library and:
+
+- use any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
+- use the bundle autoloader script as shown below:
+
+~~~php
+require 'path/to/period/repo/autoload.php';
+
+use League\Period\Datepoint;
+
+Datepoint::create('2012-05-23')->getDay()->getDateInterval();
+//returns new DateInterval('P1D');
+~~~
+
+where `path/to/period/repo` represents the path where the library was extracted.
 
 Testing
 -------
@@ -67,9 +83,6 @@ Credits
 
 - [Ignace Nyamagana Butera](https://github.com/nyamsprod)
 - [All Contributors](https://github.com/thephpleague/period/graphs/contributors)
-
-[PSR-2]: http://www.php-fig.org/psr/psr-2/
-[PSR-4]: http://www.php-fig.org/psr/psr-4/
 
 License
 -------

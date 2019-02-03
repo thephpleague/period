@@ -40,7 +40,40 @@ The following methods were already marked as deprecated is the `3.x` line. They 
 
 ### Named constructors
 
-To reduce code and allow more flexibility all named constructors have been removed from the `Period` class. They are replaced by functions defined in the same namespace as the `Period` class.
+If you are migrating from `3.x` to `4.2+` version you should use the new named constructors
+
+| old named constructors                |  new named constructors |
+| ------------------------------------- | ----------------------- |
+| `Period::createFromYear`              | `Period::fromYear`      |
+| `Period::createFromMonth`             | `Period::fromMonth`     |
+| `Period::createFromWeek`              | `Period::fromIsoWeek`   |
+| `Period::createFromDay`               | `Period::fromDay`       |
+| `Period::createFromSemester`          | `Period::fromSemester`  |
+| `Period::createFromQuarter`           | `Period::fromQuarter`   |
+| `Period::createFromDuration`          | `Period::after`         |
+| `Period::createFromDurationBeforeEnd` | `Period::before`        |
+
+The arguments are the same as in version 3 but the new named constructors accepts overflow like `DateTimeImmutable` objects.
+
+Before:
+
+~~~php
+use League\Period\Period;
+
+$period = Period::createFromMonth(2013, 15);
+// throw LogicException
+~~~
+
+After:
+
+~~~php
+use League\Period\Period;
+
+$period = Period::fromMonth(2013, 15);
+// returns new Period('2014-03-01', '2014-04-01')
+~~~
+
+If you are using `4.2-` version you are required to use functions defined in the same namespace as the `Period` class.
 
 | removed named constructors            |  new functions    |
 | ------------------------------------- | ----------------- |
