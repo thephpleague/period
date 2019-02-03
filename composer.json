@@ -1,8 +1,26 @@
 {
     "name": "league/period",
     "type": "library",
-    "description" : "A time range immutable value object",
-    "keywords": ["date", "time", "datetime", "range", "interval", "dateinterval", "dateperiod"],
+    "description" : "Time range API for PHP",
+    "keywords": [
+        "date",
+        "time",
+        "timeline",
+        "datetime",
+        "range",
+        "interval",
+        "dateinterval",
+        "dateperiod",
+        "calendar",
+        "schedule",
+        "boundaries",
+        "sequence",
+        "collection",
+        "period",
+        "gap",
+        "intersections",
+        "unions"
+    ],
     "license": "MIT",
     "homepage": "http://period.thephpleague.com",
     "authors": [
@@ -14,7 +32,6 @@
         }
     ],
     "support": {
-        "forum": "https://groups.google.com/forum/#!forum/thephpleague",
         "issues": "https://github.com/thephpleague/period/issues"
     },
     "require": {
