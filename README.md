@@ -57,7 +57,15 @@ where `path/to/period/repo` represents the path where the library was extracted.
 Testing
 -------
 
-`Period` has a [PHPUnit](https://phpunit.de) test suite and a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/). To run the tests, run the following command from the project folder.
+`Period` has:
+
+- a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/).
+- a code analysis compliance test suite using [PHPStan](https://github.com/phpstan/phpstan).
+- a [PHPUnit](https://phpunit.de) test suite
+- an optional [mutation test run](https://github.com/infection/infection)
+
+To run the tests, run the following command from the project folder.
+
 
 ``` bash
 $ composer test
