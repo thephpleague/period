@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next -TBD
+## 4.5.0 - 2019-02-03
 
 ### Added
 
@@ -19,7 +19,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Fixed
 
-- None
+- `Period::durationCompare` to take into account Timezone and DST
 
 ### Deprecated
 

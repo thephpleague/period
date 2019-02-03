@@ -414,7 +414,8 @@ final class Period implements JsonSerializable
      */
     public function durationCompare(self $interval): int
     {
-        return $this->endDate <=> $this->startDate->add($interval->getDateInterval());
+        return $this->startDate->add($this->getDateInterval())
+            <=> $this->startDate->add($interval->getDateInterval());
     }
 
     /**

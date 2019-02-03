@@ -114,6 +114,11 @@ class DurationRelationTest extends TestCase
                 new Period(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
                 0,
             ],
+            'duration with DST' => [
+                new Period('2014-03-01', '2014-04-01'),
+                new Period('2014-03-01', '2014-04-01'),
+                0,
+            ],
         ];
     }
 
