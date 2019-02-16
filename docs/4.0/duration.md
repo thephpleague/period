@@ -85,23 +85,24 @@ As per the specification the smallest value (ie the second) can accept a decimal
 
 ## Duration mutation method
 
-### Removing carry over
+### Adjusting duration according to a datepoint
 
-<p class="message-info">Since <code>version 4.5</code></p>
+<p class="message-info">Since <code>version 4.6</code></p>
+<p class="message-notice">Replaces and deprecates the <code>withoutCarryOver</code> method introduced in <code>version 4.5</code>.</p>
 
 ~~~php
-public Duration::withoutCarryOver($reference_date): self
+public Duration::adjustedTo($reference_date): self
 ~~~
 
-Returns a new instance with recalculate time and date segments to remove carry over points according to a reference datepoint. If the recalculate interval does not change the current object then it is returned as is, otherwise a new object is returned.
+Returns a new instance with recalculate duration according to the given datepoint. If the recalculate interval does not change the current object then it is returned as is, otherwise a new object is returned.
 
 The reference datepoint can be any valid vaue accepted by the `Datepoint::create` named constructor.  
 
 ~~~php
 $duration = Duration::create('29 days');
 echo $duration; // 'P29D'
-echo $duration->withoutCarryOver('2019-02-01'); // 'P1M1D' using a non leap year
-echo $duration->withoutCarryOver('2020-02-01'); // 'P1M'   using a leap year
+echo $duration->adjustedTo('2019-02-01'); // 'P1M1D' using a non leap year
+echo $duration->adjustedTo('2020-02-01'); // 'P1M'   using a leap year
 ~~~
 
 <p class="message-notice">The returned object depends on the date time <strong>and</strong> timezone or the <code>$reference_date</code></p>

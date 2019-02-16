@@ -197,17 +197,34 @@ final class Duration extends DateInterval
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.6
+     * @see ::adjustedTo
+     *
      * Returns a new instance with recalculate time and date segments to remove carry over points.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * @param mixed $reference_date a Reference datepoint
-     *                              by default uses the epoch time
-     *                              accepts the same input as {@see \League\Period\Datepoint::create}
+     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
      */
     public function withoutCarryOver($reference_date): self
+    {
+        return $this->adjustedTo($reference_date);
+    }
+
+    /**
+     * Returns a new instance with recalculate properties according to a given datepoint.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the time and date segments recalculate to remove
+     * carry over points.
+     *
+     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
+     */
+    public function adjustedTo($reference_date): self
     {
         if (!$reference_date instanceof DateTimeImmutable) {
             $reference_date = Datepoint::create($reference_date);

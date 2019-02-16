@@ -6,7 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- `Duration::adjustedTo`
 
 ### Fixed
 
@@ -14,7 +14,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Deprecated
 
-- None
+- `Duration::withoutCarryOver` use `Duration::adjustedTo` instead
 
 ### Removed
 
