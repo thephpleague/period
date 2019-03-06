@@ -33,6 +33,12 @@ matrix:
         - RUN_PHPSTAN=true
         - RUN_INFECTION=false
         - VALIDATE_CODING_STYLE=false
+    - php: 7.4snapshot
+      env:
+        - COLLECT_COVERAGE=false
+        - VALIDATE_CODING_STYLE=false
+        - RUN_PHPSTAN=false
+        - IGNORE_PLATFORMS=true
     - php: nightly
       env:
         - COLLECT_COVERAGE=false
