@@ -2,11 +2,12 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.6.0 - 2019-03-06
 
 ### Added
 
 - `Duration::adjustedTo`
+- Internals: added support for PHP7.4 and PHP8.0 in travis.yml
 
 ### Fixed
 
