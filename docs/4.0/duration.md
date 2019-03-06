@@ -1,9 +1,9 @@
 ---
 layout: default
-title: The Sequence class
+title: The Duration class
 ---
 
-# The Duration object
+# The Duration class
 
 <p class="message-info">The <code>Duration</code> class is introduced in <code>version 4.2</code>.</p>
 

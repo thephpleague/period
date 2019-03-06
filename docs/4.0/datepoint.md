@@ -1,9 +1,9 @@
 ---
 layout: default
-title: The Sequence class
+title: The Datepoint class
 ---
 
-# The Datepoint object
+# The Datepoint class
 
 <p class="message-info">The <code>Datepoint</code> class is introduced in <code>version 4.2</code>.</p>
 

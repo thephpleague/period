@@ -21,7 +21,7 @@ You can manipulate a `Period` object according to their datepoints or durations.
 public Period::startingOn(mixed $datepoint): Period
 ~~~
 
-Returns a new `Period` object with `$datepoint` as the new **starting included datepoint**.
+Returns a new `Period` object with `$datepoint` as the new **starting datepoint**.
 
 #### Example
 
@@ -39,7 +39,7 @@ $new_interval->getStartDate(); //returns DateTimeImmutable('2014-02-01');
 public Period::endingOn(mixed $datepoint): Period
 ~~~
 
-Returns a new `Period` object with `$datepoint` as the new **ending excluded datepoint**.
+Returns a new `Period` object with `$datepoint` as the new **ending datepoint**.
 
 #### Example
 
@@ -59,7 +59,7 @@ $new_interval->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 public Period::withDurationAfterStart(mixed $duration): Period
 ~~~
 
-Returns a new `Period` object by updating its duration. Only the excluded ending datepoint is updated.
+Returns a new `Period` object by updating its duration. Only the ending datepoint is updated.
 
 #### Example
 
@@ -77,7 +77,7 @@ $new_interval->getEndDate(); //returns DateTimeImmutable('2014-03-16');
 public Period::withDurationBeforeEnd(mixed $duration): Period
 ~~~
 
-Returns a new `Period` object by updating its duration. Only the included starting datepoint is updated.
+Returns a new `Period` object by updating its duration. Only the starting datepoint is updated.
 
 #### Example
 
