@@ -560,10 +560,12 @@ class PeriodTest extends TestCase
         $periodB = new Period(new DateTimeImmutable('2000-01-01 14:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
         $diff1 = $periodA->substract($periodB);
         $diff2 = $periodB->substract($periodA);
-        self::assertEquals(new DateTimeImmutable('2000-01-01 10:00:00'), $diff1->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 14:00:00'), $diff1->getEndDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 18:00:00'), $diff2->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 20:00:00'), $diff2->getEndDate());
+        self::assertCount(1, $diff1);
+        self::assertEquals(new DateTimeImmutable('2000-01-01 10:00:00'), $diff1[0]->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2000-01-01 14:00:00'), $diff1[0]->getEndDate());
+        self::assertCount(1, $diff2);
+        self::assertEquals(new DateTimeImmutable('2000-01-01 18:00:00'), $diff2[0]->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2000-01-01 20:00:00'), $diff2[0]->getEndDate());
     }
 
     public function testSubstractWithSeparatePeriods(): void
@@ -572,8 +574,10 @@ class PeriodTest extends TestCase
         $periodB = new Period(new DateTimeImmutable('2000-01-01 15:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
         $diff1 = $periodA->substract($periodB);
         $diff2 = $periodB->substract($periodA);
-        self::assertTrue($diff1->equals($periodA));
-        self::assertTrue($diff2->equals($periodB));
+        self::assertCount(1, $diff1);
+        self::assertTrue($diff1[0]->equals($periodA));
+        self::assertCount(1, $diff2);
+        self::assertTrue($diff2[0]->equals($periodB));
     }
 
     public function testToString(): void
