@@ -566,6 +566,16 @@ class PeriodTest extends TestCase
         self::assertEquals(new DateTimeImmutable('2000-01-01 20:00:00'), $diff2->getEndDate());
     }
 
+    public function testSubstractWithSeparatePeriods(): void
+    {
+        $periodA = new Period(new DateTimeImmutable('2000-01-01 10:00:00'), new DateTimeImmutable('2000-01-01 14:00:00'));
+        $periodB = new Period(new DateTimeImmutable('2000-01-01 15:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
+        $diff1 = $periodA->substract($periodB);
+        $diff2 = $periodB->substract($periodA);
+        self::assertNull($diff1);
+        self::assertNull($diff2);
+    }
+
     public function testToString(): void
     {
         date_default_timezone_set('Africa/Nairobi');
