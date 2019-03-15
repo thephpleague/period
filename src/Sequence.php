@@ -222,7 +222,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns the sum of all instances duration as expressed in seconds.
+     * Returns the sum of all instances durations as expressed in seconds.
      */
     public function getTotaTimestampInterval(): float
     {
