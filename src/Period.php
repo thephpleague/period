@@ -910,7 +910,7 @@ final class Period implements JsonSerializable
 
         $sequence = new Sequence();
         foreach ($diffArray AS $diff) {
-            if ($diff && $this->overlaps($diff)) {
+            if (null !== $diff && $this->overlaps($diff)) {
                 $sequence->push($diff);
             }
         }
