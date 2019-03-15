@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period;
 
+use Sequence;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
@@ -888,9 +889,9 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns the difference set operation between two intervals and returns
-     * a Period objects or the null value when the result of the operation
-     * is empty.
+     * Returns the difference set operation between two intervals as a Sequence.
+     * The Sequence can contain from 0 to 2 Periods depending on the result of
+     * the operation.
      *
      * [--------------------)
      *          -
@@ -898,22 +899,24 @@ final class Period implements JsonSerializable
      *          =
      * [--------------)
      *
-     * @return null|Period
+     * @return Sequence
      */
-    public function substract(self $interval): ?Period
+    public function substract(self $interval): Sequence
     {
         if (!$this->overlaps($interval)) {
-            return $this;
+            return new Sequence($this);
         }
 
         $diffArray = $this->diff($interval);
+
+        $sequence = new Sequence();
         foreach ($diffArray AS $diff) {
             if ($diff && $this->overlaps($diff)) {
-                return $diff;
+                $sequence->push($diff);
             }
         }
 
-        return null;
+        return $sequence;
     }
 
     /**
