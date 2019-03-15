@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace League\Period;
 
-use Sequence;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
