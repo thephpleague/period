@@ -224,7 +224,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function getTotaTimestampInterval(): float
+    public function getInnerTimestampInterval(): float
     {
         $func = function (int $carry, Period $interval): float {
             return $carry + $interval->getTimestampInterval();
