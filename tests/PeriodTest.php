@@ -554,6 +554,18 @@ class PeriodTest extends TestCase
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
+    public function testSubstractWithOverlappingUnequalPeriods(): void
+    {
+        $periodA = new Period(new DateTimeImmutable('2000-01-01 10:00:00'), new DateTimeImmutable('2000-01-01 18:00:00'));
+        $periodB = new Period(new DateTimeImmutable('2000-01-01 14:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
+        $diff1 = $periodA->substract($periodB);
+        $diff2 = $periodB->substract($periodA);
+        self::assertEquals(new DateTimeImmutable('2000-01-01 10:00:00'), $diff1->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2000-01-01 14:00:00'), $diff1->getEndDate());
+        self::assertEquals(new DateTimeImmutable('2000-01-01 18:00:00'), $diff2->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2000-01-01 20:00:00'), $diff2->getEndDate());
+    }
+
     public function testToString(): void
     {
         date_default_timezone_set('Africa/Nairobi');
