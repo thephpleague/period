@@ -888,6 +888,35 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Returns the difference set operation between two intervals and returns
+     * a Period objects or the null value when the result of the operation
+     * is empty.
+     *
+     * [--------------------)
+     *          -
+     *                [-----------)
+     *          =
+     * [--------------)
+     *
+     * @return null|Period
+     */
+    public function substract(self $interval): ?Period
+    {
+        if (!$this->overlaps($interval)) {
+            return $this;
+        }
+
+        $diffArray = $this->diff($interval);
+        foreach ($diffArray AS $diff) {
+            if ($diff && $this->overlaps($diff)) {
+                return $diff;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the computed gap between two instances as a new instance.
      *
      * [--------------------)
