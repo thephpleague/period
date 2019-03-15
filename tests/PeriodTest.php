@@ -572,8 +572,8 @@ class PeriodTest extends TestCase
         $periodB = new Period(new DateTimeImmutable('2000-01-01 15:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
         $diff1 = $periodA->substract($periodB);
         $diff2 = $periodB->substract($periodA);
-        self::assertNull($diff1);
-        self::assertNull($diff2);
+        self::assertTrue($diff1->equals($periodA));
+        self::assertTrue($diff2->equals($periodB));
     }
 
     public function testToString(): void
