@@ -897,8 +897,6 @@ final class Period implements JsonSerializable
      *                [-----------)
      *          =
      * [--------------)
-     *
-     * @return Sequence
      */
     public function substract(self $interval): Sequence
     {
