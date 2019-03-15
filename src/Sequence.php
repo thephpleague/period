@@ -222,6 +222,18 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
+     * Returns the sum of all instances duration as expressed in seconds.
+     */
+    public function getTotaTimestampInterval(): float
+    {
+        $func = function (int $carry, Period $interval): float {
+            return $carry + $interval->getTimestampInterval();
+        };
+
+        return $this->reduce($func, 0);
+    }
+
+    /**
      * Tells whether some intervals in the current instance satisfies the predicate.
      */
     public function some(callable $predicate): bool
