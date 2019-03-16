@@ -108,3 +108,20 @@ $sequence = new Sequence(
 $unions = $sequence->unions(); // a new Sequence object
 count($unions); // returns 2
 ~~~
+
+#### Sequence total timestamp interval
+
+<p class="message-info">Since <code>version 4.7</code></p>
+
+Returns the sum of all instances durations as expressed in seconds.
+
+~~~php
+$sequence = new Sequence(
+    Period::fromMonth(2017, 1),
+    Period::fromMonth(2018, 1)
+);
+$timestamp = $sequence->getTotalTimestampInterval(); // a float
+~~~
+
+<p class="message-notice">The return value will always be lesser or equals to the result of <code>Sequence::boundaries()->getTimestampInterval()</code></p>
+.

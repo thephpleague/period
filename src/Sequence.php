@@ -226,11 +226,12 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function getTotalTimestampInterval(): float
     {
-        $func = function (float $carry, Period $interval): float {
-            return $carry + $interval->getTimestampInterval();
-        };
+        $retval = 0;
+        foreach ($this->intervals as $interval) {
+            $retval += $interval->getTimestampInterval();
+        }
 
-        return $this->reduce($func, 0);
+        return $retval;
     }
 
     /**
