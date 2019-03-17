@@ -23,6 +23,13 @@ use function League\Period\instant;
 use function League\Period\interval_after;
 use function League\Period\month;
 
+/**
+ * @deprecated since version 4.4.0
+ *
+ * Test class this test suite is preserved to validate
+ * that no BC breaks happens
+ * Please use the test suite in the /tests/Period subdirectory instead
+ */
 class PeriodTest extends TestCase
 {
     public function testIsBeforeDateTimeInterface(): void
@@ -552,46 +559,6 @@ class PeriodTest extends TestCase
         self::assertSame(3600.0, $diff1->getTimestampInterval());
         self::assertSame(3600.0, $diff2->getTimestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
-    }
-
-    public function testSubstractWithOverlappingUnequalPeriods(): void
-    {
-        $periodA = new Period(new DateTimeImmutable('2000-01-01 10:00:00'), new DateTimeImmutable('2000-01-01 18:00:00'));
-        $periodB = new Period(new DateTimeImmutable('2000-01-01 14:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
-        $diff1 = $periodA->substract($periodB);
-        $diff2 = $periodB->substract($periodA);
-        self::assertCount(1, $diff1);
-        self::assertEquals(new DateTimeImmutable('2000-01-01 10:00:00'), $diff1[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 14:00:00'), $diff1[0]->getEndDate());
-        self::assertCount(1, $diff2);
-        self::assertEquals(new DateTimeImmutable('2000-01-01 18:00:00'), $diff2[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 20:00:00'), $diff2[0]->getEndDate());
-    }
-
-    public function testSubstractWithSeparatePeriods(): void
-    {
-        $periodA = new Period(new DateTimeImmutable('2000-01-01 10:00:00'), new DateTimeImmutable('2000-01-01 14:00:00'));
-        $periodB = new Period(new DateTimeImmutable('2000-01-01 15:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
-        $diff1 = $periodA->substract($periodB);
-        $diff2 = $periodB->substract($periodA);
-        self::assertCount(1, $diff1);
-        self::assertTrue($diff1[0]->equals($periodA));
-        self::assertCount(1, $diff2);
-        self::assertTrue($diff2[0]->equals($periodB));
-    }
-
-    public function testSubstractWithOnePeriodContainedInAnother(): void
-    {
-        $periodA = new Period(new DateTimeImmutable('2000-01-01 10:00:00'), new DateTimeImmutable('2000-01-01 20:00:00'));
-        $periodB = new Period(new DateTimeImmutable('2000-01-01 15:00:00'), new DateTimeImmutable('2000-01-01 16:00:00'));
-        $diff1 = $periodA->substract($periodB);
-        $diff2 = $periodB->substract($periodA);
-        self::assertCount(2, $diff1);
-        self::assertEquals(new DateTimeImmutable('2000-01-01 10:00:00'), $diff1[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 15:00:00'), $diff1[0]->getEndDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 16:00:00'), $diff1[1]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2000-01-01 20:00:00'), $diff1[1]->getEndDate());
-        self::assertCount(0, $diff2);
     }
 
     public function testToString(): void

@@ -6,6 +6,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Period::substract`
 - `Sequence::getTotalTimestampInterval`
 
 ### Fixed 

@@ -412,3 +412,47 @@ $last->equals(new Period('2013-01-23', '2013-02-01'));  // returns true
 $first->isBefore($last); //return true;
 //this is always true when two Period objects are present
 ~~~
+
+### Period::substract
+
+<p class="message-info">Since <code>version 4.7</code></p>
+
+~~~php
+public Period::substract(Period $interval): Sequence
+~~~
+
+This method returns the difference between two `Period` objects. It differs from `Period::diff` as:
+
+- the method is **not** commutative;
+- the method returns a [Sequence](/4.0/sequence/container/) object;
+- the method never throws even when the instances do not overlaps;
+
+![](/media/period-substract.png "Period substraction")
+
+#### Examples
+
+~~~php
+$periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
+$periodB = Period::after('2000-01-01 14:00:00', '6 HOURS');
+$periodC = Period::before('2019-01-03', '1 MONTH');
+
+$sequenceAB = $periodA->substract($periodB);
+count($sequenceAB); //returns 1
+$sequenceAB[0]->equals
+	new Period($periodA->getStartDate(), $periodB->getStartDate())
+);
+
+$sequenceBA = $periodB->substract($periodA);
+count($sequenceBA); //returns 1
+$sequenceBA[0]->equals(
+	new Period($periodA->getEndDate(), $periodB->getEndDate())
+);
+
+$sequenceAC = $periodA->substract($periodC);
+count($sequenceAC); //returns 1
+$sequenceAC[0]->equals($periodA); //returns true
+
+$sequenceCA = $periodC->substract($periodA);
+count($sequenceCA); //returns 1
+$sequenceCA[0]->equals($periodC); //returns true
+~~~
