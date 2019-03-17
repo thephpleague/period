@@ -888,6 +888,35 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Returns the difference set operation between two intervals as a Sequence.
+     * The Sequence can contain from 0 to 2 Periods depending on the result of
+     * the operation.
+     *
+     * [--------------------)
+     *          -
+     *                [-----------)
+     *          =
+     * [--------------)
+     */
+    public function substract(self $interval): Sequence
+    {
+        if (!$this->overlaps($interval)) {
+            return new Sequence($this);
+        }
+
+        $diffArray = $this->diff($interval);
+
+        $sequence = new Sequence();
+        foreach ($diffArray as $diff) {
+            if (null !== $diff && $this->overlaps($diff)) {
+                $sequence->push($diff);
+            }
+        }
+
+        return $sequence;
+    }
+
+    /**
      * Returns the computed gap between two instances as a new instance.
      *
      * [--------------------)
