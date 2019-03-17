@@ -6,12 +6,13 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `Period::substract`
-- `Sequence::getTotalTimestampInterval`
+- `Period::substract` see PR [#80](https://github.com/thephpleague/period/issues/80)
+- `Sequence::getTotalTimestampInterval` see PR [#79](https://github.com/thephpleague/period/issues/79)
 
 ### Fixed 
 
-- None
+- Update `Duration::createFromDateString` to take into account [DateInterval::createFromDateString
+bug fix](https://bugs.php.net/bug.php?id=50020)
 
 ### Deprecated
 
