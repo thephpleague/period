@@ -19,6 +19,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
+use function array_filter;
 use function array_keys;
 use function implode;
 use function sprintf;
