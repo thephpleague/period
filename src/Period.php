@@ -901,25 +901,15 @@ final class Period implements JsonSerializable
      */
     public function substract(self $interval): Sequence
     {
-        $retval = new Sequence();
         if (!$this->overlaps($interval)) {
-            $retval->push($this);
-
-            return $retval;
+            return new Sequence($this);
         }
 
         $filter = function ($item): bool {
             return null !== $item && $this->overlaps($item);
         };
 
-        $diff = array_filter($this->diff($interval), $filter);
-        if ([] === $diff) {
-            return $retval;
-        }
-
-        $retval->push(...$diff);
-
-        return $retval;
+        return new Sequence(...array_filter($this->diff($interval), $filter));
     }
 
     /**

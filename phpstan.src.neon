@@ -5,4 +5,5 @@ parameters:
         # Allow iterating over a DateInterval object to enable clean class extension
         - '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
         - '#Strict comparison using === between false and DateInterval will always evaluate to false.#'
+        - '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
     reportUnmatchedIgnoredErrors: true
