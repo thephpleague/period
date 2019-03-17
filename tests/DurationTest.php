@@ -22,10 +22,15 @@ class DurationTest extends TestCase
     public function testCreateFromDateString(): void
     {
         $duration = Duration::createFromDateString('+1 DAY');
-        self::assertSame(1, $duration->d);
-        self::assertFalse($duration->days);
         $altduration = Duration::createFromDateString('foobar');
-        self::assertSame(0, $altduration->s);
+        if (false !== $duration) {
+            self::assertSame(1, $duration->d);
+            self::assertFalse($duration->days);
+        }
+
+        if (false !== $altduration) {
+            self::assertSame(0, $altduration->s);
+        }
     }
 
     /**

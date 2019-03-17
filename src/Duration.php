@@ -110,15 +110,24 @@ final class Duration extends DateInterval
 
         $duration = (string) $duration;
         if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
-            return self::createFromDateString($duration);
+            $new = self::createFromDateString($duration);
+            if ($new !== false) {
+                return $new;
+            }
+
+            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
         $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
-        $instance = self::createFromDateString(
-            $matches['hour'].' hours '.
+        $expression = $matches['hour'].' hours '.
             $matches['minute'].' minutes '.
-            $matches['second'].' seconds '.$matches['fraction'].' microseconds'
-        );
+            $matches['second'].' seconds '.$matches['fraction'].' microseconds';
+
+        $instance = self::createFromDateString($expression);
+        if (false === $instance) {
+            throw new Exception(sprintf('Unknown or bad format (%s)', $expression));
+        }
+
         if ('-' === $matches['sign']) {
             $instance->invert = 1;
         }
@@ -130,10 +139,16 @@ final class Duration extends DateInterval
      * @inheritdoc
      *
      * @param mixed $duration a date with relative parts
+     *
+     * @return self|false
      */
-    public static function createFromDateString($duration): self
+    public static function createFromDateString($duration)
     {
         $duration = parent::createFromDateString($duration);
+        if (false === $duration) {
+            return $duration;
+        }
+
         $new = new self('PT0S');
         foreach ($duration as $name => $value) {
             $new->$name = $value;

@@ -4,4 +4,5 @@ parameters:
     ignoreErrors:
         # Allow iterating over a DateInterval object to enable clean class extension
         - '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
+        - '#Strict comparison using === between false and DateInterval will always evaluate to false.#'
     reportUnmatchedIgnoredErrors: true
