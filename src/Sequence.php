@@ -124,8 +124,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             }
 
             $newSequence = new self();
-            foreach ($diffSequences AS $diffSequence) {
-                foreach ($diffSequence AS $sequence) {
+            foreach ($diffSequences as $diffSequence) {
+                foreach ($diffSequence as $sequence) {
                     $newSequence->push($sequence);
                 }
             }
