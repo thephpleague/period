@@ -279,8 +279,8 @@ final class SequenceTest extends TestCase
 
         $diff1 = $sequenceA->substract($sequenceB);
         self::assertCount(2, $diff1);
-        self::assertSame('[2000-01-01, 2000-01-10)', $diff->get(0)->format('Y-m-d'));
-        self::assertSame('[2000-01-12, 2000-01-20)', $diff->get(1)->format('Y-m-d'));
+        self::assertSame('[2000-01-01, 2000-01-10)', $diff1->get(0)->format('Y-m-d'));
+        self::assertSame('[2000-01-12, 2000-01-20)', $diff1->get(1)->format('Y-m-d'));
 
         $diff2 = $sequenceB->substract($sequenceA);
         self::assertCount(0, $diff2);
