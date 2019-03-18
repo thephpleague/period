@@ -112,11 +112,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         if (count($this) == 0) {
             return new self();
-        } else if (count($subIntervals) == 0) {
+        } elseif (count($subIntervals) == 0) {
             return $this;
-        } else if (count($this) == 1 && count($subIntervals) == 1) {
+        } elseif (count($this) == 1 && count($subIntervals) == 1) {
             return $this->get(0)->substract($subIntervals->get(0));
-        } else if (count($this) > 1) {
+        } elseif (count($this) > 1) {
             $diffSequences = [];
             foreach ($this->intervals as $intervalA) {
                 $tmpSequence = new self($intervalA);
@@ -131,7 +131,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             }
 
             return $newSequence;
-        } else if (count($this) == 1 && count($subIntervals) > 1) {
+        } elseif (count($this) == 1 && count($subIntervals) > 1) {
             $newSequence = new self($this->get(0));
             foreach ($subIntervals as $subInterval) {
                 $tmpSequence = new self($subInterval);
