@@ -108,7 +108,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the intersections inside the instance.
      */
-    public function substract(Sequence $subIntervals): ?self
+    public function substract(Sequence $subIntervals): self
     {
         if (count($this) == 0) {
             return new self();
@@ -141,7 +141,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $newSequence;
         }
 
-        return null;
+        return new self();
     }
 
     /**
