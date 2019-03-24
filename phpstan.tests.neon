@@ -5,4 +5,6 @@ includes:
 parameters:
     ignoreErrors:
         - '#Method League\\Period\\Period::merge\(\) invoked with 0 parameters, at least 1 required.#'
+        - '#Strict comparison using !== between false and League\\Period\\Duration will always evaluate to true.#'
+        - '#Variable method call on League\\Period\\Period.#'
     reportUnmatchedIgnoredErrors: true

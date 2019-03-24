@@ -63,7 +63,7 @@ final class Datepoint extends DateTimeImmutable
      * @param string       $datetime
      * @param DateTimeZone $timezone
      *
-     * @return self|false
+     * @return static|false
      */
     public static function createFromFormat($format, $datetime, $timezone = null)
     {
@@ -79,6 +79,8 @@ final class Datepoint extends DateTimeImmutable
      * @inheritdoc
      *
      * @param DateTime $datetime
+     *
+     * @return static
      */
     public static function createFromMutable($datetime): self
     {

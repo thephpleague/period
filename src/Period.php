@@ -958,20 +958,20 @@ final class Period implements JsonSerializable
     {
         $intervals[] = $interval;
         $carry = $this;
-        foreach ($intervals as $interval) {
-            if ($carry->startDate > $interval->startDate) {
+        foreach ($intervals as $period) {
+            if ($carry->startDate > $period->startDate) {
                 $carry = new self(
-                    $interval->startDate,
+                    $period->startDate,
                     $carry->endDate,
-                    $interval->boundaryType[0].$carry->boundaryType[1]
+                    $period->boundaryType[0].$carry->boundaryType[1]
                 );
             }
 
-            if ($carry->endDate < $interval->endDate) {
+            if ($carry->endDate < $period->endDate) {
                 $carry = new self(
                     $carry->startDate,
-                    $interval->endDate,
-                    $carry->boundaryType[0].$interval->boundaryType[1]
+                    $period->endDate,
+                    $carry->boundaryType[0].$period->boundaryType[1]
                 );
             }
         }

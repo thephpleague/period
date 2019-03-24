@@ -5,3 +5,4 @@ composer.lock
 docs/_site
 docs/node_modules
 .php_cs.cache
+.phpunit.result.cache

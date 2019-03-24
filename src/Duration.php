@@ -140,9 +140,9 @@ final class Duration extends DateInterval
      *
      * @param mixed $duration a date with relative parts
      *
-     * @return self|false
+     * @return static|false
      */
-    public static function createFromDateString($duration)
+    public static function createFromDateString($duration): self
     {
         $duration = parent::createFromDateString($duration);
         if (false === $duration) {

@@ -6,4 +6,9 @@ parameters:
         - '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
         - '#Strict comparison using === between false and DateInterval will always evaluate to false.#'
         - '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
+        - '#^Variable property access on (.*)?.#'
+        - '#Strict comparison using !== between League\\Period\\Duration and false will always evaluate to true.#'
+        - '#Strict comparison using === between false and League\\Period\\Duration will always evaluate to false.#'
+        - '#Method League\\Period\\Duration::createFromDateString\(\) should return League\\Period\\Duration but returns array.#'
+        - '#PHPDoc tag \@return with type static\(League\\Period\\Duration\)\|false is not subtype of native type League\\Period\\Duration.#'
     reportUnmatchedIgnoredErrors: true

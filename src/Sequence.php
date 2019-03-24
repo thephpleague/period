@@ -301,7 +301,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * @inheritdoc
      *
-     * @param int $offset
+     * @param mixed $offset the index of the Period instance to validate.
      */
     public function offsetExists($offset): bool
     {
@@ -310,8 +310,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritdoc
+     * @see ::get
      *
-     * @param int $offset
+     * @param mixed $offset the index of the Period instance to retrieve.
      */
     public function offsetGet($offset): Period
     {
@@ -320,8 +321,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritdoc
+     * @see ::remove
      *
-     * @param int $offset
+     * @param mixed $offset the index of the Period instance to remove.
      */
     public function offsetUnset($offset): void
     {
@@ -330,9 +332,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritdoc
+     * @see ::set
+     * @see ::push
      *
-     * @param mixed|int $offset
-     * @param Period    $interval
+     * @param mixed $offset   the index of the Period to add or update.
+     * @param mixed $interval the Period instance to add.
      */
     public function offsetSet($offset, $interval): void
     {
