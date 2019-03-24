@@ -287,6 +287,32 @@ final class SequenceTest extends TestCase
     }
 
     /**
+     * Substract test 4.
+     */
+    public function testSubstract4(): void
+    {
+        $sequenceA = new Sequence(
+            new Period('2000-01-01', '2000-01-10'),
+            new Period('2000-01-12', '2000-01-20')
+        );
+        $sequenceB = new Sequence(new Period('2003-01-12', '2003-01-20'));
+        self::assertSame($sequenceA, $sequenceA->substract($sequenceB));
+    }
+
+    /**
+     * Substract test 5.
+     */
+    public function testSubstract5(): void
+    {
+        $sequenceA = new Sequence(
+            new Period('2000-01-01', '2000-01-10'),
+            new Period('2001-01-01', '2001-01-10')
+        );
+        $sequenceB = new Sequence(new Period('2000-01-01', '2000-01-10'));
+        self::assertCount(0, $sequenceB->substract($sequenceA));
+    }
+
+    /**
      * Intersections test 1.
      *
      *               [------------)

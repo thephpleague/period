@@ -106,42 +106,43 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns the intersections inside the instance.
+     * Substract a Sequence from the current instance.
      */
-    public function substract(Sequence $subIntervals): self
+    public function substract(Sequence $sequence): self
     {
-        if (count($this) == 0) {
-            return new self();
-        } elseif (count($subIntervals) == 0) {
+        if ($this->isEmpty()) {
             return $this;
-        } elseif (count($this) == 1 && count($subIntervals) == 1) {
-            return $this->get(0)->substract($subIntervals->get(0));
-        } elseif (count($this) > 1) {
-            $diffSequences = [];
-            foreach ($this->intervals as $intervalA) {
-                $tmpSequence = new self($intervalA);
-                $diffSequences[] = $tmpSequence->substract($subIntervals);
-            }
-
-            $newSequence = new self();
-            foreach ($diffSequences as $diffSequence) {
-                foreach ($diffSequence as $sequence) {
-                    $newSequence->push($sequence);
-                }
-            }
-
-            return $newSequence;
-        } elseif (count($this) == 1 && count($subIntervals) > 1) {
-            $newSequence = new self($this->get(0));
-            foreach ($subIntervals as $subInterval) {
-                $tmpSequence = new self($subInterval);
-                $newSequence = $newSequence->substract($tmpSequence);
-            }
-
-            return $newSequence;
         }
 
-        return new self();
+        if ($sequence->isEmpty()) {
+            return $this;
+        }
+
+        if (!$this->boundaries()->overlaps($sequence->boundaries())) {
+            return $this;
+        }
+
+        return $sequence->reduce([$this, 'substractOne'], $this);
+    }
+
+    /**
+     * Substract an Interval from a Sequence.
+     */
+    private function substractOne(Sequence $sequence, Period $interval): self
+    {
+        if ($sequence->isEmpty() || !$sequence->boundaries()->overlaps($interval)) {
+            return $sequence;
+        }
+        
+        $new = new Sequence();
+        foreach ($sequence as $period) {
+            $substract = $period->substract($interval);
+            if (!$substract->isEmpty()) {
+                $new->push(...$substract);
+            }
+        }
+
+        return $new;
     }
 
     /**
