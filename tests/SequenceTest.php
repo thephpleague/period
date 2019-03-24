@@ -217,6 +217,76 @@ final class SequenceTest extends TestCase
     }
 
     /**
+     * Substract test 1.
+     *
+     *  [-------------)      [------------)
+     *                   -
+     *       [--)         [---------------------)
+     *                   =
+     *  [----)   [----)
+     */
+    public function testSubstract1(): void
+    {
+        $sequenceA = new Sequence(
+            new Period('2000-01-01', '2000-01-10'),
+            new Period('2000-01-12', '2000-01-20')
+        );
+        $sequenceB = new Sequence(
+            new Period('2000-01-05', '2000-01-08'),
+            new Period('2000-01-11', '2000-01-25')
+        );
+        $diff = $sequenceA->substract($sequenceB);
+
+        self::assertCount(2, $diff);
+        self::assertSame('[2000-01-01, 2000-01-05)', $diff->get(0)->format('Y-m-d'));
+        self::assertSame('[2000-01-08, 2000-01-10)', $diff->get(1)->format('Y-m-d'));
+    }
+
+    /**
+     * Substract test 2.
+     *
+     *  [------)      [------)      [------)
+     *                   -
+     *  [------------------------------------------)
+     *                   =
+     *  ()
+     */
+    public function testSubstract2(): void
+    {
+        $sequenceA = new Sequence(
+            new Period('2000-01-01', '2000-01-05'),
+            new Period('2000-01-10', '2000-01-15'),
+            new Period('2000-01-20', '2000-01-25')
+        );
+        $sequenceB = new Sequence(
+            new Period('2000-01-01', '2000-01-30')
+        );
+        $diff = $sequenceA->substract($sequenceB);
+
+        self::assertCount(0, $diff);
+    }
+
+    /**
+     * Substract test 3.
+     */
+    public function testSubstract3(): void
+    {
+        $sequenceA = new Sequence(
+            new Period('2000-01-01', '2000-01-10'),
+            new Period('2000-01-12', '2000-01-20')
+        );
+        $sequenceB = new Sequence();
+
+        $diff1 = $sequenceA->substract($sequenceB);
+        self::assertCount(2, $diff1);
+        self::assertSame('[2000-01-01, 2000-01-10)', $diff1->get(0)->format('Y-m-d'));
+        self::assertSame('[2000-01-12, 2000-01-20)', $diff1->get(1)->format('Y-m-d'));
+
+        $diff2 = $sequenceB->substract($sequenceA);
+        self::assertCount(0, $diff2);
+    }
+
+    /**
      * Intersections test 1.
      *
      *               [------------)

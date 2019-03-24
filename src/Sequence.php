@@ -108,6 +108,45 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the intersections inside the instance.
      */
+    public function substract(Sequence $subIntervals): self
+    {
+        if (count($this) == 0) {
+            return new self();
+        } elseif (count($subIntervals) == 0) {
+            return $this;
+        } elseif (count($this) == 1 && count($subIntervals) == 1) {
+            return $this->get(0)->substract($subIntervals->get(0));
+        } elseif (count($this) > 1) {
+            $diffSequences = [];
+            foreach ($this->intervals as $intervalA) {
+                $tmpSequence = new self($intervalA);
+                $diffSequences[] = $tmpSequence->substract($subIntervals);
+            }
+
+            $newSequence = new self();
+            foreach ($diffSequences as $diffSequence) {
+                foreach ($diffSequence as $sequence) {
+                    $newSequence->push($sequence);
+                }
+            }
+
+            return $newSequence;
+        } elseif (count($this) == 1 && count($subIntervals) > 1) {
+            $newSequence = new self($this->get(0));
+            foreach ($subIntervals as $subInterval) {
+                $tmpSequence = new self($subInterval);
+                $newSequence = $newSequence->substract($tmpSequence);
+            }
+
+            return $newSequence;
+        }
+
+        return new self();
+    }
+
+    /**
+     * Returns the intersections inside the instance.
+     */
     public function intersections(): self
     {
         $sequence = new self();
