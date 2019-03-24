@@ -11,5 +11,4 @@ parameters:
         - '#Strict comparison using === between false and League\\Period\\Duration will always evaluate to false.#'
         - '#Method League\\Period\\Duration::createFromDateString\(\) should return League\\Period\\Duration but returns array.#'
         - '#PHPDoc tag \@return with type static\(League\\Period\\Duration\)\|false is not subtype of native type League\\Period\\Duration.#'
-        - '#Cannot call method overlaps\(\) on League\\Period\\Period\|null.#'
     reportUnmatchedIgnoredErrors: true

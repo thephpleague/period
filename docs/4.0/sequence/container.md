@@ -109,7 +109,7 @@ $unions = $sequence->unions(); // a new Sequence object
 count($unions); // returns 2
 ~~~
 
-#### Sequence total timestamp interval
+### Sequence total timestamp interval
 
 <p class="message-info">Since <code>version 4.7</code></p>
 
@@ -123,5 +123,42 @@ $sequence = new Sequence(
 $timestamp = $sequence->getTotalTimestampInterval(); // a float
 ~~~
 
-<p class="message-notice">The return value will always be lesser or equals to the result of <code>Sequence::boundaries()->getTimestampInterval()</code></p>
-.
+<p class="message-notice">The return value will always be lesser or equals to the result of <code>Sequence::boundaries()->getTimestampInterval()</code>.</p>
+
+## Container manipulations
+
+### Sequence::substract
+
+<p class="message-info">new since <code>version 4.7</code></p>
+
+~~~php
+Sequence::substract(Sequence $sequence): Sequence
+~~~
+
+This method enables substracting a `Sequence` instance from another one. It internally use `Period::substract` and as such is not commutative.
+
+The following diagram gives you an overview of how the method works:
+
+[![](/media/sequence-substract2.png "Sequence substraction: How it works")](/media/sequence-substract.png)
+
+
+#### Examples
+
+~~~php
+$presence = new Sequence(
+    new Period('2000-01-01', '2000-01-10'),
+    new Period('2000-01-12', '2000-01-20')
+);
+
+$absence = new Sequence(
+    new Period('2000-01-08', '2000-01-10'),
+    new Period('2000-01-12', '2000-01-15')
+);
+
+$diff = $presence->substract($absence);
+$diff[0]->format('Y-m-d'); //[2000-01-01, 2000-01-08)
+$diff[1]->format('Y-m-d'); //[2000-01-15, 2000-01-20)
+
+$diff = $absence->substract($presence);
+$diff->isEmpty(); // true
+~~~
