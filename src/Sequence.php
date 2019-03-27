@@ -187,10 +187,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $this;
         }
 
-        if ($sequence->isEmpty()) {
-            return $this;
-        }
-
         $new = $sequence->reduce([$this, 'substractOne'], $this);
         if ($new->intervals === $this->intervals) {
             return $this;
