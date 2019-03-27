@@ -180,6 +180,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * Substract a Sequence from the current instance.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains substracted intervals.
      */
     public function substract(Sequence $sequence): self
     {
@@ -204,15 +207,16 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $sequence;
         }
 
-        $new = new self();
-        foreach ($sequence as $period) {
+        $reducer = function (Sequence $sequence, Period $period) use ($interval) {
             $substract = $period->substract($interval);
             if (!$substract->isEmpty()) {
-                $new->push(...$substract);
+                $sequence->push(...$substract);
             }
-        }
 
-        return $new;
+            return $sequence;
+        };
+
+        return $sequence->reduce($reducer, new self());
     }
 
     /**
