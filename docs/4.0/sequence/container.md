@@ -137,10 +137,11 @@ Sequence::substract(Sequence $sequence): Sequence
 
 This method enables substracting a `Sequence` instance from another one. It internally use `Period::substract` and as such is not commutative.
 
+<p class="message-notice"><strong>warning:</strong> This method is not optimized for substracting two large collection of <code>Sequence</code> objects.</p>
+
 The following diagram gives you an overview of how the method works:
 
 [![](/media/sequence-substract2.png "Sequence substraction: How it works")](/media/sequence-substract.png)
-
 
 #### Examples
 

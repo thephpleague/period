@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.7.0 - 2019-03-31
 
 ### Added
 
