@@ -207,7 +207,7 @@ $res = json_decode(json_encode($period), true);
 public Period::format(string $format): string
 ~~~
 
-You can use the `format` method to represent a `Period` object in its [mathematical representation](https://en.wikipedia.org/wiki/Interval_(methematics)#Notations_for_intervals) as shown below.
+You can use the `format` method to represent a `Period` object in its [mathematical representation](https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals) as shown below.
 
 - The `$format` parameter expects a string which follow [date](http://php.net/manual/en/function.date.php) first argument rules.
 - The boundary representation depends on the `Period` boundaries property.
