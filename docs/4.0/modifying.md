@@ -139,7 +139,7 @@ Returns a new `Period` object where the ending endpoint is moved forward or back
 
 ~~~php
 $interval = Period::fromMonth(2014, 3);
-$new_interval = $interval->moveEndtDate('1 MONTH');
+$new_interval = $interval->moveEndDate('1 MONTH');
 $interval->getStartDate()     //returns DateTimeImmutable('2014-03-01');
 $interval->getEndDate();      //returns DateTimeImmutable('2014-04-01');
 $new_interval->getStartDate(); //returns DateTimeImmutable('2014-03-01');
