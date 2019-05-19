@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.7.1 - 2019-05-19
 
 ### Added
 
@@ -10,7 +10,9 @@ All Notable changes to `Period` will be documented in this file
 
 ### Fixed 
 
-- None
+- Improve `Duration::createFromDateString` bug fix to take into account [DateInterval::createFromDateString
+bug fix](https://bugs.php.net/bug.php?id=50020)
+- Update the development tools to Infection 0.13
 
 ### Deprecated
 

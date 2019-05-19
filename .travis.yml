@@ -31,7 +31,7 @@ matrix:
         - COLLECT_COVERAGE=true
         - IGNORE_PLATFORMS=true
         - RUN_PHPSTAN=true
-        - RUN_INFECTION=false
+        - RUN_INFECTION=true
         - VALIDATE_CODING_STYLE=false
     - php: 7.4snapshot
       env:
