@@ -22,13 +22,14 @@ class DurationTest extends TestCase
     public function testCreateFromDateString(): void
     {
         $duration = Duration::createFromDateString('+1 DAY');
-        $altduration = Duration::createFromDateString('foobar');
         if (false !== $duration) {
             self::assertSame(1, $duration->d);
             self::assertFalse($duration->days);
         }
 
-        if (false !== $altduration) {
+        if (version_compare(PHP_VERSION, '7.2.17', '<')
+            && version_compare(PHP_VERSION, '7.3.4', '<')) {
+            $altduration = Duration::createFromDateString('foobar');
             self::assertSame(0, $altduration->s);
         }
     }
@@ -71,7 +72,7 @@ class DurationTest extends TestCase
                 'expected' => 'PT0.00001S',
             ],
             'negative seconds' => [
-                'input' => '-3 secondes 10 microseconds',
+                'input' => '-3 seconds 10 microseconds',
                 'expected' => 'PT-3.00001S',
             ],
             'duration with microseconds' => [

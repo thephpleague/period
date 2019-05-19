@@ -57,7 +57,7 @@ final class Datepoint extends DateTimeImmutable
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param string       $format
      * @param string       $datetime
@@ -76,7 +76,7 @@ final class Datepoint extends DateTimeImmutable
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param DateTime $datetime
      *

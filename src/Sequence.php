@@ -314,7 +314,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function jsonSerialize(): array
     {
@@ -322,7 +322,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getIterator(): Iterator
     {
@@ -332,7 +332,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function count(): int
     {
@@ -340,7 +340,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param mixed $offset the index of the Period instance to validate.
      */
@@ -350,7 +350,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @see ::get
      *
      * @param mixed $offset the index of the Period instance to retrieve.
@@ -361,7 +361,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @see ::remove
      *
      * @param mixed $offset the index of the Period instance to remove.
@@ -372,7 +372,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @see ::set
      * @see ::push
      *

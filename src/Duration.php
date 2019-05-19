@@ -118,6 +118,16 @@ final class Duration extends DateInterval
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
+        $matches['hour'] = $matches['hour'] ?? '0';
+        if ('' === $matches['hour']) {
+            $matches['hour'] = '0';
+        }
+
+        $matches['minute'] = $matches['minute'] ?? '0';
+        if ('' === $matches['minute']) {
+            $matches['minute'] = '0';
+        }
+
         $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
         $expression = $matches['hour'].' hours '.
             $matches['minute'].' minutes '.
@@ -136,7 +146,7 @@ final class Duration extends DateInterval
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @param mixed $duration a date with relative parts
      *

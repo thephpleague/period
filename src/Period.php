@@ -133,7 +133,7 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function __set_state(array $interval)
     {
