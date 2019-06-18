@@ -97,7 +97,7 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint second
      *  - the duration is equal to 1 second
      */
-    public function getSecond(): Period
+    public function getSecond(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->setTime(
             (int) $this->format('H'),
@@ -105,7 +105,7 @@ final class Datepoint extends DateTimeImmutable
             (int) $this->format('s')
         );
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('PT1S')));
+        return new Period($datepoint, $datepoint->add(new DateInterval('PT1S')), $boundaryType);
     }
 
     /**
@@ -114,11 +114,11 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint minute
      *  - the duration is equal to 1 minute
      */
-    public function getMinute(): Period
+    public function getMinute(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->setTime((int) $this->format('H'), (int) $this->format('i'), 0);
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('PT1M')));
+        return new Period($datepoint, $datepoint->add(new DateInterval('PT1M')), $boundaryType);
     }
 
     /**
@@ -127,11 +127,11 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint hour
      *  - the duration is equal to 1 hour
      */
-    public function getHour(): Period
+    public function getHour(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->setTime((int) $this->format('H'), 0);
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('PT1H')));
+        return new Period($datepoint, $datepoint->add(new DateInterval('PT1H')), $boundaryType);
     }
 
     /**
@@ -140,11 +140,11 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint day
      *  - the duration is equal to 1 day
      */
-    public function getDay(): Period
+    public function getDay(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->setTime(0, 0);
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('P1D')));
+        return new Period($datepoint, $datepoint->add(new DateInterval('P1D')), $boundaryType);
     }
 
     /**
@@ -153,13 +153,13 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint iso week
      *  - the duration is equal to 7 days
      */
-    public function getIsoWeek(): Period
+    public function getIsoWeek(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this
             ->setTime(0, 0)
             ->setISODate((int) $this->format('o'), (int) $this->format('W'), 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P7D')));
+        return new Period($startDate, $startDate->add(new DateInterval('P7D')), $boundaryType);
     }
 
     /**
@@ -168,13 +168,13 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint month
      *  - the duration is equal to 1 month
      */
-    public function getMonth(): Period
+    public function getMonth(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this
             ->setTime(0, 0)
             ->setDate((int) $this->format('Y'), (int) $this->format('n'), 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P1M')));
+        return new Period($startDate, $startDate->add(new DateInterval('P1M')), $boundaryType);
     }
 
     /**
@@ -183,13 +183,13 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint quarter
      *  - the duration is equal to 3 months
      */
-    public function getQuarter(): Period
+    public function getQuarter(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this
             ->setTime(0, 0)
             ->setDate((int) $this->format('Y'), (intdiv((int) $this->format('n'), 3) * 3) + 1, 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P3M')));
+        return new Period($startDate, $startDate->add(new DateInterval('P3M')), $boundaryType);
     }
 
     /**
@@ -198,13 +198,13 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint semester
      *  - the duration is equal to 6 months
      */
-    public function getSemester(): Period
+    public function getSemester(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this
             ->setTime(0, 0)
             ->setDate((int) $this->format('Y'), (intdiv((int) $this->format('n'), 6) * 6) + 1, 1);
 
-        return new Period($startDate, $startDate->add(new DateInterval('P6M')));
+        return new Period($startDate, $startDate->add(new DateInterval('P6M')), $boundaryType);
     }
 
     /**
@@ -213,12 +213,12 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint year
      *  - the duration is equal to 1 year
      */
-    public function getYear(): Period
+    public function getYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $year = (int) $this->format('Y');
         $datepoint = $this->setTime(0, 0);
 
-        return new Period($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1));
+        return new Period($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1), $boundaryType);
     }
 
     /**
@@ -227,12 +227,12 @@ final class Datepoint extends DateTimeImmutable
      *  - the starting datepoint represents the beginning of the current datepoint iso year
      *  - the duration is equal to 1 iso year
      */
-    public function getIsoYear(): Period
+    public function getIsoYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $year = (int) $this->format('o');
         $datepoint = $this->setTime(0, 0);
 
-        return new Period($datepoint->setISODate($year, 1, 1), $datepoint->setISODate(++$year, 1, 1));
+        return new Period($datepoint->setISODate($year, 1, 1), $datepoint->setISODate(++$year, 1, 1), $boundaryType);
     }
 
     /**************************************************
