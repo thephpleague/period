@@ -954,9 +954,8 @@ final class Period implements JsonSerializable
      *
      * @param Period ...$intervals
      */
-    public function merge(self $interval, self ...$intervals): self
+    public function merge(self ...$intervals): self
     {
-        $intervals[] = $interval;
         $carry = $this;
         foreach ($intervals as $period) {
             if ($carry->startDate > $period->startDate) {

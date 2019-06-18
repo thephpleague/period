@@ -577,7 +577,7 @@ class PeriodTest extends TestCase
         $json = json_encode($period);
 
         self::assertTrue(false !== $json);
-        
+
         $res = json_decode($json);
 
         self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));
@@ -713,8 +713,8 @@ class PeriodTest extends TestCase
 
     public function testMergeThrowsException(): void
     {
-        self::expectException(TypeError::class);
-        Period::fromMonth(2014, 3)->merge();
+        $period = Period::fromMonth(2014, 3);
+        self::assertSame($period, $period->merge());
     }
 
     public function testMoveEndDate(): void

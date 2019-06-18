@@ -17,7 +17,6 @@ use DateTimeImmutable;
 use League\Period\Exception;
 use League\Period\Period;
 use LeagueTest\Period\TestCase;
-use TypeError;
 
 /**
  * @coversDefaultClass \League\Period\Period
@@ -164,8 +163,8 @@ class ModificationTest extends TestCase
 
     public function testMergeThrowsException(): void
     {
-        self::expectException(TypeError::class);
-        Period::fromMonth(2014, 3)->merge();
+        $period = Period::fromMonth(2014, 3);
+        self::assertSame($period, $period->merge());
     }
 
     public function testMoveEndDate(): void
