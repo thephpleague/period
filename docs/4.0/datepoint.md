@@ -50,24 +50,26 @@ Datepoint::create(new DateTimeImmutable('2018-10-15'));  // returns new Datepoin
 
 ## Accessing calendar interval
 
+<p class="message-info">Since <code>version 4.8</code> the <code>$boundaryType</code> argument is added to all the methods described below.</p>
+
 Once you've got a `Datepoint` instantiated object, you can access a set of calendar type interval using the following methods.
 
 ~~~php
-public Datepoint::getSecond(): Period;
-public Datepoint::getMinute(): Period
-public Datepoint::getHour(): Period
-public Datepoint::getDay(): Period
-public Datepoint::getIsoWeek(): Period
-public Datepoint::getMonth(): Period
-public Datepoint::getQuarter(): Period
-public Datepoint::getSemester(): Period
-public Datepoint::getYear(): Period
-public Datepoint::getIsoYear(): Period
+public Datepoint::getSecond(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period;
+public Datepoint::getMinute(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getHour(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getDay(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getIsoWeek(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getMonth(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getQuarter(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getSemester(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+public Datepoint::getIsoYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
 ~~~
 
 For each a these methods a `Period` object is returned with:
 
-- the `Period::INCLUDE_START_EXCLUDE_END` boundary type;
+- the `Period::INCLUDE_START_EXCLUDE_END` boundary type by default unless changed using the `$boundaryType`;
 - the starting datepoint represents the beginning of the current datepoint calendar interval;
 - the duration associated with the given calendar interval;
 

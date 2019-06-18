@@ -205,7 +205,7 @@ $new_interval->format('Y-m-d'); // '[2014-03-01, 2014-04-01]'
 ### Period::merge
 
 ~~~php
-public Period::merge(Period $interval, Period ...$intervals): Period
+public Period::merge(Period ...$intervals): Period
 ~~~
 
 Merges two or more `Period` objects by returning a new `Period` object which englobes all the submitted objects.
