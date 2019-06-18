@@ -52,24 +52,28 @@ Datepoint::create(new DateTimeImmutable('2018-10-15'));  // returns new Datepoin
 
 <p class="message-info">Since <code>version 4.8</code> the <code>$boundaryType</code> argument is added to all the methods described below.</p>
 
-Once you've got a `Datepoint` instantiated object, you can access a set of calendar type interval using the following methods.
+Once you've got a `Datepoint` instantiated object, you can access a set of calendar type interval using the following method signature.
 
 ~~~php
-public Datepoint::getSecond(): Period;
-public Datepoint::getMinute(): Period
-public Datepoint::getHour(): Period
-public Datepoint::getDay(): Period
-public Datepoint::getIsoWeek(): Period
-public Datepoint::getMonth(): Period
-public Datepoint::getQuarter(): Period
-public Datepoint::getSemester(): Period
-public Datepoint::getYear(): Period
-public Datepoint::getIsoYear(): Period
+public function method(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
 ~~~
+
+where `method` is one of the following date time span:
+
+- `Datepoint::getSecond`
+- `Datepoint::getMinute`
+- `Datepoint::getHour`
+- `Datepoint::getDay`
+- `Datepoint::getIsoWeek`
+- `Datepoint::getMonth`
+- `Datepoint::getQuarter`
+- `Datepoint::getSemester`
+- `Datepoint::getYear`
+- `Datepoint::getIsoYear`
 
 For each a these methods a `Period` object is returned with:
 
-- the `Period::INCLUDE_START_EXCLUDE_END` boundary type by default unless changed using the `$boundaryType`;
+- the `Period::INCLUDE_START_EXCLUDE_END` boundary type by default unless changed using the `$boundaryType` argument;
 - the starting datepoint represents the beginning of the current datepoint calendar interval;
 - the duration associated with the given calendar interval;
 
