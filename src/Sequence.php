@@ -402,16 +402,15 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param Period ...$intervals
      */
-    public function contains(Period $interval, Period ...$intervals): bool
+    public function contains(Period ...$intervals): bool
     {
-        $intervals[] = $interval;
         foreach ($intervals as $period) {
             if (false === $this->indexOf($period)) {
                 return false;
             }
         }
 
-        return true;
+        return [] !== $intervals;
     }
 
     /**
@@ -465,9 +464,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param Period ...$intervals
      */
-    public function unshift(Period $interval, Period ...$intervals): void
+    public function unshift(Period ...$intervals): void
     {
-        $this->intervals = array_merge([$interval], $intervals, $this->intervals);
+        $this->intervals = array_merge($intervals, $this->intervals);
     }
 
     /**
@@ -475,9 +474,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param Period ...$intervals
      */
-    public function push(Period $interval, Period ...$intervals): void
+    public function push(Period ...$intervals): void
     {
-        $this->intervals = array_merge($this->intervals, [$interval], $intervals);
+        $this->intervals = array_merge($this->intervals, $intervals);
     }
 
     /**
