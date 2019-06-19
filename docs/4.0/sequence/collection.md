@@ -34,6 +34,7 @@ count($sequence); // returns 1
 ### ArrayAccess, IteratorAggregate
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
+<p class="message-info">Since <code>version 4.8</code> the <code>ArrayAccess</code> implementation supports negative offsets.</p>
 
 The `Sequence` class implements PHP's `ArrayAccess`, `IteratorAggregate` interfaces so you can at any given time iterate over each interval using the `foreach` loop or access any individual `Period` instance according to its offset using array notation.
 
@@ -48,7 +49,8 @@ foreach ($sequence as $interval) {
 	//$interval is a League\Period\Period object
 }
 
-$sequnce[3]; //new Period('2018-01-20', '2018-03-10')
+$sequence[3]->format('Y-m-d');  //returns [2018-01-20, 2018-03-10)
+$sequence[-1]->format('Y-m-d'); //returns [2018-01-20, 2018-03-10)
 ~~~
 
 ### Sequence::get
@@ -56,7 +58,7 @@ $sequnce[3]; //new Period('2018-01-20', '2018-03-10')
 Returns the interval found at the given offset.
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
-
+<p class="message-info">Since <code>version 4.8</code> this method supports negative offsets.</p>
 <p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
 
 ~~~php
@@ -70,6 +72,10 @@ $sequence->get(3)->format('Y-m-d'); //returns [2018-01-20, 2018-03-10)
 $sequence->get(42); //throws an League\Period\InvalidIndex exception
 $sequence[3]->format('Y-m-d');  //returns [2018-01-20, 2018-03-10)
 $sequence[42]; //throws an League\Period\InvalidIndex exception
+$sequence->get(-1)->format('Y-m-d'); //returns [2018-01-20, 2018-03-10)
+$sequence[–1]->format('Y-m-d');  //returns [2018-01-20, 2018-03-10)
+$sequence->get(-42); //throws an League\Period\InvalidIndex exception
+$sequence[-42]; //throws an League\Period\InvalidIndex exception
 ~~~
 
 ## Setter methods
@@ -79,6 +85,7 @@ $sequence[42]; //throws an League\Period\InvalidIndex exception
 Adds new intervals at the end of the sequence.
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
+<p class="message-info">Since <code>version 4.8</code> this method when used with no argument leave the current instance unchanged, previously it would trigger a <code>TypeError</code>.</p>
 
 ~~~php
 $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
@@ -99,6 +106,7 @@ $sequence[4]->format('Y-m-d'); // [2018-12-20, 2018-12-21)
 Adds new intervals at the start of the sequence.
 
 <p class="message-notice">The sequence is re-indexed after the addition.</p>
+<p class="message-info">Since <code>version 4.8</code> this method when used with no argument leave the current instance unchanged, previously it would trigger a <code>TypeError</code>.</p>
 
 ~~~php
 $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
@@ -116,6 +124,7 @@ $sequence->get(0)->format('Y-m-d'); // [2018-02-10, 2018-02-20)
 Adds intervals at a specify offset.
 
 <p class="message-notice">The sequence is re-indexed on the right side after the addition.</p>
+<p class="message-info">Since <code>version 4.8</code> this method supports negative offsets.</p>
 
 ~~~php
 $sequence = new Sequence(
@@ -136,7 +145,7 @@ $sequence->get(1)->format('Y-m-d'), PHP_EOL; // [2018-02-01, 2018-03-01)
 Updates the interval at the specify offset.
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
-
+<p class="message-info">Since <code>version 4.8</code> this method supports negative offsets.</p>
 <p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
 
 ~~~php
@@ -148,6 +157,8 @@ $sequence->set(0, new Period('2012-01-01', '2012-01-31'));
 $sequence->set(42, new Period('2012-01-01', '2012-01-31')); //throws InvalidIndex
 $sequence[1] = new Period('2012-01-01', '2012-01-31');
 $sequence[42] = new Period('2012-01-01', '2012-01-31')); //throws InvalidIndex
+$sequence[-1] = new Period('2012-01-01', '2012-01-31');
+$sequence[-23] = new Period('2012-01-01', '2012-01-31')); //throws InvalidIndex
 ~~~
 
 ### Sequence::remove
@@ -155,9 +166,8 @@ $sequence[42] = new Period('2012-01-01', '2012-01-31')); //throws InvalidIndex
 Removes an interval from the collection at the given offset and returns it.
 
 <p class="message-info"><code>ArrayAccess</code> support is added in <code>version 4.2</code></p>
-
+<p class="message-info">Since <code>version 4.8</code> this method supports negative offsets.</p>
 <p class="message-notice">The sequence is re-indexed after removal.</p>
-
 <p class="message-warning">An <code>InvalidIndex</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
 
 ~~~php
@@ -171,6 +181,8 @@ $interval = $sequence->remove(3);
 $sequence->remove(42);//throws InvalidIndex
 unset($sequence[2]);
 unset($sequence[42]);//throws InvalidIndex
+unset($sequence[-2]);
+unset($sequence[-25]);//throws InvalidIndex
 ~~~
 
 ### Sequence::clear

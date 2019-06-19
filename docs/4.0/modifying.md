@@ -220,3 +220,5 @@ $merge_interval = $interval->merge($alt, $other);
 // $merge_interval->getStartDate() equals $period->getStartDate();
 // $merge_interval->getEndDate() equals $altPeriod->getEndDate();
 ~~~
+
+<p class="message-info">Since <code>version 4.8</code> this method when used with no argument returns the current instance unchanged, previously it would trigger a <code>TypeError</code>.</p>

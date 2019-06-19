@@ -19,6 +19,7 @@ use League\Period\InvalidIndex;
 use League\Period\Period;
 use League\Period\Sequence;
 use TypeError;
+use function json_encode;
 
 /**
  * @coversDefaultClass League\Period\Sequence
@@ -109,11 +110,11 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence();
         $sequence->insert(0, Datepoint::create('2010-06-23')->getDay());
         self::assertCount(1, $sequence);
-        $sequence->insert(0, Datepoint::create('2011-06-24')->getDay());
+        $sequence->insert(1, Datepoint::create('2011-06-24')->getDay());
         self::assertCount(2, $sequence);
-        $sequence->insert(2, Datepoint::create('2012-06-25')->getDay());
+        $sequence->insert(-1, Datepoint::create('2012-06-25')->getDay());
         self::assertCount(3, $sequence);
-        self::assertTrue(Datepoint::create('2011-06-24')->getDay()->equals($sequence->get(0)));
+        self::assertTrue(Datepoint::create('2012-06-25')->getDay()->equals($sequence->get(1)));
         self::expectException(InvalidIndex::class);
         $sequence->insert(42, Datepoint::create('2011-06-23')->getDay());
     }

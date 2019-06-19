@@ -33,3 +33,14 @@ dump(
     $diff1->get(1)->format('Y-m-d'),
     count($sequenceB->substract($sequenceA))
 );
+
+
+$sequence = new Sequence(
+    new Period('2018-01-01', '2018-01-31'),
+    new Period('2018-02-10', '2018-02-20'),
+    new Period('2018-03-01', '2018-03-31'),
+    new Period('2018-01-20', '2018-03-10')
+);
+
+echo $sequence[3]->format('Y-m-d'), PHP_EOL;
+echo $sequence[-1]->format('Y-m-d'), PHP_EOL;

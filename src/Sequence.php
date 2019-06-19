@@ -346,7 +346,28 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetExists($offset): bool
     {
-        return isset($this->intervals[$offset]);
+        return null !== $this->filterOffset($offset);
+    }
+
+    /**
+     * Filter and format the Sequence offset.
+     *
+     * This methods allows the support of negative offset
+     *
+     * if no offset is found null is returned otherwise the return type is int
+     */
+    private function filterOffset(int $offset): ?int
+    {
+        $max = count($this->intervals);
+        if ($offset < 1 - $max || $offset > $max - 1) {
+            return null;
+        }
+
+        if ($offset < 0) {
+            return $offset + $max;
+        }
+
+        return $offset;
     }
 
     /**
@@ -438,12 +459,12 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function get(int $offset): Period
     {
-        $period = $this->intervals[$offset] ?? null;
-        if (null !== $period) {
-            return $period;
+        $index = $this->filterOffset($offset);
+        if (null === $index) {
+            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
         }
 
-        throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+        return $this->intervals[$index];
     }
 
     /**
@@ -490,12 +511,25 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function insert(int $offset, Period $interval, Period ...$intervals): void
     {
-        if ($offset < 0 || $offset > count($this->intervals)) {
+        if (0 === $offset) {
+            $this->unshift($interval, ...$intervals);
+
+            return;
+        }
+
+        if (count($this->intervals) === $offset) {
+            $this->push($interval, ...$intervals);
+
+            return;
+        }
+
+        $index = $this->filterOffset($offset);
+        if (null === $index) {
             throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
         }
 
         array_unshift($intervals, $interval);
-        array_splice($this->intervals, $offset, 0, $intervals);
+        array_splice($this->intervals, $index, 0, $intervals);
     }
 
     /**
@@ -505,8 +539,12 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function set(int $offset, Period $interval): void
     {
-        $this->get($offset);
-        $this->intervals[$offset] = $interval;
+        $index = $this->filterOffset($offset);
+        if (null === $index) {
+            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+        }
+
+        $this->intervals[$index] = $interval;
     }
 
     /**
@@ -518,9 +556,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function remove(int $offset): Period
     {
-        $interval = $this->get($offset);
-        unset($this->intervals[$offset]);
+        $index = $this->filterOffset($offset);
+        if (null === $index) {
+            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+        }
 
+        $interval = $this->intervals[$index];
+        unset($this->intervals[$index]);
         $this->intervals = array_values($this->intervals);
 
         return $interval;

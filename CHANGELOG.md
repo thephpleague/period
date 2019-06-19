@@ -2,18 +2,20 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.8.0 - 2019-XX-XX
 
 ### Added
 
 - `Datepoint` methods returning `Period` objects supports boundaryType
-
-### Fixed
-
 - `Period::merge` supports empty arguments.
 - `Sequence::contains` supports empty arguments.
 - `Sequence::unshift` supports empty arguments.
 - `Sequence::push` supports empty arguments.
+- `Sequence` class supports negative offsets.
+
+### Fixed
+
+- None
 
 ### Deprecated
 
