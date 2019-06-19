@@ -198,7 +198,7 @@ final class Duration extends DateInterval
             if (0 > $this->s) {
                 $second = $this->s - $this->f;
             }
-            
+
             $second = rtrim(sprintf('%f', $second), '0');
 
             return $this->format($date.$time).$second.'S';
@@ -209,7 +209,7 @@ final class Duration extends DateInterval
 
             return $this->format($date.$time);
         }
-        
+
         if ('T' !== $time) {
             return $this->format($date.$time);
         }
@@ -255,11 +255,6 @@ final class Duration extends DateInterval
             $reference_date = Datepoint::create($reference_date);
         }
 
-        $duration = self::create($reference_date->diff($reference_date->add($this)));
-        if ($duration == $this) {
-            return $this;
-        }
-
-        return $duration;
+        return self::create($reference_date->diff($reference_date->add($this)));
     }
 }

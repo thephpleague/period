@@ -15,7 +15,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Fixed
 
-- None
+- `Duration::adjustedTo` no longer compare `DateInterval` objects to be compatible with PHP7.4+
 
 ### Deprecated
 

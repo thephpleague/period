@@ -194,11 +194,4 @@ class DurationTest extends TestCase
             ],
         ];
     }
-
-    public function testWithoutCarryOverReturnsSameInstance(): void
-    {
-        $interval = Period::fromMonth(2018, 2);
-        $duration = Duration::create($interval);
-        self::assertSame($duration, $duration->withoutCarryOver($interval->getStartDate()));
-    }
 }
