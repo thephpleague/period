@@ -1,68 +1,64 @@
 language: php
-
 sudo: false
-
 cache:
   directories:
-    - $HOME/.composer/cache
-
+  - "$HOME/.composer/cache"
 env:
   global:
-    - COMPOSER_ARGS="--no-interaction --prefer-source --no-suggest"
-
+  - COMPOSER_ARGS="--no-interaction --prefer-source --no-suggest"
+  - secure: dUpENRFcuMxCRZknALLUPqh18etl6FkPwQJxR2CJLaJntz45kLcN0GmRpxbZYhZADVMyV9RxFDXelUbWq1+eG6Umbg6OWRfTc1RN6XY8II2T25EzWuImEs9nZYNv6HPhx/0NL6e3cybqe8gSK8/S5mbOp/LDBGrqnc9ZQEUAlvg=
 matrix:
   include:
-    - php: 7.1
-      env:
-        - COLLECT_COVERAGE=true
-        - IGNORE_PLATFORMS=false
-        - RUN_PHPSTAN=true
-        - RUN_INFECTION=false
-        - VALIDATE_CODING_STYLE=false
-    - php: 7.2
-      env:
-        - COLLECT_COVERAGE=true
-        - IGNORE_PLATFORMS=false
-        - RUN_PHPSTAN=true
-        - RUN_INFECTION=true
-        - VALIDATE_CODING_STYLE=true
-    - php: 7.3
-      env:
-        - COLLECT_COVERAGE=true
-        - IGNORE_PLATFORMS=true
-        - RUN_PHPSTAN=true
-        - RUN_INFECTION=true
-        - VALIDATE_CODING_STYLE=false
-    - php: 7.4snapshot
-      env:
-        - COLLECT_COVERAGE=false
-        - VALIDATE_CODING_STYLE=false
-        - RUN_PHPSTAN=false
-        - IGNORE_PLATFORMS=true
-    - php: nightly
-      env:
-        - COLLECT_COVERAGE=false
-        - IGNORE_PLATFORMS=true
-        - RUN_PHPSTAN=true
-        - RUN_INFECTION=false
-        - VALIDATE_CODING_STYLE=false
+  - php: 7.1
+    env:
+    - COLLECT_COVERAGE=true
+    - IGNORE_PLATFORMS=false
+    - RUN_PHPSTAN=true
+    - RUN_INFECTION=false
+    - VALIDATE_CODING_STYLE=false
+  - php: 7.2
+    env:
+    - COLLECT_COVERAGE=true
+    - IGNORE_PLATFORMS=false
+    - RUN_PHPSTAN=true
+    - RUN_INFECTION=true
+    - VALIDATE_CODING_STYLE=true
+  - php: 7.3
+    env:
+    - COLLECT_COVERAGE=true
+    - IGNORE_PLATFORMS=true
+    - RUN_PHPSTAN=true
+    - RUN_INFECTION=true
+    - VALIDATE_CODING_STYLE=false
+  - php: 7.4snapshot
+    env:
+    - COLLECT_COVERAGE=false
+    - VALIDATE_CODING_STYLE=false
+    - RUN_PHPSTAN=false
+    - IGNORE_PLATFORMS=true
+  - php: nightly
+    env:
+    - COLLECT_COVERAGE=false
+    - IGNORE_PLATFORMS=true
+    - RUN_PHPSTAN=true
+    - RUN_INFECTION=false
+    - VALIDATE_CODING_STYLE=false
   allow_failures:
-    - php: 7.4snapshot
-    - php: nightly
+  - php: 7.4snapshot
+  - php: nightly
   fast_finish: true
-
 before_install:
-  - travis_retry composer self-update
-
+- travis_retry composer self-update
 install:
-  - if [ "$IGNORE_PLATFORMS" == "true" ]; then travis_retry composer update $COMPOSER_ARGS --ignore-platform-reqs; fi
-  - if [ "$IGNORE_PLATFORMS" == "false" ]; then travis_retry composer update $COMPOSER_ARGS; fi
-
+- if [ "$IGNORE_PLATFORMS" == "true" ]; then travis_retry composer update $COMPOSER_ARGS
+  --ignore-platform-reqs; fi
+- if [ "$IGNORE_PLATFORMS" == "false" ]; then travis_retry composer update $COMPOSER_ARGS;
+  fi
 script:
-  - if [ "$RUN_PHPSTAN" == "true" ]; then composer phpstan; fi
-  - if [ "$VALIDATE_CODING_STYLE" == "true" ]; then composer phpcs; fi
-  - composer phpunit
-
+- if [ "$RUN_PHPSTAN" == "true" ]; then composer phpstan; fi
+- if [ "$VALIDATE_CODING_STYLE" == "true" ]; then composer phpcs; fi
+- composer phpunit
 after_script:
-  - if [ "$RUN_INFECTION" == "true" ]; then composer infection; fi
-  - if [ "$COLLECT_COVERAGE" == "true" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover build/clover.xml; fi
+- if [ "$RUN_INFECTION" == "true" ]; then composer infection; fi
+- if [ "$COLLECT_COVERAGE" == "true" ]; then wget https://scrutinizer-ci.com/ocular.phar
+  && php ocular.phar code-coverage:upload --format=php-clover build/clover.xml; fi

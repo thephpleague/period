@@ -9,6 +9,9 @@
         "text": "build/infection/infection.log",
         "summary": "build/infection/summary.log",
         "debug": "build/infection/debug.log",
-        "perMutator": "build/infection/per-mutator.md"
+        "perMutator": "build/infection/per-mutator.md",
+        "badge": {
+            "branch": "master"
+        }
     }
 }

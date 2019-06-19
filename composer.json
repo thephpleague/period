@@ -67,8 +67,8 @@
             "@phpstan-tests"
         ],
         "phpunit": "phpunit --coverage-text",
-        "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations",
-        "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations",
+        "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations --min-coverted-msi=80",
+        "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations --min-coverted-msi=80",
         "test": [
             "@phpcs",
             "@phpstan-src",
