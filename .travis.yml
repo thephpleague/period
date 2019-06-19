@@ -6,7 +6,7 @@ cache:
 env:
   global:
   - COMPOSER_ARGS="--no-interaction --prefer-source --no-suggest"
-  - secure: dUpENRFcuMxCRZknALLUPqh18etl6FkPwQJxR2CJLaJntz45kLcN0GmRpxbZYhZADVMyV9RxFDXelUbWq1+eG6Umbg6OWRfTc1RN6XY8II2T25EzWuImEs9nZYNv6HPhx/0NL6e3cybqe8gSK8/S5mbOp/LDBGrqnc9ZQEUAlvg=
+  - secure: PSPHZzussniQ7oyqB+mnW2yUMPctJNI0gjtg9bUyCWlYAaSTSa8nu6ZAzzLI7qNftKL9rp3rPNUTk+6envmivEfj6FQDl9Z7YiDRl8t+UcLI2hUSANdL4KF/4Ier4io8qoU9aIaQnhBe3SxbB4CORWC5pdmGFznx6NHI7pxq0qE=
 matrix:
   include:
   - php: 7.1
@@ -59,6 +59,6 @@ script:
 - if [ "$VALIDATE_CODING_STYLE" == "true" ]; then composer phpcs; fi
 - composer phpunit
 after_script:
-- if [ "$RUN_INFECTION" == "true" ]; then composer infection; fi
+- if [ "$RUN_INFECTION" == "true" ]; then composer infection-linux; fi
 - if [ "$COLLECT_COVERAGE" == "true" ]; then wget https://scrutinizer-ci.com/ocular.phar
   && php ocular.phar code-coverage:upload --format=php-clover build/clover.xml; fi
