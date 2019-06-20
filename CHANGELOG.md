@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## 4.8.0 - 2019-XX-XX
+## 4.8.0 - 2019-06-20
 
 ### Added
 
