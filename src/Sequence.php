@@ -363,15 +363,15 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         $max = count($this->intervals);
-        if ($offset < - $max) {
+        if (0 > $max + $offset) {
             return null;
         }
 
-        if ($offset > $max - 1) {
+        if (0 > $max - $offset - 1) {
             return null;
         }
 
-        if ($offset < 0) {
+        if (0 > $offset) {
             return $max + $offset;
         }
 
