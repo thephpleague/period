@@ -86,10 +86,23 @@ final class SequenceTest extends TestCase
         self::assertNull($sequence->getBoundaries());
     }
 
-    public function testGetThrowsException(): void
+    public function testGetThrowsExceptionWithInvalidPositiveIndex(): void
     {
         self::expectException(InvalidIndex::class);
-        (new Sequence())->get(3);
+        (new Sequence(Datepoint::create('2011-06-23')->getDay()))->get(3);
+    }
+
+
+    public function testGetThrowsExceptionWithInvalidNegativeIndex(): void
+    {
+        self::expectException(InvalidIndex::class);
+        (new Sequence(Datepoint::create('2011-06-23')->getDay()))->get(-3);
+    }
+
+    public function testNegativeOffsetWithASequenceWithASingleItem(): void
+    {
+        $sequence = new Sequence(Datepoint::create('today')->getDay());
+        self::assertSame($sequence[-1], $sequence[0]);
     }
 
     public function testSetter(): void

@@ -358,13 +358,21 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function filterOffset(int $offset): ?int
     {
+        if ([] === $this->intervals) {
+            return null;
+        }
+
         $max = count($this->intervals);
-        if ($offset < 1 - $max || $offset > $max - 1) {
+        if ($offset < - $max) {
+            return null;
+        }
+
+        if ($offset > $max - 1) {
             return null;
         }
 
         if ($offset < 0) {
-            return $offset + $max;
+            return $max + $offset;
         }
 
         return $offset;

@@ -72,14 +72,15 @@
         "test": [
             "@phpcs",
             "@phpstan",
-            "@phpunit",
-            "@linux-infection"
+            "@phpunit"
+        ],
+        "test-linux": [
+            "@test",
+            "@infection-linux"
         ],
         "test-osx": [
-            "@phpcs",
-            "@phpstan",
-            "@phpunit",
-            "@osx-infection"
+            "@test",
+            "@infection-osx"
         ]
     },
     "extra": {
