@@ -2,7 +2,7 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.8.1 - TBD
 
 ### Added
 
@@ -10,7 +10,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Fixed
 
-- None
+- `Sequence` negative offsets for a object with only one `Period` instance issue [#85](https://github.com/thephpleague/period/issues/85)
 
 ### Deprecated
 
