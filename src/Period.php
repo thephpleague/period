@@ -192,74 +192,75 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance for a specific year.
      */
-    public static function fromYear(int $year): self
+    public static function fromYear(int $year, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, 1, 1)->setTime(0, 0);
 
-        return new self($startDate, $startDate->add(new DateInterval('P1Y')));
+        return new self($startDate, $startDate->add(new DateInterval('P1Y')), $boundaryType);
     }
 
     /**
      * Creates new instance for a specific ISO year.
      */
-    public static function fromIsoYear(int $year): self
+    public static function fromIsoYear(int $year, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         return new self(
             (new DateTimeImmutable())->setISODate($year, 1)->setTime(0, 0),
-            (new DateTimeImmutable())->setISODate(++$year, 1)->setTime(0, 0)
+            (new DateTimeImmutable())->setISODate(++$year, 1)->setTime(0, 0),
+            $boundaryType
         );
     }
 
     /**
      * Creates new instance for a specific year and semester.
      */
-    public static function fromSemester(int $year, int $semester = 1): self
+    public static function fromSemester(int $year, int $semester = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $month = (($semester - 1) * 6) + 1;
         $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
 
-        return new self($startDate, $startDate->add(new DateInterval('P6M')));
+        return new self($startDate, $startDate->add(new DateInterval('P6M')), $boundaryType);
     }
 
     /**
      * Creates new instance for a specific year and quarter.
      */
-    public static function fromQuarter(int $year, int $quarter = 1): self
+    public static function fromQuarter(int $year, int $quarter = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $month = (($quarter - 1) * 3) + 1;
         $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
 
-        return new self($startDate, $startDate->add(new DateInterval('P3M')));
+        return new self($startDate, $startDate->add(new DateInterval('P3M')), $boundaryType);
     }
 
     /**
      * Creates new instance for a specific year and month.
      */
-    public static function fromMonth(int $year, int $month = 1): self
+    public static function fromMonth(int $year, int $month = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
 
-        return new self($startDate, $startDate->add(new DateInterval('P1M')));
+        return new self($startDate, $startDate->add(new DateInterval('P1M')), $boundaryType);
     }
 
     /**
      * Creates new instance for a specific ISO8601 week.
      */
-    public static function fromIsoWeek(int $year, int $week = 1): self
+    public static function fromIsoWeek(int $year, int $week = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $startDate = (new DateTimeImmutable())->setISODate($year, $week, 1)->setTime(0, 0);
 
-        return new self($startDate, $startDate->add(new DateInterval('P7D')));
+        return new self($startDate, $startDate->add(new DateInterval('P7D')), $boundaryType);
     }
 
     /**
      * Creates new instance for a specific year, month and day.
      */
-    public static function fromDay(int $year, int $month = 1, int $day = 1): self
+    public static function fromDay(int $year, int $month = 1, int $day = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, $month, $day)->setTime(0, 0);
 
-        return new self($startDate, $startDate->add(new DateInterval('P1D')));
+        return new self($startDate, $startDate->add(new DateInterval('P1D')), $boundaryType);
     }
 
     /**************************************************
