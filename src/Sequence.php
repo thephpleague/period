@@ -383,6 +383,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @see ::get
      *
      * @param mixed $offset the index of the Period instance to retrieve.
+     *
+     * @throws InvalidIndex If the offset is illegal for the current sequence
      */
     public function offsetGet($offset): Period
     {
@@ -394,6 +396,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @see ::remove
      *
      * @param mixed $offset the index of the Period instance to remove.
+     *
+     * @throws InvalidIndex If the offset is illegal for the current sequence
      */
     public function offsetUnset($offset): void
     {
@@ -407,6 +411,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param mixed $offset   the index of the Period to add or update.
      * @param mixed $interval the Period instance to add.
+     *
+     * @throws InvalidIndex If the offset is illegal for the current sequence
      */
     public function offsetSet($offset, $interval): void
     {
