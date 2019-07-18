@@ -140,23 +140,26 @@ $interval_around->equals($interval_before); //returns true
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
 ~~~php
-public static Period::fromDay(int $year, int $month = 1, int $day = 1): Period
-public static Period::fromIsoWeek(int $year, int $week = 1): Period
-public static Period::fromMonth(int $year, int $month = 1): Period
-public static Period::fromQuarter(int $year, int $quarter = 1): Period
-public static Period::fromSemester(int $year, int $semester = 1): Period
-public static Period::fromYear(int $year): Period
-public static Period::fromIsoYear(int $year): Period
+public static Period::fromDay(int $year, int $month = 1, int $day = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromIsoWeek(int $year, int $week = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromMonth(int $year, int $month = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromQuarter(int $year, int $quarter = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromSemester(int $year, int $semester = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromYear(int $year, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromIsoYear(int $year, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
 ~~~
 
 #### Parameters
 
 - `$year` parameter is always required;
 - the `$semester`, `$quarter`, `$month`, `$week`, `$day` arguments will default to `1`;
+- `$boundaryType`, the interval boundary type.
 
 <p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
 
 <p class="message-info">The following named constructors always returns a <code>Period</code> instance with the following boundary type <code>Period::INCLUDE_START_EXCLUDE_END</code>.</p>
+
+<p class="message-info">Since <code>version 4.9</code> the <code>$boundaryType</code> argument is added.</p>
 
 #### Examples
 
