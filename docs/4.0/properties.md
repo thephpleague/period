@@ -217,4 +217,4 @@ $interval = new Period('2014-05-01 00:00:00', '2014-05-08 00:00:00');
 echo $interval->format('Y-m-d'); // [2014-05-01, 2014-05-08)
 ~~~
 
-This representation can be used, for instance, in a PostreSQL query against a [DateRange field](https://www.postgresql.org/docs/9.3/static/rangetypes.html).
+This representation can be used, for instance, in a PostgreSQL query against a [DateRange field](https://www.postgresql.org/docs/9.3/static/rangetypes.html).
