@@ -6,7 +6,17 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- `$boundaryType` argument added to the following named constructors:
+    - `Period::fromDay`
+    - `Period::fromIsoWeek`
+    - `Period::fromMonth`
+    - `Period::fromQuarter`
+    - `Period::fromSemester`
+    - `Period::fromYear`
+    - `Period::fromIsoYear`
+    
+- `Period::subtract`
+- `Sequence::subtract`
 
 ### Fixed
 
@@ -14,7 +24,8 @@ All Notable changes to `Period` will be documented in this file
 
 ### Deprecated
 
-- None
+- `Period::substract` use `Period::subtract` instead
+- `Sequence::substract` use `Sequence::subtract` instead
 
 ### Removed
 

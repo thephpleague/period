@@ -179,18 +179,29 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Substract a Sequence from the current instance.
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated since version 4.9.0
+     * @see ::subtract
+     */
+    public function substract(Sequence $sequence): self
+    {
+        return $this->subtract($sequence);
+    }
+
+    /**
+     * Subtract a Sequence from the current instance.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains substracted intervals.
      */
-    public function substract(Sequence $sequence): self
+    public function subtract(Sequence $sequence): self
     {
         if ($this->isEmpty()) {
             return $this;
         }
 
-        $new = $sequence->reduce([$this, 'substractOne'], $this);
+        $new = $sequence->reduce([$this, 'subtractOne'], $this);
         if ($new->intervals === $this->intervals) {
             return $this;
         }
@@ -201,7 +212,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Substract an Interval from a Sequence.
      */
-    private function substractOne(Sequence $sequence, Period $interval): self
+    private function subtractOne(Sequence $sequence, Period $interval): self
     {
         if ($sequence->isEmpty()) {
             return $sequence;

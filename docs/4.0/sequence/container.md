@@ -127,21 +127,22 @@ $timestamp = $sequence->getTotalTimestampInterval(); // a float
 
 ## Container manipulations
 
-### Sequence::substract
+### Sequence::subtract
 
 <p class="message-info">new since <code>version 4.7</code></p>
+<p class="message-notice">typo fixed in <code>version 4.9</code></p>
 
 ~~~php
-Sequence::substract(Sequence $sequence): Sequence
+Sequence::subtract(Sequence $sequence): Sequence
 ~~~
 
-This method enables substracting a `Sequence` instance from another one. It internally use `Period::substract` and as such is not commutative.
+This method enables subtracting a `Sequence` instance from another one. It internally use `Period::substract` and as such is not commutative.
 
-<p class="message-notice"><strong>warning:</strong> This method is not optimized for substracting two large collection of <code>Sequence</code> objects.</p>
+<p class="message-notice"><strong>warning:</strong> This method is not optimized for subtracting two large collection of <code>Sequence</code> objects.</p>
 
 The following diagram gives you an overview of how the method works:
 
-[![](/media/sequence-substract2.png "Sequence substraction: How it works")](/media/sequence-substract.png)
+[![](/media/sequence-substract2.png "Sequence subtraction: How it works")](/media/sequence-substract.png)
 
 #### Examples
 
@@ -156,10 +157,10 @@ $absence = new Sequence(
     new Period('2000-01-12', '2000-01-15')
 );
 
-$diff = $presence->substract($absence);
+$diff = $presence->subtract($absence);
 $diff[0]->format('Y-m-d'); //[2000-01-01, 2000-01-08)
 $diff[1]->format('Y-m-d'); //[2000-01-15, 2000-01-20)
 
-$diff = $absence->substract($presence);
+$diff = $absence->subtract($presence);
 $diff->isEmpty(); // true
 ~~~

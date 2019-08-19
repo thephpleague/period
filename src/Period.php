@@ -890,6 +890,17 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated since version 4.9.0
+     * @see ::subtract
+     */
+    public function substract(self $interval): Sequence
+    {
+        return $this->subtract($interval);
+    }
+
+    /**
      * Returns the difference set operation between two intervals as a Sequence.
      * The Sequence can contain from 0 to 2 Periods depending on the result of
      * the operation.
@@ -900,7 +911,7 @@ final class Period implements JsonSerializable
      *          =
      * [--------------)
      */
-    public function substract(self $interval): Sequence
+    public function subtract(self $interval): Sequence
     {
         if (!$this->overlaps($interval)) {
             return new Sequence($this);

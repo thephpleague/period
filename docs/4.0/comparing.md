@@ -413,12 +413,13 @@ $first->isBefore($last); //return true;
 //this is always true when two Period objects are present
 ~~~
 
-### Period::substract
+### Period::subtract
 
-<p class="message-info">Since <code>version 4.7</code></p>
+<p class="message-info">new since <code>version 4.7</code></p>
+<p class="message-notice">typo fixed in <code>version 4.9</code></p>
 
 ~~~php
-public Period::substract(Period $interval): Sequence
+public Period::subtract(Period $interval): Sequence
 ~~~
 
 This method returns the difference between two `Period` objects. It differs from `Period::diff` as:
@@ -427,7 +428,7 @@ This method returns the difference between two `Period` objects. It differs from
 - the method returns a [Sequence](/4.0/sequence/container/) object;
 - the method never throws even when the instances do not overlaps;
 
-![](/media/period-substract.png "Period substraction")
+![](/media/period-substract.png "Period subtraction")
 
 #### Examples
 
@@ -436,23 +437,23 @@ $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
 $periodB = Period::after('2000-01-01 14:00:00', '6 HOURS');
 $periodC = Period::before('2019-01-03', '1 MONTH');
 
-$sequenceAB = $periodA->substract($periodB);
+$sequenceAB = $periodA->subtract($periodB);
 count($sequenceAB); //returns 1
 $sequenceAB[0]->equals
 	new Period($periodA->getStartDate(), $periodB->getStartDate())
 );
 
-$sequenceBA = $periodB->substract($periodA);
+$sequenceBA = $periodB->subtract($periodA);
 count($sequenceBA); //returns 1
 $sequenceBA[0]->equals(
 	new Period($periodA->getEndDate(), $periodB->getEndDate())
 );
 
-$sequenceAC = $periodA->substract($periodC);
+$sequenceAC = $periodA->subtract($periodC);
 count($sequenceAC); //returns 1
 $sequenceAC[0]->equals($periodA); //returns true
 
-$sequenceCA = $periodC->substract($periodA);
+$sequenceCA = $periodC->subtract($periodA);
 count($sequenceCA); //returns 1
 $sequenceCA[0]->equals($periodC); //returns true
 ~~~
