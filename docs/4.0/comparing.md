@@ -415,8 +415,9 @@ $first->isBefore($last); //return true;
 
 ### Period::subtract
 
-<p class="message-info">new since <code>version 4.7</code></p>
-<p class="message-notice">typo fixed in <code>version 4.9</code></p>
+<p class="message-info"><code>Period::substract</code> introduced in <code>version 4.7</code></p>
+<p class="message-notice">typo fixed to <code>Period::subtract</code> in <code>version 4.9</code></p>
+<p class="message-warning"><code>Period::substract</code> is deprecated and will be remove in the next major release.</p>
 
 ~~~php
 public Period::subtract(Period $interval): Sequence

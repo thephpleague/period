@@ -129,8 +129,9 @@ $timestamp = $sequence->getTotalTimestampInterval(); // a float
 
 ### Sequence::subtract
 
-<p class="message-info">new since <code>version 4.7</code></p>
-<p class="message-notice">typo fixed in <code>version 4.9</code></p>
+<p class="message-info"><code>Sequence::substract</code> introduced in <code>version 4.7</code></p>
+<p class="message-notice">typo fixed to <code>Sequence::subtract</code> in <code>version 4.9</code></p>
+<p class="message-warning"><code>Sequence::substract</code> is deprecated and will be remove in the next major release.</p>
 
 ~~~php
 Sequence::subtract(Sequence $sequence): Sequence
