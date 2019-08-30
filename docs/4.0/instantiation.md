@@ -109,7 +109,7 @@ public static Period::around(mixed $datepoint, mixed $duration, string $boundary
 
 - `Period::after` returns a `Period` object which starts at `$datepoint`
 - `Period::before` returns a `Period` object which ends at `$datepoint`
-- `Period::around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
+- `Period::around` returns a `Period` object where the given duration is simultaneously subtracted from and added to the `$datepoint`.
 
 #### Parameters
 
@@ -305,7 +305,7 @@ function League\Period\interval_around(mixed $datepoint, mixed $duration): Perio
 
 - `interval_after` returns a `Period` object which starts at `$datepoint`
 - `interval_before` returns a `Period` object which ends at `$datepoint`.
-- `interval_around` returns a `Period` object where the given duration is simultaneously substracted from and added to the `$datepoint`.
+- `interval_around` returns a `Period` object where the given duration is simultaneously subtracted from and added to the `$datepoint`.
 
 #### Parameters
 

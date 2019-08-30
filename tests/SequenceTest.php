@@ -231,7 +231,7 @@ final class SequenceTest extends TestCase
     }
 
     /**
-     * Substract test 1.
+     * subtract test 1.
      *
      *  [-------------)      [------------)
      *                   -
@@ -239,7 +239,7 @@ final class SequenceTest extends TestCase
      *                   =
      *  [----)   [----)
      */
-    public function testSubstract1(): void
+    public function testSubtract1(): void
     {
         $sequenceA = new Sequence(
             new Period('2000-01-01', '2000-01-10'),
@@ -249,15 +249,16 @@ final class SequenceTest extends TestCase
             new Period('2000-01-05', '2000-01-08'),
             new Period('2000-01-11', '2000-01-25')
         );
-        $diff = $sequenceA->substract($sequenceB);
+        $diff = $sequenceA->subtract($sequenceB);
 
         self::assertCount(2, $diff);
         self::assertSame('[2000-01-01, 2000-01-05)', $diff->get(0)->format('Y-m-d'));
         self::assertSame('[2000-01-08, 2000-01-10)', $diff->get(1)->format('Y-m-d'));
+        self::assertEquals($diff, $sequenceA->substract($sequenceB));
     }
 
     /**
-     * Substract test 2.
+     * subtract test 2.
      *
      *  [------)      [------)      [------)
      *                   -
@@ -265,7 +266,7 @@ final class SequenceTest extends TestCase
      *                   =
      *  ()
      */
-    public function testSubstract2(): void
+    public function testSubtract2(): void
     {
         $sequenceA = new Sequence(
             new Period('2000-01-01', '2000-01-05'),
@@ -275,15 +276,15 @@ final class SequenceTest extends TestCase
         $sequenceB = new Sequence(
             new Period('2000-01-01', '2000-01-30')
         );
-        $diff = $sequenceA->substract($sequenceB);
+        $diff = $sequenceA->subtract($sequenceB);
 
         self::assertCount(0, $diff);
     }
 
     /**
-     * Substract test 3.
+     * subtract test 3.
      */
-    public function testSubstract3(): void
+    public function testSubtract3(): void
     {
         $sequenceA = new Sequence(
             new Period('2000-01-01', '2000-01-10'),
@@ -291,39 +292,39 @@ final class SequenceTest extends TestCase
         );
         $sequenceB = new Sequence();
 
-        $diff1 = $sequenceA->substract($sequenceB);
+        $diff1 = $sequenceA->subtract($sequenceB);
         self::assertCount(2, $diff1);
         self::assertSame('[2000-01-01, 2000-01-10)', $diff1->get(0)->format('Y-m-d'));
         self::assertSame('[2000-01-12, 2000-01-20)', $diff1->get(1)->format('Y-m-d'));
 
-        $diff2 = $sequenceB->substract($sequenceA);
+        $diff2 = $sequenceB->subtract($sequenceA);
         self::assertCount(0, $diff2);
     }
 
     /**
-     * Substract test 4.
+     * subtract test 4.
      */
-    public function testSubstract4(): void
+    public function testSubtract4(): void
     {
         $sequenceA = new Sequence(
             new Period('2000-01-01', '2000-01-10'),
             new Period('2000-01-12', '2000-01-20')
         );
         $sequenceB = new Sequence(new Period('2003-01-12', '2003-01-20'));
-        self::assertSame($sequenceA, $sequenceA->substract($sequenceB));
+        self::assertSame($sequenceA, $sequenceA->subtract($sequenceB));
     }
 
     /**
-     * Substract test 5.
+     * subtract test 5.
      */
-    public function testSubstract5(): void
+    public function testSubtract5(): void
     {
         $sequenceA = new Sequence(
             new Period('2000-01-01', '2000-01-10'),
             new Period('2001-01-01', '2001-01-10')
         );
         $sequenceB = new Sequence(new Period('2000-01-01', '2000-01-10'));
-        self::assertCount(0, $sequenceB->substract($sequenceA));
+        self::assertCount(0, $sequenceB->subtract($sequenceA));
     }
 
     /**

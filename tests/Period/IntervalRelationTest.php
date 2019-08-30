@@ -993,46 +993,46 @@ class IntervalRelationTest extends TestCase
         }
     }
 
-    public function testSubstractWithOverlappingUnequalPeriods(): void
+    public function testSubtractWithOverlappingUnequalPeriods(): void
     {
         $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
         $periodB = Period::after('2000-01-01 14:00:00', '6 HOURS');
 
-        $diff1 = $periodA->substract($periodB);
+        $diff1 = $periodA->subtract($periodB);
 
         self::assertCount(1, $diff1);
         self::assertEquals($periodA->getStartDate(), $diff1[0]->getStartDate());
         self::assertEquals($periodB->getStartDate(), $diff1[0]->getEndDate());
 
-        $diff2 = $periodB->substract($periodA);
+        $diff2 = $periodB->subtract($periodA);
 
         self::assertCount(1, $diff2);
         self::assertEquals($periodA->getEndDate(), $diff2[0]->getStartDate());
         self::assertEquals($periodB->getEndDate(), $diff2[0]->getEndDate());
     }
 
-    public function testSubstractWithSeparatePeriods(): void
+    public function testSubtractWithSeparatePeriods(): void
     {
         $periodA = Period::after('2000-01-01 10:00:00', '4 HOURS');
         $periodB = Period::after('2000-01-01 15:00:00', '3 HOURS');
 
-        $diff1 = $periodA->substract($periodB);
+        $diff1 = $periodA->subtract($periodB);
 
         self::assertCount(1, $diff1);
         self::assertTrue($diff1[0]->equals($periodA));
 
-        $diff2 = $periodB->substract($periodA);
+        $diff2 = $periodB->subtract($periodA);
 
         self::assertCount(1, $diff2);
         self::assertTrue($diff2[0]->equals($periodB));
     }
 
-    public function testSubstractWithOnePeriodContainedInAnother(): void
+    public function testSubtractWithOnePeriodContainedInAnother(): void
     {
         $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
         $periodB = Period::after('2000-01-01 15:00:00', '1 HOUR');
 
-        $diff1 = $periodA->substract($periodB);
+        $diff1 = $periodA->subtract($periodB);
 
         self::assertCount(2, $diff1);
         self::assertEquals($periodA->getStartDate(), $diff1[0]->getStartDate());
@@ -1040,16 +1040,17 @@ class IntervalRelationTest extends TestCase
         self::assertEquals($periodB->getEndDate(), $diff1[1]->getStartDate());
         self::assertEquals($periodA->getEndDate(), $diff1[1]->getEndDate());
 
-        $diff2 = $periodB->substract($periodA);
+        $diff2 = $periodB->subtract($periodA);
 
         self::assertCount(0, $diff2);
     }
 
-    public function testSubstractWithEqualPeriodObjec(): void
+    public function testSubtractWithEqualPeriodObjec(): void
     {
         $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
-        $diff = $periodA->substract($periodA);
+        $diff = $periodA->subtract($periodA);
 
         self::assertCount(0, $diff);
+        self::assertEquals($diff, $periodA->substract($periodA));
     }
 }

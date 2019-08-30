@@ -137,7 +137,7 @@ $timestamp = $sequence->getTotalTimestampInterval(); // a float
 Sequence::subtract(Sequence $sequence): Sequence
 ~~~
 
-This method enables subtracting a `Sequence` instance from another one. It internally use `Period::substract` and as such is not commutative.
+This method enables subtracting a `Sequence` instance from another one. It internally use `Period::subtract` and as such is not commutative.
 
 <p class="message-notice"><strong>warning:</strong> This method is not optimized for subtracting two large collection of <code>Sequence</code> objects.</p>
 

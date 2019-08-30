@@ -168,7 +168,7 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance where the given duration is simultaneously
-     * substracted from and added to the datepoint.
+     * subtracted from and added to the datepoint.
      *
      * @param mixed $datepoint a Datepoint
      * @param mixed $duration  a Duration
@@ -1122,7 +1122,7 @@ final class Period implements JsonSerializable
 
     /**
      * Returns an instance where the given DateInterval is simultaneously
-     * substracted from the starting datepoint and added to the ending datepoint.
+     * subtracted from the starting datepoint and added to the ending datepoint.
      *
      * Depending on the duration value, the resulting instance duration will be expanded or shrinked.
      *

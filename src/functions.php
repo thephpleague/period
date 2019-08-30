@@ -90,7 +90,7 @@ function interval_before($endDate, $duration): Period
 
 /**
  * Creates new instance where the given duration is simultaneously
- * substracted from and added to the datepoint.
+ * subtracted from and added to the datepoint.
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *

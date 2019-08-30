@@ -154,7 +154,7 @@ public Period::expand(mixed $duration): Period
 
 Returns a new `Period` object where the given interval is:
 
-- substracted from the starting endpoint
+- subtracted from the starting endpoint
 - added to the ending endpoint
 
 #### Example
