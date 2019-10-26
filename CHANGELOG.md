@@ -6,11 +6,12 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- `Period::fromIsoString`
+- `Period::toIsoString`
 
 ### Fixed
 
-- None
+- `Period::__string` is now an alias of `Period::toIsoString`
 
 ### Deprecated
 

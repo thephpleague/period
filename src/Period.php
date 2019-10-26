@@ -23,6 +23,7 @@ use function array_filter;
 use function array_keys;
 use function implode;
 use function sprintf;
+use function strpos;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -263,6 +264,52 @@ final class Period implements JsonSerializable
         return new self($startDate, $startDate->add(new DateInterval('P1D')), $boundaryType);
     }
 
+    /**
+     * Creates new instance from an ISO 8601 time interval.
+     * This named constructor only support full datepoint and interval.
+     *
+     * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
+     *
+     * @throws Exception
+     */
+    public static function fromIsoString(string $isoFormat, string $separator = '/'): self
+    {
+        /** @var string[] $parts */
+        $parts = explode($separator, $isoFormat);
+        if (2 !== count($parts)) {
+            throw new Exception('The string format is not valid. Please review the isoFormat.');
+        }
+
+        if ('P' === $parts[0][0]) {
+            $format = self::ISO8601_FORMAT;
+            if (false === strpos($parts[1], '.')) {
+                $format = 'Y-m-d\TH:i:sZ';
+            }
+
+            return self::before(
+                DateTimeImmutable::createFromFormat($format, $parts[1]),
+                new DateInterval($parts[0])
+            );
+        }
+
+        $format = self::ISO8601_FORMAT;
+        if (false === strpos($parts[0], '.')) {
+            $format = 'Y-m-d\TH:i:sZ';
+        }
+
+        if ('P' === $parts[1][0]) {
+            return self::after(
+                DateTimeImmutable::createFromFormat($format, $parts[0]),
+                new DateInterval($parts[1])
+            );
+        }
+
+        return new self(
+            DateTimeImmutable::createFromFormat($format, $parts[0]),
+            DateTimeImmutable::createFromFormat($format, $parts[1])
+        );
+    }
+
     /**************************************************
      * Basic getters
      **************************************************/
@@ -314,11 +361,20 @@ final class Period implements JsonSerializable
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
-     * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
-     *
-     * @return string
+     * @see Period::toIsoString()
      */
     public function __toString()
+    {
+        return $this->toIsoString();
+    }
+
+    /**
+     * Returns the string representation as a ISO8601 interval format.
+     *
+     * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
+     *
+     */
+    public function toIsoString(): string
     {
         $interval = $this->jsonSerialize();
 
