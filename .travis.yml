@@ -44,7 +44,6 @@ matrix:
     - RUN_INFECTION=false
     - VALIDATE_CODING_STYLE=false
   allow_failures:
-  - php: 7.4snapshot
   - php: nightly
   fast_finish: true
 before_install:
