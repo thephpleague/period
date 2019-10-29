@@ -328,11 +328,11 @@ class ConstructorTest extends TestCase
     /**
      * @dataProvider isoStringProvider
      *
-     * @covers ::fromIsoString
+     * @covers ::fromISO8601
      */
     public function testFromIsoString(string $isoString, string $separator, string $expected): void
     {
-        self::assertSame($expected, Period::fromIsoString($isoString, $separator)->__toString());
+        self::assertSame($expected, Period::fromISO8601($isoString, $separator)->__toString());
     }
 
     public function isoStringProvider(): iterable
@@ -360,6 +360,6 @@ class ConstructorTest extends TestCase
     {
         self::expectException(Exception::class);
 
-        Period::fromIsoString('foo/bar', '--');
+        Period::fromISO8601('foo/bar', '--');
     }
 }

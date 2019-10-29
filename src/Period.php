@@ -272,12 +272,12 @@ final class Period implements JsonSerializable
      *
      * @throws Exception
      */
-    public static function fromIsoString(string $isoFormat, string $separator = '/'): self
+    public static function fromISO8601(string $isoFormat, string $separator = '/'): self
     {
         /** @var string[] $parts */
         $parts = explode($separator, $isoFormat);
         if (2 !== count($parts)) {
-            throw new Exception('The string format is not valid. Please review the isoFormat.');
+            throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
         }
 
         if ('P' === $parts[0][0]) {
@@ -361,11 +361,11 @@ final class Period implements JsonSerializable
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
-     * @see Period::toIsoString()
+     * @see Period::toISO8601()
      */
     public function __toString()
     {
-        return $this->toIsoString();
+        return $this->toISO8601();
     }
 
     /**
@@ -374,7 +374,7 @@ final class Period implements JsonSerializable
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
      */
-    public function toIsoString(): string
+    public function toISO8601(): string
     {
         $interval = $this->jsonSerialize();
 

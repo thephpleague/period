@@ -6,12 +6,12 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `Period::fromIsoString`
-- `Period::toIsoString`
+- `Period::fromISO8601`
+- `Period::toISO8601`
 
 ### Fixed
 
-- `Period::__string` is now an alias of `Period::toIsoString`
+- `Period::__string` is now an alias of `Period::toISO8601`
 
 ### Deprecated
 
