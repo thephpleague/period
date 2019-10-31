@@ -324,4 +324,42 @@ class ConstructorTest extends TestCase
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
     }
+
+    /**
+     * @dataProvider isoStringProvider
+     *
+     * @covers ::fromISO8601
+     */
+    public function testFromIsoString(string $isoString, string $separator, string $expected): void
+    {
+        self::assertSame($expected, Period::fromISO8601($isoString, $separator)->__toString());
+    }
+
+    public function isoStringProvider(): iterable
+    {
+        return [
+            'datepoints only' => [
+                'isoString' => '2007-03-01T13:00:00Z/2008-05-11T15:30:00Z',
+                'separator' => '/',
+                'expected' => '2007-03-01T13:00:00.000000Z/2008-05-11T15:30:00.000000Z',
+            ],
+            'start and duration' => [
+                'isoString' => '2007-03-01T13:00:00Z/P1Y2M10DT2H30M',
+                'separator' => '/',
+                'expected' => '2007-03-01T13:00:00.000000Z/2008-05-11T15:30:00.000000Z',
+            ],
+            'end and duration' => [
+                'isoString' => 'P1Y2M10DT2H30M--2008-05-11T15:30:00Z',
+                'separator' => '--',
+                'expected' => '2007-03-01T13:00:00.000000Z/2008-05-11T15:30:00.000000Z',
+            ],
+        ];
+    }
+
+    public function testIsoStringThrowOnWrongFormat(): void
+    {
+        self::expectException(Exception::class);
+
+        Period::fromISO8601('foo/bar', '--');
+    }
 }
