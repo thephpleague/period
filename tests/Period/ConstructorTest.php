@@ -328,9 +328,10 @@ class ConstructorTest extends TestCase
     /**
      * @dataProvider isoStringProvider
      *
+     * @covers ::normalizeISO8601
      * @covers ::fromISO8601
      */
-    public function testFromIsoString(string $isoString, string $separator, string $expected): void
+    public function testFromISO8601(string $isoString, string $separator, string $expected): void
     {
         self::assertSame($expected, Period::fromISO8601($isoString, $separator)->__toString());
     }
@@ -353,13 +354,43 @@ class ConstructorTest extends TestCase
                 'separator' => '--',
                 'expected' => '2007-03-01T13:00:00.000000Z/2008-05-11T15:30:00.000000Z',
             ],
+            'partial datetime at the end' => [
+                'isoString' => '2007-12-14T13:30/15:30',
+                'separator' => '/',
+                'expected' => '2007-12-14T13:30:00.000000Z/2007-12-14T15:30:00.000000Z',
+            ],
+            'partial datetime at the start' => [
+                'isoString' => '2008-02-15/03-14',
+                'separator' => '/',
+                'expected' => '2008-02-15T00:00:00.000000Z/2008-03-14T00:00:00.000000Z',
+            ],
         ];
     }
 
-    public function testIsoStringThrowOnWrongFormat(): void
+    /**
+     * @dataProvider invalidIso8601FormatProvider
+     *
+     * @covers ::fromISO8601
+     * @covers ::normalizeISO8601
+     */
+    public function testISO8601ThrowOnWrongFormat(string $format, string $separator): void
     {
         self::expectException(Exception::class);
 
-        Period::fromISO8601('foo/bar', '--');
+        Period::fromISO8601($format, $separator);
+    }
+
+    public function invalidIso8601FormatProvider(): iterable
+    {
+        return [
+            'mismatch separator' => [
+                'isoString' => '2008-02-15/03-14',
+                'separator' => '--',
+            ],
+            'invalid partial iso format' => [
+                'isoString' => '03-14/2008-02-15',
+                'separator' => '/',
+            ],
+        ];
     }
 }

@@ -170,6 +170,29 @@ $day->equals($daybis); //return true;
 $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 ~~~
 
+### Named constructors accepting the ISO8601 string format
+
+<p class="message-info">Since <code>version 4.10</code>.</p>
+
+~~~php
+public static Period::fromISO8601(string $format, string $separator = '/', string $boundaryType = self::INCLUDE_START_EXCLUDE_END): Period
+~~~
+
+#### Parameters
+
+- `$format` the ISO8601 format as described in the [Wikipedia page](https://en.wikipedia.org/wiki/ISO_8601#Time_intervals).
+- `$separator` the string sequence used to separate the datepoints and/or the duration;
+- `$boundaryType` the interval boundary type.
+
+#### Examples
+
+~~~php
+$interval1 = Period::fromISO8601("2007-12-14T13:30/2007-12-14T15:30");
+$interval2 = Period::fromISO8601("2007-12-14T13:30/P2D");
+$interval3 = Period::fromISO8601("P2D--2007-12-14T13:30", "--", Period::EXCLUDE_ALL);
+$interval4 = Period::fromISO8601("2007-12-14T13:30/15:30");
+~~~
+
 ## Helper functions
 
 <p class="message-warning">The following functions are deprecated since <code>version 4.2</code> and will be remove in the next major release. Please consider using the named constructors instead.</p>

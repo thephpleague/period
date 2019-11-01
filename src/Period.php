@@ -23,7 +23,9 @@ use function array_filter;
 use function array_keys;
 use function implode;
 use function sprintf;
-use function strpos;
+use function str_replace;
+use function strlen;
+use function substr;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -272,42 +274,61 @@ final class Period implements JsonSerializable
      *
      * @throws Exception
      */
-    public static function fromISO8601(string $isoFormat, string $separator = '/'): self
-    {
+    public static function fromISO8601(
+        string $isoFormat,
+        string $separator = '/',
+        string $boundaryType = self::INCLUDE_START_EXCLUDE_END
+    ): self {
         /** @var string[] $parts */
         $parts = explode($separator, $isoFormat);
         if (2 !== count($parts)) {
-            throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
+            throw new Exception('The submitted format and/or the separator are not valid. Please review your parameters against the ISO8601 interval format.');
         }
 
         if ('P' === $parts[0][0]) {
-            $format = self::ISO8601_FORMAT;
-            if (false === strpos($parts[1], '.')) {
-                $format = 'Y-m-d\TH:i:sZ';
-            }
+            $endDate = str_replace('T', ' ', $parts[1]);
 
-            return self::before(
-                DateTimeImmutable::createFromFormat($format, $parts[1]),
-                new DateInterval($parts[0])
-            );
-        }
-
-        $format = self::ISO8601_FORMAT;
-        if (false === strpos($parts[0], '.')) {
-            $format = 'Y-m-d\TH:i:sZ';
+            return self::before($endDate, new DateInterval($parts[0]), $boundaryType);
         }
 
         if ('P' === $parts[1][0]) {
-            return self::after(
-                DateTimeImmutable::createFromFormat($format, $parts[0]),
-                new DateInterval($parts[1])
-            );
+            $startDate = str_replace('T', ' ', $parts[0]);
+
+            return self::after($startDate, new DateInterval($parts[1]), $boundaryType);
         }
 
-        return new self(
-            DateTimeImmutable::createFromFormat($format, $parts[0]),
-            DateTimeImmutable::createFromFormat($format, $parts[1])
-        );
+        [$startDate, $endDate] = self::normalizeISO8601($parts);
+
+        return new self($startDate, $endDate, $boundaryType);
+    }
+
+    /**
+     * @param string[] $iso8601String
+     *
+     * @throws Exception
+     *
+     * @return string[]
+     */
+    private static function normalizeISO8601(array $iso8601String): array
+    {
+        $formatter = static function (string $datepoint): string {
+            return str_replace('T', ' ', $datepoint);
+        };
+
+        $iso8601String = array_map($formatter, $iso8601String);
+        [$startDate, $endDate] = $iso8601String;
+        $startLength = strlen($startDate);
+        $endLength = strlen($endDate);
+        $diff = $startLength <=> $endLength;
+        if (1 === $diff) {
+            return [$startDate, substr($startDate, 0, - $endLength).$endDate];
+        }
+
+        if (-1 === $diff) {
+            throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
+        }
+
+        return $iso8601String;
     }
 
     /**************************************************
