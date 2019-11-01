@@ -272,6 +272,7 @@ final class Period implements JsonSerializable
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      *
+     * @throws \Exception
      * @throws Exception
      */
     public static function fromISO8601(
@@ -285,16 +286,21 @@ final class Period implements JsonSerializable
             throw new Exception('The submitted format and/or the separator are not valid. Please review your parameters against the ISO8601 interval format.');
         }
 
-        if ('P' === $parts[0][0]) {
-            $endDate = str_replace('T', ' ', $parts[1]);
-
-            return self::before($endDate, new DateInterval($parts[0]), $boundaryType);
+        [$start, $end] = $parts;
+        if ('P' === $start[0]) {
+            return self::before(
+                str_replace('T', ' ', $end),
+                new DateInterval($start),
+                $boundaryType
+            );
         }
 
-        if ('P' === $parts[1][0]) {
-            $startDate = str_replace('T', ' ', $parts[0]);
-
-            return self::after($startDate, new DateInterval($parts[1]), $boundaryType);
+        if ('P' === $end[0]) {
+            return self::after(
+                str_replace('T', ' ', $start),
+                new DateInterval($end),
+                $boundaryType
+            );
         }
 
         [$startDate, $endDate] = self::normalizeISO8601($parts);
@@ -320,12 +326,12 @@ final class Period implements JsonSerializable
         $startLength = strlen($startDate);
         $endLength = strlen($endDate);
         $diff = $startLength <=> $endLength;
-        if (1 === $diff) {
-            return [$startDate, substr($startDate, 0, - $endLength).$endDate];
-        }
-
         if (-1 === $diff) {
             throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
+        }
+
+        if (1 === $diff) {
+            return [$startDate, substr($startDate, 0, - $endLength).$endDate];
         }
 
         return $iso8601String;
