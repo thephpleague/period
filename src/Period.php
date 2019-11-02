@@ -22,8 +22,8 @@ use JsonSerializable;
 use function array_filter;
 use function array_keys;
 use function implode;
+use function preg_match;
 use function sprintf;
-use function str_replace;
 use function strlen;
 use function substr;
 
@@ -37,6 +37,20 @@ use function substr;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+
+    private const ISO8601_REGEXP = '/^
+        (?<date>
+            (?<year>\d+)
+            (-(?<month>1[0-2]|0[1-9]))?
+            (-(?<day>3[01]|0[1-9]|[12][0-9]))?
+        )
+        (T(?<time>
+            (?<hour>2[0-3]|[01][0-9])
+            (:(?<minute>[0-5][0-9]))?
+            (:(?<second>[0-5][0-9])(\.(?<micro>\d+))?)?
+        ))?
+        (?<utc>Z)?
+     $/x';
 
     private const BOUNDARY_TYPE = [
         self::INCLUDE_START_EXCLUDE_END => 1,
@@ -280,16 +294,20 @@ final class Period implements JsonSerializable
         string $separator = '/',
         string $boundaryType = self::INCLUDE_START_EXCLUDE_END
     ): self {
+        if (false === strpos($isoFormat, $separator)) {
+            throw new Exception(sprintf('The submitted separator `%s` is not present in interval string `%s`.', $separator, $isoFormat));
+        }
+
         /** @var string[] $parts */
         $parts = explode($separator, $isoFormat);
         if (2 !== count($parts)) {
-            throw new Exception('The submitted format and/or the separator are not valid. Please review your parameters against the ISO8601 interval format.');
+            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval format.', $isoFormat));
         }
 
         [$start, $end] = $parts;
         if ('P' === $start[0]) {
             return self::before(
-                str_replace('T', ' ', $end),
+                self::extractDateTimeString($end),
                 new DateInterval($start),
                 $boundaryType
             );
@@ -297,7 +315,7 @@ final class Period implements JsonSerializable
 
         if ('P' === $end[0]) {
             return self::after(
-                str_replace('T', ' ', $start),
+                self::extractDateTimeString($start),
                 new DateInterval($end),
                 $boundaryType
             );
@@ -306,6 +324,26 @@ final class Period implements JsonSerializable
         [$startDate, $endDate] = self::normalizeISO8601($parts);
 
         return new self($startDate, $endDate, $boundaryType);
+    }
+
+    private static function extractDateTimeString(string $isoFormat): string
+    {
+        if (1 !== preg_match(self::ISO8601_REGEXP, $isoFormat, $matches)) {
+            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval date string.', $isoFormat));
+        }
+
+        foreach (['month', 'day'] as $part) {
+            if (!isset($matches[$part]) || '' === $matches[$part]) {
+                $matches[$part] = '01';
+            }
+        }
+
+        if (!isset($matches['time']) || '' === $matches['time']) {
+            $matches['time'] = '00:00:00';
+        }
+        $matches['utc'] = $matches['utc'] ?? '';
+
+        return $matches['year'].'-'.$matches['month'].'-'.$matches['day'].' '.$matches['time'].$matches['utc'];
     }
 
     /**
@@ -317,11 +355,6 @@ final class Period implements JsonSerializable
      */
     private static function normalizeISO8601(array $iso8601String): array
     {
-        $formatter = static function (string $datepoint): string {
-            return str_replace('T', ' ', $datepoint);
-        };
-
-        $iso8601String = array_map($formatter, $iso8601String);
         [$startDate, $endDate] = $iso8601String;
         $startLength = strlen($startDate);
         $endLength = strlen($endDate);
@@ -331,10 +364,10 @@ final class Period implements JsonSerializable
         }
 
         if (1 === $diff) {
-            return [$startDate, substr($startDate, 0, - $endLength).$endDate];
+            $iso8601String = [$startDate, substr($startDate, 0, - $endLength).$endDate];
         }
 
-        return $iso8601String;
+        return array_map([self::class, 'extractDateTimeString'], $iso8601String);
     }
 
     /**************************************************

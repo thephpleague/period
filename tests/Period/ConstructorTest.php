@@ -330,6 +330,7 @@ class ConstructorTest extends TestCase
      *
      * @covers ::normalizeISO8601
      * @covers ::fromISO8601
+     * @covers ::extractDateTimeString
      */
     public function testFromISO8601(string $isoString, string $separator, string $expected): void
     {
@@ -364,6 +365,21 @@ class ConstructorTest extends TestCase
                 'separator' => '/',
                 'expected' => '2008-02-15T00:00:00.000000Z/2008-03-14T00:00:00.000000Z',
             ],
+            'years only' => [
+                'isoString' => '2008/2009',
+                'separator' => '/',
+                'expected' => '2008-01-01T00:00:00.000000Z/2009-01-01T00:00:00.000000Z',
+            ],
+            'years and month' => [
+                'isoString' => '2008-03/05',
+                'separator' => '/',
+                'expected' => '2008-03-01T00:00:00.000000Z/2008-05-01T00:00:00.000000Z',
+            ],
+            'years and month and different days' => [
+                'isoString' => '2008-03-04/05',
+                'separator' => '/',
+                'expected' => '2008-03-04T00:00:00.000000Z/2008-03-05T00:00:00.000000Z',
+            ],
         ];
     }
 
@@ -372,6 +388,7 @@ class ConstructorTest extends TestCase
      *
      * @covers ::fromISO8601
      * @covers ::normalizeISO8601
+     * @covers ::extractDateTimeString
      */
     public function testISO8601ThrowOnWrongFormat(string $format, string $separator): void
     {
@@ -383,12 +400,20 @@ class ConstructorTest extends TestCase
     public function invalidIso8601FormatProvider(): iterable
     {
         return [
-            'mismatch separator' => [
+            'separator not found' => [
                 'isoString' => '2008-02-15/03-14',
                 'separator' => '--',
             ],
+            'too many separators' => [
+                'isoString' => '2008-02-15/03-14',
+                'separator' => '-',
+            ],
             'invalid partial iso format' => [
                 'isoString' => '03-14/2008-02-15',
+                'separator' => '/',
+            ],
+            'invalid iso interval format' => [
+                'isoString' => 'foo/bar',
                 'separator' => '/',
             ],
         ];
