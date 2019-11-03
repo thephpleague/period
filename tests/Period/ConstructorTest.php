@@ -408,8 +408,12 @@ class ConstructorTest extends TestCase
                 'isoString' => '2008-02-15/03-14',
                 'separator' => '-',
             ],
-            'invalid partial iso format' => [
+            'invalid partial iso format (1)' => [
                 'isoString' => '03-14/2008-02-15',
+                'separator' => '/',
+            ],
+            'invalid partial iso format (2)' => [
+                'isoString' => '2008-03-04/2008-05',
                 'separator' => '/',
             ],
             'invalid iso interval format' => [

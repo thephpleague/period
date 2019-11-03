@@ -341,6 +341,7 @@ final class Period implements JsonSerializable
         if (!isset($matches['time']) || '' === $matches['time']) {
             $matches['time'] = '00:00:00';
         }
+
         $matches['utc'] = $matches['utc'] ?? '';
 
         return $matches['year'].'-'.$matches['month'].'-'.$matches['day'].' '.$matches['time'].$matches['utc'];
@@ -367,7 +368,12 @@ final class Period implements JsonSerializable
             $iso8601String = [$startDate, substr($startDate, 0, - $endLength).$endDate];
         }
 
-        return array_map([self::class, 'extractDateTimeString'], $iso8601String);
+        $iso8601String = array_map([self::class, 'extractDateTimeString'], $iso8601String);
+        if (strlen($iso8601String[0]) === strlen($iso8601String[1])) {
+            return $iso8601String;
+        }
+
+        throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
     }
 
     /**************************************************
