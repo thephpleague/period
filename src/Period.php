@@ -26,6 +26,7 @@ use function preg_match;
 use function sprintf;
 use function strlen;
 use function substr;
+use const STR_PAD_LEFT;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -290,38 +291,33 @@ final class Period implements JsonSerializable
      * @throws Exception
      */
     public static function fromISO8601(
-        string $isoFormat,
+        string $format,
         string $separator = '/',
         string $boundaryType = self::INCLUDE_START_EXCLUDE_END
     ): self {
-        if (false === strpos($isoFormat, $separator)) {
-            throw new Exception(sprintf('The submitted separator `%s` is not present in interval string `%s`.', $separator, $isoFormat));
+        if (false === strpos($format, $separator)) {
+            throw new Exception(sprintf('The submitted separator `%s` is not present in interval string `%s`.', $separator, $format));
         }
 
         /** @var string[] $parts */
-        $parts = explode($separator, $isoFormat);
+        $parts = explode($separator, $format);
         if (2 !== count($parts)) {
-            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval format.', $isoFormat));
+            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval format.', $format));
         }
 
         [$start, $end] = $parts;
         if ('P' === $start[0]) {
-            return self::before(
-                self::extractDateTimeString($end),
-                new DateInterval($start),
-                $boundaryType
-            );
+            return self::before(self::extractDateTimeString($end), new DateInterval($start), $boundaryType);
         }
 
         if ('P' === $end[0]) {
-            return self::after(
-                self::extractDateTimeString($start),
-                new DateInterval($end),
-                $boundaryType
-            );
+            return self::after(self::extractDateTimeString($start), new DateInterval($end), $boundaryType);
         }
 
-        [$startDate, $endDate] = self::normalizeISO8601($parts);
+        $endDate = self::extractDateTimeStringFromBase($end, $start);
+
+        $endDate = self::extractDateTimeString($endDate);
+        $startDate = self::extractDateTimeString($start);
 
         return new self($startDate, $endDate, $boundaryType);
     }
@@ -344,36 +340,31 @@ final class Period implements JsonSerializable
 
         $matches['utc'] = $matches['utc'] ?? '';
 
-        return $matches['year'].'-'.$matches['month'].'-'.$matches['day'].' '.$matches['time'].$matches['utc'];
+        return str_pad($matches['year'], 4, '0', STR_PAD_LEFT)
+            .'-'.$matches['month']
+            .'-'.$matches['day']
+            .' '.$matches['time']
+            .$matches['utc']
+        ;
     }
 
     /**
-     * @param string[] $iso8601String
-     *
      * @throws Exception
-     *
-     * @return string[]
      */
-    private static function normalizeISO8601(array $iso8601String): array
+    private static function extractDateTimeStringFromBase(string $relativeDatepoint, string $baseDatepoint): string
     {
-        [$startDate, $endDate] = $iso8601String;
-        $startLength = strlen($startDate);
-        $endLength = strlen($endDate);
-        $diff = $startLength <=> $endLength;
+        $baseLength = strlen($baseDatepoint);
+        $relativeLength = strlen($relativeDatepoint);
+        $diff = $baseLength <=> $relativeLength;
         if (-1 === $diff) {
             throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
         }
 
         if (1 === $diff) {
-            $iso8601String = [$startDate, substr($startDate, 0, - $endLength).$endDate];
+            $relativeDatepoint = substr($baseDatepoint, 0, - $relativeLength).$relativeDatepoint;
         }
 
-        $iso8601String = array_map([self::class, 'extractDateTimeString'], $iso8601String);
-        if (strlen($iso8601String[0]) === strlen($iso8601String[1])) {
-            return $iso8601String;
-        }
-
-        throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
+        return $relativeDatepoint;
     }
 
     /**************************************************

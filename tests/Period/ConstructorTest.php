@@ -328,7 +328,7 @@ class ConstructorTest extends TestCase
     /**
      * @dataProvider isoStringProvider
      *
-     * @covers ::normalizeISO8601
+     * @covers ::extractDateTimeStringFromBase
      * @covers ::fromISO8601
      * @covers ::extractDateTimeString
      */
@@ -387,7 +387,7 @@ class ConstructorTest extends TestCase
      * @dataProvider invalidIso8601FormatProvider
      *
      * @covers ::fromISO8601
-     * @covers ::normalizeISO8601
+     * @covers ::extractDateTimeStringFromBase
      * @covers ::extractDateTimeString
      */
     public function testISO8601ThrowOnWrongFormat(string $format, string $separator): void
