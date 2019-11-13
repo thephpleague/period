@@ -22,11 +22,7 @@ use JsonSerializable;
 use function array_filter;
 use function array_keys;
 use function implode;
-use function preg_match;
 use function sprintf;
-use function strlen;
-use function substr;
-use const STR_PAD_LEFT;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -38,20 +34,6 @@ use const STR_PAD_LEFT;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
-
-    private const ISO8601_REGEXP = '/^
-        (?<date>
-            (?<year>\d+)
-            (-(?<month>1[0-2]|0[1-9]))?
-            (-(?<day>3[01]|0[1-9]|[12][0-9]))?
-        )
-        (T(?<time>
-            (?<hour>2[0-3]|[01][0-9])
-            (:(?<minute>[0-5][0-9]))?
-            (:(?<second>[0-5][0-9])(\.(?<micro>\d+))?)?
-        ))?
-        (?<utc>Z)?
-     $/x';
 
     private const BOUNDARY_TYPE = [
         self::INCLUDE_START_EXCLUDE_END => 1,
@@ -307,64 +289,14 @@ final class Period implements JsonSerializable
 
         [$start, $end] = $parts;
         if ('P' === $start[0]) {
-            return self::before(self::extractDateTimeString($end), new DateInterval($start), $boundaryType);
+            return self::before(Datepoint::fromIso8601($end), new DateInterval($start), $boundaryType);
         }
 
         if ('P' === $end[0]) {
-            return self::after(self::extractDateTimeString($start), new DateInterval($end), $boundaryType);
+            return self::after(Datepoint::fromIso8601($start), new DateInterval($end), $boundaryType);
         }
 
-        $endDate = self::extractDateTimeStringFromBase($end, $start);
-
-        $endDate = self::extractDateTimeString($endDate);
-        $startDate = self::extractDateTimeString($start);
-
-        return new self($startDate, $endDate, $boundaryType);
-    }
-
-    private static function extractDateTimeString(string $isoFormat): string
-    {
-        if (1 !== preg_match(self::ISO8601_REGEXP, $isoFormat, $matches)) {
-            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval date string.', $isoFormat));
-        }
-
-        foreach (['month', 'day'] as $part) {
-            if (!isset($matches[$part]) || '' === $matches[$part]) {
-                $matches[$part] = '01';
-            }
-        }
-
-        if (!isset($matches['time']) || '' === $matches['time']) {
-            $matches['time'] = '00:00:00';
-        }
-
-        $matches['utc'] = $matches['utc'] ?? '';
-
-        return str_pad($matches['year'], 4, '0', STR_PAD_LEFT)
-            .'-'.$matches['month']
-            .'-'.$matches['day']
-            .' '.$matches['time']
-            .$matches['utc']
-        ;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private static function extractDateTimeStringFromBase(string $relativeDatepoint, string $baseDatepoint): string
-    {
-        $baseLength = strlen($baseDatepoint);
-        $relativeLength = strlen($relativeDatepoint);
-        $diff = $baseLength <=> $relativeLength;
-        if (-1 === $diff) {
-            throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
-        }
-
-        if (1 === $diff) {
-            $relativeDatepoint = substr($baseDatepoint, 0, - $relativeLength).$relativeDatepoint;
-        }
-
-        return $relativeDatepoint;
+        return new self(Datepoint::fromIso8601($start), Datepoint::fromIso8601($end, $start), $boundaryType);
     }
 
     /**************************************************

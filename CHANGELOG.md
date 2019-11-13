@@ -8,6 +8,7 @@ All Notable changes to `Period` will be documented in this file
 
 - `Period::fromISO8601`
 - `Period::toISO8601`
+- `Datepoint::fromISO8601`
 
 ### Fixed
 

@@ -20,7 +20,11 @@ use DateTimeInterface;
 use DateTimeZone;
 use function filter_var;
 use function intdiv;
+use function preg_match;
+use function sprintf;
+use function str_pad;
 use const FILTER_VALIDATE_INT;
+use const STR_PAD_LEFT;
 
 /**
  * League Period Datepoint.
@@ -31,6 +35,90 @@ use const FILTER_VALIDATE_INT;
  */
 final class Datepoint extends DateTimeImmutable
 {
+    private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+
+    private const ISO8601_REGEXP = '/^
+        (?<date>
+            (?<year>(-?\d+))
+            (-(?<month>1[0-2]|0[1-9]))?
+            (-(?<day>3[01]|0[1-9]|[12][0-9]))?
+        )
+        (T(?<time>
+            (?<hour>2[0-3]|[01][0-9])
+            (:(?<minute>[0-5][0-9]))?
+            (:(?<second>[0-5][0-9])(\.(?<micro>\d+))?)?
+        ))?
+        (?<utc>Z)?
+     $/x';
+
+    /**
+     * @throws Exception
+     */
+    public static function fromIso8601(string $date, string $baseDate = null): self
+    {
+        //@todo This should be improve as it leads to bugs on edge cases.
+        if (null !== $baseDate) {
+            $baseLength = strlen($baseDate);
+            $relativeLength = strlen($date);
+            $diff = $baseLength <=> $relativeLength;
+            if (-1 === $diff) {
+                throw new Exception('The string format is not valid. Please review your submitted ISO8601 Interval format.');
+            }
+
+            if (1 === $diff) {
+                $date = substr($baseDate, 0, - $relativeLength).$date;
+            }
+        }
+
+        $newInstance = self::createFromFormat(self::ISO8601_FORMAT, self::formatIso8601($date));
+        if (false === $newInstance) {
+            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval date string.', $date));
+        }
+
+        return $newInstance;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function formatIso8601(string $date): string
+    {
+        if (1 !== preg_match(self::ISO8601_REGEXP, $date, $matches)) {
+            throw new Exception(sprintf('The submitted interval string `%s` is not a valid ISO8601 interval date string.', $date));
+        }
+
+        foreach (['month', 'day'] as $part) {
+            if (!isset($matches[$part]) || '' === $matches[$part]) {
+                $matches[$part] = '01';
+            }
+        }
+
+        if (!isset($matches['time']) || '' === $matches['time']) {
+            $matches['time'] = '00:00:00';
+        }
+
+        foreach (['hour', 'minute', 'second'] as $part) {
+            if (!isset($matches[$part]) || '' === $matches[$part]) {
+                $matches[$part] = '00';
+            }
+        }
+        if (!isset($matches['micro']) || '' === $matches['micro']) {
+            $matches['micro'] = '000000';
+        }
+        $matches['utc'] = $matches['utc'] ?? '';
+
+        return str_pad($matches['year'], 4, '0', STR_PAD_LEFT)
+            .'-'.$matches['month']
+            .'-'.$matches['day']
+            .'T'.$matches['hour']
+            .':'.$matches['minute']
+            .':'.$matches['second']
+            .'.'.$matches['micro']
+            .'Z'
+        ;
+    }
+
+
     /**
      * Returns a position in time expressed as a DateTimeImmutable object.
      *
