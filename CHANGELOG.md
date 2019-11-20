@@ -6,7 +6,6 @@ All Notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `Period::fromISO8601`
 - `Period::toISO8601`
 
 ### Fixed
