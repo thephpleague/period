@@ -142,7 +142,7 @@ final class SequenceTest extends TestCase
     {
         $sequence =new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
 
-        $filter = function (Period $period) {
+        $filter = function (Period $period): bool {
             return $period->getStartDate() == new DateTimeImmutable('2012-06-23');
         };
 
@@ -157,7 +157,7 @@ final class SequenceTest extends TestCase
     {
         $sequence = new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
 
-        $filter = static function (Period $interval) {
+        $filter = static function (Period $interval): bool {
             return true;
         };
 
@@ -167,7 +167,7 @@ final class SequenceTest extends TestCase
     public function testSortedReturnsSameInstance(): void
     {
         $sequence = new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
-        $sort = function (Period $event1, Period $event2) {
+        $sort = function (Period $event1, Period $event2): int {
             return 0;
         };
 
@@ -177,7 +177,7 @@ final class SequenceTest extends TestCase
     public function testSortedReturnsNewInstance(): void
     {
         $sequence = new Sequence(Period::fromMonth(2012, 6), Period::fromDay(2012, 6, 23), Period::fromIsoWeek(2018, 3));
-        $sort = static function (Period $event1, Period $event2) {
+        $sort = static function (Period $event1, Period $event2): int {
             return $event1->durationCompare($event2);
         };
 
@@ -200,7 +200,7 @@ final class SequenceTest extends TestCase
     public function testSome(): void
     {
         $interval = Period::after('2012-02-01 12:00:00', '1 HOUR');
-        $predicate = static function (Period $event) use ($interval) {
+        $predicate = static function (Period $event) use ($interval): bool {
             return $interval->overlaps($event);
         };
         $sequence = new Sequence(
@@ -221,7 +221,7 @@ final class SequenceTest extends TestCase
         );
 
         $interval = Period::after('2012-01-01', '5 YEARS');
-        $predicate = function (Period $event) use ($interval) {
+        $predicate = function (Period $event) use ($interval): bool {
             return $interval->contains($event);
         };
 

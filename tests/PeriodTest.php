@@ -317,7 +317,7 @@ class PeriodTest extends TestCase
             $list[] = $innerPeriod;
         }
 
-        $result = array_map(function (Period $range) {
+        $result = array_map(function (Period $range): array {
             return [
                 'start' => $range->getStartDate()->format('Y-m-d H:i:s'),
                 'end'   => $range->getEndDate()->format('Y-m-d H:i:s'),

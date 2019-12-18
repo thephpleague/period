@@ -3,6 +3,8 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
     ignoreErrors:
         - '#Strict comparison using !== between false and League\\Period\\Duration will always evaluate to true.#'
         - '#Variable method call on League\\Period\\Period.#'

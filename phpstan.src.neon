@@ -1,6 +1,8 @@
 includes:
 - vendor/phpstan/phpstan-strict-rules/rules.neon
 parameters:
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
     ignoreErrors:
         # Allow iterating over a DateInterval object to enable clean class extension
         - '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
@@ -9,6 +11,13 @@ parameters:
         - '#^Variable property access on (.*)?.#'
         - '#Strict comparison using !== between League\\Period\\Duration and false will always evaluate to true.#'
         - '#Strict comparison using === between false and League\\Period\\Duration will always evaluate to false.#'
-        - '#Method League\\Period\\Duration::createFromDateString\(\) should return League\\Period\\Duration but returns array.#'
         - '#PHPDoc tag \@return with type static\(League\\Period\\Duration\)\|false is not subtype of native type League\\Period\\Duration.#'
+        - '#Unreachable statement - code above always terminates.#'
+        - '#Method League\\Period\\Sequence::offsetExists\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetGet\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$offset with no typehint specified.#'
+        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$interval with no typehint specified.#'
+        - '#Method League\\Period\\Datepoint::createFromFormat\(\) should return static\(League\\Period\\Datepoint\)\|false but returns League\\Period\\Datepoint.#'
+        - '#Method League\\Period\\Datepoint::createFromMutable\(\) should return static\(League\\Period\\Datepoint\) but returns League\\Period\\Datepoint.#'
     reportUnmatchedIgnoredErrors: true

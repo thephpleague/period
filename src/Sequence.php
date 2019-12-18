@@ -218,7 +218,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $sequence;
         }
 
-        $reducer = function (Sequence $sequence, Period $period) use ($interval) {
+        $reducer = function (Sequence $sequence, Period $period) use ($interval): Sequence {
             $subtract = $period->subtract($interval);
             if (!$subtract->isEmpty()) {
                 $sequence->push(...$subtract);
@@ -353,7 +353,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * @inheritDoc
      *
-     * @param mixed $offset the index of the Period instance to validate.
+     * @param int $offset the index of the Period instance to validate.
      */
     public function offsetExists($offset): bool
     {
@@ -393,7 +393,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @inheritDoc
      * @see ::get
      *
-     * @param mixed $offset the index of the Period instance to retrieve.
+     * @param int $offset the index of the Period instance to retrieve.
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence
      */
@@ -406,7 +406,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @inheritDoc
      * @see ::remove
      *
-     * @param mixed $offset the index of the Period instance to remove.
+     * @param int $offset the index of the Period instance to remove.
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence
      */
@@ -417,13 +417,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @see ::set
-     * @see ::push
-     *
-     * @param mixed $offset   the index of the Period to add or update.
-     * @param mixed $interval the Period instance to add.
+     * @param int    $offset   the index of the Period to add or update.
+     * @param Period $interval the Period instance to add.
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence
+     *@see ::push
+     *
+     * @see ::set
      */
     public function offsetSet($offset, $interval): void
     {
