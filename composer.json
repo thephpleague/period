@@ -35,13 +35,13 @@
         "issues": "https://github.com/thephpleague/period/issues"
     },
     "require": {
-        "php" : "^7.1.3",
+        "php" : "^7.2.5",
         "ext-json": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.0",
+        "friendsofphp/php-cs-fixer": "^2.16",
         "infection/infection": "^0.13",
-        "phpunit/phpunit" : "^7.0|^8.0",
+        "phpunit/phpunit" : "^8.0",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12",

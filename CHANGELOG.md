@@ -11,6 +11,7 @@ All Notable changes to `Period` will be documented in this file
 ### Fixed
 
 - `Period::__string` is now an alias of `Period::toISO8601`
+- Fix issue with `Sequence::intersections` method.
 
 ### Deprecated
 
@@ -18,7 +19,7 @@ All Notable changes to `Period` will be documented in this file
 
 ### Removed
 
-- None
+- Support for PHP7.1
 
 ## 4.9.0 - 2019-09-02
 
