@@ -346,8 +346,10 @@ final class SequenceTest extends TestCase
             new Period('2018-01-10', '2018-01-31')
         );
         $intersections = $sequence->getIntersections();
-        self::assertCount(1, $intersections);
+
+        self::assertCount(2, $intersections);
         self::assertSame('[2018-01-10, 2018-01-15)', $intersections->get(0)->format('Y-m-d'));
+        self::assertSame('[2018-01-10, 2018-01-31)', $intersections->get(1)->format('Y-m-d'));
     }
 
     /**
