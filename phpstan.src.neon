@@ -20,4 +20,6 @@ parameters:
         - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$interval with no typehint specified.#'
         - '#Method League\\Period\\Datepoint::createFromFormat\(\) should return static\(League\\Period\\Datepoint\)\|false but returns League\\Period\\Datepoint.#'
         - '#Method League\\Period\\Datepoint::createFromMutable\(\) should return static\(League\\Period\\Datepoint\) but returns League\\Period\\Datepoint.#'
+        - '#Only numeric types are allowed in post-increment, string given.#'
+        - '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'
     reportUnmatchedIgnoredErrors: true
