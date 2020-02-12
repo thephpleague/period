@@ -7,7 +7,9 @@ title: Installation
 
 ## System Requirements
 
-`Period` requires **PHP 7.1.3** but the latest stable version of PHP.
+`Period` requires **PHP 7.2.5** but the latest stable version of PHP.
+
+<p class="message-info">Since <code>version 4.10</code> support for PHP 7.1.x is dropped.</p>
 
 ## Composer
 

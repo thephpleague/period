@@ -20,6 +20,10 @@ redirect_from: /examples/
 
 <p class="message-info">Since <code>version 4.4</code> the <code>Period</code> objects supports all types of boundary with the exception of unbounded interval.</p>
 
+<p class="message-info">Since <code>version 4.10</code> support for <code>PHP 7.1</code> is dropped.</p>
+
+
+
 ## Accessing the interval properties
 
 ~~~php
