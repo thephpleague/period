@@ -6,6 +6,10 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
     ignoreErrors:
-        - '#Strict comparison using !== between false and League\\Period\\Duration will always evaluate to true.#'
-        - '#Variable method call on League\\Period\\Period.#'
+        - message: '#Strict comparison using !== between false and League\\Period\\Duration will always evaluate to true.#'
+          path: tests/DurationTest.php
+        - message: '#Variable method call on League\\Period\\Period.#'
+          path: tests/PeriodTest.php
+        - message: '#Variable method call on League\\Period\\Period.#'
+          path: tests/Period/DurationRelationTest.php
     reportUnmatchedIgnoredErrors: true

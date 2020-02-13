@@ -18,7 +18,6 @@ use League\Period\Sequence;
 use function array_column;
 use function count;
 use function gettype;
-use function is_array;
 use function is_scalar;
 use function method_exists;
 use function strlen;
@@ -51,36 +50,31 @@ final class Dataset implements Data
     /**
      * Creates a new collection from a countable iterable structure.
      *
-     * @param array|(\Countable&\Iterator)|(\Countable&\IteratorAggregate) $items
-     * @param ?LabelGenerator                                              $labelGenerator
+     * @param array|(\Countable&iterable) $items
+     * @param ?LabelGenerator             $labelGenerator
      */
-    public static function fromSequence($items, ?LabelGenerator $labelGenerator = null): self
+    public static function fromItems($items, ?LabelGenerator $labelGenerator = null): self
     {
         $nbItems = count($items);
-        if (is_array($items)) {
-            $items = (function () use ($items): \Iterator {
-                foreach ($items as $key => $value) {
-                    yield $key => $value;
-                }
-            })();
-        } elseif ($items instanceof \IteratorAggregate) {
-            /** @var \Iterator<Sequence|Period> $items */
-            $items = $items->getIterator();
-        }
+        $items = (function () use ($items): \Iterator {
+            foreach ($items as $key => $value) {
+                yield $key => $value;
+            }
+        })();
 
         $labelGenerator = $labelGenerator ?? new LatinLetter();
 
-        $iterator = new \MultipleIterator(\MultipleIterator::MIT_NEED_ALL|\MultipleIterator::MIT_KEYS_ASSOC);
-        $iterator->attachIterator($labelGenerator->generate($nbItems), '0');
-        $iterator->attachIterator($items, '1');
+        $pairs = new \MultipleIterator(\MultipleIterator::MIT_NEED_ALL|\MultipleIterator::MIT_KEYS_ASSOC);
+        $pairs->attachIterator($labelGenerator->generate($nbItems), '0');
+        $pairs->attachIterator($items, '1');
 
-        return new self($iterator);
+        return new self($pairs);
     }
 
     /**
      * Creates a new collection from a generic iterable structure.
      */
-    public static function fromCollection(iterable $iterable): self
+    public static function fromIterable(iterable $iterable): self
     {
         $dataset = new self();
         foreach ($iterable as $label => $item) {
@@ -172,9 +166,11 @@ final class Dataset implements Data
      */
     public function jsonSerialize(): array
     {
-        return array_map(function (array $pair): array {
+        $mapper = static function (array $pair): array {
             return ['label' => $pair[0], 'item' => $pair[1]];
-        }, $this->pairs);
+        };
+
+        return array_map($mapper, $this->pairs);
     }
 
     /**
@@ -222,6 +218,6 @@ final class Dataset implements Data
      */
     public function withLabels(LabelGenerator $labelGenerator): Data
     {
-        return self::fromSequence($this->items(), $labelGenerator);
+        return self::fromItems($this->items(), $labelGenerator);
     }
 }

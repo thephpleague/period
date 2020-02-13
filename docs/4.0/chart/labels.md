@@ -10,10 +10,10 @@ The package provides a `LabelGenerator` interface that ease generating and creat
 
 A `LabelGenerator` implementing class is needed for the following methods
 
-- The `Dataset::fromSequence`, to create a new instance from a `Sequence` object;
+- The `Dataset::fromItems`, to create a new instance from a `Sequence` object;
 - The `Dataset::withLabels` to update the associated labels in the current instance;
 
-<p class="message-notice">By default when using <code>Dataset::fromSequence</code> if no <code>LabelGenerator</code> class is supplied the <code>LatinLetter</code> label generator will be used.</p>
+<p class="message-notice">By default when using <code>Dataset::fromItems</code> if no <code>LabelGenerator</code> class is supplied the <code>LatinLetter</code> label generator will be used.</p>
 
 The current package comes bundle with the following `LabelGenerator` implementing class:
 
@@ -30,7 +30,7 @@ use League\Period\Chart\LatinLetter;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$dataset = Dataset::fromSequence(
+$dataset = Dataset::fromItems(
     new Sequence(new Period('2018-01-01', '2018-02-01'), new Period('2018-01-15', '2018-02-01')),
     new LatinLetter('aa')
 );
@@ -66,7 +66,7 @@ use League\Period\Chart\GanttChart;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$dataset = Dataset::fromSequence(
+$dataset = Dataset::fromItems(
     new Sequence(new Period('2018-01-01', '2018-02-01'), new Period('2018-01-15', '2018-02-01')),
     new DecimalNumber(42)
 );
@@ -105,7 +105,7 @@ use League\Period\Sequence;
 
 $labelGenerator = new RomanNumber(new DecimalNumber(5), RomanNumber::LOWER);
 
-$dataset = Dataset::fromSequence(
+$dataset = Dataset::fromItems(
     new Sequence(new Period('2018-01-01', '2018-02-01'), new Period('2018-01-15', '2018-02-01')),
     $labelGenerator
 );
@@ -152,7 +152,7 @@ $labelGenerator = new AffixLabel(
     '*', //prefix
     '.)'    //suffix
 );
-$dataset = Dataset::fromSequence(
+$dataset = Dataset::fromItems(
     new Sequence(new Period('2018-01-01', '2018-02-01'), new Period('2018-01-15', '2018-02-01')),
     $labelGenerator
 );
@@ -198,7 +198,7 @@ $labelGenerator = new RomanNumber($labelGenerator, RomanNumber::LOWER);
 $labelGenerator = new AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new ReverseLabel($labelGenerator);
 
-$dataset = Dataset::fromSequence(
+$dataset = Dataset::fromItems(
     new Sequence(new Period('2018-01-01', '2018-02-01'), new Period('2018-01-15', '2018-02-01')),
     $labelGenerator
 );
@@ -239,7 +239,7 @@ $samelabel = new class implements LabelGenerator {
 };
 
 $labelGenerator = new AffixLabel($samelabel, '', '.');
-$dataset = Dataset::fromSequence(
+$dataset = Dataset::fromItems(
     new Sequence(new Period('2018-01-01', '2018-02-01'), new Period('2018-01-15', '2018-02-01')),
     $labelGenerator
 );

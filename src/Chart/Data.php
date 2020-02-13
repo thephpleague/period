@@ -36,7 +36,7 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
     public function jsonSerialize(): array;
 
     /**
-     * Tells whether the collection is empty.
+     * Tells whether the instance is empty.
      */
     public function isEmpty(): bool;
 

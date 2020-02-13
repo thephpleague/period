@@ -5,21 +5,38 @@ parameters:
     checkMissingIterableValueType: false
     ignoreErrors:
         # Allow iterating over a DateInterval object to enable clean class extension
-        - '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
-        - '#Strict comparison using === between false and DateInterval will always evaluate to false.#'
-        - '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
-        - '#^Variable property access on (.*)?.#'
-        - '#Strict comparison using !== between League\\Period\\Duration and false will always evaluate to true.#'
-        - '#Strict comparison using === between false and League\\Period\\Duration will always evaluate to false.#'
-        - '#PHPDoc tag \@return with type static\(League\\Period\\Duration\)\|false is not subtype of native type League\\Period\\Duration.#'
-        - '#Unreachable statement - code above always terminates.#'
-        - '#Method League\\Period\\Sequence::offsetExists\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetGet\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$offset with no typehint specified.#'
-        - '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$interval with no typehint specified.#'
-        - '#Method League\\Period\\Datepoint::createFromFormat\(\) should return static\(League\\Period\\Datepoint\)\|false but returns League\\Period\\Datepoint.#'
-        - '#Method League\\Period\\Datepoint::createFromMutable\(\) should return static\(League\\Period\\Datepoint\) but returns League\\Period\\Datepoint.#'
-        - '#Only numeric types are allowed in post-increment, string given.#'
-        - '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'
+        - message: '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
+          path: src/Duration.php
+        - message: '#Strict comparison using === between false and DateInterval will always evaluate to false.#'
+          path: src/Duration.php
+        - message: '#^Variable property access on (.*)?.#'
+          path: src/Duration.php
+        - message: '#Strict comparison using !== between League\\Period\\Duration and false will always evaluate to true.#'
+          path: src/Duration.php
+        - message: '#Strict comparison using === between false and League\\Period\\Duration will always evaluate to false.#'
+          path: src/Duration.php
+        - message: '#PHPDoc tag \@return with type static\(League\\Period\\Duration\)\|false is not subtype of native type League\\Period\\Duration.#'
+          path: src/Duration.php
+        - message: '#Unreachable statement - code above always terminates.#'
+          path: src/Duration.php
+        - message: '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
+          path: src/Period.php
+        - message: '#Method League\\Period\\Sequence::offsetExists\(\) has parameter \$offset with no typehint specified.#'
+          path: src/Sequence.php
+        - message: '#Method League\\Period\\Sequence::offsetGet\(\) has parameter \$offset with no typehint specified.#'
+          path: src/Sequence.php
+        - message: '#Method League\\Period\\Sequence::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
+          path: src/Sequence.php
+        - message: '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$offset with no typehint specified.#'
+          path: src/Sequence.php
+        - message: '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$interval with no typehint specified.#'
+          path: src/Sequence.php
+        - message: '#Method League\\Period\\Datepoint::createFromFormat\(\) should return static\(League\\Period\\Datepoint\)\|false but returns League\\Period\\Datepoint.#'
+          path: src/Datepoint.php
+        - message: '#Method League\\Period\\Datepoint::createFromMutable\(\) should return static\(League\\Period\\Datepoint\) but returns League\\Period\\Datepoint.#'
+          path: src/Datepoint.php
+        - message: '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'
+          path: src/Chart/Dataset.php
+        - message: '#Only numeric types are allowed in post-increment, string given.#'
+          path: src/Chart/LatinLetter.php
     reportUnmatchedIgnoredErrors: true

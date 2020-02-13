@@ -51,7 +51,7 @@ $sequence = new Sequence(
     Datepoint::create('2017-01-13')->getQuarter(Period::EXCLUDE_ALL),
     Period::around('2016-06-01', '3 MONTHS', Period::INCLUDE_ALL)
 );
-$dataset = Dataset::fromSequence($sequence, $labelGenerator);
+$dataset = Dataset::fromItems($sequence, $labelGenerator);
 $dataset->append($labelGenerator->format('gaps'), $sequence->gaps());
 $graph = new GanttChart($config);
 $graph->stroke($dataset);
@@ -132,8 +132,8 @@ The `Dataset` implements the `Countable` and the `IteratorAggregate` interface. 
 
 ~~~php
 <?php
-public function Dataset::fromSequence(Sequence $sequence, ?LabelGenerator $labelGenerator = null): self; //Creates a new Dataset from a Sequence and a LabelGenerator.
-public function Dataset::fromCollection(iterable $collection): self; //Creates a new Dataset from a generic iterable structure.
+public function Dataset::fromItems($items, ?LabelGenerator $labelGenerator = null): self; //Creates a new Dataset from a collection of Sequence/Periods and a LabelGenerator.
+public function Dataset::fromIterable(iterable $iterable): self; //Creates a new Dataset from a generic iterable structure of Sequence/Periods.
 public function Dataset::appendAll(iterable $pairs): void; //adds multiple pairs at once.
 public function Dataset::isEmpty(): bool; //Tells whether the collection is empty.
 public function Dataset::labels(): string[]; //the current labels used

@@ -36,14 +36,14 @@ final class DatasetTest extends TestCase
         $periodB = Period::fromDay(2019, 3, 15);
         $labelGenerator = new LatinLetter('A');
         $sequence = new Sequence($periodA, $periodB);
-        $dataset = Dataset::fromSequence($sequence, $labelGenerator);
+        $dataset = Dataset::fromItems($sequence, $labelGenerator);
         $arr = iterator_to_array($dataset);
 
         self::assertCount(2, $dataset);
         self::assertSame('B', $arr[1][0]);
         self::assertTrue($periodB->equals($arr[1][1][0]));
 
-        $emptyDataset = Dataset::fromSequence(new Sequence(), $labelGenerator);
+        $emptyDataset = Dataset::fromItems(new Sequence(), $labelGenerator);
         self::assertCount(0, $emptyDataset);
         self::assertTrue($emptyDataset->isEmpty());
     }
@@ -53,7 +53,7 @@ final class DatasetTest extends TestCase
      */
     public function testFromIterableConstructor(iterable $input, int $expectedCount, bool $isEmpty, bool $boundaryIsNull): void
     {
-        $dataset = Dataset::fromCollection($input);
+        $dataset = Dataset::fromIterable($input);
         self::assertCount($expectedCount, $dataset);
         self::assertSame($isEmpty, $dataset->isEmpty());
         self::assertSame($boundaryIsNull, null === $dataset->boundaries());
