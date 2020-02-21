@@ -53,7 +53,7 @@ $sequence = new Sequence(
     new Period('2018-03-01', '2018-03-31'),
     new Period('2018-01-20', '2018-03-10')
 );
-$sequence->boundaries()->format('Y-m-d'); // [2018-01-01, 2018-03-10)
+$sequence->boundaries()->format('Y-m-d'); // [2018-01-01, 2018-03-31)
 (new Sequence())->boundaries(); // null
 ~~~
 
