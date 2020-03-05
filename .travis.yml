@@ -5,35 +5,56 @@ cache:
   - "$HOME/.composer/cache"
 env:
   global:
-  - COMPOSER_ARGS="--no-interaction --prefer-source --no-suggest"
   - secure: PSPHZzussniQ7oyqB+mnW2yUMPctJNI0gjtg9bUyCWlYAaSTSa8nu6ZAzzLI7qNftKL9rp3rPNUTk+6envmivEfj6FQDl9Z7YiDRl8t+UcLI2hUSANdL4KF/4Ier4io8qoU9aIaQnhBe3SxbB4CORWC5pdmGFznx6NHI7pxq0qE=
 matrix:
   include:
   - php: 7.2
     env:
+    - COLLECT_COVERAGE=false
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source --prefer-lowest --prefer-stable"
+    - RUN_PHPSTAN=false
+    - RUN_INFECTION=false
+    - VALIDATE_CODING_STYLE=false
+  - php: 7.2
+    env:
     - COLLECT_COVERAGE=true
-    - IGNORE_PLATFORMS=false
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source"
     - RUN_PHPSTAN=true
-    - RUN_INFECTION=true
+    - RUN_INFECTION=false
     - VALIDATE_CODING_STYLE=true
   - php: 7.3
     env:
-    - COLLECT_COVERAGE=true
-    - IGNORE_PLATFORMS=true
-    - RUN_PHPSTAN=true
-    - RUN_INFECTION=true
+    - COLLECT_COVERAGE=false
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source --prefer-lowest --prefer-stable"
+    - RUN_PHPSTAN=false
+    - RUN_INFECTION=false
     - VALIDATE_CODING_STYLE=false
+  - php: 7.3
+    env:
+    - COLLECT_COVERAGE=true
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source"
+    - RUN_PHPSTAN=true
+    - RUN_INFECTION=false
+    - VALIDATE_CODING_STYLE=true
   - php: 7.4
     env:
     - COLLECT_COVERAGE=false
-    - VALIDATE_CODING_STYLE=false
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source --prefer-lowest --prefer-stable"
     - RUN_PHPSTAN=false
-    - IGNORE_PLATFORMS=true
+    - RUN_INFECTION=false
+    - VALIDATE_CODING_STYLE=false
+  - php: 7.4
+    env:
+    - COLLECT_COVERAGE=true
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source"
+    - RUN_PHPSTAN=true
+    - RUN_INFECTION=true
+    - VALIDATE_CODING_STYLE=true
   - php: nightly
     env:
     - COLLECT_COVERAGE=false
-    - IGNORE_PLATFORMS=true
-    - RUN_PHPSTAN=true
+    - COMPOSER_ARGS="--no-interaction --no-suggest --prefer-source --ignore-platform-reqs"
+    - RUN_PHPSTAN=false
     - RUN_INFECTION=false
     - VALIDATE_CODING_STYLE=false
   allow_failures:
@@ -42,10 +63,7 @@ matrix:
 before_install:
 - travis_retry composer self-update
 install:
-- if [ "$IGNORE_PLATFORMS" == "true" ]; then travis_retry composer update $COMPOSER_ARGS
-  --ignore-platform-reqs; fi
-- if [ "$IGNORE_PLATFORMS" == "false" ]; then travis_retry composer update $COMPOSER_ARGS;
-  fi
+- travis_retry composer update $COMPOSER_ARGS""
 script:
 - if [ "$RUN_PHPSTAN" == "true" ]; then composer phpstan; fi
 - if [ "$VALIDATE_CODING_STYLE" == "true" ]; then composer phpcs; fi
