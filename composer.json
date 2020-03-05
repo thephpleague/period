@@ -45,7 +45,8 @@
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12",
-        "symfony/var-dumper": "^4.2"
+        "symfony/var-dumper": "^4.2",
+        "ocramius/package-versions": "~1.4.0|~1.5.0|~1.6.0"
     },
     "autoload": {
         "psr-4": {
