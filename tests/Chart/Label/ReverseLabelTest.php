@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace LeagueTest\Period\Chart\Label;
 
-use League\Period\Chart\LatinLetter;
-use League\Period\Chart\ReverseLabel;
+use League\Period\Chart\Label\LatinLetter;
+use League\Period\Chart\Label\ReverseLabel;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\ReverseLabel;
+ * @coversDefaultClass \League\Period\Chart\Label\ReverseLabel;
  */
 final class ReverseLabelTest extends TestCase
 {

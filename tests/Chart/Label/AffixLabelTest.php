@@ -11,16 +11,16 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace LeagueTest\Period\Chart\Label;
 
-use League\Period\Chart\AffixLabel;
-use League\Period\Chart\DecimalNumber;
-use League\Period\Chart\LatinLetter;
-use League\Period\Chart\RomanNumber;
+use League\Period\Chart\Label\AffixLabel;
+use League\Period\Chart\Label\DecimalNumber;
+use League\Period\Chart\Label\LatinLetter;
+use League\Period\Chart\Label\RomanNumber;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\AffixLabel;
+ * @coversDefaultClass \League\Period\Chart\Label\AffixLabel;
  */
 final class AffixLabelTest extends TestCase
 {
@@ -91,7 +91,7 @@ final class AffixLabelTest extends TestCase
 
     public function testGetter(): void
     {
-        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)));
+        $generator = new \League\Period\Chart\Label\AffixLabel(new RomanNumber(new DecimalNumber(10)));
         self::assertSame('', $generator->suffix());
         self::assertSame('', $generator->prefix());
         $new = $generator->withPrefix('o')->withSuffix('');
@@ -102,7 +102,7 @@ final class AffixLabelTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)), ':', '.');
+        $generator = new \League\Period\Chart\Label\AffixLabel(new RomanNumber(new DecimalNumber(10)), ':', '.');
         self::assertSame(':FOOBAR.', $generator->format('foobar'));
     }
 }

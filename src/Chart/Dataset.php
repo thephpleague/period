@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use League\Period\Chart\Label\LabelGenerator;
+use League\Period\Chart\Label\LatinLetter;
 use League\Period\Period;
 use League\Period\Sequence;
 use function array_column;

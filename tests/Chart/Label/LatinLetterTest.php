@@ -11,13 +11,13 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace LeagueTest\Period\Chart\Label;
 
-use League\Period\Chart\LatinLetter;
+use League\Period\Chart\Label\LatinLetter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\LatinLetter;
+ * @coversDefaultClass \League\Period\Chart\Label\LatinLetter;
  */
 final class LatinLetterTest extends TestCase
 {

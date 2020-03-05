@@ -11,23 +11,22 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace LeagueTest\Period\Chart\Label;
 
-use League\Period\Chart\DecimalNumber;
-use League\Period\Chart\RomanNumber;
+use League\Period\Chart\Label\DecimalNumber;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\RomanNumber;
+ * @coversDefaultClass \League\Period\Chart\Label\DecimalNumber;
  */
-final class RomanNumberTest extends TestCase
+final class DecimalNumberTest extends TestCase
 {
     /**
      * @dataProvider providerLetter
      */
-    public function testGetLabels(int $nbLabels, int $label, int $lettercase, array $expected): void
+    public function testGetLabels(int $nbLabels, int $label, array $expected): void
     {
-        $generator = new RomanNumber(new DecimalNumber($label), $lettercase);
+        $generator = new DecimalNumber($label);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
@@ -37,39 +36,34 @@ final class RomanNumberTest extends TestCase
             'empty labels' => [
                 'nbLabels' => 0,
                 'label' => 1,
-                'lettercase' => RomanNumber::UPPER,
                 'expected' => [],
             ],
             'labels starts at 3' => [
                 'nbLabels' => 1,
                 'label' => 3,
-                'lettercase' => 42,
-                'expected' => ['III'],
+                'expected' => ['3'],
             ],
             'labels starts ends at 4' => [
                 'nbLabels' => 2,
                 'label' => 4,
-                'lettercase' => RomanNumber::UPPER,
-                'expected' => ['IV', 'V'],
+                'expected' => ['4', '5'],
             ],
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'label' => -1,
-                'lettercase' => RomanNumber::LOWER,
-                'expected' => ['i'],
+                'expected' => ['1'],
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
                 'label' => 0,
-                'lettercase' => RomanNumber::LOWER,
-                'expected' => ['i'],
+                'expected' => ['1'],
             ],
         ];
     }
 
     public function testStartWith(): void
     {
-        $generator = new RomanNumber(new DecimalNumber(42));
+        $generator = new DecimalNumber(42);
         self::assertSame(42, $generator->startingAt());
         $new = $generator->startsWith(69);
         self::assertNotSame($new, $generator);
@@ -79,23 +73,9 @@ final class RomanNumberTest extends TestCase
         self::assertSame(1, $generator->startsWith(-3)->startingAt());
     }
 
-    public function testLetterCase(): void
-    {
-        $generator = new RomanNumber(new DecimalNumber(1));
-        self::assertTrue($generator->isUpper());
-        self::assertFalse($generator->isLower());
-        $new = $generator->withLetterCase(RomanNumber::LOWER);
-        self::assertFalse($new->isUpper());
-        self::assertTrue($new->isLower());
-        $alt = $new->withLetterCase(RomanNumber::LOWER);
-        self::assertSame($alt, $new);
-    }
-
     public function testFormat(): void
     {
-        $generator = new RomanNumber(new DecimalNumber(10));
-        $newGenerator = $generator->withLetterCase(RomanNumber::LOWER);
-        self::assertSame('FOOBAR', $generator->format('fOoBaR'));
-        self::assertSame('foobar', $newGenerator->format('fOoBaR'));
+        $generator = new DecimalNumber(42);
+        self::assertSame('', $generator->format(''));
     }
 }

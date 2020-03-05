@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Period\Chart;
+namespace League\Period\Chart\Label;
 
 use function iterator_to_array;
 

@@ -38,5 +38,5 @@ parameters:
         - message: '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'
           path: src/Chart/Dataset.php
         - message: '#Only numeric types are allowed in post-increment, string given.#'
-          path: src/Chart/LatinLetter.php
+          path: src/Chart/Label/LatinLetter.php
     reportUnmatchedIgnoredErrors: true
