@@ -22,10 +22,14 @@ To generate a graph you need to give to the `Dataset` constructor a list of pair
 use League\Period\Chart\Dataset;
 use League\Period\Chart\GanttChart;
 use League\Period\Period;
+use League\Period\Sequence;
 
 $dataset = new Dataset([
-    ['A', new Period('2018-01-01', '2018-02-01')],
-    ['B', new Period('2018-01-15', '2018-02-01')], 
+    ['period', new Period('2018-01-01', '2018-02-01')],
+    ['sequence', new Sequence(
+        new Period('2018-01-15', '2018-01-18'),
+        new Period('2018-01-20', '2018-02-01')
+    )],
 ]);
 (new GanttChart())->stroke($dataset);
 ~~~
@@ -33,8 +37,8 @@ $dataset = new Dataset([
 results:
 
 ~~~bash
- A [----------------------------------------------)
- B                      [-------------------------)
+ period   [----------------------------------------------------------)
+ sequence                            [----)   [----------------------)
 ~~~
 
 ## Appending items to display
