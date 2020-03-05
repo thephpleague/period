@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Associating labels to the charts
+title: Adding labels to the generated charts
 ---
 
 # Setting the Dataset labels
 
-By default you are required to provide a label per item added present in a `Dataset` object.
-The package provides a `LabelGenerator` interface that ease generating and creating labels for your visualization.
+By default you are required to provide a label per item present in a `Dataset` object.
+The package provides a `LabelGenerator` interface that ease generating labels for stroking.
 
 A `LabelGenerator` implementing class is needed for the following methods
 

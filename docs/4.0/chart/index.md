@@ -1,73 +1,13 @@
 ---
 layout: default
-title: Visualizing Periods and Sequences instances
+title: Charting Periods and Sequences instances
 ---
 
 # Visualizing Period and Sequence instances
 
-If you need to visualize multiple `Period` or `Sequence` instances you can now visualize them easily with the provided charting feature. 
+To visualize multiple `Period` or `Sequence` instances you can use the provided charting feature. 
 
-<p class="message-info">The <code>Sequence</code> class is introduced in <code>version 4.10</code>.</p>
-
-Here's a complex example which highlights most of the features introduces along visualizing `Period` and `Sequance` instances:
-
-~~~php
-<?php
-
-use League\Period\Chart\AffixLabel;
-use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\DecimalNumber;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\GanttChartConfig;
-use League\Period\Chart\ReverseLabel;
-use League\Period\Chart\RomanNumber;
-use League\Period\Datepoint;
-use League\Period\Period;
-use League\Period\Sequence;
-
-$config = GanttChartConfig::createFromRainbow()
-    ->withOutput(new ConsoleOutput(STDOUT))
-    ->withStartExcluded('🍕')
-    ->withStartIncluded('🍅')
-    ->withEndExcluded('🎾')
-    ->withEndIncluded('🍔')
-    ->withWidth(30)
-    ->withSpace('💩')
-    ->withBody('😊')
-    ->withGapSize(2)
-    ->withLeftMarginSize(1)
-    ->withLabelAlign(GanttChartConfig::ALIGN_RIGHT)
-;
-
-$labelGenerator = new DecimalNumber(42);
-$labelGenerator = new RomanNumber($labelGenerator, RomanNumber::UPPER);
-$labelGenerator = new AffixLabel($labelGenerator, '', '.');
-$labelGenerator = new ReverseLabel($labelGenerator);
-
-$sequence = new Sequence(
-    Datepoint::create('2018-11-29')->getYear(Period::EXCLUDE_START_INCLUDE_END),
-    Datepoint::create('2018-05-29')->getMonth()->expand('3 MONTH'),
-    Datepoint::create('2017-01-13')->getQuarter(Period::EXCLUDE_ALL),
-    Period::around('2016-06-01', '3 MONTHS', Period::INCLUDE_ALL)
-);
-$dataset = Dataset::fromItems($sequence, $labelGenerator);
-$dataset->append($labelGenerator->format('gaps'), $sequence->gaps());
-$graph = new GanttChart($config);
-$graph->stroke($dataset);
-~~~
-
-which will output in your console:
-
-~~~bash
-   XLV.  💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩🍕😊😊😊😊😊😊😊😊😊🍔
-  XLIV.  💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩🍅😊😊😊😊😊🎾💩💩💩
- XLIII.  💩💩💩💩💩💩💩💩🍕😊😊🎾💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩
-  XLII.  🍅😊😊😊😊🍔💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩
-  GAPS.  💩💩💩💩💩🍕😊😊🍔💩💩🍅😊😊😊😊😊😊😊🍔💩💩💩💩💩💩💩💩💩💩
-~~~
-
-*On a POSIX compliant console all lines have different colors*
+<p class="message-info">The feature is introduced in <code>version 4.10</code>.</p>
 
 ## Generating a simple graph.
 
@@ -213,3 +153,63 @@ public function GanttChartConfig::leftMarginSize(): int;   //Retrieves the margi
 ~~~
 
 **`GanttChartConfig` is immutable, modifying its properties returns a new instance with the updated values.**
+
+Here's a complex example which highlights most of the features introduces along visualizing `Period` and `Sequance` instances:
+
+~~~php
+<?php
+
+use League\Period\Chart\AffixLabel;
+use League\Period\Chart\ConsoleOutput;
+use League\Period\Chart\Dataset;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\GanttChart;
+use League\Period\Chart\GanttChartConfig;
+use League\Period\Chart\ReverseLabel;
+use League\Period\Chart\RomanNumber;
+use League\Period\Datepoint;
+use League\Period\Period;
+use League\Period\Sequence;
+
+$config = GanttChartConfig::createFromRainbow()
+    ->withOutput(new ConsoleOutput(STDOUT))
+    ->withStartExcluded('🍕')
+    ->withStartIncluded('🍅')
+    ->withEndExcluded('🎾')
+    ->withEndIncluded('🍔')
+    ->withWidth(30)
+    ->withSpace('💩')
+    ->withBody('😊')
+    ->withGapSize(2)
+    ->withLeftMarginSize(1)
+    ->withLabelAlign(GanttChartConfig::ALIGN_RIGHT)
+;
+
+$labelGenerator = new DecimalNumber(42);
+$labelGenerator = new RomanNumber($labelGenerator, RomanNumber::UPPER);
+$labelGenerator = new AffixLabel($labelGenerator, '', '.');
+$labelGenerator = new ReverseLabel($labelGenerator);
+
+$sequence = new Sequence(
+    Datepoint::create('2018-11-29')->getYear(Period::EXCLUDE_START_INCLUDE_END),
+    Datepoint::create('2018-05-29')->getMonth()->expand('3 MONTH'),
+    Datepoint::create('2017-01-13')->getQuarter(Period::EXCLUDE_ALL),
+    Period::around('2016-06-01', '3 MONTHS', Period::INCLUDE_ALL)
+);
+$dataset = Dataset::fromItems($sequence, $labelGenerator);
+$dataset->append($labelGenerator->format('gaps'), $sequence->gaps());
+$graph = new GanttChart($config);
+$graph->stroke($dataset);
+~~~
+
+which will output in your console:
+
+~~~bash
+   XLV.  💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩🍕😊😊😊😊😊😊😊😊😊🍔
+  XLIV.  💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩🍅😊😊😊😊😊🎾💩💩💩
+ XLIII.  💩💩💩💩💩💩💩💩🍕😊😊🎾💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩
+  XLII.  🍅😊😊😊😊🍔💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩
+  GAPS.  💩💩💩💩💩🍕😊😊🍔💩💩🍅😊😊😊😊😊😊😊🍔💩💩💩💩💩💩💩💩💩💩
+~~~
+
+*On a POSIX compliant console all lines have different colors*
