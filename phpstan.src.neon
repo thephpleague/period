@@ -36,7 +36,7 @@ parameters:
         - message: '#Method League\\Period\\Datepoint::createFromMutable\(\) should return static\(League\\Period\\Datepoint\) but returns League\\Period\\Datepoint.#'
           path: src/Datepoint.php
         - message: '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'
-          path: src/Chart/Dataset.php
+          path: src/Dataset.php
         - message: '#Only numeric types are allowed in post-increment, string given.#'
-          path: src/Chart/Label/LatinLetter.php
+          path: src/Chart/LatinLetter.php
     reportUnmatchedIgnoredErrors: true

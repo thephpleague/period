@@ -11,12 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Period\Chart;
+namespace League\Period;
 
-use League\Period\Chart\Label\LabelGenerator;
-use League\Period\Chart\Label\LatinLetter;
-use League\Period\Period;
-use League\Period\Sequence;
+use League\Period\Chart\LabelGenerator;
+use League\Period\Chart\LatinLetter;
 use function array_column;
 use function count;
 use function gettype;
@@ -213,13 +211,5 @@ final class Dataset implements Data
     public function labelMaxLength(): int
     {
         return $this->labelMaxLength;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function withLabels(LabelGenerator $labelGenerator): Data
-    {
-        return self::fromItems($this->items(), $labelGenerator);
     }
 }

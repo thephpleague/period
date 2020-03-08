@@ -15,12 +15,12 @@ namespace LeagueTest\Period\Chart;
 
 use InvalidArgumentException;
 use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\GanttChartConfig;
+use League\Period\GanttChartConfig;
 use PHPUnit\Framework\TestCase;
 use const STDOUT;
 
 /**
- * @coversDefaultClass \League\Period\Chart\GanttChartConfig
+ * @coversDefaultClass \League\Period\GanttChartConfig
  */
 final class GanttChartConfigTest extends TestCase
 {
@@ -31,7 +31,7 @@ final class GanttChartConfigTest extends TestCase
 
     public function setUp(): void
     {
-        $this->config = new GanttChartConfig();
+        $this->config = new \League\Period\GanttChartConfig();
     }
 
     public function testNewInstance(): void

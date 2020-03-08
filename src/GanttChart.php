@@ -11,10 +11,8 @@
 
 declare(strict_types=1);
 
-namespace League\Period\Chart;
+namespace League\Period;
 
-use League\Period\Period;
-use League\Period\Sequence;
 use function array_fill;
 use function array_splice;
 use function ceil;

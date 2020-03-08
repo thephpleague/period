@@ -2,11 +2,12 @@
 
 All Notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.9.0 - TBD
 
 ### Added
 
 - `Period::toISO8601`
+- Charts featuring ported from [Bakame\Period\Vizualizer](https://github.com/bakame-php/period-visualizer)
 
 ### Fixed
 

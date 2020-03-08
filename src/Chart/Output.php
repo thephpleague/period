@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
-interface OutputWriter
+interface Output
 {
     public const COLOR_DEFAULT = 'reset';
     public const COLOR_BLACK = 'black';

@@ -11,13 +11,13 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart\Label;
+namespace LeagueTest\Period\Chart;
 
-use League\Period\Chart\Label\LatinLetter;
+use League\Period\Chart\LatinLetter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\Label\LatinLetter;
+ * @coversDefaultClass \League\Period\Chart\LatinLetter;
  */
 final class LatinLetterTest extends TestCase
 {
@@ -68,7 +68,7 @@ final class LatinLetterTest extends TestCase
 
     public function testStartWith(): void
     {
-        $generator = new LatinLetter('i');
+        $generator = new \League\Period\Chart\LatinLetter('i');
         self::assertSame('i', $generator->startingAt());
         $new = $generator->startsWith('o');
         self::assertNotSame($new, $generator);
@@ -78,7 +78,7 @@ final class LatinLetterTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new LatinLetter('i');
+        $generator = new \League\Period\Chart\LatinLetter('i');
         self::assertSame('foobar', $generator->format('foobar'));
     }
 }

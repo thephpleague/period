@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Period\Chart\Label;
+namespace League\Period\Chart;
 
 final class DecimalNumber implements LabelGenerator
 {

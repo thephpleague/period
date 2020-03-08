@@ -5,13 +5,10 @@ title: Adding labels to the generated charts
 
 # Setting the Dataset labels
 
-By default you are required to provide a label per item present in a `Dataset` object.
+By default you are required to provide a label for each item present in a `Dataset` object.
 The package provides a `LabelGenerator` interface that ease generating labels for stroking.
 
-A `LabelGenerator` implementing class is needed for the following methods
-
-- The `Dataset::fromItems`, to create a new instance from a `Sequence` object;
-- The `Dataset::withLabels` to update the associated labels in the current instance;
+A `LabelGenerator` implementing class is needed for the `Dataset::fromItems` named constructor, to create a new instance from a collection of `Period` and/or `Sequence` objects;
 
 <p class="message-notice">By default when using <code>Dataset::fromItems</code> if no <code>LabelGenerator</code> class is supplied the <code>LatinLetter</code> label generator will be used.</p>
 
@@ -24,9 +21,9 @@ Generates labels according the the latin alphabet.
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\Label\LatinLetter;
+use League\Period\Dataset;
+use League\Period\Chart;
+use League\Period\Chart\LatinLetter;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -60,9 +57,9 @@ Generates labels according to the decimal number system.
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\GanttChart;
+use League\Period\Dataset;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -96,10 +93,10 @@ Uses the `DecimalNumber` label generator class to generate Roman number labels.
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\Label\RomanNumber;
+use League\Period\Dataset;
+use League\Period\Chart;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\RomanNumber;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -139,11 +136,11 @@ Uses any `labelGenerator` implementing class to add prefix and/or suffix string 
 ~~~php
 <?php
 
-use League\Period\Chart\Label\AffixLabel;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\Label\RomanNumber;
+use League\Period\Chart\AffixLabel;
+use League\Period\Dataset;
+use League\Period\Chart;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\RomanNumber;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -184,12 +181,12 @@ Uses any `labelGenerator` implementing class to reverse the generated labels ord
 ~~~php
 <?php
 
-use League\Period\Chart\Label\AffixLabel;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\Label\ReverseLabel;
-use League\Period\Chart\Label\RomanNumber;
+use League\Period\Chart\AffixLabel;
+use League\Period\Dataset;
+use League\Period\Chart;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\ReverseLabel;
+use League\Period\Chart\RomanNumber;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -214,15 +211,15 @@ results:
 
 ## Custom LabelGenerator
 
-You can create your own label generator by implementing the `League\Period\Chart\Label\LabelGenerator` interface like shown below:
+You can create your own label generator by implementing the `League\Period\Chart\LabelGenerator` interface like shown below:
 
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\Label\AffixLabel;
-use League\Period\Chart\Label\LabelGenerator;
+use League\Period\Dataset;
+use League\Period\GanttChart;
+use League\Period\Chart\AffixLabel;
+use League\Period\Chart\LabelGenerator;
 use League\Period\Period;
 use League\Period\Sequence;
 

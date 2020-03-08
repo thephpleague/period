@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart\Label;
+namespace LeagueTest\Period\Chart;
 
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\Label\RomanNumber;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\RomanNumber;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\Label\RomanNumber;
+ * @coversDefaultClass \League\Period\Chart\RomanNumber;
  */
 final class RomanNumberTest extends TestCase
 {
@@ -37,7 +37,7 @@ final class RomanNumberTest extends TestCase
             'empty labels' => [
                 'nbLabels' => 0,
                 'label' => 1,
-                'lettercase' => RomanNumber::UPPER,
+                'lettercase' => \League\Period\Chart\RomanNumber::UPPER,
                 'expected' => [],
             ],
             'labels starts at 3' => [
@@ -55,7 +55,7 @@ final class RomanNumberTest extends TestCase
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'label' => -1,
-                'lettercase' => RomanNumber::LOWER,
+                'lettercase' => \League\Period\Chart\RomanNumber::LOWER,
                 'expected' => ['i'],
             ],
             'labels starts at 0 (2)' => [
@@ -93,7 +93,7 @@ final class RomanNumberTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new RomanNumber(new DecimalNumber(10));
+        $generator = new RomanNumber(new \League\Period\Chart\DecimalNumber(10));
         $newGenerator = $generator->withLetterCase(RomanNumber::LOWER);
         self::assertSame('FOOBAR', $generator->format('fOoBaR'));
         self::assertSame('foobar', $newGenerator->format('fOoBaR'));

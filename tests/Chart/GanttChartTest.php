@@ -13,10 +13,9 @@ declare(strict_types=1);
 
 namespace LeagueTest\Period\Chart;
 
-use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\GanttChartConfig;
+use League\Period\Dataset;
+use League\Period\GanttChart;
+use League\Period\GanttChartConfig;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -25,12 +24,12 @@ use function rewind;
 use function stream_get_contents;
 
 /**
- * @coversDefaultClass \League\Period\Chart\GanttChart
+ * @coversDefaultClass \League\Period\GanttChart
  */
 final class GanttChartTest extends TestCase
 {
     /**
-     * @var GanttChart
+     * @var \League\Period\GanttChart
      */
     private $graph;
 
@@ -42,7 +41,7 @@ final class GanttChartTest extends TestCase
     public function setUp(): void
     {
         $this->stream = $this->setStream();
-        $config = (new GanttChartConfig(new ConsoleOutput($this->stream)))->withColors('red');
+        $config = (new GanttChartConfig(new \League\Period\Chart\ConsoleOutput($this->stream)))->withColors('red');
         $this->graph = new GanttChart($config);
     }
 
@@ -72,7 +71,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayEmptyDataset(): void
     {
-        $this->graph->stroke(new Dataset());
+        $this->graph->stroke(new \League\Period\Dataset());
         rewind($this->stream);
         $data = stream_get_contents($this->stream);
 
@@ -87,7 +86,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayPeriods(): void
     {
-        $this->graph->stroke(new Dataset([
+        $this->graph->stroke(new \League\Period\Dataset([
             ['A', new Period('2018-01-01', '2018-01-15')],
             ['B', new Period('2018-01-15', '2018-02-01')],
         ]));
@@ -107,7 +106,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplaySequence(): void
     {
-        $dataset = new Dataset([
+        $dataset = new \League\Period\Dataset([
             ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
             ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
         ]);

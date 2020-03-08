@@ -11,11 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Period\Chart;
-
-use League\Period\Chart\Label\LabelGenerator;
-use League\Period\Period;
-use League\Period\Sequence;
+namespace League\Period;
 
 interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
 {
@@ -64,7 +60,7 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
     /**
      * Add a new pair to the collection.
      *
-     * @param mixed           $label a scalar or a stringable object (implementing __toString method).
+     * @param object|string   $label a scalar or a stringable object (implementing __toString method).
      * @param Period|Sequence $item
      *
      * @throws \TypeError If the label or the item type are not supported.
@@ -75,12 +71,4 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
      * Add a collection of pairs to the collection.
      */
     public function appendAll(iterable $pairs): void;
-
-    /**
-     * Update the labels used for the dataset.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the newly specified labels.
-     */
-    public function withLabels(LabelGenerator $labelGenerator): self;
 }

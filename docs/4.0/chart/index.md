@@ -3,9 +3,9 @@ layout: default
 title: Charting Periods and Sequences instances
 ---
 
-# Visualizing Period and Sequence instances
+# Charting Period and Sequence instances
 
-To visualize multiple `Period` or `Sequence` instances you can use the provided charting feature. 
+To improve visualizing multiple `Period` or `Sequence` instances you can use the provided charting feature. 
 
 <p class="message-info">The feature is introduced in <code>version 4.10</code>.</p>
 
@@ -19,8 +19,8 @@ To generate a graph you need to give to the `Dataset` constructor a list of pair
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
+use League\Period\Dataset;
+use League\Period\GanttChart;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -43,13 +43,13 @@ results:
 
 ## Appending items to display
 
-If you want to display a `Sequence` and some of its operations. You can append the operation results using the `Dataset::append` method.
+If you want to display a `Sequence` and some of its operations. You can append the operation result using the `Dataset::append` method.
 
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
+use League\Period\Dataset;
+use League\Period\GanttChart;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -84,7 +84,6 @@ public function Dataset::labels(): string[]; //the current labels used
 public function Dataset::items(): Sequence[]; //the current objects inside the Dataset
 public function Dataset::boundaries(): ?Period;  //Returns the collection boundaries or null if it is empty.
 public function Dataset::labelMaxLength(): int;  //Returns the label max length.
-public function Dataset::withLabels(LabelGenerator $labelGenerator): self; //Update the labels used for the dataset.
 ~~~
 
 ## Displaying the Dataset
@@ -98,8 +97,8 @@ If you wish to present the graph on another medium like a web browser or an imag
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
+use League\Period\Dataset;
+use League\Period\GanttChart;
 use League\Period\Period;
 
 $graph = new GanttChart();
@@ -116,11 +115,11 @@ results:
  last            [------------------------------)
 ~~~
 
-### Customized the graph looks
+### Customizing the graph looks
 
 The `GanttChart` class can be customized by providing a `GanttChartConfig` which defines:
 
-- the output medium via a `OutputWriter` implementing class.
+- the output medium via a `Output` implementing class.
 - the graph settings. (How the intervals will be stroked)
     - sets the graph width
     - sets the graph colors
@@ -130,7 +129,7 @@ The `GanttChart` class can be customized by providing a `GanttChartConfig` which
     - sets single characters to represent the boundary types
     - sets single characters to represent the body and space
      
-You can easily create a `OutputWriter` implementing class with libraries like `League CLImate` or `Symfony Console` 
+You can easily create a `Output` implementing class with libraries like `League CLImate` or `Symfony Console` 
 to output the resulting graph. If you don't, the package ships with a minimal `ConsoleOutput` class which is used
  if you do not provide you own implementation.
 
@@ -141,8 +140,8 @@ The `GanttChartConfig` class exposes the following additional constants and meth
 const GanttChartConfig::ALIGN_LEFT = 1;
 const GanttChartConfig::ALIGN_RIGHT = 0;
 const GanttChartConfig::ALIGN_CENTER = 2;
-public function GanttChartConfig::__construct(OutputWriter $output);
-public function GanttChartConfig::output(): OutputWriter;  //Returns the OutputWriter instance.
+public function GanttChartConfig::__construct(Output $output);
+public function GanttChartConfig::output(): Output;        //Returns the Output instance.
 public function GanttChartConfig::startExcluded(): string; //Retrieves the excluded start block character.
 public function GanttChartConfig::startIncluded(): string; //Retrieves the included start block character.
 public function GanttChartConfig::endExcluded(): string;   //Retrieves the excluded end block character.
@@ -164,13 +163,13 @@ Here's a complex example which highlights most of the features introduces along 
 <?php
 
 use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\GanttChartConfig;
-use League\Period\Chart\Label\AffixLabel;
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\Label\ReverseLabel;
-use League\Period\Chart\Label\RomanNumber;
+use League\Period\Dataset;
+use League\Period\GanttChart;
+use League\Period\GanttChartConfig;
+use League\Period\Chart\AffixLabel;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\ReverseLabel;
+use League\Period\Chart\RomanNumber;
 use League\Period\Datepoint;
 use League\Period\Period;
 use League\Period\Sequence;

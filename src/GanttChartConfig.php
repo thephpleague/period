@@ -11,8 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Period\Chart;
+namespace League\Period;
 
+use League\Period\Chart\ConsoleOutput;
+use League\Period\Chart\Output;
 use function array_filter;
 use function array_map;
 use function mb_convert_encoding;
@@ -39,14 +41,14 @@ final class GanttChartConfig
     public const ALIGN_CENTER = STR_PAD_BOTH;
 
     /**
-     * @var OutputWriter
+     * @var Output
      */
     private $output;
 
     /**
      * @var string[]
      */
-    private $colors = [OutputWriter::COLOR_DEFAULT];
+    private $colors = [Output::COLOR_DEFAULT];
 
     /**
      * @var int
@@ -101,9 +103,9 @@ final class GanttChartConfig
     /**
      * New instance.
      *
-     * @param ?OutputWriter $output
+     * @param ?Output $output
      */
-    public function __construct(?OutputWriter $output = null)
+    public function __construct(?Output $output = null)
     {
         $this->output = $output ?? new ConsoleOutput(STDOUT);
     }
@@ -111,14 +113,14 @@ final class GanttChartConfig
     /**
      * Create a Cli Renderer to Display the millipede in Rainbow.
      *
-     * @param ?OutputWriter $output
+     * @param ?Output $output
      */
-    public static function createFromRandom(?OutputWriter $output = null): self
+    public static function createFromRandom(?Output $output = null): self
     {
-        $index = array_rand(OutputWriter::COLORS);
+        $index = array_rand(Output::COLORS);
 
         $config = new self($output);
-        $config->colors = [OutputWriter::COLORS[$index]];
+        $config->colors = [Output::COLORS[$index]];
 
         return $config;
     }
@@ -126,20 +128,20 @@ final class GanttChartConfig
     /**
      * Create a Cli Renderer to Display the millipede in Rainbow.
      *
-     * @param ?OutputWriter $output
+     * @param ?Output $output
      */
-    public static function createFromRainbow(?OutputWriter $output = null): self
+    public static function createFromRainbow(?Output $output = null): self
     {
         $config = new self($output);
-        $config->colors = OutputWriter::COLORS;
+        $config->colors = Output::COLORS;
 
         return $config;
     }
 
     /**
-     * Returns the OutputWriter class.
+     * Returns the Output class.
      */
-    public function output(): OutputWriter
+    public function output(): Output
     {
         return $this->output;
     }
@@ -295,7 +297,7 @@ final class GanttChartConfig
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified output class.
      */
-    public function withOutput(OutputWriter $output): self
+    public function withOutput(Output $output): self
     {
         $clone = clone $this;
         $clone->output = $output;
@@ -431,12 +433,12 @@ final class GanttChartConfig
     public function withColors(string ...$colors): self
     {
         $filter = static function ($value): bool {
-            return in_array($value, OutputWriter::COLORS, true);
+            return in_array($value, Output::COLORS, true);
         };
 
         $colors = array_filter(array_map('strtolower', $colors), $filter);
         if ([] === $colors) {
-            $colors = [OutputWriter::COLOR_DEFAULT];
+            $colors = [Output::COLOR_DEFAULT];
         }
 
         if ($colors === $this->colors) {

@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart\Label;
+namespace LeagueTest\Period\Chart;
 
-use League\Period\Chart\Label\LatinLetter;
-use League\Period\Chart\Label\ReverseLabel;
+use League\Period\Chart\LatinLetter;
+use League\Period\Chart\ReverseLabel;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Period\Chart\Label\ReverseLabel;
+ * @coversDefaultClass \League\Period\Chart\ReverseLabel;
  */
 final class ReverseLabelTest extends TestCase
 {
@@ -27,7 +27,7 @@ final class ReverseLabelTest extends TestCase
      */
     public function testGetLabels(int $nbLabels, string $letter, array $expected): void
     {
-        $generator = new ReverseLabel(new LatinLetter($letter));
+        $generator = new \League\Period\Chart\ReverseLabel(new \League\Period\Chart\LatinLetter($letter));
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 

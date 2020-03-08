@@ -15,9 +15,9 @@ namespace LeagueTest\Period\Chart;
 
 use ArrayObject;
 use DateTimeImmutable;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\Label\DecimalNumber;
-use League\Period\Chart\Label\LatinLetter;
+use League\Period\Chart\DecimalNumber;
+use League\Period\Chart\LatinLetter;
+use League\Period\Dataset;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ use function iterator_to_array;
 use function json_encode;
 
 /**
- * @coversDefaultClass \League\Period\Chart\Dataset;
+ * @coversDefaultClass \League\Period\Dataset;
  */
 final class DatasetTest extends TestCase
 {
@@ -103,7 +103,7 @@ final class DatasetTest extends TestCase
 
     public function testAppendDataset(): void
     {
-        $dataset = new Dataset([
+        $dataset = new \League\Period\Dataset([
             ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
             ['B', new Period('2018-01-15', '2018-02-01')],
         ]);
@@ -122,7 +122,7 @@ final class DatasetTest extends TestCase
     {
         self::expectException(TypeError::class);
 
-        new Dataset([['foo', 'bar']]);
+        new \League\Period\Dataset([['foo', 'bar']]);
     }
 
     public function testLabelizeDataset(): void
@@ -134,7 +134,7 @@ final class DatasetTest extends TestCase
         self::assertSame(['A', 'B'], $dataset->labels());
         self::assertSame(1, $dataset->labelMaxLength());
 
-        $newDataset = $dataset->withLabels(new DecimalNumber(42));
+        $newDataset = Dataset::fromItems($dataset->items(), new DecimalNumber(42));
         self::assertSame(['42', '43'], $newDataset->labels());
         self::assertSame($dataset->items(), $newDataset->items());
         self::assertSame(2, $newDataset->labelMaxLength());
@@ -147,10 +147,8 @@ final class DatasetTest extends TestCase
             ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
         ]);
 
-        self::assertEquals($dataset, $dataset->withLabels(new LatinLetter()));
-
-        $emptyDataset = new Dataset();
-        self::assertEquals($emptyDataset, $emptyDataset->withLabels(new DecimalNumber(42)));
+        self::assertEquals($dataset, Dataset::fromItems($dataset->items(), new LatinLetter()));
+        self::assertEquals(new Dataset(), Dataset::fromItems((new Dataset())->items(), new DecimalNumber(42)));
     }
 
     public function testEmptyInstance(): void
@@ -163,7 +161,7 @@ final class DatasetTest extends TestCase
 
     public function testJsonEncoding(): void
     {
-        self::assertSame('[]', json_encode(new Dataset()));
+        self::assertSame('[]', json_encode(new \League\Period\Dataset()));
         $dataset = new Dataset([
             ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
             ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
