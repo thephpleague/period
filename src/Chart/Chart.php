@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Period;
+namespace League\Period\Chart;
 
 /**
  * An interface to draw a dataset of intervals.

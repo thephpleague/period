@@ -11,7 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Period;
+namespace League\Period\Chart;
+
+use League\Period\Period;
+use League\Period\Sequence;
 
 interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
 {

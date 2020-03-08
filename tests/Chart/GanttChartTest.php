@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace LeagueTest\Period\Chart;
 
-use League\Period\Dataset;
-use League\Period\GanttChart;
-use League\Period\GanttChartConfig;
+use League\Period\Chart\Dataset;
+use League\Period\Chart\GanttChart;
+use League\Period\Chart\GanttChartConfig;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -24,12 +24,12 @@ use function rewind;
 use function stream_get_contents;
 
 /**
- * @coversDefaultClass \League\Period\GanttChart
+ * @coversDefaultClass \League\Period\Chart\GanttChart
  */
 final class GanttChartTest extends TestCase
 {
     /**
-     * @var \League\Period\GanttChart
+     * @var \League\Period\Chart\GanttChart
      */
     private $graph;
 
@@ -71,7 +71,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayEmptyDataset(): void
     {
-        $this->graph->stroke(new \League\Period\Dataset());
+        $this->graph->stroke(new \League\Period\Chart\Dataset());
         rewind($this->stream);
         $data = stream_get_contents($this->stream);
 
@@ -86,7 +86,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayPeriods(): void
     {
-        $this->graph->stroke(new \League\Period\Dataset([
+        $this->graph->stroke(new \League\Period\Chart\Dataset([
             ['A', new Period('2018-01-01', '2018-01-15')],
             ['B', new Period('2018-01-15', '2018-02-01')],
         ]));
@@ -106,7 +106,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplaySequence(): void
     {
-        $dataset = new \League\Period\Dataset([
+        $dataset = new \League\Period\Chart\Dataset([
             ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
             ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
         ]);

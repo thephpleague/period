@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Period;
+namespace League\Period\Chart;
 
-use League\Period\Chart\LabelGenerator;
-use League\Period\Chart\LatinLetter;
+use League\Period\Period;
+use League\Period\Sequence;
 use function array_column;
 use function count;
 use function gettype;

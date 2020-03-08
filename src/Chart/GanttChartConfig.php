@@ -11,10 +11,8 @@
 
 declare(strict_types=1);
 
-namespace League\Period;
+namespace League\Period\Chart;
 
-use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\Output;
 use function array_filter;
 use function array_map;
 use function mb_convert_encoding;

@@ -15,9 +15,9 @@ namespace LeagueTest\Period\Chart;
 
 use ArrayObject;
 use DateTimeImmutable;
+use League\Period\Chart\Dataset;
 use League\Period\Chart\DecimalNumber;
 use League\Period\Chart\LatinLetter;
-use League\Period\Dataset;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ use function iterator_to_array;
 use function json_encode;
 
 /**
- * @coversDefaultClass \League\Period\Dataset;
+ * @coversDefaultClass \League\Period\Chart\Dataset;
  */
 final class DatasetTest extends TestCase
 {
@@ -103,7 +103,7 @@ final class DatasetTest extends TestCase
 
     public function testAppendDataset(): void
     {
-        $dataset = new \League\Period\Dataset([
+        $dataset = new \League\Period\Chart\Dataset([
             ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
             ['B', new Period('2018-01-15', '2018-02-01')],
         ]);
@@ -122,7 +122,7 @@ final class DatasetTest extends TestCase
     {
         self::expectException(TypeError::class);
 
-        new \League\Period\Dataset([['foo', 'bar']]);
+        new \League\Period\Chart\Dataset([['foo', 'bar']]);
     }
 
     public function testLabelizeDataset(): void
@@ -161,7 +161,7 @@ final class DatasetTest extends TestCase
 
     public function testJsonEncoding(): void
     {
-        self::assertSame('[]', json_encode(new \League\Period\Dataset()));
+        self::assertSame('[]', json_encode(new \League\Period\Chart\Dataset()));
         $dataset = new Dataset([
             ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
             ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],

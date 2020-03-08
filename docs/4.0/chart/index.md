@@ -19,8 +19,8 @@ To generate a graph you need to give to the `Dataset` constructor a list of pair
 ~~~php
 <?php
 
-use League\Period\Dataset;
-use League\Period\GanttChart;
+use League\Period\Chart\Dataset;
+use League\Period\Chart\GanttChart;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -48,8 +48,8 @@ If you want to display a `Sequence` and some of its operations. You can append t
 ~~~php
 <?php
 
-use League\Period\Dataset;
-use League\Period\GanttChart;
+use League\Period\Chart\Dataset;
+use League\Period\Chart\GanttChart;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -97,8 +97,8 @@ If you wish to present the graph on another medium like a web browser or an imag
 ~~~php
 <?php
 
-use League\Period\Dataset;
-use League\Period\GanttChart;
+use League\Period\Chart\Dataset;
+use League\Period\Chart\GanttChart;
 use League\Period\Period;
 
 $graph = new GanttChart();
@@ -162,14 +162,14 @@ Here's a complex example which highlights most of the features introduces along 
 ~~~php
 <?php
 
-use League\Period\Chart\ConsoleOutput;
-use League\Period\Dataset;
-use League\Period\GanttChart;
-use League\Period\GanttChartConfig;
-use League\Period\Chart\AffixLabel;
-use League\Period\Chart\DecimalNumber;
-use League\Period\Chart\ReverseLabel;
-use League\Period\Chart\RomanNumber;
+use League\Period\Chart\Chart\ConsoleOutput;
+use League\Period\Chart\Dataset;
+use League\Period\Chart\GanttChart;
+use League\Period\Chart\GanttChartConfig;
+use League\Period\Chart\Chart\AffixLabel;
+use League\Period\Chart\Chart\DecimalNumber;
+use League\Period\Chart\Chart\ReverseLabel;
+use League\Period\Chart\Chart\RomanNumber;
 use League\Period\Datepoint;
 use League\Period\Period;
 use League\Period\Sequence;
