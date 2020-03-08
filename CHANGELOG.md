@@ -1,22 +1,21 @@
 # Changelog
 
-All Notable changes to `Period` will be documented in this file
+All notable changes to `Period` will be documented in this file
 
-## 4.9.0 - TBD
+## 4.10.0 - TBD
 
 ### Added
 
-- `Period::toISO8601`
+- `Period::toIso8601`
 - Charts featuring ported from [Bakame\Period\Vizualizer](https://github.com/bakame-php/period-visualizer)
 
 ### Fixed
 
-- `Period::__string` is now an alias of `Period::toISO8601`
 - Fix issue with `Sequence::intersections` method.
 
 ### Deprecated
 
-- None
+- `Period::__string` replaced by `Period::toIso8601`
 
 ### Removed
 

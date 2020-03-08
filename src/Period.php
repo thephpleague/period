@@ -315,23 +315,28 @@ final class Period implements JsonSerializable
      * Returns the string representation as a ISO8601 interval format.
      *
      * @deprecated since version 4.10
-     * @see ::toISO8601()
+     * @see ::toIso8601()
      */
     public function __toString()
     {
-        return $this->toISO8601();
+        return $this->toIso8601();
     }
 
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
+     * @param ?string $format
      */
-    public function toISO8601(): string
+    public function toIso8601(?string $format = null): string
     {
-        $interval = $this->jsonSerialize();
+        $utc = new DateTimeZone('UTC');
+        $format = $format ?? self::ISO8601_FORMAT;
 
-        return $interval['startDate'].'/'.$interval['endDate'];
+        $startDate = $this->startDate->setTimezone($utc)->format($format);
+        $endDate = $this->endDate->setTimezone($utc)->format($format);
+
+        return $startDate.'/'.$endDate;
     }
 
     /**
@@ -347,12 +352,9 @@ final class Period implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        $utc = new DateTimeZone('UTC');
+        [$startDate, $endDate] = explode('/', $this->toIso8601(), 2);
 
-        return [
-            'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
-            'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
-        ];
+        return ['startDate' => $startDate, 'endDate' => $endDate];
     }
 
     /**

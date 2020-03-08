@@ -22,8 +22,6 @@ redirect_from: /examples/
 
 <p class="message-info">Since <code>version 4.10</code> support for <code>PHP 7.1</code> is dropped.</p>
 
-
-
 ## Accessing the interval properties
 
 ~~~php
