@@ -162,14 +162,14 @@ Here's a complex example which highlights most of the features introduces along 
 ~~~php
 <?php
 
-use League\Period\Chart\Chart\ConsoleOutput;
+use League\Period\Chart\AffixLabel;
+use League\Period\Chart\ConsoleOutput;
 use League\Period\Chart\Dataset;
+use League\Period\Chart\DecimalNumber;
 use League\Period\Chart\GanttChart;
 use League\Period\Chart\GanttChartConfig;
-use League\Period\Chart\Chart\AffixLabel;
-use League\Period\Chart\Chart\DecimalNumber;
-use League\Period\Chart\Chart\ReverseLabel;
-use League\Period\Chart\Chart\RomanNumber;
+use League\Period\Chart\ReverseLabel;
+use League\Period\Chart\RomanNumber;
 use League\Period\Datepoint;
 use League\Period\Period;
 use League\Period\Sequence;
