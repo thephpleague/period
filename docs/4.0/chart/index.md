@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Charting Periods and Sequences instances
+title: Drawing Periods and Sequences instances
 ---
 
-# Charting Period and Sequence instances
+# Drawing intervals
 
 To improve visualizing multiple `Period` or `Sequence` instances you can use the provided charting feature. 
 

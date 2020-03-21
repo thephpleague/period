@@ -3,10 +3,10 @@ layout: default
 title: Adding labels to the generated charts
 ---
 
-# Setting the Dataset labels
+# Generating interval labels
 
 By default you are required to provide a label for each item present in a `Dataset` object.
-The package provides a `LabelGenerator` interface that ease generating labels for stroking.
+The package provides a `League\Period\Chart\LabelGenerator` interface that ease generating labels for stroking.
 
 A `LabelGenerator` implementing class is needed for the `Dataset::fromItems` named constructor, to create a new instance from a collection of `Period` and/or `Sequence` objects;
 
@@ -211,7 +211,7 @@ results:
 
 ## Custom LabelGenerator
 
-You can create your own label generator by implementing the `League\Period\Chart\Chart\LabelGenerator` interface like shown below:
+You can create your own label generator by implementing the `LabelGenerator` interface like shown below:
 
 ~~~php
 <?php

@@ -19,8 +19,8 @@ version:
             Period Container: '/4.0/sequence/container/'
             Period Collection: '/4.0/sequence/collection/'
         Charts:
-            Introduction: '/4.0/chart/'
-            Dataset Labels: '/4.0/chart/labels/'
+            Drawing Intervals: '/4.0/chart/'
+            Generating Labels: '/4.0/chart/labels/'
     '3.0':
         Getting Started:
             Overview: '/3.0/'
