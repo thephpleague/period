@@ -13,7 +13,7 @@
 /phpstan.tests.neon export-ignore
 /README.md          export-ignore
 /scrutinizer.yml    export-ignore
-/test               export-ignore
+/tests              export-ignore
 /CHANGELOG.md       export-ignore
 /CONDUCT.md         export-ignore
 /phpunit.xml        export-ignore

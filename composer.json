@@ -32,10 +32,18 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/thephpleague/period/issues"
+        "docs": "https://period.thephpleague.com",
+        "issues": "https://github.com/thephpleague/period/issues",
+        "source": "https://github.com/thephpleague/period"
     },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/nyamsprod"
+        }
+    ],
     "require": {
-        "php" : "^7.2.5",
+        "php" : "^7.2.0",
         "ext-json": "*"
     },
     "require-dev": {
@@ -44,9 +52,7 @@
         "phpunit/phpunit" : "^8.0",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12",
-        "symfony/var-dumper": "^4.2",
-        "ocramius/package-versions": "~1.4.0|~1.5.0"
+        "phpstan/phpstan-phpunit": "^0.12"
     },
     "autoload": {
         "psr-4": {
