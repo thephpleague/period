@@ -30,6 +30,8 @@ use const FILTER_VALIDATE_INT;
 /**
  * League Period Duration.
  *
+ * @psalm-immutable
+ *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
@@ -50,6 +52,9 @@ final class Duration extends DateInterval
      * New instance.
      *
      * Returns a new instance from an Interval specification
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public function __construct(string $interval_spec)
     {
@@ -82,6 +87,9 @@ final class Duration extends DateInterval
      * @param mixed $duration a continuous portion of time
      *
      * @throws TypeError if the duration type is not a supported
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function create($duration): self
     {
@@ -151,6 +159,9 @@ final class Duration extends DateInterval
      * @param mixed $duration a date with relative parts
      *
      * @return static|false
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function createFromDateString($duration): self
     {

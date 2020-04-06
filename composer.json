@@ -49,10 +49,11 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
         "infection/infection": "^0.13",
-        "phpunit/phpunit" : "^8.0",
         "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12"
+        "phpunit/phpunit": "^8.0",
+        "vimeo/psalm": "^3.10"
     },
     "autoload": {
         "psr-4": {
@@ -62,7 +63,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LeagueTest\\Period\\": "tests"
+            "LeagueTest\\Period\\StaticAnalysis\\": "tests/static-analysis/",
+            "LeagueTest\\Period\\": "tests/"
         }
     },
     "scripts": {
@@ -73,12 +75,14 @@
             "@phpstan-src",
             "@phpstan-tests"
         ],
+        "psalm": "psalm --show-info=false",
         "phpunit": "phpunit --coverage-text",
         "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "test": [
             "@phpcs",
             "@phpstan",
+            "@psalm",
             "@phpunit"
         ],
         "test-linux": [

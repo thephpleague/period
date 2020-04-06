@@ -27,6 +27,8 @@ use function sprintf;
 /**
  * A immutable value object class to manipulate Time interval.
  *
+ * @psalm-immutable
+ *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   1.0.0
@@ -134,8 +136,11 @@ final class Period implements JsonSerializable
 
     /**
      * @inheritDoc
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
-    public static function __set_state(array $interval)
+    public static function __set_state(array $interval): self
     {
         return new self($interval['startDate'], $interval['endDate'], $interval['boundaryType'] ?? self::INCLUDE_START_EXCLUDE_END);
     }
@@ -145,6 +150,9 @@ final class Period implements JsonSerializable
      *
      * @param mixed $startDate the starting datepoint
      * @param mixed $duration  a Duration
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function after($startDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -158,6 +166,9 @@ final class Period implements JsonSerializable
      *
      * @param mixed $endDate  the ending datepoint
      * @param mixed $duration a Duration
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -172,6 +183,9 @@ final class Period implements JsonSerializable
      *
      * @param mixed $datepoint a Datepoint
      * @param mixed $duration  a Duration
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function around($datepoint, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -183,6 +197,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a DatePeriod.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromDatePeriod(DatePeriod $datePeriod, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -191,6 +208,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific year.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromYear(int $year, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -201,6 +221,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific ISO year.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromIsoYear(int $year, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -213,6 +236,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific year and semester.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromSemester(int $year, int $semester = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -224,6 +250,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific year and quarter.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromQuarter(int $year, int $quarter = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -235,6 +264,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific year and month.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromMonth(int $year, int $month = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -245,6 +277,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific ISO8601 week.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromIsoWeek(int $year, int $week = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -255,6 +290,9 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance for a specific year, month and day.
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function fromDay(int $year, int $month = 1, int $day = 1, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -269,6 +307,8 @@ final class Period implements JsonSerializable
 
     /**
      * Returns the starting datepoint.
+     *
+     * @psalm-return non-empty-string
      */
     public function getStartDate(): DateTimeImmutable
     {

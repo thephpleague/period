@@ -34,6 +34,8 @@ use const ARRAY_FILTER_USE_BOTH;
 /**
  * A class to manipulate interval collection.
  *
+ * @psalm-immutable
+ *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0

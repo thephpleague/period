@@ -25,6 +25,8 @@ use const FILTER_VALIDATE_INT;
 /**
  * League Period Datepoint.
  *
+ * @psalm-immutable
+ *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
@@ -42,6 +44,9 @@ final class Datepoint extends DateTimeImmutable
      * </ul>
      *
      * @param mixed $datepoint a position in time
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function create($datepoint): self
     {
@@ -64,6 +69,9 @@ final class Datepoint extends DateTimeImmutable
      * @param DateTimeZone $timezone
      *
      * @return static|false
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function createFromFormat($format, $datetime, $timezone = null)
     {
@@ -81,6 +89,9 @@ final class Datepoint extends DateTimeImmutable
      * @param DateTime $datetime
      *
      * @return static
+     *
+     * @psalm-pure note: changing the internal factory is an edge case not covered by purity invariants,
+     *             but under constant factory setups, this method operates in functionally pure manners
      */
     public static function createFromMutable($datetime): self
     {
