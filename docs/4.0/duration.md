@@ -43,6 +43,7 @@ use League\Period\Period;
 
 Duration::create('1 DAY');                  // returns new Duration('P1D')
 Duration::create(2018);                     // returns new Duration('PT2018S')
+Duration::create('PT1H');                   // returns new Duration('PT1H')
 Duration::create(new DateInterval('PT1H')); // returns new Duration('PT1H')
 Duration::create('12:30');                  // returns new Duration('PT12M30S')  
 Duration::create(new Period('now', 'tomorrow'));
