@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## 4.11.0 - TBD
+
+### Added
+
+- `Duration::create` supports DateInterval spec strings.
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 4.10.0 - 2020-03-22
 
 ### Added

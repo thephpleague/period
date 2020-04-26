@@ -36,6 +36,11 @@ use const FILTER_VALIDATE_INT;
  */
 final class Duration extends DateInterval
 {
+    private const REGEXP_DATEINTERVAL_SPEC = '@^P
+        (?:(?:\d+Y)?(?:\d+M)?(?:\d+D)?)?
+        (?:T(?:\d+H)?(?:\d+M)?(?:\d+S)?)?
+    $@x';
+
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
 
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
@@ -109,6 +114,11 @@ final class Duration extends DateInterval
         }
 
         $duration = (string) $duration;
+
+        if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
+            return new self($duration);
+        }
+
         if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
             $new = self::createFromDateString($duration);
             if ($new !== false) {

@@ -59,6 +59,10 @@ class DurationTest extends TestCase
                 'input' => Period::fromMonth(2018, 2),
                 'expected' => 'P1M',
             ],
+            'from a spec string' => [
+                'input' => 'PT1H',
+                'expect' => 'PT1H',
+            ],
             'from a week' => [
                 'input' => '1 WEEK',
                 'expected' => 'P7D',
