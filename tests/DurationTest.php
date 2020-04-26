@@ -120,7 +120,7 @@ class DurationTest extends TestCase
      */
     public function testDurationCreateFromDateStringFails(string $input): void
     {
-        self::expectWarning();
+        self::expectException(Warning::class);
 
         self::assertFalse(Duration::createFromDateString($input));
     }
