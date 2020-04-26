@@ -51,7 +51,7 @@ Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
 
-### Duration::createFromTimer
+### Duration::createFromTimeString
 
 <p class="message-info">Since <code>version 4.11</code>.</p>
 
@@ -63,10 +63,25 @@ This feature was already supported via the `Duration::create` method but is now 
 ~~~php
 use League\Period\Duration;
 
-Duration::create('12:30');  // returns new Duration('PT12M30S')  
+Duration::createFromTimeString('12:30');  // returns new Duration('PT12M30S')  
 ~~~
 
 On error a `League\Period\Exception` will be thrown.
+
+### Duration::createFromSeconds
+
+<p class="message-info">Since <code>version 4.11</code>.</p>
+
+You can specifically instantiate a `Duration` instance from seconds with optional fractions.
+This feature is already supported via the `Duration::create` method but it is now accessible stand alone.
+
+#### Examples
+
+~~~php
+use League\Period\Duration;
+
+Duration::createFromSeconds('28.5');  // returns Duration::createFromDateString('28 seconds 500000 microseconds')  
+~~~
 
 ## Default constructor
 

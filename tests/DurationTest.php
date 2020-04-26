@@ -157,12 +157,31 @@ class DurationTest extends TestCase
         self::assertSame(0.023658, $duration->f);
     }
 
+    public function testCreateFromTimeStringFails(): void
+    {
+        self::expectException(Exception::class);
+
+        Duration::createFromTimeString('foobar');
+    }
+
     /**
      * @dataProvider fromChronoProvider
      */
-    public function testCreateFromTimeString(string $chronometer, string $expected, int $revert): void
+    public function testCreateFromTimeStringSucceeds(string $chronometer, string $expected, int $revert): void
+    {
+        $duration = Duration::createFromTimeString($chronometer);
+
+        self::assertSame($expected, (string) $duration);
+        self::assertSame($revert, $duration->invert);
+    }
+
+    /**
+     * @dataProvider fromChronoProvider
+     */
+    public function testCreate(string $chronometer, string $expected, int $revert): void
     {
         $duration = Duration::create($chronometer);
+
         self::assertSame($expected, (string) $duration);
         self::assertSame($revert, $duration->invert);
     }

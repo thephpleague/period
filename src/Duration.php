@@ -25,7 +25,7 @@ use function property_exists;
 use function rtrim;
 use function sprintf;
 use function str_pad;
-use const FILTER_VALIDATE_INT;
+use const FILTER_VALIDATE_FLOAT;
 
 /**
  * League Period Duration.
@@ -111,8 +111,9 @@ final class Duration extends DateInterval
             return $new;
         }
 
-        if (false !== ($second = filter_var($duration, FILTER_VALIDATE_INT))) {
-            return new self('PT'.$second.'S');
+        $seconds = filter_var($duration, FILTER_VALIDATE_FLOAT);
+        if (false !== $seconds) {
+            return self::createFromSeconds($seconds);
         }
 
         if (!is_string($duration) && !method_exists($duration, '__toString')) {
@@ -122,7 +123,7 @@ final class Duration extends DateInterval
         $duration = (string) $duration;
 
         if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
-            return self::createFromTimer($duration);
+            return self::createFromTimeString($duration);
         }
 
         if (1 === preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
@@ -141,12 +142,34 @@ final class Duration extends DateInterval
         throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
     }
 
+    public static function createFromSeconds(float $seconds): self
+    {
+        $invert = 0 > $seconds;
+        if ($invert) {
+            $seconds = $seconds * -1;
+        }
+
+        $secondsInt = (int) $seconds;
+        $fraction = ($seconds - $secondsInt);
+        $fraction = (int) ($fraction * 1e6);
+
+        $expression = $secondsInt.' seconds '.$fraction.' microseconds';
+
+        /** @var Duration $instance */
+        $instance = self::createFromDateString($expression);
+        if ($invert) {
+            $instance->invert = 1;
+        }
+
+        return $instance;
+    }
+
     /**
      * Creates a new instance from a timer string representation.
      *
      * @throws Exception
      */
-    public static function createFromTimer(string $duration): self
+    public static function createFromTimeString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
