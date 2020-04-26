@@ -18,6 +18,8 @@ use League\Period\Duration;
 use League\Period\Exception;
 use League\Period\Period;
 use PHPUnit\Framework\Error\Warning;
+use function version_compare;
+use const PHP_VERSION;
 
 class DurationTest extends TestCase
 {
@@ -120,9 +122,22 @@ class DurationTest extends TestCase
      */
     public function testDurationCreateFromDateStringFails(string $input): void
     {
+        if (!$this->isBugFixedcreateFromDateString()) {
+            self::assertEquals(new Duration('PT0S'), Duration::createFromDateString($input));
+
+            return;
+        }
+
         self::expectException(Warning::class);
 
         self::assertFalse(Duration::createFromDateString($input));
+    }
+
+    private function isBugFixedcreateFromDateString(): bool
+    {
+        return version_compare(PHP_VERSION, '7.3.4', '>=') ||
+            (version_compare(PHP_VERSION, '7.2.17', '>=') &&
+                version_compare(PHP_VERSION, '7.3', '<'));
     }
 
     public function getDurationCreateFromDateStringFailsProvider(): iterable
