@@ -36,9 +36,15 @@ use const FILTER_VALIDATE_INT;
  */
 final class Duration extends DateInterval
 {
+    private const REGEXP_DATEINTERVAL_WORD_SPEC = '/^P\S*$/';
+
     private const REGEXP_DATEINTERVAL_SPEC = '@^P
-        (?:(?:\d+Y)?(?:\d+M)?(?:\d+D)?)?
-        (?:T(?:\d+H)?(?:\d+M)?(?:\d+S)?)?
+        (?!$)                             # making sure there something after the interval delimiter
+        (?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?)? # day, week, month, year part
+        (?:T                              # interval time delimiter
+            (?!$)                         # making sure there something after the interval time delimiter
+            (?:\d+H)?(?:\d+M)?(?:\d+S)?   # hour, minute, second part
+        )?
     $@x';
 
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
@@ -115,16 +121,34 @@ final class Duration extends DateInterval
 
         $duration = (string) $duration;
 
-        if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
-            return new self($duration);
+        if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
+            return self::createFromTimer($duration);
         }
 
-        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
-            $new = self::createFromDateString($duration);
-            if ($new !== false) {
-                return $new;
+        if (1 === preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
+            if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
+                return new self($duration);
             }
 
+            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+        }
+
+        $instance = self::createFromDateString($duration);
+        if (false !== $instance) {
+            return $instance;
+        }
+
+        throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+    }
+
+    /**
+     * Creates a new instance from a timer string representation.
+     *
+     * @throws Exception
+     */
+    public static function createFromTimer(string $duration): self
+    {
+        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
@@ -143,11 +167,8 @@ final class Duration extends DateInterval
             $matches['minute'].' minutes '.
             $matches['second'].' seconds '.$matches['fraction'].' microseconds';
 
+        /** @var Duration $instance */
         $instance = self::createFromDateString($expression);
-        if (false === $instance) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $expression));
-        }
-
         if ('-' === $matches['sign']) {
             $instance->invert = 1;
         }
@@ -160,13 +181,13 @@ final class Duration extends DateInterval
      *
      * @param mixed $duration a date with relative parts
      *
-     * @return static|false
+     * @return self|false
      */
-    public static function createFromDateString($duration): self
+    public static function createFromDateString($duration)
     {
         $duration = parent::createFromDateString($duration);
         if (false === $duration) {
-            return $duration;
+            return false;
         }
 
         $new = new self('PT0S');

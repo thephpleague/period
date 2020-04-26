@@ -7,6 +7,7 @@ All notable changes to `Period` will be documented in this file
 ### Added
 
 - `Duration::create` supports DateInterval spec strings.
+- `Duration::createFromTimer`
 
 ### Fixed
 

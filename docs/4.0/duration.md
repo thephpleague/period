@@ -29,9 +29,10 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 
 - a `League\Period\Period` object;
 - a `DateInterval` object;
-- a string parsable by the `DateInterval::createFromDateString` method.
-- a string representing a chronometer format `+/-HH:MM::SS.FFFFFF`
 - an integer interpreted as the interval expressed in seconds.
+- a string representing a chronometer format `+/-HH:MM::SS.FFFFFF`
+- a string following the ISO8601 interval specification parsable by `DateInterval::__construct` *since 4.11.0*
+- a string parsable by the `DateInterval::createFromDateString` method.
 
 <p class="message-warning"><strong>WARNING:</strong> When the string is not parsable by <code>DateInterval::createFromDateString</code> a <code>DateInterval</code> object representing the <code>0</code> interval is returned as described in <a href="https://bugs.php.net/bug.php?id=50020">PHP bug #50020</a>.</p>
 
@@ -49,6 +50,23 @@ Duration::create('12:30');                  // returns new Duration('PT12M30S')
 Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
+
+### Duration::createFromTimer
+
+<p class="message-info">Since <code>version 4.11</code>.</p>
+
+You can specifically instantiate a `Duration` instance from a timer like string format `+/-HH:MM::SS.FFFFFF`.
+This feature was already supported via the `Duration::create` method but is now accessible stand alone.
+
+#### Examples
+
+~~~php
+use League\Period\Duration;
+
+Duration::create('12:30');  // returns new Duration('PT12M30S')  
+~~~
+
+On error a `League\Period\Exception` will be thrown.
 
 ## Default constructor
 

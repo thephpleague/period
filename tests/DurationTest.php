@@ -15,7 +15,9 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use League\Period\Duration;
+use League\Period\Exception;
 use League\Period\Period;
+use PHPUnit\Framework\Error\Warning;
 
 class DurationTest extends TestCase
 {
@@ -29,22 +31,23 @@ class DurationTest extends TestCase
 
         if (version_compare(PHP_VERSION, '7.2.17', '<')
             && version_compare(PHP_VERSION, '7.3.4', '<')) {
+            /** @var Duration $altduration */
             $altduration = Duration::createFromDateString('foobar');
             self::assertSame(0, $altduration->s);
         }
     }
 
     /**
-     * @dataProvider getISO8601StringProvider
+     * @dataProvider getDurationCreateSuccessfulProvider
      *
      * @param mixed $input duration
      */
-    public function testISO8601String($input, string $expected): void
+    public function testDurationCreateNamedConstructor($input, string $expected): void
     {
         self::assertSame($expected, (string) Duration::create($input));
     }
 
-    public function getISO8601StringProvider(): array
+    public function getDurationCreateSuccessfulProvider(): array
     {
         return [
             'date only' => [
@@ -84,6 +87,49 @@ class DurationTest extends TestCase
                 'expected' => 'PT0.0001S',
             ],
        ];
+    }
+
+    /**
+     * @dataProvider getDurationCreateFailsProvider
+     *
+     * @param string $input duration
+     */
+    public function testDurationCreateNamedConstructorFails(string $input): void
+    {
+        self::expectException(Exception::class);
+
+        Duration::create($input);
+    }
+
+    public function getDurationCreateFailsProvider(): iterable
+    {
+        return [
+            'invalid interval spec 1' => ['PT'],
+            'invalid interval spec 2' => ['P'],
+            'invalid interval spec 3' => ['PT1'],
+            'invalid interval spec 4' => ['P3'],
+            'invalid interval spec 5' => ['PT3X'],
+            'invalid interval spec 6' => ['PT3s'],
+        ];
+    }
+
+    /**
+     * @dataProvider getDurationCreateFromDateStringFailsProvider
+     *
+     * @param string $input duration
+     */
+    public function testDurationCreateFromDateStringFails(string $input): void
+    {
+        self::expectWarning();
+
+        self::assertFalse(Duration::createFromDateString($input));
+    }
+
+    public function getDurationCreateFromDateStringFailsProvider(): iterable
+    {
+        return [
+            'invalid interval spec 1' => ['yolo'],
+        ];
     }
 
     public function testIntervalWithFraction(): void
