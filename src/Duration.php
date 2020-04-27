@@ -53,8 +53,19 @@ final class Duration extends DateInterval
 
     private const REGEXP_CHRONO_FORMAT = '@^
         (?<sign>\+|-)?
-        (((?<hour>\d+):)?(?<minute>\d+):)?
-        ((?<second>\d+)(\.(?<fraction>\d{1,6}))?)
+        (
+            (
+                (?<hour>\d+):)?
+                (?<minute>\d+):
+            )?
+            ((?<second>\d+)(\.(?<fraction>\d{1,6}))?
+        )
+    $@x';
+
+    private const REGEXP_TIME_FORMAT = '@^
+        (?<sign>\+|-)?
+        (?<hour>\d+)(:(?<minute>\d+))
+        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?
     $@x';
 
     /**
@@ -123,7 +134,7 @@ final class Duration extends DateInterval
         $duration = (string) $duration;
 
         if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
-            return self::createFromTimeString($duration);
+            return self::createFromChronoString($duration);
         }
 
         if (1 === preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
@@ -142,6 +153,11 @@ final class Duration extends DateInterval
         throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
     }
 
+    /**
+     * Creates a new instance from a seconds.
+     *
+     * the second value will be overflow up to the hour time unit.
+     */
     public static function createFromSeconds(float $seconds): self
     {
         $invert = 0 > $seconds;
@@ -150,18 +166,19 @@ final class Duration extends DateInterval
         }
 
         $secondsInt = (int) $seconds;
-        $fraction = ($seconds - $secondsInt);
-        $fraction = (int) ($fraction * 1e6);
+        $fraction = (int) (($seconds - $secondsInt) * 1e6);
+        $minute = intdiv($secondsInt, 60);
+        $secondsInt = $secondsInt - ($minute * 60);
+        $hour = intdiv($minute, 60);
+        $minute = $minute - ($hour * 60);
 
-        $expression = $secondsInt.' seconds '.$fraction.' microseconds';
-
-        /** @var Duration $instance */
-        $instance = self::createFromDateString($expression);
-        if ($invert) {
-            $instance->invert = 1;
-        }
-
-        return $instance;
+        return self::createFromTimeUnits([
+            'hour' => (string) $hour,
+            'minute' => (string) $minute,
+            'second' => (string) $secondsInt,
+            'fraction' => (string) $fraction,
+            'sign' => $invert ? '-' : '+',
+        ]);
     }
 
     /**
@@ -169,30 +186,61 @@ final class Duration extends DateInterval
      *
      * @throws Exception
      */
-    public static function createFromTimeString(string $duration): self
+    public static function createFromChronoString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $matches)) {
+        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $units)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
-        $matches['hour'] = $matches['hour'] ?? '0';
-        if ('' === $matches['hour']) {
-            $matches['hour'] = '0';
+        $units['hour'] = $units['hour'] ?? '0';
+        if ('' === $units['hour']) {
+            $units['hour'] = '0';
         }
 
-        $matches['minute'] = $matches['minute'] ?? '0';
-        if ('' === $matches['minute']) {
-            $matches['minute'] = '0';
+        $units['minute'] = $units['minute'] ?? '0';
+        if ('' === $units['minute']) {
+            $units['minute'] = '0';
         }
 
-        $matches['fraction'] = str_pad($matches['fraction'] ?? '0000000', 6, '0');
-        $expression = $matches['hour'].' hours '.
-            $matches['minute'].' minutes '.
-            $matches['second'].' seconds '.$matches['fraction'].' microseconds';
+        /** @var array{hour:string, minute:string, second:string, fraction:string, sign:string} $units */
+        $units = $units + ['second' => '0', 'fraction' => '0', 'sign' => '+'];
+
+        return self::createFromTimeUnits($units);
+    }
+
+    /**
+     * Creates a new instance from a time string representation following RDBMS specification.
+     *
+     * @throws Exception
+     */
+    public static function createFromTimeString(string $duration): self
+    {
+        if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
+            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+        }
+
+        /** @var array{hour:string, minute:string, second:string, fraction:string, sign:string} $units */
+        $units = $units + ['minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
+
+        return self::createFromTimeUnits($units);
+    }
+
+    /**
+     * Creates an instance from DateInterval units.
+     *
+     * @param array{hour:string, minute:string, second:string, fraction:string, sign:string} $units
+     */
+    private static function createFromTimeUnits(array $units): self
+    {
+        $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
+
+        $expression = $units['hour'].' hours '.
+            $units['minute'].' minutes '.
+            $units['second'].' seconds '.$units['fraction'].' microseconds';
 
         /** @var Duration $instance */
         $instance = self::createFromDateString($expression);
-        if ('-' === $matches['sign']) {
+        if ('-' === $units['sign']) {
             $instance->invert = 1;
         }
 

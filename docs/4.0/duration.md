@@ -29,7 +29,7 @@ Converts its single input into a `Duration` object or throws a `TypeError` other
 
 - a `League\Period\Period` object;
 - a `DateInterval` object;
-- an integer interpreted as the interval expressed in seconds.
+- a float interpreted as the interval expressed in seconds.
 - a string representing a chronometer format `+/-HH:MM::SS.FFFFFF`
 - a string following the ISO8601 interval specification parsable by `DateInterval::__construct` *since 4.11.0*
 - a string parsable by the `DateInterval::createFromDateString` method.
@@ -51,7 +51,7 @@ Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
 
-### Duration::createFromTimeString
+### Duration::createFromChronoString
 
 <p class="message-info">Since <code>version 4.11</code>.</p>
 
@@ -63,7 +63,25 @@ This feature was already supported via the `Duration::create` method but is now 
 ~~~php
 use League\Period\Duration;
 
-Duration::createFromTimeString('12:30');  // returns new Duration('PT12M30S')  
+Duration::createFromChronoString('12:30');  // returns new Duration('PT12M30S')  
+~~~
+
+On error a `League\Period\Exception` will be thrown.
+
+### Duration::createFromTimeString
+
+<p class="message-info">Since <code>version 4.11</code>.</p>
+
+You can specifically instantiate a `Duration` instance from a time string format in accordance with ISO8601 `+/-HH:MM::SS.FFFFFF`.
+This feature differs from `Duration::createFromChronoString` method by requiring the presence of at least the hour ans the minute unit.
+
+#### Examples
+
+~~~php
+use League\Period\Duration;
+
+Duration::createFromChronoString('12:30');     // returns new Duration('PT12H30M')
+Duration::createFromChronoString('12:30:34.8');  // returns new Duration('PT12H30M34.8S')
 ~~~
 
 On error a `League\Period\Exception` will be thrown.
@@ -73,14 +91,14 @@ On error a `League\Period\Exception` will be thrown.
 <p class="message-info">Since <code>version 4.11</code>.</p>
 
 You can specifically instantiate a `Duration` instance from seconds with optional fractions.
-This feature is already supported via the `Duration::create` method but it is now accessible stand alone.
+This feature was already supported via the `Duration::create` method but it is now accessible stand alone.
 
 #### Examples
 
 ~~~php
 use League\Period\Duration;
 
-Duration::createFromSeconds('28.5');  // returns Duration::createFromDateString('28 seconds 500000 microseconds')  
+Duration::createFromSeconds(28.5); // returns Duration::createFromDateString('28 seconds 500000 microseconds')  
 ~~~
 
 ## Default constructor
