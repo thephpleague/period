@@ -58,12 +58,15 @@ Duration::create(new Period('now', 'tomorrow'));
 You can specifically instantiate a `Duration` instance from a timer like string format `+/-HH:MM::SS.FFFFFF`.
 This feature was already supported via the `Duration::create` method but is now accessible stand alone.
 
+<p class="message-notice">The hour and fraction units are optional</p>
+
 #### Examples
 
 ~~~php
 use League\Period\Duration;
 
-Duration::createFromChronoString('12:30');  // returns new Duration('PT12M30S')  
+Duration::createFromChronoString('12:30');      // returns new Duration('PT12M30S')  
+Duration::createFromChronoString('12:30:34.8'); // returns new Duration('PT12H30M34.8S')
 ~~~
 
 On error a `League\Period\Exception` will be thrown.
@@ -75,13 +78,15 @@ On error a `League\Period\Exception` will be thrown.
 You can specifically instantiate a `Duration` instance from a time string format in accordance with ISO8601 `+/-HH:MM::SS.FFFFFF`.
 This feature differs from `Duration::createFromChronoString` method by requiring the presence of at least the hour ans the minute unit.
 
+<p class="message-notice">The second and fraction units are optionals</p>
+
 #### Examples
 
 ~~~php
 use League\Period\Duration;
 
-Duration::createFromChronoString('12:30');     // returns new Duration('PT12H30M')
-Duration::createFromChronoString('12:30:34.8');  // returns new Duration('PT12H30M34.8S')
+Duration::createFromTimeString('12:30');      // returns new Duration('PT12H30M')
+Duration::createFromTimeString('12:30:34.8'); // returns new Duration('PT12H30M34.8S')
 ~~~
 
 On error a `League\Period\Exception` will be thrown.

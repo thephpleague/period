@@ -206,11 +206,22 @@ class DurationTest extends TestCase
         ];
     }
 
-    public function testCreateFromChronoStringFails(): void
+    /**
+     * @dataProvider fromChronoFailsProvider
+     */
+    public function testCreateFromChronoStringFails(string $input): void
     {
         self::expectException(Exception::class);
 
-        Duration::createFromChronoString('foobar');
+        Duration::createFromChronoString($input);
+    }
+
+    public function fromChronoFailsProvider(): iterable
+    {
+        return [
+            'invalid string' => ['foobar'],
+            'float like string' => ['-28.5'],
+        ];
     }
 
     /**
@@ -238,11 +249,6 @@ class DurationTest extends TestCase
     public function fromChronoProvider(): iterable
     {
         return [
-            'seconds' => [
-                'chronometer' => '1',
-                'expected' => 'PT1S',
-                'invert' => 0,
-            ],
             'minute and seconds' => [
                 'chronometer' => '1:2',
                 'expected' => 'PT1M2S',
@@ -261,11 +267,6 @@ class DurationTest extends TestCase
             'negative chrono' => [
                 'chronometer' => '-12:28.5',
                 'expected' => 'PT12M28.5S',
-                'invert' => 1,
-            ],
-            'negative chrono with seconds' => [
-                'chronometer' => '-28.5',
-                'expected' => 'PT28.5S',
                 'invert' => 1,
             ],
         ];

@@ -52,20 +52,16 @@ final class Duration extends DateInterval
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
 
     private const REGEXP_CHRONO_FORMAT = '@^
-        (?<sign>\+|-)?
-        (
-            (
-                (?<hour>\d+):)?
-                (?<minute>\d+):
-            )?
-            ((?<second>\d+)(\.(?<fraction>\d{1,6}))?
-        )
+        (?<sign>\+|-)?                  # optional sign
+        ((?<hour>\d+):)?                # optional hour
+        ((?<minute>\d+):)(?<second>\d+) # required minute and second
+        (\.(?<fraction>\d{1,6}))?       # optional fraction
     $@x';
 
     private const REGEXP_TIME_FORMAT = '@^
-        (?<sign>\+|-)?
-        (?<hour>\d+)(:(?<minute>\d+))
-        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?
+        (?<sign>\+|-)?                               # optional sign
+        (?<hour>\d+)(:(?<minute>\d+))                # required hour and minute
+        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
     $@x';
 
     /**
@@ -192,18 +188,9 @@ final class Duration extends DateInterval
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
-        $units['hour'] = $units['hour'] ?? '0';
         if ('' === $units['hour']) {
             $units['hour'] = '0';
         }
-
-        $units['minute'] = $units['minute'] ?? '0';
-        if ('' === $units['minute']) {
-            $units['minute'] = '0';
-        }
-
-        /** @var array{hour:string, minute:string, second:string, fraction:string, sign:string} $units */
-        $units = $units + ['second' => '0', 'fraction' => '0', 'sign' => '+'];
 
         return self::createFromTimeUnits($units);
     }
@@ -219,19 +206,18 @@ final class Duration extends DateInterval
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
-        /** @var array{hour:string, minute:string, second:string, fraction:string, sign:string} $units */
-        $units = $units + ['minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
-
         return self::createFromTimeUnits($units);
     }
 
     /**
      * Creates an instance from DateInterval units.
      *
-     * @param array{hour:string, minute:string, second:string, fraction:string, sign:string} $units
+     * @param array<string,string> $units
      */
     private static function createFromTimeUnits(array $units): self
     {
+        $units = $units + ['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
+
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
 
         $expression = $units['hour'].' hours '.
