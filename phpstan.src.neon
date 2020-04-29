@@ -11,13 +11,7 @@ parameters:
           path: src/Duration.php
         - message: '#^Variable property access on (.*)?.#'
           path: src/Duration.php
-        - message: '#Strict comparison using !== between League\\Period\\Duration and false will always evaluate to true.#'
-          path: src/Duration.php
-        - message: '#Strict comparison using === between false and League\\Period\\Duration will always evaluate to false.#'
-          path: src/Duration.php
-        - message: '#PHPDoc tag \@return with type static\(League\\Period\\Duration\)\|false is not subtype of native type League\\Period\\Duration.#'
-          path: src/Duration.php
-        - message: '#Unreachable statement - code above always terminates.#'
+        - message: '#Return type \(League\\Period\\Duration\|false\) of method League\\Period\\Duration::createFromDateString\(\) should be covariant with return type \(DateInterval\) of method DateInterval::createFromDateString\(\)#'
           path: src/Duration.php
         - message: '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
           path: src/Period.php

@@ -6,11 +6,14 @@ All notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Duration::createFromTimeString`
+- `Duration::createFromChronoString`
+- `Duration::createFromSeconds`
 - `Duration::create` supports DateInterval spec strings.
 
 ### Fixed
 
-- None
+- `Duration::create` when using a float will now overflow the results up to the Hour unit.
 
 ### Deprecated
 
