@@ -81,8 +81,8 @@ final class Period implements JsonSerializable
      */
     public function __construct($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
     {
-        $startDate = self::getDatepoint($startDate);
-        $endDate = self::getDatepoint($endDate);
+        $startDate = self::filterDatepoint($startDate);
+        $endDate = self::filterDatepoint($endDate);
         if ($startDate > $endDate) {
             throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
         }
@@ -105,7 +105,7 @@ final class Period implements JsonSerializable
      *
      * @param mixed $datepoint a Datepoint
      */
-    private static function getDatepoint($datepoint): DateTimeImmutable
+    private static function filterDatepoint($datepoint): DateTimeImmutable
     {
         if ($datepoint instanceof DateTimeImmutable) {
             return $datepoint;
@@ -119,7 +119,7 @@ final class Period implements JsonSerializable
      *
      * @param mixed $duration a Duration
      */
-    private static function getDuration($duration): DateInterval
+    private static function filterDuration($duration): DateInterval
     {
         if ($duration instanceof DateInterval) {
             return $duration;
@@ -148,9 +148,9 @@ final class Period implements JsonSerializable
      */
     public static function after($startDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
-        $startDate = self::getDatepoint($startDate);
+        $startDate = self::filterDatepoint($startDate);
 
-        return new self($startDate, $startDate->add(self::getDuration($duration)), $boundaryType);
+        return new self($startDate, $startDate->add(self::filterDuration($duration)), $boundaryType);
     }
 
     /**
@@ -161,9 +161,9 @@ final class Period implements JsonSerializable
      */
     public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
-        $endDate = self::getDatepoint($endDate);
+        $endDate = self::filterDatepoint($endDate);
 
-        return new self($endDate->sub(self::getDuration($duration)), $endDate, $boundaryType);
+        return new self($endDate->sub(self::filterDuration($duration)), $endDate, $boundaryType);
     }
 
     /**
@@ -175,8 +175,8 @@ final class Period implements JsonSerializable
      */
     public static function around($datepoint, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
-        $datepoint = self::getDatepoint($datepoint);
-        $duration = self::getDuration($duration);
+        $datepoint = self::filterDatepoint($datepoint);
+        $duration = self::filterDuration($duration);
 
         return new self($datepoint->sub($duration), $datepoint->add($duration), $boundaryType);
     }
@@ -476,7 +476,8 @@ final class Period implements JsonSerializable
                 || ($this->endDate == $index->startDate && $this->boundaryType[1] !== $index->boundaryType[0]);
         }
 
-        $datepoint = self::getDatepoint($index);
+        $datepoint = self::filterDatepoint($index);
+
         return $this->endDate < $datepoint
             || ($this->endDate == $datepoint && ')' === $this->boundaryType[1]);
     }
@@ -514,7 +515,7 @@ final class Period implements JsonSerializable
                 && $this->boundaryType[0] === $index->boundaryType[0];
         }
 
-        $index = self::getDatepoint($index);
+        $index = self::filterDatepoint($index);
 
         return $index == $this->startDate && '[' === $this->boundaryType[0];
     }
@@ -543,7 +544,7 @@ final class Period implements JsonSerializable
             return $this->containsInterval($index);
         }
 
-        return $this->containsDatepoint(self::getDatepoint($index), $this->boundaryType);
+        return $this->containsDatepoint(self::filterDatepoint($index), $this->boundaryType);
     }
 
     /**
@@ -629,7 +630,7 @@ final class Period implements JsonSerializable
                 && $this->boundaryType[1] === $index->boundaryType[1];
         }
 
-        $index = self::getDatepoint($index);
+        $index = self::filterDatepoint($index);
 
         return $index == $this->endDate && ']' === $this->boundaryType[1];
     }
@@ -660,7 +661,7 @@ final class Period implements JsonSerializable
             return $index->isBefore($this);
         }
 
-        $datepoint = self::getDatepoint($index);
+        $datepoint = self::filterDatepoint($index);
         return $this->startDate > $datepoint
             || ($this->startDate == $datepoint && '(' === $this->boundaryType[0]);
     }
@@ -722,7 +723,7 @@ final class Period implements JsonSerializable
      */
     public function getDatePeriod($duration, int $option = 0): DatePeriod
     {
-        return new DatePeriod($this->startDate, self::getDuration($duration), $this->endDate, $option);
+        return new DatePeriod($this->startDate, self::filterDuration($duration), $this->endDate, $option);
     }
 
     /**
@@ -734,7 +735,7 @@ final class Period implements JsonSerializable
      */
     public function getDatePeriodBackwards($duration, int $option = 0): iterable
     {
-        $duration = self::getDuration($duration);
+        $duration = self::filterDuration($duration);
         $date = $this->endDate;
         if ((bool) ($option & DatePeriod::EXCLUDE_START_DATE)) {
             $date = $this->endDate->sub($duration);
@@ -763,7 +764,7 @@ final class Period implements JsonSerializable
      */
     public function split($duration): iterable
     {
-        $duration = self::getDuration($duration);
+        $duration = self::filterDuration($duration);
         foreach ($this->getDatePeriod($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
@@ -792,7 +793,7 @@ final class Period implements JsonSerializable
     public function splitBackwards($duration): iterable
     {
         $endDate = $this->endDate;
-        $duration = self::getDuration($duration);
+        $duration = self::filterDuration($duration);
         do {
             $startDate = $endDate->sub($duration);
             if ($startDate < $this->startDate) {
@@ -1016,7 +1017,7 @@ final class Period implements JsonSerializable
      */
     public function startingOn($startDate): self
     {
-        $startDate = self::getDatepoint($startDate);
+        $startDate = self::filterDatepoint($startDate);
         if ($startDate == $this->startDate) {
             return $this;
         }
@@ -1034,7 +1035,7 @@ final class Period implements JsonSerializable
      */
     public function endingOn($endDate): self
     {
-        $endDate = self::getDatepoint($endDate);
+        $endDate = self::filterDatepoint($endDate);
         if ($endDate == $this->endDate) {
             return $this;
         }
@@ -1067,7 +1068,7 @@ final class Period implements JsonSerializable
      */
     public function withDurationAfterStart($duration): self
     {
-        return $this->endingOn($this->startDate->add(self::getDuration($duration)));
+        return $this->endingOn($this->startDate->add(self::filterDuration($duration)));
     }
 
     /**
@@ -1080,7 +1081,7 @@ final class Period implements JsonSerializable
      */
     public function withDurationBeforeEnd($duration): self
     {
-        return $this->startingOn($this->endDate->sub(self::getDuration($duration)));
+        return $this->startingOn($this->endDate->sub(self::filterDuration($duration)));
     }
 
     /**
@@ -1094,7 +1095,7 @@ final class Period implements JsonSerializable
      */
     public function moveStartDate($duration): self
     {
-        return $this->startingOn($this->startDate->add(self::getDuration($duration)));
+        return $this->startingOn($this->startDate->add(self::filterDuration($duration)));
     }
 
     /**
@@ -1108,7 +1109,7 @@ final class Period implements JsonSerializable
      */
     public function moveEndDate($duration): self
     {
-        return $this->endingOn($this->endDate->add(self::getDuration($duration)));
+        return $this->endingOn($this->endDate->add(self::filterDuration($duration)));
     }
 
     /**
@@ -1122,7 +1123,7 @@ final class Period implements JsonSerializable
      */
     public function move($duration): self
     {
-        $duration = self::getDuration($duration);
+        $duration = self::filterDuration($duration);
         $interval = new self($this->startDate->add($duration), $this->endDate->add($duration), $this->boundaryType);
         if ($this->equals($interval)) {
             return $this;
@@ -1144,7 +1145,7 @@ final class Period implements JsonSerializable
      */
     public function expand($duration): self
     {
-        $duration = self::getDuration($duration);
+        $duration = self::filterDuration($duration);
         $interval = new self($this->startDate->sub($duration), $this->endDate->add($duration), $this->boundaryType);
         if ($this->equals($interval)) {
             return $this;
