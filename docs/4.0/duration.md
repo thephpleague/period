@@ -51,6 +51,22 @@ Duration::create(new Period('now', 'tomorrow'));
 // returns (new DateTime('yesterday'))->diff(new DateTime('tomorrow'))
 ~~~
 
+### Duration::createFromDateInterval
+
+<p class="message-info">Since <code>version 4.11</code>.</p>
+
+You can specifically instantiate a `Duration` instance from a `DateInterval` instance.
+This feature was already supported via the `Duration::create` method but it is now accessible stand alone.
+
+#### Examples
+
+~~~php
+use League\Period\Duration;
+
+$interval = new DateInterval('PT30H5S');
+Duration::createFromDateInterval($interval);  
+~~~
+
 ### Duration::createFromChronoString
 
 <p class="message-info">Since <code>version 4.11</code>.</p>

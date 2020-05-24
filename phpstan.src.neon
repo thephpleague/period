@@ -15,16 +15,6 @@ parameters:
           path: src/Duration.php
         - message: '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
           path: src/Period.php
-        - message: '#Method League\\Period\\Sequence::offsetExists\(\) has parameter \$offset with no typehint specified.#'
-          path: src/Sequence.php
-        - message: '#Method League\\Period\\Sequence::offsetGet\(\) has parameter \$offset with no typehint specified.#'
-          path: src/Sequence.php
-        - message: '#Method League\\Period\\Sequence::offsetUnset\(\) has parameter \$offset with no typehint specified.#'
-          path: src/Sequence.php
-        - message: '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$offset with no typehint specified.#'
-          path: src/Sequence.php
-        - message: '#Method League\\Period\\Sequence::offsetSet\(\) has parameter \$interval with no typehint specified.#'
-          path: src/Sequence.php
         - message: '#Method League\\Period\\Datepoint::createFromFormat\(\) should return static\(League\\Period\\Datepoint\)\|false but returns League\\Period\\Datepoint.#'
           path: src/Datepoint.php
         - message: '#Method League\\Period\\Datepoint::createFromMutable\(\) should return static\(League\\Period\\Datepoint\) but returns League\\Period\\Datepoint.#'

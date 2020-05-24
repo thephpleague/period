@@ -104,18 +104,11 @@ final class Duration extends DateInterval
     public static function create($duration): self
     {
         if ($duration instanceof Period) {
-            $duration = $duration->getDateInterval();
+            return self::createFromDateInterval($duration->getDateInterval());
         }
 
         if ($duration instanceof DateInterval) {
-            $new = new self('PT0S');
-            foreach ($duration as $name => $value) {
-                if (property_exists($new, $name)) {
-                    $new->$name = $value;
-                }
-            }
-
-            return $new;
+            return self::createFromDateInterval($duration);
         }
 
         $seconds = filter_var($duration, FILTER_VALIDATE_FLOAT);
@@ -147,6 +140,23 @@ final class Duration extends DateInterval
         }
 
         throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+    }
+
+    /**
+     * Creates a new instance from a DateInterval object.
+     *
+     * the second value will be overflow up to the hour time unit.
+     */
+    public static function createFromDateInterval(DateInterval $duration): self
+    {
+        $new = new self('PT0S');
+        foreach ($duration as $name => $value) {
+            if (property_exists($new, $name)) {
+                $new->$name = $value;
+            }
+        }
+
+        return $new;
     }
 
     /**
@@ -220,9 +230,10 @@ final class Duration extends DateInterval
 
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
 
-        $expression = $units['hour'].' hours '.
-            $units['minute'].' minutes '.
-            $units['second'].' seconds '.$units['fraction'].' microseconds';
+        $expression = $units['hour'].' hours '
+            .$units['minute'].' minutes '
+            .$units['second'].' seconds '
+            .$units['fraction'].' microseconds';
 
         /** @var Duration $instance */
         $instance = self::createFromDateString($expression);
