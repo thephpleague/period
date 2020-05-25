@@ -24,6 +24,7 @@ releases:
 author:
     name: 'Ignace Nyamagana Butera'
     twitter_account: 'nyamsprod'
+    github_account: 'nyamsprod'
 highlights:
     description: "<code>Period</code> is PHP's Time Range class. Based on ideas from <a href=\"http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/\">Resolving Feature Envy in the Domain</a> by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges."
     features:
