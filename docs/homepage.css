@@ -243,6 +243,30 @@ main div > code {
     text-decoration: none;
 }
 
+.homepage .sponsors {
+    background: #f68fc8;
+    border-bottom:none;
+    color: #ffffff;
+    font:normal 1em/1.5 "Museo 300";
+    text-align:center;
+    margin:0 auto;
+    padding:0;
+}
+
+.homepage .sponsors p {
+    margin:0 auto;
+    padding:.5em .3em;
+}
+
+.homepage .sponsors a {
+    display:inline-block;
+    background: #ea0a86;
+    color: #fff;
+    border-radius: .3em;
+    text-decoration: none;
+    padding:.4em;
+}
+
 @media screen and (min-width: 404px) {
     .homepage header {
         padding:3em 0;
