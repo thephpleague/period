@@ -243,7 +243,7 @@ main div > code {
     text-decoration: none;
 }
 
-.homepage .sponsors {
+.sponsors {
     background: #f68fc8;
     border-bottom:none;
     color: #ffffff;
@@ -253,18 +253,30 @@ main div > code {
     padding:0;
 }
 
-.homepage .sponsors p {
+.sponsors p {
     margin:0 auto;
     padding:.5em .3em;
 }
 
-.homepage .sponsors a {
+.sponsors a {
     display:inline-block;
     background: #ea0a86;
     color: #fff;
     border-radius: .3em;
     text-decoration: none;
     padding:.4em;
+}
+
+.sponsors a.close {
+    color:#ea0a86;
+    background: transparent;
+    font-weight: bold;
+    font-size:1.2em;
+    cursor: pointer;
+}
+
+.hide {
+    display:none;
 }
 
 @media screen and (min-width: 404px) {
