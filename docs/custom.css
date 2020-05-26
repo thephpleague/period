@@ -278,6 +278,44 @@ table th {
   background: #1672ce;
 }
 
+
+.sponsors {
+  background: #f68fc8;
+  border-bottom:none;
+  color: #ffffff;
+  font:normal 1em/1.5 "Museo 300";
+  text-align:center;
+  margin:0 auto;
+  padding:0;
+}
+
+.sponsors p {
+  margin:0 auto;
+  padding:.5em .3em;
+}
+
+.sponsors a {
+  display:inline-block;
+  padding:.4em;
+  background: #ea0a86;
+  color: #fff;
+  border-radius: .3em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sponsors a.close {
+  background: transparent;
+  color:#ea0a86;
+  text-decoration: underline;
+  padding:.2em;
+  font-size: .8em;
+}
+
+.hide {
+  display:none;
+}
+
 @media screen and (max-width: 400px) {
   header .title {
     display: none;
@@ -343,42 +381,9 @@ table th {
   }
 }
 
-
-.sponsors {
-  background: #f68fc8;
-  border-bottom:none;
-  color: #ffffff;
-  font:normal 1em/1.5 "Museo 300";
-  text-align:center;
-  margin:0 auto;
-  padding:0;
-}
-
-.sponsors p {
-  margin:0 auto;
-  padding:.5em .3em;
-}
-
-.sponsors a {
-  display:inline-block;
-  background: #ea0a86;
-  color: #fff;
-  border-radius: .3em;
-  text-decoration: none;
-  padding:.4em;
-}
-
-.sponsors a.close {
-  color:#ea0a86;
-  background: transparent;
-  font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size:2em;
-  cursor: pointer;
-  padding:0;
-  margin-right:0;
-}
-
-.hide {
-  display:none;
+@media screen and (max-width: 520px) {
+  .sponsors p {
+    width: 250px;
+    margin: .3em auto 0;
+  }
 }
