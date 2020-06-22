@@ -36,6 +36,14 @@ class ConstructorTest extends TestCase
         new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
+    public function testCreateFromDateTimeInterface(): void
+    {
+        self::assertEquals(
+            Period::fromDatepoint(new DateTime('TODAY'), new DateTimeImmutable('TOMORROW')),
+            new Period('TODAY', 'TOMORROW')
+        );
+    }
+
     public function testConstructorThrowTypeError(): void
     {
         self::expectException(TypeError::class);

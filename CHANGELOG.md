@@ -6,6 +6,7 @@ All notable changes to `Period` will be documented in this file
 
 ### Added
 
+- `Period::fromDatepoint`
 - `Duration::createFromDateInterval`
 - `Duration::createFromTimeString`
 - `Duration::createFromChronoString`

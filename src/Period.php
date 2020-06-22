@@ -263,6 +263,14 @@ final class Period implements JsonSerializable
         return new self($startDate, $startDate->add(new DateInterval('P1D')), $boundaryType);
     }
 
+    /**
+     * Creates new instance for Datepoint.
+     */
+    public static function fromDatepoint(DateTimeInterface $startDate, DateTimeInterface $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    {
+        return new self($startDate, $endDate, $boundaryType);
+    }
+
     /**************************************************
      * Basic getters
      **************************************************/
