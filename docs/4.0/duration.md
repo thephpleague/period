@@ -92,7 +92,7 @@ On error a `League\Period\Exception` will be thrown.
 <p class="message-info">Since <code>version 4.11</code>.</p>
 
 You can specifically instantiate a `Duration` instance from a time string format in accordance with ISO8601 `+/-HH:MM::SS.FFFFFF`.
-This feature differs from `Duration::createFromChronoString` method by requiring the presence of at least the hour ans the minute unit.
+This feature differs from `Duration::createFromChronoString` method by requiring the presence of at least the hour and the minute unit.
 
 <p class="message-notice">The second and fraction units are optionals</p>
 
