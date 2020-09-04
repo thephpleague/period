@@ -13,7 +13,7 @@ parameters:
           path: src/Duration.php
         - message: '#Return type \(League\\Period\\Duration\|false\) of method League\\Period\\Duration::createFromDateString\(\) should be covariant with return type \(DateInterval\) of method DateInterval::createFromDateString\(\)#'
           path: src/Duration.php
-        - message: '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects array<int\, League\\Period\\Period>, array<League\\Period\\Period\|null> given.#'
+        - message: '#Parameter \#1 ...\$intervals of class League\\Period\\Sequence constructor expects League\\Period\\Period, League\\Period\\Period\|null given.#'
           path: src/Period.php
         - message: '#Method League\\Period\\Datepoint::createFromFormat\(\) should return static\(League\\Period\\Datepoint\)\|false but returns League\\Period\\Datepoint.#'
           path: src/Datepoint.php
