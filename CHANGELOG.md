@@ -12,6 +12,7 @@ All notable changes to `Period` will be documented in this file
 - `Duration::createFromChronoString`
 - `Duration::createFromSeconds`
 - `Duration::create` supports DateInterval spec strings.
+- Support for PHP8
 
 ### Fixed
 
