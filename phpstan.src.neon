@@ -4,7 +4,8 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
     ignoreErrors:
-        # Allow iterating over a DateInterval object to enable clean class extension
+        - message: '#Parameter \#3 \$timezone \(DateTimeZone\) of method League\\Period\\Datepoint::createFromFormat\(\) should be contravariant with parameter \$timezone \(DateTimeZone\|null\) of method DateTimeImmutable::createFromFormat\(\)#'
+          path: src/Datepoint.php
         - message: '#Argument of an invalid type DateInterval supplied for foreach, only iterables are supported.#'
           path: src/Duration.php
         - message: '#Strict comparison using === between false and DateInterval will always evaluate to false.#'

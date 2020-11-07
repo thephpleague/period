@@ -43,13 +43,13 @@
         }
     ],
     "require": {
-        "php" : "^7.2.0",
+        "php" : "^7.2.0 || ^8.0",
         "ext-json": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
-        "infection/infection": "^0.13",
-        "phpunit/phpunit" : "^8.0",
+        "infection/infection": "^0",
+        "phpunit/phpunit" : "^8.0 || ^9.0",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12"
@@ -68,7 +68,7 @@
     "scripts": {
         "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes --ansi",
         "phpstan-src": "phpstan analyse -l max -c phpstan.src.neon src --ansi",
-        "phpstan-tests": "phpstan analyse -l max -c phpstan.tests.neon tests --ansi",
+        "phpstan-tests": "phpstan analyse -l max -c phpstan.tests.neon tests --ansi --memory-limit 192M",
         "phpstan": [
             "@phpstan-src",
             "@phpstan-tests"

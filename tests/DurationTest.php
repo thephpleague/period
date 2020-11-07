@@ -17,7 +17,6 @@ use DateTimeZone;
 use League\Period\Duration;
 use League\Period\Exception;
 use League\Period\Period;
-use PHPUnit\Framework\Error\Warning;
 use function version_compare;
 use const PHP_VERSION;
 
@@ -128,7 +127,7 @@ class DurationTest extends TestCase
             return;
         }
 
-        self::expectException(Warning::class);
+        self::expectWarning();
 
         self::assertFalse(Duration::createFromDateString($input));
     }
