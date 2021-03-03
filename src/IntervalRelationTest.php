@@ -9,22 +9,31 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period\Period;
+namespace League\Period;
 
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use League\Period\Datepoint;
-use League\Period\Exception;
-use League\Period\Period;
-use League\Period\Sequence;
-use LeagueTest\Period\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
 class IntervalRelationTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     /**
      * @dataProvider isBeforeProvider
      *
@@ -549,7 +558,7 @@ class IntervalRelationTest extends TestCase
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2013-01-01'), new DateTime('2013-02-01'));
         $alt = new Period(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
         $orig->intersect($alt);
@@ -664,7 +673,7 @@ class IntervalRelationTest extends TestCase
 
     public function testGapThrowsExceptionWithOverlapsInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2011-12-10'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -672,7 +681,7 @@ class IntervalRelationTest extends TestCase
 
     public function testGapWithSameStartingInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2011-12-01'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -680,7 +689,7 @@ class IntervalRelationTest extends TestCase
 
     public function testGapWithSameEndingInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2012-01-15'), new DateTime('2012-02-01'));
         $orig->gap($alt);
@@ -794,7 +803,7 @@ class IntervalRelationTest extends TestCase
         $interval1 = new Period(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
         $interval2 = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval1->diff($interval2);
     }
 

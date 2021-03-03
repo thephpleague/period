@@ -9,16 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace League\Period;
 
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use League\Period\Datepoint;
-use League\Period\Period;
+use PHPUnit\Framework\TestCase;
 
-class DatepointTest extends TestCase
+final class DatepointTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testCreateFromFormat(): void
     {
         self::assertInstanceOf(Datepoint::class, Datepoint::createFromFormat('Y-m-d', '2018-12-01'));

@@ -11,11 +11,9 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace League\Period\Chart;
 
 use InvalidArgumentException;
-use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\GanttChartConfig;
 use PHPUnit\Framework\TestCase;
 use const STDOUT;
 
@@ -174,7 +172,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testWithHeadBlockThrowsInvalidArgumentException(string $input): void
     {
-        self::expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->config->withBody($input);
     }
     /**

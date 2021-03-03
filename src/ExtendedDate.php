@@ -9,12 +9,8 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
+namespace League\Period;
 
-namespace LeagueTest\Period;
-
-use DateTimeImmutable;
-
-class ExtendedDate extends DateTimeImmutable
+final class ExtendedDate extends \DateTimeImmutable
 {
 }

@@ -11,9 +11,8 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace League\Period\Chart;
 
-use League\Period\Chart\ConsoleOutput;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 use function chr;
@@ -40,13 +39,13 @@ final class ConsoleOutputTest extends TestCase
 
     public function testCreateStreamWithInvalidParameter(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         new ConsoleOutput(__DIR__.'/data/foo.csv');
     }
 
     public function testCreateStreamWithWrongResourceType(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         new ConsoleOutput(curl_init());
     }
 

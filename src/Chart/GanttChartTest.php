@@ -11,11 +11,8 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace League\Period\Chart;
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\GanttChartConfig;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;

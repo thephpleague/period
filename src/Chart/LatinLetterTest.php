@@ -11,9 +11,8 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace League\Period\Chart;
 
-use League\Period\Chart\LatinLetter;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -9,21 +9,33 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period\Period;
+namespace League\Period;
 
 use DateInterval;
 use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use Generator;
-use League\Period\Period;
-use LeagueTest\Period\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class DurationRelationTest extends TestCase
+final class DurationRelationTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testGetDateInterval(): void
     {
         $interval = new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
