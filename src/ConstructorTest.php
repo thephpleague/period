@@ -351,4 +351,11 @@ final class ConstructorTest extends TestCase
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
         self::assertEquals('+08:00', $period->getEndDate()->format('P'));
     }
+
+    public function testInstantiateWithTimeStamp(): void
+    {
+        $period = Period::after(12000000, '1 DAY');
+
+        self::assertEquals('+00:00', $period->getEndDate()->format('P'));
+    }
 }

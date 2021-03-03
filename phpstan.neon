@@ -27,8 +27,6 @@ parameters:
         - message: '#Only numeric types are allowed in post-increment, string given.#'
           path: src/Chart/LatinLetter.php
         - message: '#Variable method call on League\\Period.#'
-          path: src/PeriodTest.php
-        - message: '#Variable method call on League\\Period.#'
           path: src/DurationRelationTest.php
         - message: '#Generator expects value type string, string\|false given.#'
           path: src/Chart/ReverseLabel.php
