@@ -111,7 +111,15 @@ final class Period implements JsonSerializable
             return $datepoint;
         }
 
-        return Datepoint::create($datepoint);
+        if ($datepoint instanceof DateTimeInterface) {
+            return new DateTimeImmutable($datepoint->format('Y-m-d H:i:s.u'), $datepoint->getTimezone());
+        }
+
+        if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
+            return new DateTimeImmutable('@'.$timestamp);
+        }
+
+        return new DateTimeImmutable($datepoint);
     }
 
     /**
@@ -123,6 +131,10 @@ final class Period implements JsonSerializable
     {
         if ($duration instanceof DateInterval) {
             return $duration;
+        }
+
+        if ($duration instanceof self) {
+            return $duration->getDateInterval();
         }
 
         return Duration::create($duration);
@@ -137,7 +149,11 @@ final class Period implements JsonSerializable
      */
     public static function __set_state(array $interval)
     {
-        return new self($interval['startDate'], $interval['endDate'], $interval['boundaryType'] ?? self::INCLUDE_START_EXCLUDE_END);
+        return new self(
+            $interval['startDate'],
+            $interval['endDate'],
+            $interval['boundaryType'] ?? self::INCLUDE_START_EXCLUDE_END
+        );
     }
 
     /**
