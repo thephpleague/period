@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace League\Period;
 
 use DateInterval;
 use DatePeriod;
@@ -17,30 +17,25 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception as PhpException;
-use League\Period\Duration;
-use League\Period\Exception;
+use PHPUnit\Framework\TestCase;
 use TypeError;
 use function get_object_vars;
-use function League\Period\datepoint;
-use function League\Period\day;
-use function League\Period\duration;
-use function League\Period\hour;
-use function League\Period\instant;
-use function League\Period\interval_after;
-use function League\Period\interval_around;
-use function League\Period\interval_before;
-use function League\Period\interval_from_dateperiod;
-use function League\Period\iso_week;
-use function League\Period\iso_year;
-use function League\Period\minute;
-use function League\Period\month;
-use function League\Period\quarter;
-use function League\Period\second;
-use function League\Period\semester;
-use function League\Period\year;
 
-class FunctionTest extends TestCase
+final class FunctionTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     /**
      * @dataProvider datepointProvider
      *
@@ -77,7 +72,7 @@ class FunctionTest extends TestCase
 
     public function testDatepointThrowsTypeError(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         datepoint([]);
     }
 
@@ -112,7 +107,7 @@ class FunctionTest extends TestCase
 
     public function testDurationThrowsTypeError(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         duration([]);
     }
 
@@ -151,19 +146,19 @@ class FunctionTest extends TestCase
 
     public function testIntervalAfterWithInvalidInteger(): void
     {
-        self::expectException(PhpException::class);
+        $this->expectException(PhpException::class);
         interval_after('2014-01-01', -1);
     }
 
     public function testIntervalAfterFailedWithOutofRangeInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         interval_after(new DateTime('2012-01-12'), '-1 DAY');
     }
 
     public function testIntervalAfterFailedWithInvalidInterval(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         interval_after(new DateTime('2012-01-12'), []);
     }
 
@@ -196,7 +191,7 @@ class FunctionTest extends TestCase
 
     public function testIntervalBeforeFailedWithOutofRangeInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         interval_before(new DateTime('2012-01-12'), '-1 DAY');
     }
 
@@ -213,7 +208,7 @@ class FunctionTest extends TestCase
 
     public function testIntervalAroundThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         interval_around(new DateTime('2012-06-05'), '-1 DAY');
     }
 
@@ -231,7 +226,7 @@ class FunctionTest extends TestCase
 
     public function testIntervalFromDatePeriodThrowsException(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         interval_from_dateperiod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
@@ -244,7 +239,7 @@ class FunctionTest extends TestCase
 
     public function testIsoWeekFailedWithInvalidYearIndex(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         iso_week([]);
     }
 
@@ -262,7 +257,7 @@ class FunctionTest extends TestCase
 
     public function testMonthFailedWithInvalidYearIndex(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         month([]);
     }
 
@@ -285,7 +280,7 @@ class FunctionTest extends TestCase
 
     public function testQuarterThrowsWithInvalidYearType(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         quarter([]);
     }
 
@@ -303,7 +298,7 @@ class FunctionTest extends TestCase
 
     public function testSemesterThrowsWithInvalidYearType(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         semester([]);
     }
 
@@ -325,7 +320,10 @@ class FunctionTest extends TestCase
 
     public function testDay(): void
     {
-        $period = day(new ExtendedDate('2008-07-01T22:35:17.123456+08:00'));
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+
+        $period = day(new $extendedDate('2008-07-01T22:35:17.123456+08:00'));
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-02T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
@@ -347,7 +345,9 @@ class FunctionTest extends TestCase
 
     public function testHour(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = hour($today);
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T23:00:00+08:00'), $period->getEndDate());
@@ -372,7 +372,9 @@ class FunctionTest extends TestCase
 
     public function testMinute(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = minute($today);
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:35:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:36:00+08:00'), $period->getEndDate());
@@ -398,7 +400,9 @@ class FunctionTest extends TestCase
 
     public function testSecond(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = second($today);
         self::assertTrue($period->contains($today));
         self::assertTrue($today >= $period->getStartDate());
@@ -427,7 +431,9 @@ class FunctionTest extends TestCase
 
     public function testInstant(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = instant($today);
         self::assertEquals($today, $period->getStartDate());
         self::assertEquals($today, $period->getEndDate());
@@ -465,7 +471,9 @@ class FunctionTest extends TestCase
 
     public function testMonthWithDateTimeInterface(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = month($today);
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-08-01T00:00:00+08:00'), $period->getEndDate());
@@ -475,7 +483,9 @@ class FunctionTest extends TestCase
 
     public function testYearWithDateTimeInterface(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = year($today);
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2009-01-01T00:00:00+08:00'), $period->getEndDate());

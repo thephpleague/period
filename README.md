@@ -4,7 +4,7 @@ Period
 [![Author](http://img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square)](https://twitter.com/nyamsprod)
 [![Latest Version](https://img.shields.io/github/release/thephpleague/period.svg?style=flat-square)](https://github.com/thephpleague/period/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build](https://github.com/thephpleague/period/workflows/Quality%20Assurance/badge.svg)](https://github.com/thephpleague/period/actions?query=workflow%3A%22Quality+Assurance%22)
+[![Build](https://github.com/thephpleague/period/workflows/build/badge.svg)](https://github.com/thephpleague/period/actions?query=workflow%3A%22build%22)
 [![Infection MSI](https://badge.stryker-mutator.io/github.com/thephpleague/period/master)](https://infection.github.io)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
 

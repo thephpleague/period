@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period\Period;
+namespace League\Period;
 
 use DateInterval;
 use DatePeriod;
@@ -17,22 +17,32 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception as PhpException;
-use League\Period\Datepoint;
-use League\Period\Duration;
-use League\Period\Exception;
-use League\Period\Period;
-use LeagueTest\Period\ExtendedDate;
-use LeagueTest\Period\TestCase;
+use PHPUnit\Framework\TestCase;
 use TypeError;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class ConstructorTest extends TestCase
+final class ConstructorTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testConstructorThrowExceptionIfUnknownBoundPeriodDay(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
@@ -46,7 +56,7 @@ class ConstructorTest extends TestCase
 
     public function testConstructorThrowTypeError(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         new Period(new DateTime(), []);
     }
 
@@ -73,7 +83,7 @@ class ConstructorTest extends TestCase
 
     public function testConstructorThrowException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         new Period(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
@@ -124,19 +134,19 @@ class ConstructorTest extends TestCase
 
     public function testIntervalAfterWithInvalidInteger(): void
     {
-        self::expectException(PhpException::class);
+        $this->expectException(PhpException::class);
         Period::after('2014-01-01', -1);
     }
 
     public function testIntervalAfterFailedWithOutofRangeInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::after(new DateTime('2012-01-12'), '-1 DAY');
     }
 
     public function testIntervalAfterFailedWithInvalidInterval(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         Period::after(new DateTime('2012-01-12'), []);
     }
 
@@ -169,7 +179,7 @@ class ConstructorTest extends TestCase
 
     public function testIntervalBeforeFailedWithOutofRangeInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::before(new DateTime('2012-01-12'), '-1 DAY');
     }
 
@@ -186,7 +196,7 @@ class ConstructorTest extends TestCase
 
     public function testIntervalAroundThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::around(new DateTime('2012-06-05'), '-1 DAY');
     }
 
@@ -204,7 +214,7 @@ class ConstructorTest extends TestCase
 
     public function testIntervalFromDatePeriodThrowsException(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         Period::fromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
@@ -274,7 +284,10 @@ class ConstructorTest extends TestCase
 
     public function testDay(): void
     {
-        $period = Datepoint::create(new ExtendedDate('2008-07-01T22:35:17.123456+08:00'))->getDay();
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+
+        $period = Datepoint::create(new $extendedDate('2008-07-01T22:35:17.123456+08:00'))->getDay();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-02T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
@@ -296,7 +309,9 @@ class ConstructorTest extends TestCase
 
     public function testHour(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = Datepoint::create($today)->getHour();
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T23:00:00+08:00'), $period->getEndDate());
@@ -315,7 +330,9 @@ class ConstructorTest extends TestCase
 
     public function testMonthWithDateTimeInterface(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = Datepoint::create($today)->getMonth();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-08-01T00:00:00+08:00'), $period->getEndDate());
@@ -325,7 +342,9 @@ class ConstructorTest extends TestCase
 
     public function testYearWithDateTimeInterface(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = Datepoint::create($today)->getYear();
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2009-01-01T00:00:00+08:00'), $period->getEndDate());

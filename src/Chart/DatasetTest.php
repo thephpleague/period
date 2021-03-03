@@ -11,13 +11,10 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period\Chart;
+namespace League\Period\Chart;
 
 use ArrayObject;
 use DateTimeImmutable;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\DecimalNumber;
-use League\Period\Chart\LatinLetter;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -113,14 +110,14 @@ final class DatasetTest extends TestCase
 
     public function testAppendDatasetThrowWithInvalidLabel(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
 
         new Dataset([[new DateTimeImmutable(), Period::around('2018-01-15', '1 DAY')]]);
     }
 
     public function testAppendDatasetThrowWithInvalidItem(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
 
         new \League\Period\Chart\Dataset([['foo', 'bar']]);
     }

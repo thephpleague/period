@@ -9,18 +9,31 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period\Period;
+namespace League\Period;
 
 use DateTime;
-use League\Period\Exception;
-use League\Period\Period;
-use LeagueTest\Period\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class BoundaryTest extends TestCase
+final class BoundaryTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     /**
      * @dataProvider providerGetRangType
      */
@@ -88,8 +101,8 @@ class BoundaryTest extends TestCase
 
     public function testWithBoundaryTypeFails(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->withBoundaryType('foobar');
+        $interval->withBoundaryType('foobar');
     }
 }

@@ -11,13 +11,10 @@
 
 declare(strict_types=1);
 
-namespace LeagueTest\Period;
+namespace League\Period;
 
 use DateTimeImmutable;
-use League\Period\Datepoint;
-use League\Period\InvalidIndex;
-use League\Period\Period;
-use League\Period\Sequence;
+use PHPUnit\Framework\TestCase;
 use TypeError;
 use function json_encode;
 
@@ -26,6 +23,19 @@ use function json_encode;
  */
 final class SequenceTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testIsEmpty(): void
     {
         $sequence = new Sequence();
@@ -58,7 +68,7 @@ final class SequenceTest extends TestCase
         self::assertSame($event2, $sequence->remove(0));
         self::assertCount(0, $sequence);
         self::assertFalse($sequence->contains($event2));
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         $sequence->remove(1);
     }
 
@@ -88,14 +98,14 @@ final class SequenceTest extends TestCase
 
     public function testGetThrowsExceptionWithInvalidPositiveIndex(): void
     {
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         (new Sequence(Datepoint::create('2011-06-23')->getDay()))->get(3);
     }
 
 
     public function testGetThrowsExceptionWithInvalidNegativeIndex(): void
     {
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         (new Sequence(Datepoint::create('2011-06-23')->getDay()))->get(-3);
     }
 
@@ -114,7 +124,7 @@ final class SequenceTest extends TestCase
         $sequence->set(0, Datepoint::create('2013-06-23')->getDay());
         self::assertEquals(Period::fromDay(2012, 6, 23), $sequence->get(1));
         self::assertEquals(Datepoint::create('2013-06-23')->getDay(), $sequence->get(0));
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         $sequence->set(3, Datepoint::create('2013-06-23')->getDay());
     }
 
@@ -128,7 +138,7 @@ final class SequenceTest extends TestCase
         $sequence->insert(-1, Datepoint::create('2012-06-25')->getDay());
         self::assertCount(3, $sequence);
         self::assertTrue(Datepoint::create('2012-06-25')->getDay()->equals($sequence->get(1)));
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         $sequence->insert(42, Datepoint::create('2011-06-23')->getDay());
     }
 
@@ -505,21 +515,21 @@ final class SequenceTest extends TestCase
 
     public function testArrayAccessThrowsTypeError(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         $sequence = new Sequence();
         $sequence['foo'] = Period::fromMonth(2017, 1);
     }
 
     public function testArrayAccessThrowsInvalidIndex(): void
     {
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         $sequence = new Sequence();
         $sequence[0] = Period::fromMonth(2017, 1);
     }
 
     public function testArrayAccessThrowsInvalidIndex2(): void
     {
-        self::expectException(InvalidIndex::class);
+        $this->expectException(InvalidIndex::class);
         $sequence = new Sequence();
         unset($sequence[0]);
     }

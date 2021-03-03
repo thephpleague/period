@@ -9,19 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace League\Period;
 
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use League\Period\Exception;
-use League\Period\Period;
+use PHPUnit\Framework\TestCase;
 use TypeError;
-use function League\Period\instant;
-use function League\Period\interval_after;
-use function League\Period\month;
 
 /**
  * @deprecated since version 4.4.0
@@ -30,8 +26,21 @@ use function League\Period\month;
  * that no BC breaks happens
  * Please use the test suite in the /tests/Period subdirectory instead
  */
-class PeriodTest extends TestCase
+final class PeriodTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testIsBeforeDateTimeInterface(): void
     {
         $orig = new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'));
@@ -365,7 +374,7 @@ class PeriodTest extends TestCase
 
     public function testStartingOnFailedWithWrongStartDate(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->startingOn(new DateTime('2015-03-02'));
     }
@@ -382,7 +391,7 @@ class PeriodTest extends TestCase
 
     public function testEndingOnFailedWithWrongEndDate(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->endingOn(new DateTime('2012-03-02'));
     }
@@ -411,7 +420,7 @@ class PeriodTest extends TestCase
 
     public function testExpandThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
         $interval = (new Period(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
@@ -426,7 +435,7 @@ class PeriodTest extends TestCase
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2013-01-01'), new DateTime('2013-02-01'));
         $alt = new Period(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
         $orig->intersect($alt);
@@ -445,7 +454,7 @@ class PeriodTest extends TestCase
 
     public function testGapThrowsExceptionWithOverlapsInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2011-12-10'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -453,7 +462,7 @@ class PeriodTest extends TestCase
 
     public function testGapWithSameStartingInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2011-12-01'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -461,7 +470,7 @@ class PeriodTest extends TestCase
 
     public function testGapWithSameEndingInterval(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = new Period(new DateTime('2012-01-15'), new DateTime('2012-02-01'));
         $orig->gap($alt);
@@ -511,7 +520,7 @@ class PeriodTest extends TestCase
         $interval1 = new Period(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
         $interval2 = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval1->diff($interval2);
     }
 
@@ -593,7 +602,7 @@ class PeriodTest extends TestCase
 
     public function testConstructorThrowTypeError(): void
     {
-        self::expectException(TypeError::class);
+        $this->expectException(TypeError::class);
         new Period(new DateTime(), []);
     }
 
@@ -620,7 +629,7 @@ class PeriodTest extends TestCase
 
     public function testConstructorThrowException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         new Period(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
@@ -677,7 +686,7 @@ class PeriodTest extends TestCase
 
     public function testWithDurationAfterStartThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $period = new Period('2014-03-01', '2014-03-15');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -694,7 +703,7 @@ class PeriodTest extends TestCase
 
     public function testWithDurationBeforeEndThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $period = new Period('2014-02-15', '2014-03-01');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -728,7 +737,7 @@ class PeriodTest extends TestCase
 
     public function testMoveEndDateThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
@@ -754,7 +763,7 @@ class PeriodTest extends TestCase
 
     public function testMoveStartDateThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
     }
 

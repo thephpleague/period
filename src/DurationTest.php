@@ -9,19 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period;
+namespace League\Period;
 
 use DateInterval;
 use DateTime;
 use DateTimeZone;
-use League\Period\Duration;
-use League\Period\Exception;
-use League\Period\Period;
+use PHPUnit\Framework\TestCase;
 use function version_compare;
 use const PHP_VERSION;
 
-class DurationTest extends TestCase
+final class DurationTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testCreateFromDateString(): void
     {
         $duration = Duration::createFromDateString('+1 DAY');
@@ -39,6 +50,7 @@ class DurationTest extends TestCase
     }
 
     /**
+     * @runInSeparateProcess
      * @dataProvider getDurationCreateSuccessfulProvider
      *
      * @param mixed $input duration
@@ -97,7 +109,7 @@ class DurationTest extends TestCase
      */
     public function testDurationCreateNamedConstructorFails(string $input): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
 
         Duration::create($input);
     }
@@ -111,6 +123,7 @@ class DurationTest extends TestCase
             'invalid interval spec 4' => ['P3'],
             'invalid interval spec 5' => ['PT3X'],
             'invalid interval spec 6' => ['PT3s'],
+            'invalid string' => ['blablabbla'],
         ];
     }
 
@@ -158,7 +171,7 @@ class DurationTest extends TestCase
 
     public function testCreateFromTimeStringFails(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
 
         Duration::createFromTimeString('123');
     }
@@ -210,7 +223,7 @@ class DurationTest extends TestCase
      */
     public function testCreateFromChronoStringFails(string $input): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
 
         Duration::createFromChronoString($input);
     }

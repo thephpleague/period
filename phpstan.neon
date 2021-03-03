@@ -1,5 +1,7 @@
 includes:
-- vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
     checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
@@ -24,4 +26,10 @@ parameters:
           path: src/Chart/Dataset.php
         - message: '#Only numeric types are allowed in post-increment, string given.#'
           path: src/Chart/LatinLetter.php
+        - message: '#Variable method call on League\\Period.#'
+          path: src/PeriodTest.php
+        - message: '#Variable method call on League\\Period.#'
+          path: src/DurationRelationTest.php
+        - message: '#Generator expects value type string, string\|false given.#'
+          path: src/Chart/ReverseLabel.php
     reportUnmatchedIgnoredErrors: true

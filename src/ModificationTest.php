@@ -9,20 +9,31 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period\Period;
+namespace League\Period;
 
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
-use League\Period\Exception;
-use League\Period\Period;
-use LeagueTest\Period\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class ModificationTest extends TestCase
+final class ModificationTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testStartingOn(): void
     {
         $expected = new DateTime('2012-03-02');
@@ -35,7 +46,7 @@ class ModificationTest extends TestCase
 
     public function testStartingOnFailedWithWrongStartDate(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->startingOn(new DateTime('2015-03-02'));
     }
@@ -52,7 +63,7 @@ class ModificationTest extends TestCase
 
     public function testEndingOnFailedWithWrongEndDate(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->endingOn(new DateTime('2012-03-02'));
     }
@@ -81,7 +92,7 @@ class ModificationTest extends TestCase
 
     public function testExpandThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
         $interval = (new Period(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
@@ -128,7 +139,7 @@ class ModificationTest extends TestCase
 
     public function testWithDurationAfterStartThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $period = new Period('2014-03-01', '2014-03-15');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -144,7 +155,7 @@ class ModificationTest extends TestCase
 
     public function testWithDurationBeforeEndThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         $period = new Period('2014-02-15', '2014-03-01');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -178,7 +189,7 @@ class ModificationTest extends TestCase
 
     public function testMoveEndDateThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
@@ -204,7 +215,7 @@ class ModificationTest extends TestCase
 
     public function testMoveStartDateThrowsException(): void
     {
-        self::expectException(Exception::class);
+        $this->expectException(Exception::class);
         Period::after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
     }
 }

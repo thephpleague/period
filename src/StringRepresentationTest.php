@@ -9,17 +9,29 @@
  * file that was distributed with this source code.
  */
 
-namespace LeagueTest\Period\Period;
+namespace League\Period;
 
 use DateTimeImmutable;
-use League\Period\Period;
-use LeagueTest\Period\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class StringRepresentationTest extends TestCase
+final class StringRepresentationTest extends TestCase
 {
+    /** @var string **/
+    private $timezone;
+
+    public function setUp(): void
+    {
+        $this->timezone = date_default_timezone_get();
+    }
+
+    public function tearDown(): void
+    {
+        date_default_timezone_set($this->timezone);
+    }
+
     public function testToString(): void
     {
         date_default_timezone_set('Africa/Nairobi');
@@ -36,7 +48,7 @@ class StringRepresentationTest extends TestCase
         $json = json_encode($period);
 
         self::assertTrue(false !== $json);
-        
+
         $res = json_decode($json);
 
         self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));
