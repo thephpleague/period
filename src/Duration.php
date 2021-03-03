@@ -134,7 +134,12 @@ final class Duration extends DateInterval
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
-        $instance = self::createFromDateString($duration);
+        try {
+            $instance = self::createFromDateString($duration);
+        } catch (\Exception $exception) {
+            throw new Exception(sprintf('Unknown or bad format (%s)', $duration), 0, $exception);
+        }
+
         if (false !== $instance) {
             return $instance;
         }

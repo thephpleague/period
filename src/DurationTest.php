@@ -50,6 +50,7 @@ final class DurationTest extends TestCase
     }
 
     /**
+     * @runInSeparateProcess
      * @dataProvider getDurationCreateSuccessfulProvider
      *
      * @param mixed $input duration
@@ -122,6 +123,7 @@ final class DurationTest extends TestCase
             'invalid interval spec 4' => ['P3'],
             'invalid interval spec 5' => ['PT3X'],
             'invalid interval spec 6' => ['PT3s'],
+            'invalid string' => ['blablabbla'],
         ];
     }
 

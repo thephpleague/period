@@ -19,6 +19,7 @@
         <exclude>
             <directory suffix="Test.php">src</directory>
             <directory suffix="_include.php">src</directory>
+            <directory suffix="ExtendedDate.php">src</directory>
         </exclude>
         <report>
             <clover outputFile="build/clover.xml"/>
