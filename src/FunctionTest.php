@@ -320,7 +320,10 @@ final class FunctionTest extends TestCase
 
     public function testDay(): void
     {
-        $period = day(new ExtendedDate('2008-07-01T22:35:17.123456+08:00'));
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+
+        $period = day(new $extendedDate('2008-07-01T22:35:17.123456+08:00'));
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-02T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
@@ -342,7 +345,9 @@ final class FunctionTest extends TestCase
 
     public function testHour(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = hour($today);
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T23:00:00+08:00'), $period->getEndDate());
@@ -367,7 +372,9 @@ final class FunctionTest extends TestCase
 
     public function testMinute(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = minute($today);
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:35:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:36:00+08:00'), $period->getEndDate());
@@ -393,7 +400,9 @@ final class FunctionTest extends TestCase
 
     public function testSecond(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = second($today);
         self::assertTrue($period->contains($today));
         self::assertTrue($today >= $period->getStartDate());
@@ -422,7 +431,9 @@ final class FunctionTest extends TestCase
 
     public function testInstant(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = instant($today);
         self::assertEquals($today, $period->getStartDate());
         self::assertEquals($today, $period->getEndDate());
@@ -460,7 +471,9 @@ final class FunctionTest extends TestCase
 
     public function testMonthWithDateTimeInterface(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = month($today);
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-08-01T00:00:00+08:00'), $period->getEndDate());
@@ -470,7 +483,9 @@ final class FunctionTest extends TestCase
 
     public function testYearWithDateTimeInterface(): void
     {
-        $today = new ExtendedDate('2008-07-01T22:35:17.123456+08:00');
+        $extendedDate = new class() extends DateTimeImmutable {
+        };
+        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = year($today);
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2009-01-01T00:00:00+08:00'), $period->getEndDate());
