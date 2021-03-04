@@ -61,15 +61,16 @@
         "files": ["src/functions_include.php"]
     },
     "scripts": {
-        "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes --ansi",
+        "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
+        "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
         "phpstan": "phpstan analyse -l max -c phpstan.neon src --ansi --memory-limit 192M",
         "phpunit": "phpunit --coverage-text",
         "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "test": [
-            "@phpcs",
+            "@phpunit",
             "@phpstan",
-            "@phpunit"
+            "@phpcs"
         ],
         "test-linux": [
             "@test",
