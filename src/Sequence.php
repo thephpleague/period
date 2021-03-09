@@ -181,17 +181,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated since version 4.9.0
-     * @see ::subtract
-     */
-    public function substract(Sequence $sequence): self
-    {
-        return $this->subtract($sequence);
-    }
-
-    /**
      * Subtract a Sequence from the current instance.
      *
      * This method MUST retain the state of the current instance, and return
@@ -230,49 +219,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         };
 
         return $sequence->reduce($reducer, new self());
-    }
-
-    /**
-     * Returns the sequence boundaries as a Period instance.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.4.0
-     * @see        ::boundaries
-     *
-     * If the sequence contains no interval null is returned.
-     *
-     * @return ?Period
-     */
-    public function getBoundaries(): ?Period
-    {
-        return $this->boundaries();
-    }
-
-    /**
-     * Returns the intersections inside the instance.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.4.0
-     * @see        ::intersections
-     */
-    public function getIntersections(): self
-    {
-        return $this->intersections();
-    }
-
-    /**
-     * Returns the gaps inside the instance.
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 4.4.0
-     * @see        ::gaps
-     */
-    public function getGaps(): self
-    {
-        return $this->gaps();
     }
 
     /**

@@ -41,11 +41,11 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence();
         self::assertTrue($sequence->isEmpty());
         self::assertCount(0, $sequence);
-        self::assertNull($sequence->getBoundaries());
+        self::assertNull($sequence->boundaries());
         $sequence->push(Period::fromDay(2012, 6, 23));
         self::assertFalse($sequence->isEmpty());
         self::assertCount(1, $sequence);
-        self::assertInstanceOf(Period::class, $sequence->getBoundaries());
+        self::assertInstanceOf(Period::class, $sequence->boundaries());
     }
 
     public function testConstructor(): void
@@ -78,7 +78,7 @@ final class SequenceTest extends TestCase
         $event2 = Period::fromDay(2012, 6, 23);
         $event3 = Period::fromDay(2012, 6, 25);
         $sequence = new Sequence($event1, $event2);
-        self::assertInstanceOf(Period::class, $sequence->getBoundaries());
+        self::assertInstanceOf(Period::class, $sequence->boundaries());
         self::assertTrue($sequence->contains($event2));
         self::assertTrue($sequence->contains($event1));
         self::assertTrue($sequence->contains(Period::fromDay(2012, 6, 23)));
@@ -93,7 +93,7 @@ final class SequenceTest extends TestCase
         self::assertTrue(Period::fromDay(2018, 8, 8)->equals($sequence->get(0)));
         $sequence->clear();
         self::assertTrue($sequence->isEmpty());
-        self::assertNull($sequence->getBoundaries());
+        self::assertNull($sequence->boundaries());
     }
 
     public function testGetThrowsExceptionWithInvalidPositiveIndex(): void
@@ -264,7 +264,7 @@ final class SequenceTest extends TestCase
         self::assertCount(2, $diff);
         self::assertSame('[2000-01-01, 2000-01-05)', $diff->get(0)->format('Y-m-d'));
         self::assertSame('[2000-01-08, 2000-01-10)', $diff->get(1)->format('Y-m-d'));
-        self::assertEquals($diff, $sequenceA->substract($sequenceB));
+        self::assertEquals($diff, $sequenceA->subtract($sequenceB));
     }
 
     /**
@@ -355,7 +355,7 @@ final class SequenceTest extends TestCase
             new Period('2018-01-10', '2018-01-15'),
             new Period('2018-01-10', '2018-01-31')
         );
-        $intersections = $sequence->getIntersections();
+        $intersections = $sequence->intersections();
 
         self::assertCount(2, $intersections);
         self::assertSame('[2018-01-10, 2018-01-15)', $intersections->get(0)->format('Y-m-d'));
@@ -382,7 +382,7 @@ final class SequenceTest extends TestCase
             new Period('2018-03-01', '2018-03-31'),
             new Period('2018-01-20', '2018-03-10')
         );
-        $intersections = $sequence->getIntersections();
+        $intersections = $sequence->intersections();
         self::assertCount(3, $intersections);
         self::assertSame('[2018-01-20, 2018-01-31)', $intersections->get(0)->format('Y-m-d'));
         self::assertSame('[2018-02-10, 2018-02-20)', $intersections->get(1)->format('Y-m-d'));
@@ -408,7 +408,7 @@ final class SequenceTest extends TestCase
             Period::around('2018-11-29', '4 DAYS')
         );
 
-        $gaps = $sequence->getGaps();
+        $gaps = $sequence->gaps();
         self::assertCount(1, $gaps);
         self::assertSame('[2018-12-03, 2018-12-06)', $gaps->get(0)->format('Y-m-d'));
     }
@@ -428,7 +428,7 @@ final class SequenceTest extends TestCase
             Period::around('2018-11-29', '4 DAYS')
         );
 
-        $gaps = $sequence->getGaps();
+        $gaps = $sequence->gaps();
         self::assertTrue($gaps->isEmpty());
     }
 
@@ -447,9 +447,9 @@ final class SequenceTest extends TestCase
         );
 
         $unions = $sequence->unions();
-        self::assertEquals($sequence->getBoundaries(), $unions->getBoundaries());
-        self::assertTrue($unions->getIntersections()->isEmpty());
-        self::assertEquals($sequence->getGaps(), $unions->getGaps());
+        self::assertEquals($sequence->boundaries(), $unions->boundaries());
+        self::assertTrue($unions->intersections()->isEmpty());
+        self::assertEquals($sequence->gaps(), $unions->gaps());
         self::assertTrue(Period::around('2016-06-01', '3 MONTHS')->equals($unions->get(0)));
         self::assertTrue(Datepoint::create('2018-11-29')->getYear()->equals($unions->get(1)));
     }

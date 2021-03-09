@@ -994,7 +994,7 @@ class IntervalRelationTest extends TestCase
                 }
 
                 $seq = new Sequence(...array_filter([$diff1, $diff2, $intersect]));
-                $boundaries = $seq->getBoundaries();
+                $boundaries = $seq->boundaries();
                 if (null !== $boundaries) {
                     self::assertTrue($boundaries->equals($interval0->merge($interval1)));
                 }
