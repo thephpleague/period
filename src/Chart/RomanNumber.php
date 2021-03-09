@@ -29,22 +29,13 @@ final class RomanNumber implements LabelGenerator
         'I'  => 1,
     ];
 
-    /**
-     * @var DecimalNumber
-     */
-    private $decimalNumber;
-
-    /**
-     * @var int
-     */
-    private $case;
+    private int $case;
 
     /**
      * New instance.
      */
-    public function __construct(DecimalNumber $decimalNumber, int $case = self::UPPER)
+    public function __construct(private DecimalNumber $decimalNumber, int $case = self::UPPER)
     {
-        $this->decimalNumber = $decimalNumber;
         $this->case = $this->filterLetterCase($case);
     }
 

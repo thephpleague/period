@@ -33,7 +33,6 @@ use function sprintf;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
-
     private const BOUNDARY_TYPE = [
         self::INCLUDE_START_EXCLUDE_END => 1,
         self::INCLUDE_ALL => 1,
@@ -42,11 +41,8 @@ final class Period implements JsonSerializable
     ];
 
     public const INCLUDE_START_EXCLUDE_END = '[)';
-
     public const EXCLUDE_START_INCLUDE_END = '(]';
-
     public const EXCLUDE_ALL = '()';
-
     public const INCLUDE_ALL = '[]';
 
     /**
@@ -115,15 +111,12 @@ final class Period implements JsonSerializable
      */
     private static function filterDuration($duration): DateInterval
     {
-        if ($duration instanceof DateInterval) {
-            return $duration;
-        }
-
-        if ($duration instanceof self) {
-            return $duration->getDateInterval();
-        }
-
-        return Duration::create($duration)->toDateInterval();
+        return match (true) {
+            $duration instanceof DateInterval => $duration,
+            $duration instanceof self => $duration->getDateInterval(),
+            $duration instanceof Duration => $duration->toDateInterval(),
+            default => Duration::create($duration)->toDateInterval(),
+        };
     }
 
     /**************************************************
@@ -586,17 +579,12 @@ final class Period implements JsonSerializable
      */
     private function containsDatepoint(DateTimeInterface $datepoint, string $boundaryType): bool
     {
-        switch ($boundaryType) {
-            case self::EXCLUDE_ALL:
-                return $datepoint > $this->startDate && $datepoint < $this->endDate;
-            case self::INCLUDE_ALL:
-                return $datepoint >= $this->startDate && $datepoint <= $this->endDate;
-            case self::EXCLUDE_START_INCLUDE_END:
-                return $datepoint > $this->startDate && $datepoint <= $this->endDate;
-            case self::INCLUDE_START_EXCLUDE_END:
-            default:
-                return $datepoint >= $this->startDate && $datepoint < $this->endDate;
-        }
+        return match ($boundaryType) {
+            self::EXCLUDE_ALL => $datepoint > $this->startDate && $datepoint < $this->endDate,
+            self::INCLUDE_ALL => $datepoint >= $this->startDate && $datepoint <= $this->endDate,
+            self::EXCLUDE_START_INCLUDE_END => $datepoint > $this->startDate && $datepoint <= $this->endDate,
+            default => $datepoint >= $this->startDate && $datepoint < $this->endDate,
+        };
     }
 
     /**
@@ -633,9 +621,7 @@ final class Period implements JsonSerializable
                 && $this->boundaryType[1] === $index->boundaryType[1];
         }
 
-        $index = self::filterDatepoint($index);
-
-        return $index == $this->endDate && ']' === $this->boundaryType[1];
+        return self::filterDatepoint($index) == $this->endDate && ']' === $this->boundaryType[1];
     }
 
     /**
@@ -665,6 +651,7 @@ final class Period implements JsonSerializable
         }
 
         $datepoint = self::filterDatepoint($index);
+
         return $this->startDate > $datepoint
             || ($this->startDate == $datepoint && '(' === $this->boundaryType[0]);
     }
@@ -768,6 +755,7 @@ final class Period implements JsonSerializable
     public function split($duration): iterable
     {
         $duration = self::filterDuration($duration);
+        /** @var DateTimeImmutable $startDate */
         foreach ($this->getDatePeriod($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {

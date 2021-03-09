@@ -18,14 +18,8 @@ use function trim;
 
 final class LatinLetter implements LabelGenerator
 {
-    /**
-     * @var string
-     */
-    private $str;
+    private string $str;
 
-    /**
-     * New instance.
-     */
     public function __construct(string $str = 'A')
     {
         $this->str = $this->filterLetter($str);

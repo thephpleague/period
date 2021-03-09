@@ -17,27 +17,11 @@ use function preg_replace;
 
 final class AffixLabel implements LabelGenerator
 {
-    /**
-     * @var LabelGenerator
-     */
-    private $labelGenerator;
+    private string $prefix = '';
+    private string $suffix = '';
 
-    /**
-     * @var string
-     */
-    private $prefix = '';
-
-    /**
-     * @var string
-     */
-    private $suffix = '';
-
-    /**
-     * New instance.
-     */
-    public function __construct(LabelGenerator $labelGenerator, string $prefix = '', string $suffix = '')
+    public function __construct(private LabelGenerator $labelGenerator, string $prefix = '', string $suffix = '')
     {
-        $this->labelGenerator = $labelGenerator;
         $this->prefix = $this->filterString($prefix);
         $this->suffix = $this->filterString($suffix);
     }

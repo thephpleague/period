@@ -17,17 +17,9 @@ use function iterator_to_array;
 
 final class ReverseLabel implements LabelGenerator
 {
-    /**
-     * @var LabelGenerator
-     */
-    private $labelGenerator;
 
-    /**
-     * New instance.
-     */
-    public function __construct(LabelGenerator $labelGenerator)
+    public function __construct(private LabelGenerator $labelGenerator)
     {
-        $this->labelGenerator = $labelGenerator;
     }
 
     /**

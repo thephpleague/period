@@ -29,24 +29,11 @@ use function str_repeat;
  */
 final class GanttChart implements Chart
 {
-    /**
-     * @var GanttChartConfig
-     */
-    private $config;
+    private GanttChartConfig $config;
+    private float $start = 0;
+    private float $unit = 1;
 
     /**
-     * @var float
-     */
-    private $start;
-
-    /**
-     * @var float
-     */
-    private $unit;
-
-    /**
-     * New instance.
-     *
      * @param ?GanttChartConfig $config
      */
     public function __construct(?GanttChartConfig $config = null)

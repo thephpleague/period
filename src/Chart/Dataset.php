@@ -19,7 +19,6 @@ use function array_column;
 use function count;
 use function gettype;
 use function is_scalar;
-use function method_exists;
 use function strlen;
 
 final class Dataset implements Data
@@ -28,20 +27,9 @@ final class Dataset implements Data
      * @var array<int, array{0:string, 1:Sequence}>.
      */
     private $pairs = [];
+    private int $labelMaxLength = 0;
+    private Period|null $boundaries = null;
 
-    /**
-     * @var int
-     */
-    private $labelMaxLength = 0;
-
-    /**
-     * @var Period|null
-     */
-    private $boundaries;
-
-    /**
-     * constructor.
-     */
     public function __construct(iterable $pairs = [])
     {
         $this->appendAll($pairs);
@@ -99,7 +87,7 @@ final class Dataset implements Data
      */
     public function append($label, $item): void
     {
-        if (!is_scalar($label) && !method_exists($label, '__toString')) {
+        if (!is_scalar($label) && !$label instanceof \Stringable) {
             throw new \TypeError('The label passed to '.__METHOD__.' must be a scalar or an stringable object, '.gettype($label).' given.');
         }
 
@@ -166,11 +154,10 @@ final class Dataset implements Data
      */
     public function jsonSerialize(): array
     {
-        $mapper = static function (array $pair): array {
-            return ['label' => $pair[0], 'item' => $pair[1]];
-        };
-
-        return array_map($mapper, $this->pairs);
+        return array_map(
+            static fn (array $pair): array => ['label' => $pair[0], 'item' => $pair[1]],
+            $this->pairs
+        );
     }
 
     /**

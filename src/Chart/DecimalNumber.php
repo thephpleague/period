@@ -15,14 +15,8 @@ namespace League\Period\Chart;
 
 final class DecimalNumber implements LabelGenerator
 {
-    /**
-     * @var int
-     */
-    private $int;
+    private int $int;
 
-    /**
-     * New instance.
-     */
     public function __construct(int $int = 1)
     {
         if (0 >= $int) {

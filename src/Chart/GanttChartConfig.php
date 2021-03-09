@@ -38,65 +38,19 @@ final class GanttChartConfig
 
     public const ALIGN_CENTER = STR_PAD_BOTH;
 
-    /**
-     * @var Output
-     */
-    private $output;
-
-    /**
-     * @var string[]
-     */
-    private $colors = [Output::COLOR_DEFAULT];
-
-    /**
-     * @var int
-     */
-    private $width = 60;
-
-    /**
-     * @var string
-     */
-    private $endExcludedChar = ')';
-
-    /**
-     * @var string
-     */
-    private $endIncludedChar = ']';
-
-    /**
-     * @var string
-     */
-    private $startExcludedChar = '(';
-
-    /**
-     * @var string
-     */
-    private $startIncludedChar = '[';
-
-    /**
-     * @var string
-     */
-    private $body = '-';
-
-    /**
-     * @var string
-     */
-    private $space = ' ';
-
-    /**
-     * @var int
-     */
-    private $leftMarginSize = 1;
-
-    /**
-     * @var int
-     */
-    private $gapSize = 1;
-
-    /**
-     * @var int
-     */
-    private $alignLabel = self::ALIGN_LEFT;
+    private Output $output;
+    /** @var string[] */
+    private array $colors = [Output::COLOR_DEFAULT];
+    private int $width = 60;
+    private string $endExcludedChar = ')';
+    private string $endIncludedChar = ']';
+    private string $startExcludedChar = '(';
+    private string $startIncludedChar = '[';
+    private string $body = '-';
+    private string $space = ' ';
+    private int $leftMarginSize = 1;
+    private int $gapSize = 1;
+    private int $alignLabel = self::ALIGN_LEFT;
 
     /**
      * New instance.
@@ -259,15 +213,11 @@ final class GanttChartConfig
      */
     private function filterPattern(string $str, string $part): string
     {
-        if (1 === mb_strlen($str)) {
-            return $str;
-        }
-
-        if (1 === preg_match(self::REGEXP_UNICODE, $str)) {
-            return $this->filterUnicodeCharacter($str);
-        }
-
-        throw new \InvalidArgumentException(sprintf('The %s pattern must be a single character', $part));
+        return match (true) {
+            1 === mb_strlen($str) => $str,
+            1 === preg_match(self::REGEXP_UNICODE, $str) => $this->filterUnicodeCharacter($str),
+            default => throw new \InvalidArgumentException(sprintf('The %s pattern must be a single character', $part)),
+        };
     }
 
     /**
@@ -430,10 +380,7 @@ final class GanttChartConfig
      */
     public function withColors(string ...$colors): self
     {
-        $filter = static function ($value): bool {
-            return in_array($value, Output::COLORS, true);
-        };
-
+        $filter = static fn ($value): bool => in_array($value, Output::COLORS, true);
         $colors = array_filter(array_map('strtolower', $colors), $filter);
         if ([] === $colors) {
             $colors = [Output::COLOR_DEFAULT];
