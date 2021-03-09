@@ -101,7 +101,7 @@ final class BoundaryTest extends TestCase
 
     public function testWithBoundaryTypeFails(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->withBoundaryType('foobar');
     }

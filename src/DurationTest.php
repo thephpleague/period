@@ -153,7 +153,7 @@ final class DurationTest extends TestCase
      */
     public function testDurationCreateNamedConstructorFails(string $input): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
 
         Duration::create($input);
     }
@@ -215,7 +215,7 @@ final class DurationTest extends TestCase
 
     public function testCreateFromTimeStringFails(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
 
         Duration::fromTimeString('123');
     }
@@ -267,7 +267,7 @@ final class DurationTest extends TestCase
      */
     public function testCreateFromChronoStringFails(string $input): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
 
         Duration::fromChronoString($input);
     }

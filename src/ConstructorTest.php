@@ -42,7 +42,7 @@ final class ConstructorTest extends TestCase
 
     public function testConstructorThrowExceptionIfUnknownBoundPeriodDay(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
@@ -83,7 +83,7 @@ final class ConstructorTest extends TestCase
 
     public function testConstructorThrowException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::fromDatepoint(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
@@ -140,7 +140,7 @@ final class ConstructorTest extends TestCase
 
     public function testIntervalAfterFailedWithOutofRangeInterval(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::after(new DateTime('2012-01-12'), '-1 DAY');
     }
 
@@ -179,7 +179,7 @@ final class ConstructorTest extends TestCase
 
     public function testIntervalBeforeFailedWithOutofRangeInterval(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::before(new DateTime('2012-01-12'), '-1 DAY');
     }
 
@@ -196,7 +196,7 @@ final class ConstructorTest extends TestCase
 
     public function testIntervalAroundThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::around(new DateTime('2012-06-05'), '-1 DAY');
     }
 

@@ -339,11 +339,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @see ::get
-     *
      * @param mixed $offset the integer index of the Period instance to retrieve.
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
+     *@see ::get
+     *
      */
     public function offsetGet($offset): Period
     {
@@ -352,11 +352,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @see ::remove
-     *
      * @param mixed $offset the integer index of the Period instance to remove
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
+     *@see ::remove
+     *
      */
     public function offsetUnset($offset): void
     {
@@ -368,7 +368,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @param mixed $offset   the integer index of the Period to add or update
      * @param mixed $interval the Period instance to add
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
      *
      * @see ::push
      * @see ::set
@@ -428,13 +428,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the interval specified at a given offset.
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
      */
     public function get(int $offset): Period
     {
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+            throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
         return $this->intervals[$index];
@@ -480,7 +480,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param Period ...$intervals
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence.
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence.
      */
     public function insert(int $offset, Period $interval, Period ...$intervals): void
     {
@@ -498,7 +498,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+            throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
         array_unshift($intervals, $interval);
@@ -508,13 +508,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Updates the interval at the specify offset.
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence.
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence.
      */
     public function set(int $offset, Period $interval): void
     {
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+            throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
         $this->intervals[$index] = $interval;
@@ -525,13 +525,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * The sequence is re-indexed after removal
      *
-     * @throws InvalidIndex If the offset is illegal for the current sequence.
+     * @throws CannotAccessPeriod If the offset is illegal for the current sequence.
      */
     public function remove(int $offset): Period
     {
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw new InvalidIndex(sprintf('%s is an invalid offset in the current sequence', $offset));
+            throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
         $interval = $this->intervals[$index];

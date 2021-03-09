@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period;
 
+use Throwable;
+
 /**
  * Exception thrown by the Sequence class.
  *
@@ -20,6 +22,15 @@ namespace League\Period;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0
  */
-class InvalidIndex extends Exception
+final class CannotAccessPeriod extends \InvalidArgumentException implements TimeRangeError
 {
+    private function __construct(string $message)
+    {
+        parent::__construct($message);
+    }
+
+    public static function dueToInvalidIndex(int $offset): self
+    {
+        return new self('`'.$offset.'` is an invalid offset in the '.Sequence::class.' object.');
+    }
 }

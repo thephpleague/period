@@ -46,7 +46,7 @@ final class ModificationTest extends TestCase
 
     public function testStartingOnFailedWithWrongStartDate(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->startingOn(new DateTime('2015-03-02'));
     }
@@ -63,7 +63,7 @@ final class ModificationTest extends TestCase
 
     public function testEndingOnFailedWithWrongEndDate(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->endingOn(new DateTime('2012-03-02'));
     }
@@ -92,7 +92,7 @@ final class ModificationTest extends TestCase
 
     public function testExpandThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
         $interval = (Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
@@ -139,7 +139,7 @@ final class ModificationTest extends TestCase
 
     public function testWithDurationAfterStartThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $period = Period::fromDatepoint('2014-03-01', '2014-03-15');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -155,7 +155,7 @@ final class ModificationTest extends TestCase
 
     public function testWithDurationBeforeEndThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $period = Period::fromDatepoint('2014-02-15', '2014-03-01');
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -189,7 +189,7 @@ final class ModificationTest extends TestCase
 
     public function testMoveEndDateThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
     }
 
@@ -215,7 +215,7 @@ final class ModificationTest extends TestCase
 
     public function testMoveStartDateThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
     }
 }

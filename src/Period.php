@@ -67,20 +67,16 @@ final class Period implements JsonSerializable
     private $boundaryType;
 
     /**
-     * @throws Exception If $startDate is greater than $endDate
+     * @throws InvalidTimeRange If the instance can not be created
      */
     private function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
     {
         if ($startDate > $endDate) {
-            throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
+            throw InvalidTimeRange::dueToDatepointMismatch();
         }
 
         if (!isset(self::BOUNDARY_TYPE[$boundaryType])) {
-            throw new Exception(sprintf(
-                'The boundary type `%s` is invalid. The only valid values are %s',
-                $boundaryType,
-                '`'.implode('`, `', array_keys(self::BOUNDARY_TYPE)).'`'
-            ));
+            throw InvalidTimeRange::dueToInvalidBoundaryType($boundaryType, self::BOUNDARY_TYPE);
         }
 
         $this->startDate = $startDate;
@@ -809,12 +805,12 @@ final class Period implements JsonSerializable
      *          =
      *                 [----)
      *
-     * @throws Exception If both objects do not overlaps
+     * @throws InvalidTimeRange If both objects do not overlaps
      */
     public function intersect(self $interval): self
     {
         if (!$this->overlaps($interval)) {
-            throw new Exception('Both '.self::class.' objects should overlaps');
+            throw InvalidTimeRange::dueToNonOverlappingPeriod();
         }
 
         $startDate = $this->startDate;
@@ -921,12 +917,12 @@ final class Period implements JsonSerializable
      *          =
      *                      [---)
      *
-     * @throws Exception If both instance overlaps
+     * @throws InvalidTimeRange If both instance overlaps
      */
     public function gap(self $interval): self
     {
         if ($this->overlaps($interval)) {
-            throw new Exception('Both '.self::class.' objects must not overlaps');
+            throw InvalidTimeRange::dueToNonOverlappingPeriod();
         }
 
         $boundaryType = $this->isEndExcluded() ? '[' : '(';

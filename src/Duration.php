@@ -135,7 +135,7 @@ final class Duration
 
         if (1 !== preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
             if (false === ($interval = DateInterval::createFromDateString($duration))) {
-                throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+                throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
             }
 
             return new self($interval);
@@ -145,7 +145,7 @@ final class Duration
             return self::fromIsoString($duration);
         }
 
-        throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+        throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
     }
 
     /**
@@ -189,12 +189,12 @@ final class Duration
     /**
      * Creates a new instance from a timer string representation.
      *
-     * @throws Exception
+     * @throws InvalidTimeRange
      */
     public static function fromChronoString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $units)) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
         }
 
         if ('' === $units['hour']) {
@@ -212,7 +212,7 @@ final class Duration
     public static function fromTimeString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
         }
 
         return self::fromTimeUnits($units);
