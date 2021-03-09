@@ -811,9 +811,8 @@ class IntervalRelationTest extends TestCase
     {
         $period = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         $alt = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-        [$diff1, $diff2] = $alt->diff($period);
-        self::assertNull($diff1);
-        self::assertNull($diff2);
+
+        self::assertTrue($alt->diff($period)->isEmpty());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
@@ -821,11 +820,11 @@ class IntervalRelationTest extends TestCase
     {
         $period = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         $alt = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2013-04-01'));
-        [$diff1, $diff2] = $alt->diff($period);
-        self::assertInstanceOf(Period::class, $diff1);
-        self::assertNull($diff2);
-        self::assertEquals(new DateTimeImmutable('2013-04-01'), $diff1->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2014-01-01'), $diff1->getEndDate());
+        $sequence = $alt->diff($period);
+
+        self::assertCount(1, $sequence);
+        self::assertEquals(new DateTimeImmutable('2013-04-01'), $sequence[0]->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2014-01-01'), $sequence[0]->getEndDate());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
@@ -833,11 +832,11 @@ class IntervalRelationTest extends TestCase
     {
         $period = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         $alt = new Period(new DateTimeImmutable('2013-10-01'), new DateTimeImmutable('2014-01-01'));
-        [$diff1, $diff2] = $alt->diff($period);
-        self::assertInstanceOf(Period::class, $diff1);
-        self::assertNull($diff2);
-        self::assertEquals(new DateTimeImmutable('2013-01-01'), $diff1->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2013-10-01'), $diff1->getEndDate());
+        $sequence = $alt->diff($period);
+
+        self::assertCount(1, $sequence);
+        self::assertEquals(new DateTimeImmutable('2013-01-01'), $sequence[0]->getStartDate());
+        self::assertEquals(new DateTimeImmutable('2013-10-01'), $sequence[0]->getEndDate());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
@@ -845,11 +844,11 @@ class IntervalRelationTest extends TestCase
     {
         $period = new Period(new DateTimeImmutable('2013-01-01 10:00:00'), new DateTimeImmutable('2013-01-01 13:00:00'));
         $alt = new Period(new DateTimeImmutable('2013-01-01 11:00:00'), new DateTimeImmutable('2013-01-01 14:00:00'));
-        [$diff1, $diff2] = $alt->diff($period);
-        self::assertInstanceOf(Period::class, $diff1);
-        self::assertInstanceOf(Period::class, $diff2);
-        self::assertSame(3600.0, $diff1->getTimestampInterval());
-        self::assertSame(3600.0, $diff2->getTimestampInterval());
+        $sequence = $alt->diff($period);
+
+        self::assertCount(2, $sequence);
+        self::assertSame(3600.0, $sequence[0]->getTimestampInterval());
+        self::assertSame(3600.0, $sequence[1]->getTimestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 

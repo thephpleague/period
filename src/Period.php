@@ -19,7 +19,6 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
-use function array_filter;
 use function array_keys;
 use function implode;
 use function sprintf;
@@ -874,10 +873,10 @@ final class Period implements JsonSerializable
      *
      * @return array<null|Period>
      */
-    public function diff(self $interval): array
+    public function diff(self $interval): Sequence
     {
         if ($interval->equals($this)) {
-            return [null, null];
+            return new Sequence();
         }
 
         $intersect = $this->intersect($interval);
@@ -886,14 +885,14 @@ final class Period implements JsonSerializable
             $first = ')' === $intersect->boundaryType[1] ? '[' : '(';
             $boundary = $first.$merge->boundaryType[1];
 
-            return [$merge->startingOn($intersect->endDate)->withBoundaryType($boundary), null];
+            return new Sequence($merge->startingOn($intersect->endDate)->withBoundaryType($boundary));
         }
 
         if ($merge->endDate == $intersect->endDate) {
             $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
             $boundary = $merge->boundaryType[0].$last;
 
-            return [$merge->endingOn($intersect->startDate)->withBoundaryType($boundary), null];
+            return new Sequence($merge->endingOn($intersect->startDate)->withBoundaryType($boundary));
         }
 
         $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
@@ -902,10 +901,10 @@ final class Period implements JsonSerializable
         $first = ')' === $intersect->boundaryType[1] ? '[' : '(';
         $firstBoundary = $first.$merge->boundaryType[1];
 
-        return [
+        return new Sequence(
             $merge->endingOn($intersect->startDate)->withBoundaryType($lastBoundary),
             $merge->startingOn($intersect->endDate)->withBoundaryType($firstBoundary),
-        ];
+        );
     }
 
     /**
@@ -925,11 +924,7 @@ final class Period implements JsonSerializable
             return new Sequence($this);
         }
 
-        $filter = function ($item): bool {
-            return null !== $item && $this->overlaps($item);
-        };
-
-        return new Sequence(...array_filter($this->diff($interval), $filter));
+        return $this->diff($interval)->filter(fn (Period $item): bool => null !== $item && $this->overlaps($item));
     }
 
     /**
