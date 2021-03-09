@@ -31,18 +31,6 @@ final class DatepointTest extends TestCase
         date_default_timezone_set($this->timezone);
     }
 
-    public function testCreateFromFormat(): void
-    {
-        self::assertInstanceOf(Datepoint::class, Datepoint::createFromFormat('Y-m-d', '2018-12-01'));
-        self::assertFalse(Datepoint::createFromFormat('Y-m-d', 'foobar'));
-    }
-
-    public function testCreateFromMutable(): void
-    {
-        $date = new DateTime();
-        self::assertTrue(Datepoint::createFromMutable($date) == DateTimeImmutable::createFromMutable($date));
-    }
-
     /**
      * @dataProvider isAfterProvider
      */

@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace League\Period;
 
 use DateInterval;
-use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use DateTimeZone;
 use function filter_var;
 use function intdiv;
 use const FILTER_VALIDATE_INT;
@@ -29,62 +27,30 @@ use const FILTER_VALIDATE_INT;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
  */
-final class Datepoint extends DateTimeImmutable
+final class Datepoint
 {
     /**
      * Returns a position in time expressed as a DateTimeImmutable object.
      *
-     * A datepoint can be
-     * <ul>
-     * <li>a DateTimeInterface object
-     * <li>a integer interpreted as a timestamp
-     * <li>a string parsable by DateTime::__construct
-     * </ul>
-     *
-     * @param mixed $datepoint a position in time
+     * @param DateTimeInterface|string|int $datepoint a position in time
      */
-    public static function create($datepoint): self
+    public static function create(DateTimeInterface|string|int $datepoint): self
     {
-        if ($datepoint instanceof DateTimeInterface) {
-            return new self($datepoint->format('Y-m-d H:i:s.u'), $datepoint->getTimezone());
-        }
-
-        if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
-            return new self('@'.$timestamp);
-        }
-
-        return new self($datepoint);
+        return new self(match (true) {
+            $datepoint instanceof DateTimeImmutable => $datepoint,
+            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
+            false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT)) => (new DateTimeImmutable())->setTimestamp($datepoint),
+            default => new DateTimeImmutable($datepoint),
+        });
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @param string       $format
-     * @param string       $datetime
-     * @param DateTimeZone $timezone
-     *
-     * @return static|false
-     */
-    public static function createFromFormat($format, $datetime, $timezone = null)
+    private function __construct(private DateTimeImmutable $datepoint)
     {
-        $datepoint = parent::createFromFormat($format, $datetime, $timezone);
-        if (false !== $datepoint) {
-            return self::create($datepoint);
-        }
-
-        return $datepoint;
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @param DateTime $datetime
-     *
-     * @return static
-     */
-    public static function createFromMutable($datetime): self
+    public function toDateTimeImmutable(): DateTimeImmutable
     {
-        return self::create(parent::createFromMutable($datetime));
+        return $this->datepoint;
     }
 
     /**************************************************
@@ -99,13 +65,13 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getSecond(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $datepoint = $this->setTime(
-            (int) $this->format('H'),
-            (int) $this->format('i'),
-            (int) $this->format('s')
+        $datepoint = $this->datepoint->setTime(
+            (int) $this->datepoint->format('H'),
+            (int) $this->datepoint->format('i'),
+            (int) $this->datepoint->format('s')
         );
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('PT1S')), $boundaryType);
+        return Period::fromDatepoint($datepoint, $datepoint->add(new DateInterval('PT1S')), $boundaryType);
     }
 
     /**
@@ -116,9 +82,9 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getMinute(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $datepoint = $this->setTime((int) $this->format('H'), (int) $this->format('i'), 0);
+        $datepoint = $this->datepoint->setTime((int) $this->datepoint->format('H'), (int) $this->datepoint->format('i'), 0);
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('PT1M')), $boundaryType);
+        return Period::fromDatepoint($datepoint, $datepoint->add(new DateInterval('PT1M')), $boundaryType);
     }
 
     /**
@@ -129,9 +95,9 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getHour(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $datepoint = $this->setTime((int) $this->format('H'), 0);
+        $datepoint = $this->datepoint->setTime((int) $this->datepoint->format('H'), 0);
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('PT1H')), $boundaryType);
+        return Period::fromDatepoint($datepoint, $datepoint->add(new DateInterval('PT1H')), $boundaryType);
     }
 
     /**
@@ -142,9 +108,9 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getDay(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $datepoint = $this->setTime(0, 0);
+        $datepoint = $this->datepoint->setTime(0, 0);
 
-        return new Period($datepoint, $datepoint->add(new DateInterval('P1D')), $boundaryType);
+        return Period::fromDatepoint($datepoint, $datepoint->add(new DateInterval('P1D')), $boundaryType);
     }
 
     /**
@@ -155,11 +121,15 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getIsoWeek(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $startDate = $this
+        $startDate = $this->datepoint
             ->setTime(0, 0)
-            ->setISODate((int) $this->format('o'), (int) $this->format('W'), 1);
+            ->setISODate(
+                (int) $this->datepoint->format('o'),
+                (int) $this->datepoint->format('W'),
+                1
+            );
 
-        return new Period($startDate, $startDate->add(new DateInterval('P7D')), $boundaryType);
+        return Period::fromDatepoint($startDate, $startDate->add(new DateInterval('P7D')), $boundaryType);
     }
 
     /**
@@ -170,11 +140,15 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getMonth(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $startDate = $this
+        $startDate = $this->datepoint
             ->setTime(0, 0)
-            ->setDate((int) $this->format('Y'), (int) $this->format('n'), 1);
+            ->setDate(
+                (int) $this->datepoint->format('Y'),
+                (int) $this->datepoint->format('n'),
+                1
+            );
 
-        return new Period($startDate, $startDate->add(new DateInterval('P1M')), $boundaryType);
+        return Period::fromDatepoint($startDate, $startDate->add(new DateInterval('P1M')), $boundaryType);
     }
 
     /**
@@ -185,11 +159,15 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getQuarter(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $startDate = $this
+        $startDate = $this->datepoint
             ->setTime(0, 0)
-            ->setDate((int) $this->format('Y'), (intdiv((int) $this->format('n'), 3) * 3) + 1, 1);
+            ->setDate(
+                (int) $this->datepoint->format('Y'),
+                (intdiv((int) $this->datepoint->format('n'), 3) * 3) + 1,
+                1
+            );
 
-        return new Period($startDate, $startDate->add(new DateInterval('P3M')), $boundaryType);
+        return Period::fromDatepoint($startDate, $startDate->add(new DateInterval('P3M')), $boundaryType);
     }
 
     /**
@@ -200,11 +178,15 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getSemester(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $startDate = $this
+        $startDate = $this->datepoint
             ->setTime(0, 0)
-            ->setDate((int) $this->format('Y'), (intdiv((int) $this->format('n'), 6) * 6) + 1, 1);
+            ->setDate(
+                (int) $this->datepoint->format('Y'),
+                (intdiv((int) $this->datepoint->format('n'), 6) * 6) + 1,
+                1
+            );
 
-        return new Period($startDate, $startDate->add(new DateInterval('P6M')), $boundaryType);
+        return Period::fromDatepoint($startDate, $startDate->add(new DateInterval('P6M')), $boundaryType);
     }
 
     /**
@@ -215,10 +197,10 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $year = (int) $this->format('Y');
-        $datepoint = $this->setTime(0, 0);
+        $year = (int) $this->datepoint->format('Y');
+        $datepoint = $this->datepoint->setTime(0, 0);
 
-        return new Period($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1), $boundaryType);
+        return Period::fromDatepoint($datepoint->setDate($year, 1, 1), $datepoint->setDate(++$year, 1, 1), $boundaryType);
     }
 
     /**
@@ -229,10 +211,10 @@ final class Datepoint extends DateTimeImmutable
      */
     public function getIsoYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $year = (int) $this->format('o');
-        $datepoint = $this->setTime(0, 0);
+        $year = (int) $this->datepoint->format('o');
+        $datepoint = $this->datepoint->setTime(0, 0);
 
-        return new Period($datepoint->setISODate($year, 1, 1), $datepoint->setISODate(++$year, 1, 1), $boundaryType);
+        return Period::fromDatepoint($datepoint->setISODate($year, 1, 1), $datepoint->setISODate(++$year, 1, 1), $boundaryType);
     }
 
     /**************************************************
@@ -252,7 +234,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function bordersOnStart(Period $interval): bool
     {
-        return $this == $interval->getStartDate() && $interval->isStartExcluded();
+        return $this->datepoint == $interval->getStartDate() && $interval->isStartExcluded();
     }
 
     /**
@@ -260,7 +242,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function isStarting(Period $interval): bool
     {
-        return $interval->isStartedBy($this);
+        return $interval->isStartedBy($this->datepoint);
     }
 
     /**
@@ -268,7 +250,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function isDuring(Period $interval): bool
     {
-        return $interval->contains($this);
+        return $interval->contains($this->datepoint);
     }
 
     /**
@@ -276,7 +258,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function isEnding(Period $interval): bool
     {
-        return $interval->isEndedBy($this);
+        return $interval->isEndedBy($this->datepoint);
     }
 
     /**
@@ -284,7 +266,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function bordersOnEnd(Period $interval): bool
     {
-        return $this == $interval->getEndDate() && $interval->isEndExcluded();
+        return $this->datepoint == $interval->getEndDate() && $interval->isEndExcluded();
     }
 
     /**
@@ -300,6 +282,6 @@ final class Datepoint extends DateTimeImmutable
      */
     public function isAfter(Period $interval): bool
     {
-        return $interval->isBefore($this);
+        return $interval->isBefore($this->datepoint);
     }
 }

@@ -107,19 +107,13 @@ final class Period implements JsonSerializable
      */
     private static function filterDatepoint($datepoint): DateTimeImmutable
     {
-        if ($datepoint instanceof DateTimeImmutable) {
-            return $datepoint;
-        }
-
-        if ($datepoint instanceof DateTimeInterface) {
-            return new DateTimeImmutable($datepoint->format('Y-m-d H:i:s.u'), $datepoint->getTimezone());
-        }
-
-        if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
-            return new DateTimeImmutable('@'.$timestamp);
-        }
-
-        return new DateTimeImmutable($datepoint);
+        return match (true) {
+            $datepoint instanceof Datepoint => $datepoint->toDateTimeImmutable(),
+            $datepoint instanceof DateTimeImmutable => $datepoint,
+            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
+            false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT)) => (new DateTimeImmutable())->setTimestamp($datepoint),
+            default => new DateTimeImmutable($datepoint),
+        };
     }
 
     /**

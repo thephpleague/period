@@ -282,7 +282,7 @@ final class Duration extends DateInterval
     public function adjustedTo($reference_date): self
     {
         if (!$reference_date instanceof DateTimeImmutable) {
-            $reference_date = Datepoint::create($reference_date);
+            $reference_date = Datepoint::create($reference_date)->toDateTimeImmutable();
         }
 
         return self::create($reference_date->diff($reference_date->add($this)));
