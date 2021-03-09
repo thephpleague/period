@@ -132,7 +132,7 @@ final class DurationTest extends TestCase
                 'expected' => 'PT0S',
             ],
             'microseconds' => [
-                'input' => new Period('2012-02-06 08:25:32.000120', '2012-02-06 08:25:32.000130'),
+                'input' => Period::fromDatepoint('2012-02-06 08:25:32.000120', '2012-02-06 08:25:32.000130'),
                 'expected' => 'PT0.00001S',
             ],
             'negative seconds' => [

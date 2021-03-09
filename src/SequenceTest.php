@@ -243,12 +243,12 @@ final class SequenceTest extends TestCase
     public function testSubtract1(): void
     {
         $sequenceA = new Sequence(
-            new Period('2000-01-01', '2000-01-10'),
-            new Period('2000-01-12', '2000-01-20')
+            Period::fromDatepoint('2000-01-01', '2000-01-10'),
+            Period::fromDatepoint('2000-01-12', '2000-01-20')
         );
         $sequenceB = new Sequence(
-            new Period('2000-01-05', '2000-01-08'),
-            new Period('2000-01-11', '2000-01-25')
+            Period::fromDatepoint('2000-01-05', '2000-01-08'),
+            Period::fromDatepoint('2000-01-11', '2000-01-25')
         );
         $diff = $sequenceA->subtract($sequenceB);
 
@@ -270,12 +270,12 @@ final class SequenceTest extends TestCase
     public function testSubtract2(): void
     {
         $sequenceA = new Sequence(
-            new Period('2000-01-01', '2000-01-05'),
-            new Period('2000-01-10', '2000-01-15'),
-            new Period('2000-01-20', '2000-01-25')
+            Period::fromDatepoint('2000-01-01', '2000-01-05'),
+            Period::fromDatepoint('2000-01-10', '2000-01-15'),
+            Period::fromDatepoint('2000-01-20', '2000-01-25')
         );
         $sequenceB = new Sequence(
-            new Period('2000-01-01', '2000-01-30')
+            Period::fromDatepoint('2000-01-01', '2000-01-30')
         );
         $diff = $sequenceA->subtract($sequenceB);
 
@@ -288,8 +288,8 @@ final class SequenceTest extends TestCase
     public function testSubtract3(): void
     {
         $sequenceA = new Sequence(
-            new Period('2000-01-01', '2000-01-10'),
-            new Period('2000-01-12', '2000-01-20')
+            Period::fromDatepoint('2000-01-01', '2000-01-10'),
+            Period::fromDatepoint('2000-01-12', '2000-01-20')
         );
         $sequenceB = new Sequence();
 
@@ -308,10 +308,10 @@ final class SequenceTest extends TestCase
     public function testSubtract4(): void
     {
         $sequenceA = new Sequence(
-            new Period('2000-01-01', '2000-01-10'),
-            new Period('2000-01-12', '2000-01-20')
+            Period::fromDatepoint('2000-01-01', '2000-01-10'),
+            Period::fromDatepoint('2000-01-12', '2000-01-20')
         );
-        $sequenceB = new Sequence(new Period('2003-01-12', '2003-01-20'));
+        $sequenceB = new Sequence(Period::fromDatepoint('2003-01-12', '2003-01-20'));
         self::assertSame($sequenceA, $sequenceA->subtract($sequenceB));
     }
 
@@ -321,10 +321,10 @@ final class SequenceTest extends TestCase
     public function testSubtract5(): void
     {
         $sequenceA = new Sequence(
-            new Period('2000-01-01', '2000-01-10'),
-            new Period('2001-01-01', '2001-01-10')
+            Period::fromDatepoint('2000-01-01', '2000-01-10'),
+            Period::fromDatepoint('2001-01-01', '2001-01-10')
         );
-        $sequenceB = new Sequence(new Period('2000-01-01', '2000-01-10'));
+        $sequenceB = new Sequence(Period::fromDatepoint('2000-01-01', '2000-01-10'));
         self::assertCount(0, $sequenceB->subtract($sequenceA));
     }
 
@@ -342,9 +342,9 @@ final class SequenceTest extends TestCase
     public function testGetIntersections1(): void
     {
         $sequence = new Sequence(
-            new Period('2018-01-01', '2018-01-31'),
-            new Period('2018-01-10', '2018-01-15'),
-            new Period('2018-01-10', '2018-01-31')
+            Period::fromDatepoint('2018-01-01', '2018-01-31'),
+            Period::fromDatepoint('2018-01-10', '2018-01-15'),
+            Period::fromDatepoint('2018-01-10', '2018-01-31')
         );
         $intersections = $sequence->intersections();
 
@@ -368,10 +368,10 @@ final class SequenceTest extends TestCase
     public function testGetIntersections2(): void
     {
         $sequence = new Sequence(
-            new Period('2018-01-01', '2018-01-31'),
-            new Period('2018-02-10', '2018-02-20'),
-            new Period('2018-03-01', '2018-03-31'),
-            new Period('2018-01-20', '2018-03-10')
+            Period::fromDatepoint('2018-01-01', '2018-01-31'),
+            Period::fromDatepoint('2018-02-10', '2018-02-20'),
+            Period::fromDatepoint('2018-03-01', '2018-03-31'),
+            Period::fromDatepoint('2018-01-20', '2018-03-10')
         );
         $intersections = $sequence->intersections();
         self::assertCount(3, $intersections);

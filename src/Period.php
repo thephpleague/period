@@ -71,17 +71,10 @@ final class Period implements JsonSerializable
     private $boundaryType;
 
     /**
-     * Creates a new instance.
-     *
-     * @param mixed $startDate the starting datepoint
-     * @param mixed $endDate   the ending datepoint
-     *
      * @throws Exception If $startDate is greater than $endDate
      */
-    public function __construct($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
+    private function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
     {
-        $startDate = self::filterDatepoint($startDate);
-        $endDate = self::filterDatepoint($endDate);
         if ($startDate > $endDate) {
             throw new Exception('The ending datepoint must be greater or equal to the starting datepoint');
         }
@@ -195,7 +188,11 @@ final class Period implements JsonSerializable
      */
     public static function fromDatePeriod(DatePeriod $datePeriod, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
-        return new self($datePeriod->getStartDate(), $datePeriod->getEndDate(), $boundaryType);
+        return new self(
+            self::filterDatepoint($datePeriod->getStartDate()),
+            self::filterDatepoint($datePeriod->getEndDate()),
+            $boundaryType
+        );
     }
 
     /**
@@ -275,9 +272,9 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance for Datepoint.
      */
-    public static function fromDatepoint(DateTimeInterface $startDate, DateTimeInterface $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    public static function fromDatepoint($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
-        return new self($startDate, $endDate, $boundaryType);
+        return new self(self::filterDatepoint($startDate), self::filterDatepoint($endDate), $boundaryType);
     }
 
     /**************************************************

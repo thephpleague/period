@@ -43,26 +43,26 @@ final class ConstructorTest extends TestCase
     public function testConstructorThrowExceptionIfUnknownBoundPeriodDay(): void
     {
         $this->expectException(Exception::class);
-        new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
+        Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
     public function testCreateFromDateTimeInterface(): void
     {
         self::assertEquals(
             Period::fromDatepoint(new DateTime('TODAY'), new DateTimeImmutable('TOMORROW')),
-            new Period('TODAY', 'TOMORROW')
+            Period::fromDatepoint('TODAY', 'TOMORROW')
         );
     }
 
     public function testConstructorThrowTypeError(): void
     {
         $this->expectException(TypeError::class);
-        new Period(new DateTime(), []);
+        Period::fromDatepoint(new DateTime(), []);
     }
 
     public function testSetState(): void
     {
-        $period = new Period('2014-05-01', '2014-05-08');
+        $period = Period::fromDatepoint('2014-05-01', '2014-05-08');
         $generatedPeriod = eval('return '.var_export($period, true).';');
         self::assertTrue($generatedPeriod->equals($period));
         self::assertEquals($generatedPeriod, $period);
@@ -70,21 +70,21 @@ final class ConstructorTest extends TestCase
 
     public function testConstructor(): void
     {
-        $period = new Period('2014-05-01', '2014-05-08');
+        $period = Period::fromDatepoint('2014-05-01', '2014-05-08');
         self::assertEquals(new DateTimeImmutable('2014-05-01'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2014-05-08'), $period->getEndDate());
     }
 
     public function testConstructorWithMicroSecondsSucceed(): void
     {
-        $period = new Period('2014-05-01 00:00:00', '2014-05-01 00:00:00');
+        $period = Period::fromDatepoint('2014-05-01 00:00:00', '2014-05-01 00:00:00');
         self::assertEquals(new DateInterval('PT0S'), $period->getDateInterval());
     }
 
     public function testConstructorThrowException(): void
     {
         $this->expectException(Exception::class);
-        new Period(
+        Period::fromDatepoint(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
         );
@@ -94,7 +94,7 @@ final class ConstructorTest extends TestCase
     {
         $start = '2014-05-01';
         $end = new DateTime('2014-05-08');
-        $period = new Period($start, $end);
+        $period = Period::fromDatepoint($start, $end);
         self::assertSame($start, $period->getStartDate()->format('Y-m-d'));
         self::assertEquals($end, $period->getEndDate());
     }

@@ -193,23 +193,23 @@ class IntervalRelationTest extends TestCase
     {
         return [
             'test abuts returns true with equal datepoints by defaut' => [
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01')),
-                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01')),
                 true,
             ],
             'test abuts returns fase without equal datepoints' => [
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01')),
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-03-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-03-01')),
                 false,
             ],
             'test abuts returns true with equal datepoints by if boundary is inclusif (1)' => [
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::INCLUDE_ALL),
-                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::INCLUDE_ALL),
+                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::INCLUDE_ALL),
+                Period::fromDatepoint(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::INCLUDE_ALL),
                 false,
             ],
             'test abuts returns true with equal datepoints by if boundary is inclusif (2)' => [
-                new Period(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::INCLUDE_ALL),
-                new Period(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::INCLUDE_ALL),
+                Period::fromDatepoint(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-05-01'), Period::INCLUDE_ALL),
+                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTimeImmutable('2012-02-01'), Period::INCLUDE_ALL),
                 false,
             ],
         ];
@@ -227,33 +227,33 @@ class IntervalRelationTest extends TestCase
     {
         return [
             'overlaps returns false with gapped intervals' => [
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2013-04-01'), new DateTimeImmutable('2013-05-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2013-04-01'), new DateTimeImmutable('2013-05-01')),
                 false,
             ],
             'overlaps returns false with abuts intervals' => [
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2014-04-01'), new DateTimeImmutable('2014-05-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-04-01'), new DateTimeImmutable('2014-05-01')),
                 false,
             ],
             'overlaps returns' => [
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2014-03-15'), new DateTimeImmutable('2014-04-07')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-15'), new DateTimeImmutable('2014-04-07')),
                 true,
             ],
             'overlaps returns with equals intervals' => [
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 true,
             ],
             'overlaps returns with contained intervals' => [
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 true,
             ],
             'overlaps returns with contained intervals backwards' => [
-                new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
-                new Period(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 true,
             ],
         ];
@@ -276,22 +276,22 @@ class IntervalRelationTest extends TestCase
     {
         return [
             'contains returns true with a DateTimeInterface object' => [
-                new Period(new DateTimeImmutable('2014-03-10'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-10'), new DateTimeImmutable('2014-03-15')),
                 new DateTime('2014-03-12'),
                 true,
             ],
             'contains returns true with a Period object' => [
-                new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-06-01')),
-                new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-06-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-04-01')),
                 true,
             ],
             'contains returns true with a Period object (2)' => [
-                new Period(
+                Period::fromDatepoint(
                     new DateTimeImmutable('2014-03-01'),
                     new DateTimeImmutable('2014-06-01'),
                     Period::EXCLUDE_START_INCLUDE_END
                 ),
-                new Period(
+                Period::fromDatepoint(
                     new DateTimeImmutable('2014-05-01'),
                     new DateTimeImmutable('2014-06-01'),
                     Period::EXCLUDE_START_INCLUDE_END
@@ -299,12 +299,12 @@ class IntervalRelationTest extends TestCase
                 true,
             ],
             'contains returns true with a Period object (3)' => [
-                new Period(
+                Period::fromDatepoint(
                     new DateTimeImmutable('2014-03-01'),
                     new DateTimeImmutable('2014-06-01'),
                     Period::EXCLUDE_ALL
                 ),
-                new Period(
+                Period::fromDatepoint(
                     new DateTimeImmutable('2014-05-01'),
                     new DateTimeImmutable('2014-06-01'),
                     Period::EXCLUDE_ALL
@@ -312,12 +312,12 @@ class IntervalRelationTest extends TestCase
                 true,
             ],
             'contains returns true with a Period object (4)' => [
-                new Period(
+                Period::fromDatepoint(
                     new DateTimeImmutable('2014-03-01'),
                     new DateTimeImmutable('2014-06-01'),
                     Period::INCLUDE_ALL
                 ),
-                new Period(
+                Period::fromDatepoint(
                     new DateTimeImmutable('2014-05-01'),
                     new DateTimeImmutable('2014-06-01'),
                     Period::INCLUDE_ALL
@@ -325,32 +325,32 @@ class IntervalRelationTest extends TestCase
                 true,
             ],
             'contains returns false with a DateTimeInterface object' => [
-                new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 new DateTime('2015-03-12'),
                 false,
             ],
             'contains returns false with a DateTimeInterface object after the interval' => [
-                new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 '2012-03-12',
                 false,
             ],
             'contains returns false with a DateTimeInterface object before the interval' => [
-                new Period(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 '2014-04-01',
                 false,
             ],
             'contains returns false with abuts interval' => [
-                new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-04-01')),
-                new Period(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-06-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2014-01-01'), new DateTimeImmutable('2014-06-01')),
                 false,
             ],
             'contains returns true with a Period objects sharing the same end date' => [
-                new Period(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01')),
-                new Period(new DateTimeImmutable('2015-12-01'), new DateTimeImmutable('2016-01-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01')),
+                Period::fromDatepoint(new DateTimeImmutable('2015-12-01'), new DateTimeImmutable('2016-01-01')),
                 true,
             ],
             'contains returns false with O duration Period object' => [
-                new Period(new DateTimeImmutable('2012-03-12'), new DateTimeImmutable('2012-03-12')),
+                Period::fromDatepoint(new DateTimeImmutable('2012-03-12'), new DateTimeImmutable('2012-03-12')),
                 new DateTime('2012-03-12'),
                 false,
             ],
@@ -427,7 +427,7 @@ class IntervalRelationTest extends TestCase
     public function startsDataProvider(): array
     {
         $startingDate = new DateTime('2012-01-01');
-        $interval = new Period($startingDate, new DateTime('2012-01-15'));
+        $interval = Period::fromDatepoint($startingDate, new DateTime('2012-01-15'));
 
         return [
             [
@@ -480,7 +480,7 @@ class IntervalRelationTest extends TestCase
     public function finishesDataProvider(): array
     {
         $endingDate = new DateTime('2012-01-16');
-        $interval = new Period(new DateTime('2012-01-01'), $endingDate);
+        $interval = Period::fromDatepoint(new DateTime('2012-01-01'), $endingDate);
         return [
             [
                 $interval,
@@ -527,23 +527,23 @@ class IntervalRelationTest extends TestCase
     {
         return [
             'returns true' => [
-                new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
-                new Period(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
+                Period::fromDatepoint(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
+                Period::fromDatepoint(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
                 true,
             ],
             'returns false' => [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
+                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
                 false,
             ],
             'returns false is argument order independent' => [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
+                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
                 false,
             ],
             'returns false with different range type' => [
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_ALL),
-                new Period(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
+                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::INCLUDE_ALL),
+                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
                 false,
             ],
         ];
@@ -551,16 +551,16 @@ class IntervalRelationTest extends TestCase
 
     public function testIntersect(): void
     {
-        $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-04-01'));
-        $alt = new Period(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
-        self::assertTrue($orig->intersect($alt)->equals(new Period('2012-01-01', '2012-03-01')));
+        $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-04-01'));
+        $alt = Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
+        self::assertTrue($orig->intersect($alt)->equals(Period::fromDatepoint('2012-01-01', '2012-03-01')));
     }
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange(): void
     {
         $this->expectException(Exception::class);
-        $orig = new Period(new DateTime('2013-01-01'), new DateTime('2013-02-01'));
-        $alt = new Period(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
+        $orig = Period::fromDatepoint(new DateTime('2013-01-01'), new DateTime('2013-02-01'));
+        $alt = Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
         $orig->intersect($alt);
     }
 
@@ -569,8 +569,8 @@ class IntervalRelationTest extends TestCase
      */
     public function testIntersectBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
     {
-        $interval0 = new Period('2014-03-01', '2014-06-01', $boundary1);
-        $interval1 = new Period('2014-05-01', '2014-08-01', $boundary2);
+        $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
+        $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $boundary2);
         self::assertSame($expected, $interval0->intersect($interval1)->getBoundaryType());
     }
 
@@ -662,8 +662,8 @@ class IntervalRelationTest extends TestCase
 
     public function testGap(): void
     {
-        $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
-        $alt = new Period(new DateTime('2012-06-01'), new DateTime('2012-09-01'));
+        $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
+        $alt = Period::fromDatepoint(new DateTime('2012-06-01'), new DateTime('2012-09-01'));
         $gap = $orig->gap($alt);
 
         self::assertEquals($orig->getEndDate(), $gap->getStartDate());
@@ -674,31 +674,31 @@ class IntervalRelationTest extends TestCase
     public function testGapThrowsExceptionWithOverlapsInterval(): void
     {
         $this->expectException(Exception::class);
-        $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
-        $alt = new Period(new DateTime('2011-12-10'), new DateTime('2011-12-15'));
+        $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
+        $alt = Period::fromDatepoint(new DateTime('2011-12-10'), new DateTime('2011-12-15'));
         $orig->gap($alt);
     }
 
     public function testGapWithSameStartingInterval(): void
     {
         $this->expectException(Exception::class);
-        $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
-        $alt = new Period(new DateTime('2011-12-01'), new DateTime('2011-12-15'));
+        $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
+        $alt = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2011-12-15'));
         $orig->gap($alt);
     }
 
     public function testGapWithSameEndingInterval(): void
     {
         $this->expectException(Exception::class);
-        $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
-        $alt = new Period(new DateTime('2012-01-15'), new DateTime('2012-02-01'));
+        $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
+        $alt = Period::fromDatepoint(new DateTime('2012-01-15'), new DateTime('2012-02-01'));
         $orig->gap($alt);
     }
 
     public function testGapWithAdjacentInterval(): void
     {
-        $orig = new Period(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
-        $alt = new Period(new DateTime('2012-02-01'), new DateTime('2012-02-02'));
+        $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
+        $alt = Period::fromDatepoint(new DateTime('2012-02-01'), new DateTime('2012-02-02'));
         self::assertEquals(0, $orig->gap($alt)->getTimestampInterval());
     }
 
@@ -707,8 +707,8 @@ class IntervalRelationTest extends TestCase
      */
     public function testGapBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
     {
-        $interval0 = new Period('2014-03-01', '2014-06-01', $boundary1);
-        $interval1 = new Period('2014-07-01', '2014-09-01', $boundary2);
+        $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
+        $interval1 = Period::fromDatepoint('2014-07-01', '2014-09-01', $boundary2);
         self::assertSame($expected, $interval0->gap($interval1)->getBoundaryType());
     }
 
@@ -800,8 +800,8 @@ class IntervalRelationTest extends TestCase
 
     public function testDiffThrowsException(): void
     {
-        $interval1 = new Period(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
-        $interval2 = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $interval1 = Period::fromDatepoint(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
+        $interval2 = Period::fromDatepoint(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 
         $this->expectException(Exception::class);
         $interval1->diff($interval2);
@@ -809,8 +809,8 @@ class IntervalRelationTest extends TestCase
 
     public function testDiffWithEqualsPeriod(): void
     {
-        $period = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-        $alt = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $period = Period::fromDatepoint(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $alt = Period::fromDatepoint(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 
         self::assertTrue($alt->diff($period)->isEmpty());
         self::assertEquals($alt->diff($period), $period->diff($alt));
@@ -818,8 +818,8 @@ class IntervalRelationTest extends TestCase
 
     public function testDiffWithPeriodSharingStartingDatepoints(): void
     {
-        $period = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-        $alt = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2013-04-01'));
+        $period = Period::fromDatepoint(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $alt = Period::fromDatepoint(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2013-04-01'));
         $sequence = $alt->diff($period);
 
         self::assertCount(1, $sequence);
@@ -830,8 +830,8 @@ class IntervalRelationTest extends TestCase
 
     public function testDiffWithPeriodSharingEndingDatepoints(): void
     {
-        $period = new Period(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-        $alt = new Period(new DateTimeImmutable('2013-10-01'), new DateTimeImmutable('2014-01-01'));
+        $period = Period::fromDatepoint(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        $alt = Period::fromDatepoint(new DateTimeImmutable('2013-10-01'), new DateTimeImmutable('2014-01-01'));
         $sequence = $alt->diff($period);
 
         self::assertCount(1, $sequence);
@@ -842,8 +842,8 @@ class IntervalRelationTest extends TestCase
 
     public function testDiffWithOverlapsPeriod(): void
     {
-        $period = new Period(new DateTimeImmutable('2013-01-01 10:00:00'), new DateTimeImmutable('2013-01-01 13:00:00'));
-        $alt = new Period(new DateTimeImmutable('2013-01-01 11:00:00'), new DateTimeImmutable('2013-01-01 14:00:00'));
+        $period = Period::fromDatepoint(new DateTimeImmutable('2013-01-01 10:00:00'), new DateTimeImmutable('2013-01-01 13:00:00'));
+        $alt = Period::fromDatepoint(new DateTimeImmutable('2013-01-01 11:00:00'), new DateTimeImmutable('2013-01-01 14:00:00'));
         $sequence = $alt->diff($period);
 
         self::assertCount(2, $sequence);
@@ -861,8 +861,8 @@ class IntervalRelationTest extends TestCase
         string $expected1,
         string $expected2
     ): void {
-        $interval0 = new Period('2014-03-01', '2014-06-01', $boundary1);
-        $interval1 = new Period('2014-05-01', '2014-09-01', $boundary2);
+        $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
+        $interval1 = Period::fromDatepoint('2014-05-01', '2014-09-01', $boundary2);
         [$diff1, $diff2] = $interval0->diff($interval1);
         if (null !== $diff1) {
             self::assertSame($expected1, $diff1->getBoundaryType());
@@ -979,8 +979,8 @@ class IntervalRelationTest extends TestCase
     {
         foreach (['[]', '[)', '()', '(]'] as $bound1) {
             foreach (['[]', '[)', '()', '(]'] as $bound2) {
-                $interval0 = new Period('2014-03-01', '2014-06-01', $bound1);
-                $interval1 = new Period('2014-05-01', '2014-08-01', $bound2);
+                $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $bound1);
+                $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $bound2);
                 [$diff1, $diff2] = $interval0->diff($interval1);
                 $intersect = $interval0->intersect($interval1);
 
