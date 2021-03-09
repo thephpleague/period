@@ -285,18 +285,18 @@ final class DurationTest extends TestCase
     }
 
     /**
-     * @dataProvider withoutCarryOverDataProvider
+     * @dataProvider adjustedToDataProvider
      *
      * @param mixed $reference_date a valid datepoint
      */
-    public function testWithoutCarryOver(string $input, $reference_date, string $expected): void
+    public function testadjustedTo(string $input, $reference_date, string $expected): void
     {
         $duration = new Duration($input);
-        self::assertSame($expected, (string) $duration->withoutCarryOver($reference_date));
+        self::assertSame($expected, (string) $duration->adjustedTo($reference_date));
         self::assertSame($expected, (string) $duration->adjustedTo($reference_date));
     }
 
-    public function withoutCarryOverDataProvider(): iterable
+    public function adjustedToDataProvider(): iterable
     {
         return [
             'nothing to carry over' => [
