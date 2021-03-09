@@ -22,7 +22,6 @@ use function is_string;
 use function method_exists;
 use function preg_match;
 use function property_exists;
-use function rtrim;
 use function sprintf;
 use function str_pad;
 use const FILTER_VALIDATE_FLOAT;
@@ -269,60 +268,6 @@ final class Duration extends DateInterval
         }
 
         return $new;
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.5
-     * @see ::format
-     *
-     * Returns the ISO8601 interval string representation.
-     *
-     * Microseconds fractions are included
-     */
-    public function __toString(): string
-    {
-        $date = 'P';
-        foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
-            if (0 !== $this->$value) {
-                $date .= '%'.$value.$key;
-            }
-        }
-
-        $time = 'T';
-        foreach (['H' => 'h', 'M' => 'i'] as $key => $value) {
-            if (0 !== $this->$value) {
-                $time .= '%'.$value.$key;
-            }
-        }
-
-        if (0.0 !== $this->f) {
-            $second = $this->s + $this->f;
-            if (0 > $this->s) {
-                $second = $this->s - $this->f;
-            }
-
-            $second = rtrim(sprintf('%f', $second), '0');
-
-            return $this->format($date.$time).$second.'S';
-        }
-
-        if (0 !== $this->s) {
-            $time .= '%sS';
-
-            return $this->format($date.$time);
-        }
-
-        if ('T' !== $time) {
-            return $this->format($date.$time);
-        }
-
-        if ('P' !== $date) {
-            return $this->format($date);
-        }
-
-        return 'PT0S';
     }
 
     /**

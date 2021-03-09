@@ -33,6 +33,48 @@ final class DurationTest extends TestCase
         date_default_timezone_set($this->timezone);
     }
 
+    private function formatDuration(DateInterval $interval): string
+    {
+        $date = 'P';
+        foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
+            if (0 !== $interval->$value) {
+                $date .= '%'.$value.$key;
+            }
+        }
+
+        $time = 'T';
+        foreach (['H' => 'h', 'M' => 'i'] as $key => $value) {
+            if (0 !== $interval->$value) {
+                $time .= '%'.$value.$key;
+            }
+        }
+
+        if (0.0 !== $interval->f) {
+            $second = $interval->s + $interval->f;
+            if (0 > $interval->s) {
+                $second = $interval->s - $interval->f;
+            }
+
+            $second = rtrim(sprintf('%f', $second), '0');
+
+            return $interval->format($date.$time).$second.'S';
+        }
+
+        if (0 !== $interval->s) {
+            return $interval->format($date.$time.'%sS');
+        }
+
+        if ('T' !== $time) {
+            return $interval->format($date.$time);
+        }
+
+        if ('P' !== $date) {
+            return $interval->format($date);
+        }
+
+        return 'PT0S';
+    }
+
     public function testCreateFromDateString(): void
     {
         $duration = Duration::createFromDateString('+1 DAY');
@@ -57,7 +99,7 @@ final class DurationTest extends TestCase
      */
     public function testDurationCreateNamedConstructor($input, string $expected): void
     {
-        self::assertSame($expected, (string) Duration::create($input));
+        self::assertSame($expected, $this->formatDuration(Duration::create($input)));
     }
 
     public function getDurationCreateSuccessfulProvider(): array
@@ -162,10 +204,10 @@ final class DurationTest extends TestCase
     public function testIntervalWithFraction(): void
     {
         $duration = new Duration('PT3.1S');
-        self::assertSame('PT3.1S', (string) $duration);
+        self::assertSame('PT3.1S', $this->formatDuration($duration));
 
         $duration = new Duration('P0000-00-00T00:05:00.023658');
-        self::assertSame('PT5M0.023658S', (string) $duration);
+        self::assertSame('PT5M0.023658S', $this->formatDuration($duration));
         self::assertSame(0.023658, $duration->f);
     }
 
@@ -183,7 +225,7 @@ final class DurationTest extends TestCase
     {
         $duration = Duration::createFromTimeString($chronometer);
 
-        self::assertSame($expected, (string) $duration);
+        self::assertSame($expected, $this->formatDuration($duration));
         self::assertSame($revert, $duration->invert);
     }
 
@@ -243,7 +285,7 @@ final class DurationTest extends TestCase
     {
         $duration = Duration::createFromChronoString($chronometer);
 
-        self::assertSame($expected, (string) $duration);
+        self::assertSame($expected, $this->formatDuration($duration));
         self::assertSame($revert, $duration->invert);
     }
 
@@ -254,7 +296,7 @@ final class DurationTest extends TestCase
     {
         $duration = Duration::create($chronometer);
 
-        self::assertSame($expected, (string) $duration);
+        self::assertSame($expected, $this->formatDuration($duration));
         self::assertSame($revert, $duration->invert);
     }
 
@@ -292,8 +334,8 @@ final class DurationTest extends TestCase
     public function testadjustedTo(string $input, $reference_date, string $expected): void
     {
         $duration = new Duration($input);
-        self::assertSame($expected, (string) $duration->adjustedTo($reference_date));
-        self::assertSame($expected, (string) $duration->adjustedTo($reference_date));
+        self::assertSame($expected, $this->formatDuration($duration->adjustedTo($reference_date)));
+        self::assertSame($expected, $this->formatDuration($duration->adjustedTo($reference_date)));
     }
 
     public function adjustedToDataProvider(): iterable
