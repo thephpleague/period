@@ -150,13 +150,8 @@ final class SequenceTest extends TestCase
 
     public function testFilterReturnsNewInstance(): void
     {
-        $sequence =new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
-
-        $filter = function (Period $period): bool {
-            return $period->getStartDate() == new DateTimeImmutable('2012-06-23');
-        };
-
-        $newCollection = $sequence->filter($filter);
+        $sequence = new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
+        $newCollection = $sequence->filter(fn (Period $period): bool => $period->getStartDate() == new DateTimeImmutable('2012-06-23'));
 
         self::assertNotEquals($newCollection, $sequence);
         self::assertCount(1, $newCollection);
@@ -165,33 +160,33 @@ final class SequenceTest extends TestCase
 
     public function testFilterReturnsSameInstance(): void
     {
-        $sequence = new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
+        $sequence = new Sequence(
+            Period::fromDay(2012, 6, 23),
+            Datepoint::create('2012-06-12')->getDay()
+        );
 
-        $filter = static function (Period $interval): bool {
-            return true;
-        };
-
-        self::assertSame($sequence, $sequence->filter($filter));
+        self::assertSame($sequence, $sequence->filter(static fn (Period $interval): bool => true));
     }
 
     public function testSortedReturnsSameInstance(): void
     {
-        $sequence = new Sequence(Period::fromDay(2012, 6, 23), Datepoint::create('2012-06-12')->getDay());
-        $sort = function (Period $event1, Period $event2): int {
-            return 0;
-        };
+        $sequence = new Sequence(
+            Period::fromDay(2012, 6, 23),
+            Datepoint::create('2012-06-12')->getDay()
+        );
 
-        self::assertSame($sequence, $sequence->sorted($sort));
+        self::assertSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => 0));
     }
 
     public function testSortedReturnsNewInstance(): void
     {
-        $sequence = new Sequence(Period::fromMonth(2012, 6), Period::fromDay(2012, 6, 23), Period::fromIsoWeek(2018, 3));
-        $sort = static function (Period $event1, Period $event2): int {
-            return $event1->durationCompare($event2);
-        };
+        $sequence = new Sequence(
+            Period::fromMonth(2012, 6),
+            Period::fromDay(2012, 6, 23),
+            Period::fromIsoWeek(2018, 3)
+        );
 
-        self::assertNotSame($sequence, $sequence->sorted($sort));
+        self::assertNotSame($sequence, $sequence->sorted(static fn (Period $event1, Period $event2): int => $event1->durationCompare($event2)));
     }
 
     public function testSort(): void
@@ -200,24 +195,22 @@ final class SequenceTest extends TestCase
         $day2 = Datepoint::create('2012-06-12')->getDay();
         $sequence = new Sequence($day1, $day2);
         self::assertSame([0 => $day1, 1 => $day2], $sequence->toArray());
-        $compare = static function (Period $period1, Period $period2): int {
-            return $period1->getStartDate() <=> $period2->getStartDate();
-        };
-        $sequence->sort($compare);
+
+        $sequence->sort(fn (Period $period1, Period $period2): int => $period1->getStartDate() <=> $period2->getStartDate());
         self::assertSame([1 => $day2, 0 => $day1], $sequence->toArray());
     }
 
     public function testSome(): void
     {
         $interval = Period::after('2012-02-01 12:00:00', '1 HOUR');
-        $predicate = static function (Period $event) use ($interval): bool {
-            return $interval->overlaps($event);
-        };
+        $predicate = fn (Period $event): bool => $interval->overlaps($event);
+
         $sequence = new Sequence(
             Datepoint::create('2012-02-01')->getDay(),
             Datepoint::create('2013-02-01')->getDay(),
             Datepoint::create('2014-02-01')->getDay()
         );
+
         self::assertTrue($sequence->some($predicate));
         self::assertFalse((new Sequence())->some($predicate));
     }
@@ -231,9 +224,7 @@ final class SequenceTest extends TestCase
         );
 
         $interval = Period::after('2012-01-01', '5 YEARS');
-        $predicate = function (Period $event) use ($interval): bool {
-            return $interval->contains($event);
-        };
+        $predicate = fn (Period $event): bool => $interval->contains($event);
 
         self::assertTrue($sequence->every($predicate));
         self::assertFalse((new Sequence())->every($predicate));
@@ -480,9 +471,7 @@ final class SequenceTest extends TestCase
             Period::fromDay(2018, 1, 1)
         );
 
-        $newSequence = $sequence->map(function (Period $period): Period {
-            return $period;
-        });
+        $newSequence = $sequence->map(fn (Period $period): Period => $period);
 
         self::assertSame($newSequence, $sequence);
     }
@@ -490,13 +479,9 @@ final class SequenceTest extends TestCase
     public function testMapperDoesNotReIndexAfterModification(): void
     {
         $sequence = new Sequence(Period::fromDay(2018, 3), Period::fromDay(2018, 1));
-        $sequence->sort(function (Period $interval1, Period $interval2): int {
-            return $interval1->getStartDate() <=> $interval2->getStartDate();
-        });
+        $sequence->sort(fn (Period $interval1, Period $interval2): int => $interval1->getStartDate() <=> $interval2->getStartDate());
 
-        $retval = $sequence->map(function (Period $interval): Period {
-            return $interval->moveEndDate('+1 DAY');
-        });
+        $retval = $sequence->map(fn (Period $interval): Period => $interval->moveEndDate('+1 DAY'));
 
         self::assertSame(array_keys($sequence->toArray()), array_keys($retval->toArray()));
     }
@@ -541,10 +526,7 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence(Period::fromMonth(2017, 1), Period::fromMonth(2018, 1));
         $period = $sequence->boundaries();
         if (null !== $period) {
-            self::assertNotEquals(
-                $period->getTimestampInterval(),
-                $sequence->getTotalTimestampInterval()
-            );
+            self::assertNotEquals($period->getTimestampInterval(), $sequence->getTotalTimestampInterval());
         }
     }
 }
