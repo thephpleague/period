@@ -201,7 +201,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Substract an Interval from a Sequence.
+     * subtract an Interval from a Sequence.
      */
     private function subtractOne(Sequence $sequence, Period $interval): self
     {

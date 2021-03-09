@@ -1060,6 +1060,6 @@ class IntervalRelationTest extends TestCase
         $diff = $periodA->subtract($periodA);
 
         self::assertCount(0, $diff);
-        self::assertEquals($diff, $periodA->substract($periodA));
+        self::assertEquals($diff, $periodA->subtract($periodA));
     }
 }
