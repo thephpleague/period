@@ -338,17 +338,6 @@ final class Period implements JsonSerializable
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
-     * @deprecated since version 4.10
-     * @see ::toIso8601()
-     */
-    public function __toString()
-    {
-        return $this->toIso8601();
-    }
-
-    /**
-     * Returns the string representation as a ISO8601 interval format.
-     *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      * @param ?string $format
      */

@@ -36,10 +36,10 @@ final class StringRepresentationTest extends TestCase
     {
         date_default_timezone_set('Africa/Nairobi');
         $period = new Period('2014-05-01', '2014-05-08');
-        $res = (string) $period;
+        $res = $period->toIso8601();
 
-        self::assertTrue(false !== strpos($res, '2014-04-30T21:00:00'));
-        self::assertTrue(false !== strpos($res, '2014-05-07T21:00:00'));
+        self::assertTrue(str_contains($res, '2014-04-30T21:00:00'));
+        self::assertTrue(str_contains($res, '2014-05-07T21:00:00'));
     }
 
     public function testJsonSerialize(): void
