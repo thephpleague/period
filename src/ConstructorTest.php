@@ -190,8 +190,8 @@ final class ConstructorTest extends TestCase
 
         $period = Period::around($date, $duration);
         self::assertTrue($period->contains($date));
-        self::assertEquals(Datepoint::create($date)->toDateTimeImmutable()->sub(Duration::create($duration)), $period->getStartDate());
-        self::assertEquals(Datepoint::create($date)->toDateTimeImmutable()->add(Duration::create($duration)), $period->getEndDate());
+        self::assertEquals(Datepoint::create($date)->toDateTimeImmutable()->sub(Duration::create($duration)->toDateInterval()), $period->getStartDate());
+        self::assertEquals(Datepoint::create($date)->toDateTimeImmutable()->add(Duration::create($duration)->toDateInterval()), $period->getEndDate());
     }
 
     public function testIntervalAroundThrowsException(): void

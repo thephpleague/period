@@ -131,7 +131,7 @@ final class Period implements JsonSerializable
             return $duration->getDateInterval();
         }
 
-        return Duration::create($duration);
+        return Duration::create($duration)->toDateInterval();
     }
 
     /**************************************************

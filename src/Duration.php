@@ -19,9 +19,7 @@ use TypeError;
 use function filter_var;
 use function gettype;
 use function is_string;
-use function method_exists;
 use function preg_match;
-use function property_exists;
 use function sprintf;
 use function str_pad;
 use const FILTER_VALIDATE_FLOAT;
@@ -33,7 +31,7 @@ use const FILTER_VALIDATE_FLOAT;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
  */
-final class Duration extends DateInterval
+final class Duration
 {
     private const REGEXP_DATEINTERVAL_WORD_SPEC = '/^P\S*$/';
 
@@ -63,26 +61,32 @@ final class Duration extends DateInterval
         (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
     $@x';
 
+    private function __construct(private DateInterval $duration)
+    {
+    }
+
     /**
      * New instance.
      *
      * Returns a new instance from an Interval specification
      */
-    public function __construct(string $interval_spec)
+    public static function fromIsoString(string $interval_spec)
     {
         if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
-            parent::__construct($matches['interval'].'S');
-            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
-            return;
+            $duration = new DateInterval($matches['interval'].'S');
+            $duration->f = (float) str_pad($matches['fraction'], 6, '0') / 1_000_000;
+
+            return new self($duration);
         }
 
         if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
-            parent::__construct($matches['interval']);
-            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
-            return;
+            $duration = new DateInterval($matches['interval']);
+            $duration->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
+
+            return new self($duration);
         }
 
-        parent::__construct($interval_spec);
+        return new self(new DateInterval($interval_spec));
     }
 
     /**
@@ -102,45 +106,43 @@ final class Duration extends DateInterval
      */
     public static function create($duration): self
     {
+        if ($duration instanceof self) {
+            return $duration;
+        }
+
         if ($duration instanceof Period) {
-            return self::createFromDateInterval($duration->getDateInterval());
+            return new self($duration->getDateInterval());
         }
 
         if ($duration instanceof DateInterval) {
-            return self::createFromDateInterval($duration);
+            return new self($duration);
         }
 
         $seconds = filter_var($duration, FILTER_VALIDATE_FLOAT);
         if (false !== $seconds) {
-            return self::createFromSeconds($seconds);
+            return self::fromSeconds($seconds);
         }
 
-        if (!is_string($duration) && !method_exists($duration, '__toString')) {
+        if (!is_string($duration) && !$duration instanceof \Stringable) {
             throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
         }
 
         $duration = (string) $duration;
 
         if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
-            return self::createFromChronoString($duration);
+            return self::fromChronoString($duration);
         }
 
-        if (1 === preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
-            if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
-                return new self($duration);
+        if (1 !== preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
+            if (false === ($interval = DateInterval::createFromDateString($duration))) {
+                throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
             }
 
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+            return new self($interval);
         }
 
-        try {
-            $instance = self::createFromDateString($duration);
-        } catch (\Exception $exception) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration), 0, $exception);
-        }
-
-        if (false !== $instance) {
-            return $instance;
+        if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
+            return self::fromIsoString($duration);
         }
 
         throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
@@ -151,16 +153,9 @@ final class Duration extends DateInterval
      *
      * the second value will be overflow up to the hour time unit.
      */
-    public static function createFromDateInterval(DateInterval $duration): self
+    public static function fromDateInterval(DateInterval $duration): self
     {
-        $new = new self('PT0S');
-        foreach ($duration as $name => $value) {
-            if (property_exists($new, $name)) {
-                $new->$name = $value;
-            }
-        }
-
-        return $new;
+        return new self($duration);
     }
 
     /**
@@ -168,7 +163,7 @@ final class Duration extends DateInterval
      *
      * the second value will be overflow up to the hour time unit.
      */
-    public static function createFromSeconds(float $seconds): self
+    public static function fromSeconds(float $seconds): self
     {
         $invert = 0 > $seconds;
         if ($invert) {
@@ -182,7 +177,7 @@ final class Duration extends DateInterval
         $hour = intdiv($minute, 60);
         $minute = $minute - ($hour * 60);
 
-        return self::createFromTimeUnits([
+        return self::fromTimeUnits([
             'hour' => (string) $hour,
             'minute' => (string) $minute,
             'second' => (string) $secondsInt,
@@ -196,7 +191,7 @@ final class Duration extends DateInterval
      *
      * @throws Exception
      */
-    public static function createFromChronoString(string $duration): self
+    public static function fromChronoString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $units)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
@@ -206,7 +201,7 @@ final class Duration extends DateInterval
             $units['hour'] = '0';
         }
 
-        return self::createFromTimeUnits($units);
+        return self::fromTimeUnits($units);
     }
 
     /**
@@ -214,13 +209,13 @@ final class Duration extends DateInterval
      *
      * @throws Exception
      */
-    public static function createFromTimeString(string $duration): self
+    public static function fromTimeString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
-        return self::createFromTimeUnits($units);
+        return self::fromTimeUnits($units);
     }
 
     /**
@@ -228,7 +223,7 @@ final class Duration extends DateInterval
      *
      * @param array<string,string> $units
      */
-    private static function createFromTimeUnits(array $units): self
+    private static function fromTimeUnits(array $units): self
     {
         $units = $units + ['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
 
@@ -239,13 +234,12 @@ final class Duration extends DateInterval
             .$units['second'].' seconds '
             .$units['fraction'].' microseconds';
 
-        /** @var Duration $instance */
-        $instance = self::createFromDateString($expression);
+        $instance = DateInterval::createFromDateString($expression);
         if ('-' === $units['sign']) {
             $instance->invert = 1;
         }
 
-        return $instance;
+        return new self($instance);
     }
 
     /**
@@ -255,19 +249,14 @@ final class Duration extends DateInterval
      *
      * @return self|false
      */
-    public static function createFromDateString($duration)
+    public static function fromDateString($duration)
     {
-        $duration = parent::createFromDateString($duration);
-        if (false === $duration) {
-            return false;
-        }
+        return new self(DateInterval::createFromDateString($duration));
+    }
 
-        $new = new self('PT0S');
-        foreach ($duration as $name => $value) {
-            $new->$name = $value;
-        }
-
-        return $new;
+    public function toDateInterval(): DateInterval
+    {
+        return $this->duration;
     }
 
     /**
@@ -285,6 +274,6 @@ final class Duration extends DateInterval
             $reference_date = Datepoint::create($reference_date)->toDateTimeImmutable();
         }
 
-        return self::create($reference_date->diff($reference_date->add($this)));
+        return new self($reference_date->diff($reference_date->add($this->duration)));
     }
 }
