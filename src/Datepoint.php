@@ -16,9 +16,8 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
-use function filter_var;
+use Stringable;
 use function intdiv;
-use const FILTER_VALIDATE_INT;
 
 /**
  * League Period Datepoint.
@@ -29,23 +28,27 @@ use const FILTER_VALIDATE_INT;
  */
 final class Datepoint
 {
-    /**
-     * Returns a position in time expressed as a DateTimeImmutable object.
-     *
-     * @param DateTimeInterface|string|int $datepoint a position in time
-     */
-    public static function create(DateTimeInterface|string|int $datepoint): self
-    {
-        return new self(match (true) {
-            $datepoint instanceof DateTimeImmutable => $datepoint,
-            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
-            false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT)) => (new DateTimeImmutable())->setTimestamp($datepoint),
-            default => new DateTimeImmutable($datepoint),
-        });
-    }
-
     private function __construct(private DateTimeImmutable $datepoint)
     {
+    }
+
+    public static function fromDateTimeInterface(DateTimeInterface $datepoint): self
+    {
+        if (!$datepoint instanceof DateTimeImmutable) {
+            return new self(DateTimeImmutable::createFromInterface($datepoint));
+        }
+
+        return new self($datepoint);
+    }
+
+    public static function fromTimestamp(int $timestamp): self
+    {
+        return new self((new DateTimeImmutable())->setTimestamp($timestamp));
+    }
+
+    public static function fromString(string|Stringable $datepoint): self
+    {
+        return new self(new DateTimeImmutable((string) $datepoint));
     }
 
     public function toDateTimeImmutable(): DateTimeImmutable
@@ -58,12 +61,12 @@ final class Datepoint
      **************************************************/
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint second
      *  - the duration is equal to 1 second
      */
-    public function getSecond(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function second(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->datepoint->setTime(
             (int) $this->datepoint->format('H'),
@@ -75,12 +78,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint minute
      *  - the duration is equal to 1 minute
      */
-    public function getMinute(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function minute(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->datepoint->setTime((int) $this->datepoint->format('H'), (int) $this->datepoint->format('i'), 0);
 
@@ -88,12 +91,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint hour
      *  - the duration is equal to 1 hour
      */
-    public function getHour(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function hour(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->datepoint->setTime((int) $this->datepoint->format('H'), 0);
 
@@ -101,12 +104,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint day
      *  - the duration is equal to 1 day
      */
-    public function getDay(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function day(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $datepoint = $this->datepoint->setTime(0, 0);
 
@@ -114,12 +117,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint iso week
      *  - the duration is equal to 7 days
      */
-    public function getIsoWeek(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function isoWeek(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this->datepoint
             ->setTime(0, 0)
@@ -133,12 +136,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint month
      *  - the duration is equal to 1 month
      */
-    public function getMonth(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function month(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this->datepoint
             ->setTime(0, 0)
@@ -152,12 +155,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint quarter
      *  - the duration is equal to 3 months
      */
-    public function getQuarter(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function quarter(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this->datepoint
             ->setTime(0, 0)
@@ -171,12 +174,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint semester
      *  - the duration is equal to 6 months
      */
-    public function getSemester(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function semester(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $startDate = $this->datepoint
             ->setTime(0, 0)
@@ -190,12 +193,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint year
      *  - the duration is equal to 1 year
      */
-    public function getYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function year(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $year = (int) $this->datepoint->format('Y');
         $datepoint = $this->datepoint->setTime(0, 0);
@@ -204,12 +207,12 @@ final class Datepoint
     }
 
     /**
-     * Returns a Period instance.
+     * Returns a Period instance that datepoint belongs to.
      *
      *  - the starting datepoint represents the beginning of the current datepoint iso year
      *  - the duration is equal to 1 iso year
      */
-    public function getIsoYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function isoYear(string $boundaryType = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $year = (int) $this->datepoint->format('o');
         $datepoint = $this->datepoint->setTime(0, 0);

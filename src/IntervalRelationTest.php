@@ -420,7 +420,7 @@ class IntervalRelationTest extends TestCase
     {
         self::assertSame($expected, $interval->isStartedBy($index));
         if ($index instanceof DateTimeInterface) {
-            self::assertSame($expected, Datepoint::create($index)->isStarting($interval));
+            self::assertSame($expected, Datepoint::fromDateTimeInterface($index)->isStarting($interval));
         }
     }
 
@@ -863,13 +863,14 @@ class IntervalRelationTest extends TestCase
     ): void {
         $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
         $interval1 = Period::fromDatepoint('2014-05-01', '2014-09-01', $boundary2);
-        [$diff1, $diff2] = $interval0->diff($interval1);
-        if (null !== $diff1) {
-            self::assertSame($expected1, $diff1->getBoundaryType());
+        $sequence = $interval0->diff($interval1);
+
+        if (0 < count($sequence)) {
+            self::assertSame($expected1, $sequence[0]->getBoundaryType());
         }
 
-        if (null !== $diff2) {
-            self::assertSame($expected2, $diff2->getBoundaryType());
+        if (1 < count($sequence)) {
+            self::assertSame($expected2, $sequence[1]->getBoundaryType());
         }
     }
 
@@ -981,19 +982,19 @@ class IntervalRelationTest extends TestCase
             foreach (['[]', '[)', '()', '(]'] as $bound2) {
                 $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $bound1);
                 $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $bound2);
-                [$diff1, $diff2] = $interval0->diff($interval1);
+                $sequence = $interval0->diff($interval1);
                 $intersect = $interval0->intersect($interval1);
 
-                if (null !== $diff1) {
-                    self::assertTrue($diff1->bordersOnStart($intersect));
+                if (0 < count($sequence)) {
+                    self::assertTrue($sequence[0]->bordersOnStart($intersect));
                 }
 
-                if (null !== $diff2) {
-                    self::assertTrue($diff2->bordersOnEnd($intersect));
+                if (1 < count($sequence)) {
+                    self::assertTrue($sequence[1]->bordersOnEnd($intersect));
                 }
 
-                $seq = new Sequence(...array_filter([$diff1, $diff2, $intersect]));
-                $boundaries = $seq->boundaries();
+                $sequence->push($intersect);
+                $boundaries = $sequence->boundaries();
                 if (null !== $boundaries) {
                     self::assertTrue($boundaries->equals($interval0->merge($interval1)));
                 }

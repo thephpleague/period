@@ -17,7 +17,6 @@ use function iterator_to_array;
 
 final class ReverseLabel implements LabelGenerator
 {
-
     public function __construct(private LabelGenerator $labelGenerator)
     {
     }

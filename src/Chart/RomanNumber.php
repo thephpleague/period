@@ -32,7 +32,7 @@ final class RomanNumber implements LabelGenerator
     private int $case;
 
     /**
-     * New instance.
+     * @param DecimalNumber $decimalNumber
      */
     public function __construct(private DecimalNumber $decimalNumber, int $case = self::UPPER)
     {

@@ -17,5 +17,4 @@ use Throwable;
 
 interface TimeRangeError extends Throwable
 {
-
 }

@@ -19,9 +19,6 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use JsonSerializable;
-use function array_keys;
-use function implode;
-use function sprintf;
 
 /**
  * A immutable value object class to manipulate Time interval.
@@ -261,7 +258,7 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance for Datepoint.
      */
-    public static function fromDatepoint($startDate, $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    public static function fromDatepoint(mixed $startDate, mixed $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         return new self(self::filterDatepoint($startDate), self::filterDatepoint($endDate), $boundaryType);
     }
@@ -851,8 +848,6 @@ final class Period implements JsonSerializable
      *                [-----------)
      *          =
      * [--------------)  +  [-----)
-     *
-     * @return array<null|Period>
      */
     public function diff(self $interval): Sequence
     {
@@ -905,7 +900,7 @@ final class Period implements JsonSerializable
             return new Sequence($this);
         }
 
-        return $this->diff($interval)->filter(fn (Period $item): bool => null !== $item && $this->overlaps($item));
+        return $this->diff($interval)->filter(fn (Period $item): bool => $this->overlaps($item));
     }
 
     /**

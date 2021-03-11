@@ -15,6 +15,7 @@ namespace League\Period;
 
 use DateInterval;
 use DateTimeImmutable;
+use DateTimeInterface;
 use TypeError;
 use function filter_var;
 use function gettype;
@@ -70,7 +71,7 @@ final class Duration
      *
      * Returns a new instance from an Interval specification
      */
-    public static function fromIsoString(string $interval_spec)
+    public static function fromIsoString(string $interval_spec): self
     {
         if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
             $duration = new DateInterval($matches['interval'].'S');
@@ -207,7 +208,7 @@ final class Duration
     /**
      * Creates a new instance from a time string representation following RDBMS specification.
      *
-     * @throws Exception
+     * @throws InvalidTimeRange
      */
     public static function fromTimeString(string $duration): self
     {
@@ -266,14 +267,18 @@ final class Duration
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
+     * @param mixed $datepoint a reference datepoint {@see \League\Period\Datepoint::create}
      */
-    public function adjustedTo($reference_date): self
+    public function adjustedTo($datepoint): self
     {
-        if (!$reference_date instanceof DateTimeImmutable) {
-            $reference_date = Datepoint::create($reference_date)->toDateTimeImmutable();
-        }
+        $datepoint = match (true) {
+            $datepoint instanceof Datepoint => $datepoint->toDateTimeImmutable(),
+            $datepoint instanceof DateTimeImmutable => $datepoint,
+            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
+            false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT)) => (new DateTimeImmutable())->setTimestamp($datepoint),
+            default => new DateTimeImmutable($datepoint),
+        };
 
-        return new self($reference_date->diff($reference_date->add($this->duration)));
+        return new self($datepoint->diff($datepoint->add($this->duration)));
     }
 }

@@ -26,7 +26,6 @@ use function array_values;
 use function count;
 use function reset;
 use function sort;
-use function sprintf;
 use function uasort;
 use function usort;
 use const ARRAY_FILTER_USE_BOTH;

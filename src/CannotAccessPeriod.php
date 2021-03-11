@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace League\Period;
 
-use Throwable;
-
 /**
  * Exception thrown by the Sequence class.
  *
