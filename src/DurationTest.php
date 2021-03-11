@@ -89,7 +89,7 @@ final class DurationTest extends TestCase
             && version_compare(PHP_VERSION, '7.3.4', '<')) {
             /** @var Duration $altduration */
             $altduration = Duration::fromDateString('foobar');
-            self::assertSame(0, $altduration->s);
+            self::assertSame(0, $altduration->toDateInterval()->s);
         }
     }
 
@@ -144,18 +144,6 @@ final class DurationTest extends TestCase
                 'expected' => 'PT0.0001S',
             ],
        ];
-    }
-
-    /**
-     * @dataProvider getDurationCreateFailsProvider
-     *
-     * @param string $input duration
-     */
-    public function testDurationCreateNamedConstructorFails(string $input): void
-    {
-        $this->expectException(InvalidTimeRange::class);
-
-        Duration::create($input);
     }
 
     public function getDurationCreateFailsProvider(): iterable
