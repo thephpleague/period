@@ -42,31 +42,14 @@ final class Period implements JsonSerializable
     public const EXCLUDE_ALL = '()';
     public const INCLUDE_ALL = '[]';
 
-    /**
-     * The starting datepoint.
-     *
-     * @var DateTimeImmutable
-     */
-    private $startDate;
-
-    /**
-     * The ending datepoint.
-     *
-     * @var DateTimeImmutable
-     */
-    private $endDate;
-
-    /**
-     * The boundary type.
-     *
-     * @var string
-     */
-    private $boundaryType;
+    private DateTimeImmutable $startDate;
+    private DateTimeImmutable $endDate;
+    private string $boundaryType;
 
     /**
      * @throws InvalidTimeRange If the instance can not be created
      */
-    private function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, string $boundaryType = self::INCLUDE_START_EXCLUDE_END)
+    private function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, string $boundaryType)
     {
         if ($startDate > $endDate) {
             throw InvalidTimeRange::dueToDatepointMismatch();
@@ -83,10 +66,8 @@ final class Period implements JsonSerializable
 
     /**
      * Returns a DateTimeImmutable instance.
-     *
-     * @param mixed $datepoint a Datepoint
      */
-    private static function filterDatepoint($datepoint): DateTimeImmutable
+    private static function filterDatepoint(mixed $datepoint): DateTimeImmutable
     {
         return match (true) {
             $datepoint instanceof Datepoint => $datepoint->toDateTimeImmutable(),
@@ -99,16 +80,15 @@ final class Period implements JsonSerializable
 
     /**
      * Returns a DateInterval instance.
-     *
-     * @param mixed $duration a Duration
      */
-    private static function filterDuration($duration): DateInterval
+    private static function filterDuration(mixed $duration): DateInterval
     {
         return match (true) {
             $duration instanceof DateInterval => $duration,
-            $duration instanceof self => $duration->getDateInterval(),
             $duration instanceof Duration => $duration->toDateInterval(),
-            default => Duration::create($duration)->toDateInterval(),
+            $duration instanceof self => $duration->getDateInterval(),
+            false !== ($timestamp = filter_var($duration, FILTER_VALIDATE_FLOAT)) => Duration::fromSeconds($timestamp)->toDateInterval(),
+            default => DateInterval::createFromDateString($duration),
         };
     }
 
@@ -130,11 +110,8 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a starting datepoint and a duration.
-     *
-     * @param mixed $startDate the starting datepoint
-     * @param mixed $duration  a Duration
      */
-    public static function after($startDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    public static function after(mixed $startDate, mixed $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $startDate = self::filterDatepoint($startDate);
 
@@ -143,11 +120,8 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a ending datepoint and a duration.
-     *
-     * @param mixed $endDate  the ending datepoint
-     * @param mixed $duration a Duration
      */
-    public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    public static function before(mixed $endDate, mixed $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $endDate = self::filterDatepoint($endDate);
 
@@ -157,11 +131,8 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance where the given duration is simultaneously
      * subtracted from and added to the datepoint.
-     *
-     * @param mixed $datepoint a Datepoint
-     * @param mixed $duration  a Duration
      */
-    public static function around($datepoint, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
+    public static function around(mixed $datepoint, mixed $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
         $datepoint = self::filterDatepoint($datepoint);
         $duration = self::filterDuration($duration);

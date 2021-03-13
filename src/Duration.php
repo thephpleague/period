@@ -16,14 +16,9 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
-use TypeError;
 use function filter_var;
-use function gettype;
-use function is_string;
 use function preg_match;
-use function sprintf;
 use function str_pad;
-use const FILTER_VALIDATE_FLOAT;
 
 /**
  * League Period Duration.
@@ -91,65 +86,6 @@ final class Duration
     }
 
     /**
-     * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
-     *
-     * The duration can be
-     * <ul>
-     * <li>an Period object</li>
-     * <li>a DateInterval object</li>
-     * <li>an integer interpreted as the duration expressed in seconds.</li>
-     * <li>a string parsable by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param mixed $duration a continuous portion of time
-     *
-     * @throws TypeError if the duration type is not a supported
-     */
-    public static function create($duration): self
-    {
-        if ($duration instanceof self) {
-            return $duration;
-        }
-
-        if ($duration instanceof Period) {
-            return new self($duration->getDateInterval());
-        }
-
-        if ($duration instanceof DateInterval) {
-            return new self($duration);
-        }
-
-        $seconds = filter_var($duration, FILTER_VALIDATE_FLOAT);
-        if (false !== $seconds) {
-            return self::fromSeconds($seconds);
-        }
-
-        if (!is_string($duration) && !$duration instanceof \Stringable) {
-            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
-        }
-
-        $duration = (string) $duration;
-
-        if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
-            return self::fromChronoString($duration);
-        }
-
-        if (1 !== preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
-            if (false === ($interval = DateInterval::createFromDateString($duration))) {
-                throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
-            }
-
-            return new self($interval);
-        }
-
-        if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
-            return self::fromIsoString($duration);
-        }
-
-        throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
-    }
-
-    /**
      * Creates a new instance from a DateInterval object.
      *
      * the second value will be overflow up to the hour time unit.
@@ -171,20 +107,14 @@ final class Duration
             $seconds = $seconds * -1;
         }
 
-        $secondsInt = (int) $seconds;
-        $fraction = (int) (($seconds - $secondsInt) * 1e6);
-        $minute = intdiv($secondsInt, 60);
-        $secondsInt = $secondsInt - ($minute * 60);
-        $hour = intdiv($minute, 60);
-        $minute = $minute - ($hour * 60);
+        $duration = new DateInterval('PT0S');
+        $duration->s = (int) $seconds;
+        $duration->f = $seconds - $duration->s;
+        if ($invert) {
+            $duration->invert = 1;
+        }
 
-        return self::fromTimeUnits([
-            'hour' => (string) $hour,
-            'minute' => (string) $minute,
-            'second' => (string) $secondsInt,
-            'fraction' => (string) $fraction,
-            'sign' => $invert ? '-' : '+',
-        ]);
+        return new self($duration);
     }
 
     /**

@@ -11,12 +11,9 @@
 
 namespace League\Period;
 
-use DateInterval;
 use DateTime;
 use DateTimeZone;
 use PHPUnit\Framework\TestCase;
-use function version_compare;
-use const PHP_VERSION;
 
 final class DurationTest extends TestCase
 {
@@ -84,66 +81,6 @@ final class DurationTest extends TestCase
             self::assertSame(1, $duration->toDateInterval()->d);
             self::assertFalse($duration->toDateInterval()->days);
         }
-
-        if (version_compare(PHP_VERSION, '7.2.17', '<')
-            && version_compare(PHP_VERSION, '7.3.4', '<')) {
-            /** @var Duration $altduration */
-            $altduration = Duration::fromDateString('foobar');
-            self::assertSame(0, $altduration->toDateInterval()->s);
-        }
-    }
-
-    /**
-     * @runInSeparateProcess
-     * @dataProvider getDurationCreateSuccessfulProvider
-     *
-     * @param mixed $input duration
-     */
-    public function testDurationCreateNamedConstructor($input, string $expected): void
-    {
-        self::assertSame($expected, $this->formatDuration(Duration::create($input)));
-    }
-
-    public function getDurationCreateSuccessfulProvider(): array
-    {
-        return [
-            'date only' => [
-                'input' => new DateInterval('P1M'),
-                'expected' => 'P1M',
-            ],
-            'time only' => [
-                'input' => new DateInterval('PT1H'),
-                'expected' => 'PT1H',
-            ],
-            'from a period object' => [
-                'input' => Period::fromMonth(2018, 2),
-                'expected' => 'P1M',
-            ],
-            'from a spec string' => [
-                'input' => 'PT1H',
-                'expect' => 'PT1H',
-            ],
-            'from a week' => [
-                'input' => '1 WEEK',
-                'expected' => 'P7D',
-            ],
-            'from an integer' => [
-                'input' => 0,
-                'expected' => 'PT0S',
-            ],
-            'microseconds' => [
-                'input' => Period::fromDatepoint('2012-02-06 08:25:32.000120', '2012-02-06 08:25:32.000130'),
-                'expected' => 'PT0.00001S',
-            ],
-            'negative seconds' => [
-                'input' => '-3 seconds 10 microseconds',
-                'expected' => 'PT-3.00001S',
-            ],
-            'duration with microseconds' => [
-                'input' => Duration::fromIsoString('PT0.0001S'),
-                'expected' => 'PT0.0001S',
-            ],
-       ];
     }
 
     public function getDurationCreateFailsProvider(): iterable
@@ -166,28 +103,37 @@ final class DurationTest extends TestCase
      */
     public function testDurationCreateFromDateStringFails(string $input): void
     {
-        if (!$this->isBugFixedcreateFromDateString()) {
-            self::assertEquals(Duration::fromIsoString('PT0S'), Duration::fromDateString($input));
-
-            return;
-        }
-
         self::expectWarning();
 
         self::assertFalse(Duration::fromDateString($input));
-    }
-
-    private function isBugFixedcreateFromDateString(): bool
-    {
-        return version_compare(PHP_VERSION, '7.3.4', '>=') ||
-            (version_compare(PHP_VERSION, '7.2.17', '>=') &&
-                version_compare(PHP_VERSION, '7.3', '<'));
     }
 
     public function getDurationCreateFromDateStringFailsProvider(): iterable
     {
         return [
             'invalid interval spec 1' => ['yolo'],
+        ];
+    }
+
+    /**
+     * @dataProvider getDurationFromSecondsSuccessfulProvider
+     */
+    public function testCreateFromSeconds(mixed $input, string $expected): void
+    {
+        self::assertSame($expected, $this->formatDuration(Duration::fromSeconds($input)));
+    }
+
+    public function getDurationFromSecondsSuccessfulProvider(): array
+    {
+        return [
+            'from an integer' => [
+                'input' => 0,
+                'expected' => 'PT0S',
+            ],
+            'negative seconds' => [
+                'input' => -3.00001,
+                'expected' => 'PT3.00001S',
+            ],
         ];
     }
 
@@ -274,17 +220,6 @@ final class DurationTest extends TestCase
     public function testCreateFromChronoStringSucceeds(string $chronometer, string $expected, int $revert): void
     {
         $duration = Duration::fromChronoString($chronometer);
-
-        self::assertSame($expected, $this->formatDuration($duration));
-        self::assertSame($revert, $duration->toDateInterval()->invert);
-    }
-
-    /**
-     * @dataProvider fromChronoProvider
-     */
-    public function testCreate(string $chronometer, string $expected, int $revert): void
-    {
-        $duration = Duration::create($chronometer);
 
         self::assertSame($expected, $this->formatDuration($duration));
         self::assertSame($revert, $duration->toDateInterval()->invert);

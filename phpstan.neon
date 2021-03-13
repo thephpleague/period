@@ -6,8 +6,6 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
     ignoreErrors:
-        - message: '#Strict comparison using === between false and DateInterval will always evaluate to false.#'
-          path: src/Duration.php
         - message: '#^Variable property access on DateInterval.#'
           path: src/DurationTest.php
         - message: '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'

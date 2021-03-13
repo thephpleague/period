@@ -187,11 +187,13 @@ final class ConstructorTest extends TestCase
     {
         $date = '2012-06-05';
         $duration = '1 WEEK';
-
         $period = Period::around($date, $duration);
-        self::assertTrue($period->contains($date));
-        self::assertEquals(Datepoint::fromString($date)->toDateTimeImmutable()->sub(Duration::create($duration)->toDateInterval()), $period->getStartDate());
-        self::assertEquals(Datepoint::fromString($date)->toDateTimeImmutable()->add(Duration::create($duration)->toDateInterval()), $period->getEndDate());
+        $interval = DateInterval::createFromDateString($duration);
+        $datepoint = new DateTimeImmutable($date);
+
+        self::assertTrue($period->contains($datepoint));
+        self::assertEquals($datepoint->sub($interval), $period->getStartDate());
+        self::assertEquals($datepoint->add($interval), $period->getEndDate());
     }
 
     public function testIntervalAroundThrowsException(): void
