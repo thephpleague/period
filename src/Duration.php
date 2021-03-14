@@ -29,19 +29,7 @@ use function str_pad;
  */
 final class Duration
 {
-    private const REGEXP_DATEINTERVAL_WORD_SPEC = '/^P\S*$/';
-
-    private const REGEXP_DATEINTERVAL_SPEC = '@^P
-        (?!$)                             # making sure there something after the interval delimiter
-        (?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?)? # day, week, month, year part
-        (?:T                              # interval time delimiter
-            (?!$)                         # making sure there something after the interval time delimiter
-            (?:\d+H)?(?:\d+M)?(?:\d+S)?   # hour, minute, second part
-        )?
-    $@x';
-
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
-
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
 
     private const REGEXP_CHRONO_FORMAT = '@^
@@ -62,9 +50,7 @@ final class Duration
     }
 
     /**
-     * New instance.
-     *
-     * Returns a new instance from an Interval specification
+     * Returns a new instance from an Interval specification.
      */
     public static function fromIsoString(string $interval_spec): self
     {
@@ -77,7 +63,7 @@ final class Duration
 
         if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
             $duration = new DateInterval($matches['interval']);
-            $duration->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
+            $duration->f = (float) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
             return new self($duration);
         }
@@ -86,9 +72,7 @@ final class Duration
     }
 
     /**
-     * Creates a new instance from a DateInterval object.
-     *
-     * the second value will be overflow up to the hour time unit.
+     * Returns a new instance from a DateInterval object.
      */
     public static function fromDateInterval(DateInterval $duration): self
     {
@@ -96,9 +80,7 @@ final class Duration
     }
 
     /**
-     * Creates a new instance from a seconds.
-     *
-     * the second value will be overflow up to the hour time unit.
+     * Returns a new instance from a seconds.
      */
     public static function fromSeconds(float $seconds): self
     {
@@ -107,8 +89,7 @@ final class Duration
             $seconds = $seconds * -1;
         }
 
-        $duration = new DateInterval('PT0S');
-        $duration->s = (int) $seconds;
+        $duration = new DateInterval('PT'.(int) $seconds.'S');
         $duration->f = $seconds - $duration->s;
         if ($invert) {
             $duration->invert = 1;
