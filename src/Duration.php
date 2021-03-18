@@ -16,7 +16,6 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
-use function filter_var;
 use function preg_match;
 use function str_pad;
 
@@ -82,15 +81,21 @@ final class Duration
     /**
      * Returns a new instance from a seconds.
      */
-    public static function fromSeconds(float $seconds): self
+    public static function fromSeconds(int $second, int $fraction = 0): self
     {
-        $invert = 0 > $seconds;
+        $invert = 0 > $second;
         if ($invert) {
-            $seconds = $seconds * -1;
+            $second = $second * -1;
         }
 
-        $duration = new DateInterval('PT'.(int) $seconds.'S');
-        $duration->f = $seconds - $duration->s;
+        if (0 > $fraction) {
+            throw new \InvalidArgumentException('The fraction should be a valid positive integer or zero.');
+        }
+
+        $duration = new DateInterval('PT0S');
+        $duration->s = $second;
+        $duration->f = $fraction / 1_000_000;
+
         if ($invert) {
             $duration->invert = 1;
         }
@@ -154,14 +159,7 @@ final class Duration
         return new self($instance);
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @param mixed $duration a date with relative parts
-     *
-     * @return self|false
-     */
-    public static function fromDateString($duration)
+    public static function fromDateString(string $duration): self
     {
         return new self(DateInterval::createFromDateString($duration));
     }
@@ -177,18 +175,10 @@ final class Duration
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
-     *
-     * @param mixed $datepoint a reference datepoint {@see \League\Period\Datepoint::create}
      */
-    public function adjustedTo($datepoint): self
+    public function adjustedTo(DateTimeInterface $datepoint): self
     {
-        $datepoint = match (true) {
-            $datepoint instanceof Datepoint => $datepoint->toDateTimeImmutable(),
-            $datepoint instanceof DateTimeImmutable => $datepoint,
-            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
-            false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT)) => (new DateTimeImmutable())->setTimestamp($datepoint),
-            default => new DateTimeImmutable($datepoint),
-        };
+        $datepoint = DateTimeImmutable::createFromInterface($datepoint);
 
         return new self($datepoint->diff($datepoint->add($this->duration)));
     }
