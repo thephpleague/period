@@ -31,7 +31,15 @@ final class Datepoint
     {
     }
 
-    public static function fromDateTimeInterface(DateTimeInterface $datepoint): self
+    /**
+     * @inheritDoc
+     */
+    public static function __set_state(array $properties)
+    {
+        return new self($properties['datepoint']);
+    }
+
+    public static function fromDate(DateTimeInterface $datepoint): self
     {
         if (!$datepoint instanceof DateTimeImmutable) {
             return new self(DateTimeImmutable::createFromInterface($datepoint));
@@ -40,14 +48,14 @@ final class Datepoint
         return new self($datepoint);
     }
 
+    public static function fromDateString(string $datepoint): self
+    {
+        return new self(new DateTimeImmutable($datepoint));
+    }
+
     public static function fromTimestamp(int $timestamp): self
     {
         return new self((new DateTimeImmutable())->setTimestamp($timestamp));
-    }
-
-    public static function fromString(string $datepoint): self
-    {
-        return new self(new DateTimeImmutable($datepoint));
     }
 
     public function toDateTimeImmutable(): DateTimeImmutable
@@ -56,7 +64,7 @@ final class Datepoint
     }
 
     /**************************************************
-     * interval constructors
+     * Period constructors
      **************************************************/
 
     /**

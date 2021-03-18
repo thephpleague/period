@@ -420,7 +420,7 @@ class IntervalRelationTest extends TestCase
     {
         self::assertSame($expected, $interval->isStartedBy($index));
         if ($index instanceof DateTimeInterface) {
-            self::assertSame($expected, Datepoint::fromDateTimeInterface($index)->isStarting($interval));
+            self::assertSame($expected, Datepoint::fromDate($index)->isStarting($interval));
         }
     }
 

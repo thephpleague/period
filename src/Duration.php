@@ -49,6 +49,14 @@ final class Duration
     }
 
     /**
+     * @inheritDoc
+     */
+    public static function __set_state(array $properties)
+    {
+        return new self($properties['duration']);
+    }
+
+    /**
      * Returns a new instance from an Interval specification.
      */
     public static function fromIsoString(string $interval_spec): self

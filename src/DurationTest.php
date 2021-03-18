@@ -268,7 +268,7 @@ final class DurationTest extends TestCase
         /** @var DateTimeInterface $date */
         $date = match (true) {
             is_int($reference_date) => Datepoint::fromTimestamp($reference_date)->toDateTimeImmutable(),
-            is_string($reference_date) => Datepoint::fromString($reference_date)->toDateTimeImmutable(),
+            is_string($reference_date) => Datepoint::fromDateString($reference_date)->toDateTimeImmutable(),
             default  => $reference_date,
         };
 

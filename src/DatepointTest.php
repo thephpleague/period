@@ -35,7 +35,7 @@ final class DatepointTest extends TestCase
      */
     public function testIsAfter(Period $interval, DateTimeInterface $input, bool $expected): void
     {
-        self::assertSame($expected, Datepoint::fromDateTimeInterface($input)->isAfter($interval));
+        self::assertSame($expected, Datepoint::fromDate($input)->isAfter($interval));
     }
 
     public function isAfterProvider(): array
@@ -79,7 +79,7 @@ final class DatepointTest extends TestCase
      */
     public function testIsBefore(Period $interval, DateTimeInterface $input, bool $expected): void
     {
-        self::assertSame($expected, Datepoint::fromDateTimeInterface($input)->isBefore($interval));
+        self::assertSame($expected, Datepoint::fromDate($input)->isBefore($interval));
     }
 
     public function isBeforeProvider(): array
@@ -110,7 +110,7 @@ final class DatepointTest extends TestCase
 
     public function testDatepointBorderingOn(): void
     {
-        $datepoint = Datepoint::fromString('2018-01-18 10:00:00');
+        $datepoint = Datepoint::fromDateString('2018-01-18 10:00:00');
 
         $intervalBorderOnStartTrue = Period::after($datepoint, '3 minutes', Period::EXCLUDE_START_INCLUDE_END);
         self::assertTrue($datepoint->bordersOnStart($intervalBorderOnStartTrue));
@@ -136,7 +136,7 @@ final class DatepointTest extends TestCase
      */
     public function testIsDuring(Period $interval, $input, bool $expected): void
     {
-        $datepoint = $input instanceof DateTimeInterface ? Datepoint::fromDateTimeInterface($input) : Datepoint::fromString($input);
+        $datepoint = $input instanceof DateTimeInterface ? Datepoint::fromDate($input) : Datepoint::fromDateString($input);
 
         self::assertSame($expected, $datepoint->isDuring($interval));
     }
@@ -197,7 +197,7 @@ final class DatepointTest extends TestCase
      */
     public function testStarts(Period $interval, DateTimeInterface $index, bool $expected): void
     {
-        self::assertSame($expected, Datepoint::fromDateTimeInterface($index)->isStarting($interval));
+        self::assertSame($expected, Datepoint::fromDate($index)->isStarting($interval));
     }
 
     public function startsDataProvider(): array
@@ -223,7 +223,7 @@ final class DatepointTest extends TestCase
      */
     public function testFinishes(Period $interval, DateTimeInterface $index, bool $expected): void
     {
-        self::assertSame($expected, Datepoint::fromDateTimeInterface($index)->isEnding($interval));
+        self::assertSame($expected, Datepoint::fromDate($index)->isEnding($interval));
     }
 
     public function isEndingDataProvider(): array
