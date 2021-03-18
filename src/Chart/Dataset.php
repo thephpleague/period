@@ -17,16 +17,14 @@ use League\Period\Period;
 use League\Period\Sequence;
 use function array_column;
 use function count;
-use function gettype;
-use function is_scalar;
 use function strlen;
 
 final class Dataset implements Data
 {
     /**
-     * @var array<int, array{0:string, 1:Sequence}>.
+     * @var array{0:int|string, 1:Sequence}[]
      */
-    private $pairs = [];
+    private array $pairs = [];
     private int $labelMaxLength = 0;
     private Period|null $boundaries = null;
 
@@ -85,22 +83,13 @@ final class Dataset implements Data
     /**
      * {@inheritDoc}
      */
-    public function append($label, $item): void
+    public function append(string|int $label, Period|Sequence $item): void
     {
-        if (!is_scalar($label) && !$label instanceof \Stringable) {
-            throw new \TypeError('The label passed to '.__METHOD__.' must be a scalar or an stringable object, '.gettype($label).' given.');
-        }
-
         if ($item instanceof Period) {
             $item = new Sequence($item);
         }
 
-        if (!$item instanceof Sequence) {
-            throw new \TypeError('The item passed to '.__METHOD__.' must be a '.Period::class.' or a '.Sequence::class.' instance, '.gettype($item).' given.');
-        }
-
-        $label = (string) $label;
-        $this->setLabelMaxLength($label);
+        $this->setLabelMaxLength((string) $label);
         $this->setBoundaries($item);
 
         $this->pairs[] = [$label, $item];

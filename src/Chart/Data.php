@@ -26,7 +26,7 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
     /**
      * Returns the pairs.
      *
-     * @return \Iterator<int, array{0: string, 1: Sequence}>
+     * @return \Iterator<int, array{0: int|string, 1: Sequence}>
      */
     public function getIterator(): \Iterator;
 
@@ -41,7 +41,7 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
     public function isEmpty(): bool;
 
     /**
-     * @return string[]
+     * @return array<string|int>
      */
     public function labels(): iterable;
 
@@ -62,13 +62,10 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
 
     /**
      * Add a new pair to the collection.
-     *
-     * @param object|string   $label a scalar or a stringable object (implementing __toString method).
+     * @param string|int      $label
      * @param Period|Sequence $item
-     *
-     * @throws \TypeError If the label or the item type are not supported.
      */
-    public function append($label, $item): void;
+    public function append(string|int $label, Period|Sequence $item): void;
 
     /**
      * Add a collection of pairs to the collection.

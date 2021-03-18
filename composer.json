@@ -49,10 +49,12 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
         "infection/infection": "^0.21",
-        "phpunit/phpunit" : "^8.0 || ^9.0",
         "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12"
+        "phpunit/phpunit": "^8.0 || ^9.0",
+        "psalm/plugin-phpunit": "^0.15.1",
+        "vimeo/psalm": "^4.6"
     },
     "autoload": {
         "psr-4": {
@@ -62,12 +64,14 @@
     "scripts": {
         "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
+        "psalm": "psalm --show-info=true",
         "phpstan": "phpstan analyse -l max -c phpstan.neon src --ansi --memory-limit 192M",
         "phpunit": "phpunit --coverage-text",
         "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "test": [
             "@phpunit",
+            "@psalm",
             "@phpstan",
             "@phpcs"
         ],
@@ -79,6 +83,14 @@
             "@test",
             "@infection-osx"
         ]
+    },
+    "scripts-descriptions": {
+        "phpstan": "Runs complete codebase static analysis",
+        "psalm": "Runs complete codebase static analysis",
+        "phpunit": "Runs unit and functional testing",
+        "phpcs": "Runs coding style testing",
+        "phpcs:fix": "Fix coding style issues",
+        "test": "Runs all tests"
     },
     "extra": {
         "branch-alias": {

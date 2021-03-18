@@ -18,7 +18,6 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Exception as PhpException;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 /**
  * @coversDefaultClass \League\Period\Period
@@ -204,7 +203,7 @@ final class ConstructorTest extends TestCase
 
     public function testIntervalFromDatePeriodThrowsException(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidTimeRange::class);
         Period::fromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
@@ -274,10 +273,10 @@ final class ConstructorTest extends TestCase
 
     public function testDay(): void
     {
-        $extendedDate = new class() extends DateTimeImmutable {
+        $extendedDate = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
 
-        $period = Datepoint::fromDate(new $extendedDate('2008-07-01T22:35:17.123456+08:00'))->day();
+        $period = Datepoint::fromDate($extendedDate)->day();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-02T00:00:00+08:00'), $period->getEndDate());
         self::assertEquals('+08:00', $period->getStartDate()->format('P'));
@@ -299,9 +298,8 @@ final class ConstructorTest extends TestCase
 
     public function testHour(): void
     {
-        $extendedDate = new class() extends DateTimeImmutable {
+        $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
-        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = Datepoint::fromDate($today)->hour();
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T23:00:00+08:00'), $period->getEndDate());
@@ -320,9 +318,8 @@ final class ConstructorTest extends TestCase
 
     public function testMonthWithDateTimeInterface(): void
     {
-        $extendedDate = new class() extends DateTimeImmutable {
+        $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
-        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = Datepoint::fromDate($today)->month();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2008-08-01T00:00:00+08:00'), $period->getEndDate());
@@ -332,9 +329,8 @@ final class ConstructorTest extends TestCase
 
     public function testYearWithDateTimeInterface(): void
     {
-        $extendedDate = new class() extends DateTimeImmutable {
+        $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
-        $today = new $extendedDate('2008-07-01T22:35:17.123456+08:00');
         $period = Datepoint::fromDate($today)->year();
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->getStartDate());
         self::assertEquals(new DateTimeImmutable('2009-01-01T00:00:00+08:00'), $period->getEndDate());

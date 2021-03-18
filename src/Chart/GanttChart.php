@@ -65,7 +65,7 @@ final class GanttChart implements Chart
         $output = $this->config->output();
         foreach ($dataset as $offset => [$label, $item]) {
             $colorIndex = $colorCodeIndexes[$offset % $colorCodeCount];
-            $labelPortion = str_pad($label, $labelMaxLength, ' ', $padding);
+            $labelPortion = str_pad((string) $label, $labelMaxLength, ' ', $padding);
             $dataPortion = $this->drawDataPortion($item, $lineCharacters);
             $output->writeln($leftMargin.$labelPortion.$gap.$dataPortion, $colorIndex);
         }

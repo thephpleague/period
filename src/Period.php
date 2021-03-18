@@ -157,9 +157,14 @@ final class Period implements JsonSerializable
 
     public static function fromDatePeriod(DatePeriod $datePeriod, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
+        $endDate = $datePeriod->getEndDate();
+        if (null === $endDate) {
+            throw InvalidTimeRange::dueToInvalidDatePeriod();
+        }
+
         return new self(
             self::filterDatepoint($datePeriod->getStartDate()),
-            self::filterDatepoint($datePeriod->getEndDate()),
+            self::filterDatepoint($endDate),
             $boundaryType
         );
     }

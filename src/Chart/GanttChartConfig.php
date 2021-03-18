@@ -376,12 +376,15 @@ final class GanttChartConfig
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified color palette.
      *
-     * @param string... $colors
+     * @param string ...$colors
      */
     public function withColors(string ...$colors): self
     {
-        $filter = static fn ($value): bool => in_array($value, Output::COLORS, true);
-        $colors = array_filter(array_map('strtolower', $colors), $filter);
+        $colors = array_filter(
+            array_map('strtolower', $colors),
+            fn (string $value): bool => in_array($value, Output::COLORS, true)
+        );
+
         if ([] === $colors) {
             $colors = [Output::COLOR_DEFAULT];
         }

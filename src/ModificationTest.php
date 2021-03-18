@@ -39,7 +39,7 @@ final class ModificationTest extends TestCase
         $expected = new DateTime('2012-03-02');
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->startingOn($expected);
-        self::assertTrue($newInterval->getStartDate() == $expected);
+        self::assertSame($newInterval->getStartDate()->getTimestamp(), $expected->getTimestamp());
         self::assertEquals($interval->getStartDate(), new DateTimeImmutable('2014-01-13'));
         self::assertSame($interval->startingOn($interval->getStartDate()), $interval);
     }
@@ -56,7 +56,7 @@ final class ModificationTest extends TestCase
         $expected  = new DateTime('2015-03-02');
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->endingOn($expected);
-        self::assertTrue($newInterval->getEndDate() == $expected);
+        self::assertSame($newInterval->getEndDate()->getTimestamp(), $expected->getTimestamp());
         self::assertEquals($interval->getEndDate(), new DateTimeImmutable('2014-01-20'));
         self::assertSame($interval->endingOn($interval->getEndDate()), $interval);
     }

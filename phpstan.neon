@@ -6,10 +6,10 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
     ignoreErrors:
+        - message: '#^Strict comparison using === between null and DateTimeInterface will always evaluate to false.#'
+          path: src/Period.php
         - message: '#^Variable property access on DateInterval.#'
           path: src/DurationTest.php
-        - message: '#Instanceof between League\\Period\\Sequence and League\\Period\\Sequence will always evaluate to true.#'
-          path: src/Chart/Dataset.php
         - message: '#Only numeric types are allowed in post-increment, string given.#'
           path: src/Chart/LatinLetter.php
         - message: '#Variable method call on League\\Period.#'

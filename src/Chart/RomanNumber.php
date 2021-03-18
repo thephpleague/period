@@ -80,11 +80,12 @@ final class RomanNumber implements LabelGenerator
      */
     private function convert(string $number): string
     {
+        $numberInt = (int) $number;
         $retVal = '';
-        while ($number > 0) {
+        while ($numberInt > 0) {
             foreach (self::CHARACTER_MAP as $roman => $int) {
-                if ($number >= $int) {
-                    $number -= $int;
+                if ($numberInt >= $int) {
+                    $numberInt -= $int;
                     $retVal .= $roman;
                     break;
                 }

@@ -49,6 +49,8 @@ final class LatinLetter implements LabelGenerator
 
     /**
      * {@inheritdoc}
+     *
+     * @psalm-suppress StringIncrement
      */
     public function generate(int $nbLabels): \Iterator
     {

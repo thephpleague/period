@@ -109,20 +109,20 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function intersections(): self
     {
-        $sequence = new self();
         $current = null;
         $isPreviouslyContained = false;
-        foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
+        $reducer = function (Sequence $sequence, Period $period) use (&$current, &$isPreviouslyContained): Sequence {
             if (null === $current) {
                 $current = $period;
-                continue;
+
+                return $sequence;
             }
 
             $isContained = $current->contains($period);
             if ($isContained && $isPreviouslyContained) {
                 $sequence->push($current->intersect($period));
 
-                continue;
+                return $sequence;
             }
 
             if ($current->overlaps($period)) {
@@ -133,9 +133,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             if (!$isContained) {
                 $current = $period;
             }
-        }
 
-        return $sequence;
+            return $sequence;
+        };
+
+        return $this->sorted([$this, 'sortByStartDate'])->reduce($reducer, new self());
     }
 
     /**
