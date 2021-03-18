@@ -54,12 +54,6 @@ final class ConstructorTest extends TestCase
         );
     }
 
-    public function testConstructorThrowTypeError(): void
-    {
-        $this->expectException(TypeError::class);
-        Period::fromDatepoint(new DateTime(), []);
-    }
-
     public function testSetState(): void
     {
         $period = Period::fromDatepoint('2014-05-01', '2014-05-08');
@@ -142,12 +136,6 @@ final class ConstructorTest extends TestCase
     {
         $this->expectException(InvalidTimeRange::class);
         Period::after(new DateTime('2012-01-12'), '-1 DAY');
-    }
-
-    public function testIntervalAfterFailedWithInvalidInterval(): void
-    {
-        $this->expectException(TypeError::class);
-        Period::after(new DateTime('2012-01-12'), []);
     }
 
     /**

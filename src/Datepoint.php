@@ -16,7 +16,6 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Stringable;
 use function intdiv;
 
 /**
@@ -46,9 +45,9 @@ final class Datepoint
         return new self((new DateTimeImmutable())->setTimestamp($timestamp));
     }
 
-    public static function fromString(string|Stringable $datepoint): self
+    public static function fromString(string $datepoint): self
     {
-        return new self(new DateTimeImmutable((string) $datepoint));
+        return new self(new DateTimeImmutable($datepoint));
     }
 
     public function toDateTimeImmutable(): DateTimeImmutable

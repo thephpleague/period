@@ -18,8 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 final class DatepointTest extends TestCase
 {
-    /** @var string **/
-    private $timezone;
+    private string $timezone;
 
     public function setUp(): void
     {
