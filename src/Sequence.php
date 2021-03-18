@@ -101,7 +101,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function sortByStartDate(Period $interval1, Period $interval2): int
     {
-        return $interval1->getStartDate() <=> $interval2->getStartDate();
+        return $interval1->startDate() <=> $interval2->startDate();
     }
 
     /**
@@ -225,11 +225,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function getTotalTimestampInterval(): float
+    public function totalTimestampInterval(): float
     {
         $retval = 0;
         foreach ($this->intervals as $interval) {
-            $retval += $interval->getTimestampInterval();
+            $retval += $interval->timestampInterval();
         }
 
         return $retval;

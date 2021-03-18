@@ -571,7 +571,7 @@ class IntervalRelationTest extends TestCase
     {
         $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
         $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $boundary2);
-        self::assertSame($expected, $interval0->intersect($interval1)->getBoundaryType());
+        self::assertSame($expected, $interval0->intersect($interval1)->boundaryType());
     }
 
     public function intersectBoundaryResultProvider(): array
@@ -666,8 +666,8 @@ class IntervalRelationTest extends TestCase
         $alt = Period::fromDatepoint(new DateTime('2012-06-01'), new DateTime('2012-09-01'));
         $gap = $orig->gap($alt);
 
-        self::assertEquals($orig->getEndDate(), $gap->getStartDate());
-        self::assertEquals($alt->getStartDate(), $gap->getEndDate());
+        self::assertEquals($orig->endDate(), $gap->startDate());
+        self::assertEquals($alt->startDate(), $gap->endDate());
         self::assertTrue($gap->equals($alt->gap($orig)));
     }
 
@@ -699,7 +699,7 @@ class IntervalRelationTest extends TestCase
     {
         $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDatepoint(new DateTime('2012-02-01'), new DateTime('2012-02-02'));
-        self::assertEquals(0, $orig->gap($alt)->getTimestampInterval());
+        self::assertEquals(0, $orig->gap($alt)->timestampInterval());
     }
 
     /**
@@ -709,7 +709,7 @@ class IntervalRelationTest extends TestCase
     {
         $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
         $interval1 = Period::fromDatepoint('2014-07-01', '2014-09-01', $boundary2);
-        self::assertSame($expected, $interval0->gap($interval1)->getBoundaryType());
+        self::assertSame($expected, $interval0->gap($interval1)->boundaryType());
     }
 
     public function gapBoundaryResultProvider(): array
@@ -823,8 +823,8 @@ class IntervalRelationTest extends TestCase
         $sequence = $alt->diff($period);
 
         self::assertCount(1, $sequence);
-        self::assertEquals(new DateTimeImmutable('2013-04-01'), $sequence[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2014-01-01'), $sequence[0]->getEndDate());
+        self::assertEquals(new DateTimeImmutable('2013-04-01'), $sequence[0]->startDate());
+        self::assertEquals(new DateTimeImmutable('2014-01-01'), $sequence[0]->endDate());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
@@ -835,8 +835,8 @@ class IntervalRelationTest extends TestCase
         $sequence = $alt->diff($period);
 
         self::assertCount(1, $sequence);
-        self::assertEquals(new DateTimeImmutable('2013-01-01'), $sequence[0]->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2013-10-01'), $sequence[0]->getEndDate());
+        self::assertEquals(new DateTimeImmutable('2013-01-01'), $sequence[0]->startDate());
+        self::assertEquals(new DateTimeImmutable('2013-10-01'), $sequence[0]->endDate());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
@@ -847,8 +847,8 @@ class IntervalRelationTest extends TestCase
         $sequence = $alt->diff($period);
 
         self::assertCount(2, $sequence);
-        self::assertSame(3600.0, $sequence[0]->getTimestampInterval());
-        self::assertSame(3600.0, $sequence[1]->getTimestampInterval());
+        self::assertSame(3600.0, $sequence[0]->timestampInterval());
+        self::assertSame(3600.0, $sequence[1]->timestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
@@ -866,11 +866,11 @@ class IntervalRelationTest extends TestCase
         $sequence = $interval0->diff($interval1);
 
         if (0 < count($sequence)) {
-            self::assertSame($expected1, $sequence[0]->getBoundaryType());
+            self::assertSame($expected1, $sequence[0]->boundaryType());
         }
 
         if (1 < count($sequence)) {
-            self::assertSame($expected2, $sequence[1]->getBoundaryType());
+            self::assertSame($expected2, $sequence[1]->boundaryType());
         }
     }
 
@@ -1010,14 +1010,14 @@ class IntervalRelationTest extends TestCase
         $diff1 = $periodA->subtract($periodB);
 
         self::assertCount(1, $diff1);
-        self::assertEquals($periodA->getStartDate(), $diff1[0]->getStartDate());
-        self::assertEquals($periodB->getStartDate(), $diff1[0]->getEndDate());
+        self::assertEquals($periodA->startDate(), $diff1[0]->startDate());
+        self::assertEquals($periodB->startDate(), $diff1[0]->endDate());
 
         $diff2 = $periodB->subtract($periodA);
 
         self::assertCount(1, $diff2);
-        self::assertEquals($periodA->getEndDate(), $diff2[0]->getStartDate());
-        self::assertEquals($periodB->getEndDate(), $diff2[0]->getEndDate());
+        self::assertEquals($periodA->endDate(), $diff2[0]->startDate());
+        self::assertEquals($periodB->endDate(), $diff2[0]->endDate());
     }
 
     public function testSubtractWithSeparatePeriods(): void
@@ -1044,10 +1044,10 @@ class IntervalRelationTest extends TestCase
         $diff1 = $periodA->subtract($periodB);
 
         self::assertCount(2, $diff1);
-        self::assertEquals($periodA->getStartDate(), $diff1[0]->getStartDate());
-        self::assertEquals($periodB->getStartDate(), $diff1[0]->getEndDate());
-        self::assertEquals($periodB->getEndDate(), $diff1[1]->getStartDate());
-        self::assertEquals($periodA->getEndDate(), $diff1[1]->getEndDate());
+        self::assertEquals($periodA->startDate(), $diff1[0]->startDate());
+        self::assertEquals($periodB->startDate(), $diff1[0]->endDate());
+        self::assertEquals($periodB->endDate(), $diff1[1]->startDate());
+        self::assertEquals($periodA->endDate(), $diff1[1]->endDate());
 
         $diff2 = $periodB->subtract($periodA);
 

@@ -51,8 +51,8 @@ final class StringRepresentationTest extends TestCase
 
         $res = json_decode($json);
 
-        self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));
-        self::assertEquals($period->getEndDate(), new DateTimeImmutable($res->endDate));
+        self::assertEquals($period->startDate(), new DateTimeImmutable($res->startDate));
+        self::assertEquals($period->endDate(), new DateTimeImmutable($res->endDate));
     }
 
     public function testFormat(): void

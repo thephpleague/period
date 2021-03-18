@@ -144,7 +144,7 @@ final class Dataset implements Data
     public function jsonSerialize(): array
     {
         return array_map(
-            static fn (array $pair): array => ['label' => $pair[0], 'item' => $pair[1]],
+            fn (array $pair): array => ['label' => $pair[0], 'item' => $pair[1]],
             $this->pairs
         );
     }

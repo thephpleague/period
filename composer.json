@@ -67,8 +67,8 @@
         "psalm": "psalm --show-info=true",
         "phpstan": "phpstan analyse -l max -c phpstan.neon src --ansi --memory-limit 192M",
         "phpunit": "phpunit --coverage-text",
-        "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
-        "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
+        "infection-linux": "infection -j$(nproc) --skip-initial-tests --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --no-progress --ansi",
+        "infection-osx": "infection -j$(sysctl -n hw.ncpu) --skip-initial-tests --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --no-progress --ansi",
         "test": [
             "@phpunit",
             "@psalm",
