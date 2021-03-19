@@ -537,25 +537,15 @@ final class Period implements JsonSerializable
      */
     private function containsInterval(self $interval): bool
     {
-        if ($this->startDate < $interval->startDate && $this->endDate > $interval->endDate) {
-            return true;
-        }
-
-        if ($this->startDate == $interval->startDate && $this->endDate == $interval->endDate) {
-            return $this->boundaryType === $interval->boundaryType || '[]' === $this->boundaryType;
-        }
-
-        if ($this->startDate == $interval->startDate) {
-            return ($this->boundaryType[0] === $interval->boundaryType[0] || '[' === $this->boundaryType[0])
-                && $this->containsDatepoint($this->startDate->add($interval->dateInterval()), $this->boundaryType);
-        }
-
-        if ($this->endDate == $interval->endDate) {
-            return ($this->boundaryType[1] === $interval->boundaryType[1] || ']' === $this->boundaryType[1])
-                && $this->containsDatepoint($this->endDate->sub($interval->dateInterval()), $this->boundaryType);
-        }
-
-        return false;
+        return match (true) {
+            $this->startDate < $interval->startDate && $this->endDate > $interval->endDate => true,
+            $this->startDate == $interval->startDate && $this->endDate == $interval->endDate => $this->boundaryType === $interval->boundaryType || '[]' === $this->boundaryType,
+            $this->startDate == $interval->startDate => ($this->boundaryType[0] === $interval->boundaryType[0] || '[' === $this->boundaryType[0])
+                && $this->containsDatepoint($this->startDate->add($interval->dateInterval()), $this->boundaryType),
+            $this->endDate == $interval->endDate => ($this->boundaryType[1] === $interval->boundaryType[1] || ']' === $this->boundaryType[1])
+                && $this->containsDatepoint($this->endDate->sub($interval->dateInterval()), $this->boundaryType),
+            default => false,
+        };
     }
 
     /**
