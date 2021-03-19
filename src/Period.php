@@ -30,6 +30,13 @@ use JsonSerializable;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+    private const REGEXP_INTERVAL_NOTATION = '/^
+            (?<startboundary>\[|\()
+            (?<startdate>[^,\]\)\[\(]*)
+            ,
+            (?<enddate>[^,\]\)\[\(]*)
+            (?<endboundary>\]|\))
+        $/x';
     private const BOUNDARY_TYPE = [
         self::INCLUDE_START_EXCLUDE_END => 1,
         self::INCLUDE_ALL => 1,
@@ -236,6 +243,19 @@ final class Period implements JsonSerializable
         return new self(self::filterDatepoint($startDate), self::filterDatepoint($endDate), $boundaryType);
     }
 
+    public static function fromNotation(string $notation): self
+    {
+        if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
+            throw InvalidTimeRange::dueToUnknownNotation($notation);
+        }
+
+        return self::fromDatepoint(
+            trim($found['startdate']),
+            trim($found['enddate']),
+            $found['startboundary'].$found['endboundary']
+        );
+    }
+
     /**************************************************
      * Basic getters
      **************************************************/
@@ -328,7 +348,7 @@ final class Period implements JsonSerializable
      *
      * @param string $format the format of the outputted date string
      */
-    public function format(string $format): string
+    public function toNotation(string $format): string
     {
         return $this->boundaryType[0]
             .$this->startDate->format($format)

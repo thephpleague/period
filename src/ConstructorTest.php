@@ -344,4 +344,57 @@ final class ConstructorTest extends TestCase
 
         self::assertEquals('+00:00', $period->endDate()->format('P'));
     }
+
+    /**
+     * @dataProvider provideValidIntervalNotation
+     */
+    public function testCreateNewInstanceFromNotation(string $notation, string $format, string $expected): void
+    {
+        self::assertSame($expected, Period::fromNotation($notation)->toNotation($format));
+    }
+
+    public function provideValidIntervalNotation(): iterable
+    {
+        yield 'date string' => [
+          'notation' => '[2021-01-03,2021-01-04)',
+          'format' => 'Y-m-d',
+          'expected' =>   '[2021-01-03, 2021-01-04)',
+        ];
+
+        yield 'date string with spaces' => [
+            'notation' => '(   2021-01-03  ,  2021-01-04  ]',
+            'format' => 'Y-m-d',
+            'expected' =>   '(2021-01-03, 2021-01-04]',
+        ];
+
+        $now = (new DateTimeImmutable('now'))->format('Y-m-d');
+        $tomorrow = (new DateTimeImmutable('tomorrow'))->format('Y-m-d');
+
+        yield 'date string with dynamic names' => [
+            'notation' => '[now  ,  tomorrow]',
+            'format' => 'Y-m-d',
+            'expected' =>   '['.$now.', '.$tomorrow.']',
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidIntervalNotation
+     */
+    public function testFailsToCreateNewInstanceFromNotation(string $notation, ): void
+    {
+        $this->expectException(InvalidTimeRange::class);
+
+        Period::fromNotation($notation);
+    }
+
+    public function provideInvalidIntervalNotation(): iterable
+    {
+        return [
+            'empty string' => [''],
+            'missing separator' => ['[2021-01-02 2021-01-03]'],
+            'missing boundaries' => ['2021-01-02,2021-01-03'],
+            'too many boundaries' => ['[2021-01-02,2021-)01-03]'],
+            'too many separator' => ['[2021-01-02,2021-,01-03]'],
+        ];
+    }
 }

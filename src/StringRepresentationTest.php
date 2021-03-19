@@ -58,10 +58,10 @@ final class StringRepresentationTest extends TestCase
     public function testFormat(): void
     {
         date_default_timezone_set('Africa/Nairobi');
-        self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->format('Y-m'));
+        self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->toNotation('Y-m'));
         self::assertSame(
             '[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)',
-            (Period::fromDatepoint('2015-04-01', '2015-04-01'))->format('Y-m-d e')
+            (Period::fromDatepoint('2015-04-01', '2015-04-01'))->toNotation('Y-m-d e')
         );
     }
 }

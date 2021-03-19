@@ -37,11 +37,16 @@ final class InvalidTimeRange extends \InvalidArgumentException implements TimeRa
 
     public static function dueToUnknownDuratiomFormnat(string $duration): self
     {
-        return new self('Unknown or bad format ('.$duration.')');
+        return new self('Unknown or bad format ('.$duration.').');
     }
 
     public static function dueToInvalidDatePeriod(): self
     {
         return new self('The '.\DatePeriod::class.' should contain an end date to be instantiate a '.Period::class.' class.');
+    }
+
+    public static function dueToUnknownNotation(string $notation): self
+    {
+        return new self('Unknown or bad interval notation ('.$notation.').');
     }
 }
