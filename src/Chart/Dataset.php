@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use League\Period\Period;
 use League\Period\Sequence;
+use MultipleIterator;
 use function array_column;
 use function count;
 use function strlen;
@@ -26,7 +28,7 @@ final class Dataset implements Data
      */
     private array $pairs = [];
     private int $labelMaxLength = 0;
-    private Period|null $boundaries = null;
+    private Period|null $length = null;
 
     public function __construct(iterable $pairs = [])
     {
@@ -37,12 +39,12 @@ final class Dataset implements Data
      * Creates a new collection from a countable iterable structure.
      *
      * @param array|(\Countable&iterable) $items
-     * @param ?LabelGenerator             $labelGenerator
+     * @param null|LabelGenerator|null    $labelGenerator
      */
-    public static function fromItems($items, ?LabelGenerator $labelGenerator = null): self
+    public static function fromItems($items, LabelGenerator|null $labelGenerator = null): self
     {
         $nbItems = count($items);
-        $items = (function () use ($items): \Iterator {
+        $items = (function () use ($items): Iterator {
             foreach ($items as $key => $value) {
                 yield $key => $value;
             }
@@ -50,7 +52,7 @@ final class Dataset implements Data
 
         $labelGenerator = $labelGenerator ?? new LatinLetter();
 
-        $pairs = new \MultipleIterator(\MultipleIterator::MIT_NEED_ALL|\MultipleIterator::MIT_KEYS_ASSOC);
+        $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
         $pairs->attachIterator($labelGenerator->generate($nbItems), '0');
         $pairs->attachIterator($items, '1');
 
@@ -70,9 +72,6 @@ final class Dataset implements Data
         return $dataset;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function appendAll(iterable $pairs): void
     {
         foreach ($pairs as [$label, $item]) {
@@ -80,9 +79,6 @@ final class Dataset implements Data
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function append(string|int $label, Period|Sequence $item): void
     {
         if ($item instanceof Period) {
@@ -90,7 +86,7 @@ final class Dataset implements Data
         }
 
         $this->setLabelMaxLength((string) $label);
-        $this->setBoundaries($item);
+        $this->setLength($item);
 
         $this->pairs[] = [$label, $item];
     }
@@ -109,38 +105,29 @@ final class Dataset implements Data
     /**
      * Computes the Period boundary for the dataset.
      */
-    private function setBoundaries(Sequence $sequence): void
+    private function setLength(Sequence $sequence): void
     {
-        if (null === $this->boundaries) {
-            $this->boundaries = $sequence->boundaries();
+        if (null === $this->length) {
+            $this->length = $sequence->length();
 
             return;
         }
 
-        $this->boundaries = $this->boundaries->merge(...$sequence);
+        $this->length = $this->length->merge(...$sequence);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function count(): int
     {
         return count($this->pairs);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getIterator(): \Iterator
+    public function getIterator(): Iterator
     {
         foreach ($this->pairs as $pair) {
             yield $pair;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize(): array
     {
         return array_map(
@@ -149,41 +136,26 @@ final class Dataset implements Data
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isEmpty(): bool
     {
         return [] === $this->pairs;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function labels(): array
     {
         return array_column($this->pairs, 0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function items(): array
     {
         return array_column($this->pairs, 1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function boundaries(): ?Period
+    public function length(): Period|null
     {
-        return $this->boundaries;
+        return $this->length;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function labelMaxLength(): int
     {
         return $this->labelMaxLength;

@@ -446,22 +446,22 @@ class IntervalRelationTest extends TestCase
                 false,
             ],
             [
-                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $interval->withBoundaries(Period::INCLUDE_ALL),
                 $interval,
                 true,
             ],
             [
-                $interval->withBoundaryType(Period::EXCLUDE_ALL),
-                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $interval->withBoundaries(Period::EXCLUDE_ALL),
+                $interval->withBoundaries(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaries(Period::EXCLUDE_ALL),
                 $startingDate,
                 false,
             ],
             [
-                $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END),
+                $interval->withBoundaries(Period::INCLUDE_START_EXCLUDE_END),
                 $startingDate,
                 true,
             ],
@@ -494,21 +494,21 @@ class IntervalRelationTest extends TestCase
             ],
             [
                 $interval,
-                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaries(Period::EXCLUDE_ALL),
                 true,
             ],
             [
-                $interval->withBoundaryType(Period::EXCLUDE_ALL),
-                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $interval->withBoundaries(Period::EXCLUDE_ALL),
+                $interval->withBoundaries(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                $interval->withBoundaryType(Period::EXCLUDE_ALL),
+                $interval->withBoundaries(Period::EXCLUDE_ALL),
                 $endingDate,
                 false,
             ],
             [
-                $interval->withBoundaryType(Period::INCLUDE_ALL),
+                $interval->withBoundaries(Period::INCLUDE_ALL),
                 $endingDate,
                 true,
             ],
@@ -571,7 +571,7 @@ class IntervalRelationTest extends TestCase
     {
         $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
         $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $boundary2);
-        self::assertSame($expected, $interval0->intersect($interval1)->boundaryType());
+        self::assertSame($expected, $interval0->intersect($interval1)->boundaries());
     }
 
     public function intersectBoundaryResultProvider(): array
@@ -709,7 +709,7 @@ class IntervalRelationTest extends TestCase
     {
         $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
         $interval1 = Period::fromDatepoint('2014-07-01', '2014-09-01', $boundary2);
-        self::assertSame($expected, $interval0->gap($interval1)->boundaryType());
+        self::assertSame($expected, $interval0->gap($interval1)->boundaries());
     }
 
     public function gapBoundaryResultProvider(): array
@@ -866,11 +866,11 @@ class IntervalRelationTest extends TestCase
         $sequence = $interval0->diff($interval1);
 
         if (0 < count($sequence)) {
-            self::assertSame($expected1, $sequence[0]->boundaryType());
+            self::assertSame($expected1, $sequence[0]->boundaries());
         }
 
         if (1 < count($sequence)) {
-            self::assertSame($expected2, $sequence[1]->boundaryType());
+            self::assertSame($expected2, $sequence[1]->boundaries());
         }
     }
 
@@ -994,7 +994,7 @@ class IntervalRelationTest extends TestCase
                 }
 
                 $sequence->push($intersect);
-                $boundaries = $sequence->boundaries();
+                $boundaries = $sequence->length();
                 if (null !== $boundaries) {
                     self::assertTrue($boundaries->equals($interval0->merge($interval1)));
                 }

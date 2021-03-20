@@ -13,14 +13,16 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
+
 interface LabelGenerator
 {
     /**
      * Returns the labels to associate with all items.
      *
-     * @return \Iterator<string>
+     * @return Iterator<string>
      */
-    public function generate(int $nbLabels): \Iterator;
+    public function generate(int $nbLabels): Iterator;
 
     /**
      * Returns a formatted label according to the generator rules.

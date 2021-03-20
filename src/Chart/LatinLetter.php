@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use function preg_match;
 use function trim;
 
@@ -52,7 +53,7 @@ final class LatinLetter implements LabelGenerator
      *
      * @psalm-suppress StringIncrement
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         if (0 >= $nbLabels) {
             $nbLabels = 0;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use function preg_replace;
 
 final class AffixLabel implements LabelGenerator
@@ -34,7 +35,7 @@ final class AffixLabel implements LabelGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         foreach ($this->labelGenerator->generate($nbLabels) as $key => $label) {
             yield $key => $this->prefix.$label.$this->suffix;

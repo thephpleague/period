@@ -25,7 +25,6 @@ use function array_unshift;
 use function array_values;
 use function count;
 use function reset;
-use function sort;
 use function uasort;
 use function usort;
 use const ARRAY_FILTER_USE_BOTH;
@@ -59,9 +58,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * If the sequence contains no interval null is returned.
      *
-     * @return ?Period
+     * @return Period|null
      */
-    public function boundaries(): ?Period
+    public function length(): Period|null
     {
         $period = reset($this->intervals);
         if (false === $period) {

@@ -40,11 +40,11 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence();
         self::assertTrue($sequence->isEmpty());
         self::assertCount(0, $sequence);
-        self::assertNull($sequence->boundaries());
+        self::assertNull($sequence->length());
         $sequence->push(Period::fromDay(2012, 6, 23));
         self::assertFalse($sequence->isEmpty());
         self::assertCount(1, $sequence);
-        self::assertInstanceOf(Period::class, $sequence->boundaries());
+        self::assertInstanceOf(Period::class, $sequence->length());
     }
 
     public function testConstructor(): void
@@ -77,7 +77,7 @@ final class SequenceTest extends TestCase
         $event2 = Period::fromDay(2012, 6, 23);
         $event3 = Period::fromDay(2012, 6, 25);
         $sequence = new Sequence($event1, $event2);
-        self::assertInstanceOf(Period::class, $sequence->boundaries());
+        self::assertInstanceOf(Period::class, $sequence->length());
         self::assertTrue($sequence->contains($event2));
         self::assertTrue($sequence->contains($event1));
         self::assertTrue($sequence->contains(Period::fromDay(2012, 6, 23)));
@@ -92,7 +92,7 @@ final class SequenceTest extends TestCase
         self::assertTrue(Period::fromDay(2018, 8, 8)->equals($sequence->get(0)));
         $sequence->clear();
         self::assertTrue($sequence->isEmpty());
-        self::assertNull($sequence->boundaries());
+        self::assertNull($sequence->length());
     }
 
     public function testGetThrowsExceptionWithInvalidPositiveIndex(): void
@@ -437,7 +437,7 @@ final class SequenceTest extends TestCase
         );
 
         $unions = $sequence->unions();
-        self::assertEquals($sequence->boundaries(), $unions->boundaries());
+        self::assertEquals($sequence->length(), $unions->length());
         self::assertTrue($unions->intersections()->isEmpty());
         self::assertEquals($sequence->gaps(), $unions->gaps());
         self::assertTrue(Period::around('2016-06-01', '3 MONTHS')->equals($unions->get(0)));
@@ -523,7 +523,7 @@ final class SequenceTest extends TestCase
         self::assertSame((float) 0, (new Sequence())->totalTimestampInterval());
 
         $sequence = new Sequence(Period::fromMonth(2017, 1), Period::fromMonth(2018, 1));
-        $period = $sequence->boundaries();
+        $period = $sequence->length();
         if (null !== $period) {
             self::assertNotEquals($period->timestampInterval(), $sequence->totalTimestampInterval());
         }

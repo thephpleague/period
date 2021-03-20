@@ -53,7 +53,7 @@ final class DatasetTest extends TestCase
         $dataset = Dataset::fromIterable($input);
         self::assertCount($expectedCount, $dataset);
         self::assertSame($isEmpty, $dataset->isEmpty());
-        self::assertSame($boundaryIsNull, null === $dataset->boundaries());
+        self::assertSame($boundaryIsNull, null === $dataset->length());
     }
 
     public function provideIterableStructure(): iterable

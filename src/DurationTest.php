@@ -14,6 +14,7 @@ namespace League\Period;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class DurationTest extends TestCase
@@ -139,7 +140,7 @@ final class DurationTest extends TestCase
 
     public function testItFailsToCreateADurationWithANegativeFraction(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         Duration::fromSeconds(32, -1);
     }

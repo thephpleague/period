@@ -45,7 +45,7 @@ final class BoundaryTest extends TestCase
         bool $endIncluded,
         bool $endExcluded
     ): void {
-        self::assertSame($rangeType, $interval->boundaryType());
+        self::assertSame($rangeType, $interval->boundaries());
         self::assertSame($startIncluded, $interval->isStartIncluded());
         self::assertSame($startExcluded, $interval->isStartExcluded());
         self::assertSame($endIncluded, $interval->isEndIncluded());
@@ -93,16 +93,16 @@ final class BoundaryTest extends TestCase
     public function testWithBoundaryType(): void
     {
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->withBoundaryType(Period::EXCLUDE_ALL);
+        $altInterval = $interval->withBoundaries(Period::EXCLUDE_ALL);
         self::assertEquals($interval->dateInterval(), $interval->dateInterval());
-        self::assertNotEquals($interval->boundaryType(), $altInterval->boundaryType());
-        self::assertSame($interval, $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END));
+        self::assertNotEquals($interval->boundaries(), $altInterval->boundaries());
+        self::assertSame($interval, $interval->withBoundaries(Period::INCLUDE_START_EXCLUDE_END));
     }
 
     public function testWithBoundaryTypeFails(): void
     {
         $this->expectException(InvalidTimeRange::class);
         $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $interval->withBoundaryType('foobar');
+        $interval->withBoundaries('foobar');
     }
 }

@@ -78,7 +78,7 @@ final class GanttChart implements Chart
     {
         $this->start = 0;
         $this->unit = 1;
-        $boundaries = $dataset->boundaries();
+        $boundaries = $dataset->length();
         if (null !== $boundaries) {
             $this->start = $boundaries->startDate()->getTimestamp();
             $this->unit = $this->config->width() / $boundaries->timestampInterval();

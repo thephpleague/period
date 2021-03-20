@@ -16,6 +16,7 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use InvalidArgumentException;
 use function preg_match;
 use function str_pad;
 
@@ -97,7 +98,7 @@ final class Duration
         }
 
         if (0 > $fraction) {
-            throw new \InvalidArgumentException('The fraction should be a valid positive integer or zero.');
+            throw new InvalidArgumentException('The fraction should be a valid positive integer or zero.');
         }
 
         $duration = new DateInterval('PT0S');

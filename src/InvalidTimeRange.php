@@ -11,7 +11,10 @@
 
 namespace League\Period;
 
-final class InvalidTimeRange extends \InvalidArgumentException implements TimeRangeError
+use DatePeriod;
+use InvalidArgumentException;
+
+final class InvalidTimeRange extends InvalidArgumentException implements TimeRangeError
 {
     private function __construct(string $message)
     {
@@ -42,7 +45,7 @@ final class InvalidTimeRange extends \InvalidArgumentException implements TimeRa
 
     public static function dueToInvalidDatePeriod(): self
     {
-        return new self('The '.\DatePeriod::class.' should contain an end date to be instantiate a '.Period::class.' class.');
+        return new self('The '.DatePeriod::class.' should contain an end date to be instantiate a '.Period::class.' class.');
     }
 
     public static function dueToUnknownNotation(string $notation): self

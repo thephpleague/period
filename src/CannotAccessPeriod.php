@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period;
 
+use InvalidArgumentException;
+
 /**
  * Exception thrown by the Sequence class.
  *
@@ -20,7 +22,7 @@ namespace League\Period;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0
  */
-final class CannotAccessPeriod extends \InvalidArgumentException implements TimeRangeError
+final class CannotAccessPeriod extends InvalidArgumentException implements TimeRangeError
 {
     private function __construct(string $message)
     {

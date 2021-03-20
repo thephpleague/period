@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use function in_array;
 use function strtolower;
 use function strtoupper;
@@ -54,7 +55,7 @@ final class RomanNumber implements LabelGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         foreach ($this->decimalNumber->generate($nbLabels) as $key => $label) {
             yield $key => $this->convert($label);
