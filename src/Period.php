@@ -276,7 +276,7 @@ final class Period implements JsonSerializable
         return $this->boundaries;
     }
 
-    public function timestampInterval(): float
+    public function timestampInterval(): int
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
@@ -648,7 +648,7 @@ final class Period implements JsonSerializable
     /**
      * Returns the difference between two instances expressed in seconds.
      */
-    public function timestampIntervalDiff(self $period): float
+    public function timestampIntervalDiff(self $period): int
     {
         return $this->timestampInterval() - $period->timestampInterval();
     }

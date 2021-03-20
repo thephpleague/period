@@ -847,8 +847,8 @@ class IntervalRelationTest extends TestCase
         $sequence = $alt->diff($period);
 
         self::assertCount(2, $sequence);
-        self::assertSame(3600.0, $sequence[0]->timestampInterval());
-        self::assertSame(3600.0, $sequence[1]->timestampInterval());
+        self::assertSame(3600, $sequence[0]->timestampInterval());
+        self::assertSame(3600, $sequence[1]->timestampInterval());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 

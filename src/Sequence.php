@@ -225,11 +225,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function totalTimestampInterval(): float
+    public function totalTimestampInterval(): int
     {
         return array_reduce(
             $this->periods,
-            fn (float|int $timestamp, Period $period): float => $timestamp + $period->timestampInterval(),
+            fn (int $timestamp, Period $period): int => $timestamp + $period->timestampInterval(),
             0
         );
     }
