@@ -291,6 +291,24 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
+     * Returns the mathematical representation of an instance as a left close, right open interval.
+     *
+     * @see https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals
+     * @see https://php.net/manual/en/function.date.php
+     * @see https://www.postgresql.org/docs/9.3/static/rangetypes.html
+     *
+     * @param string $format the format of the outputted date string
+     */
+    public function toNotation(string $format): string
+    {
+        return $this->boundaries[0]
+            .$this->startDate->format($format)
+            .', '
+            .$this->endDate->format($format)
+            .$this->boundaries[1];
+    }
+
+    /**
      * Returns the string representation as a ISO8601 interval format.
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
@@ -321,24 +339,6 @@ final class Period implements JsonSerializable
         [$startDate, $endDate] = explode('/', $this->toIso8601(), 2);
 
         return ['startDate' => $startDate, 'endDate' => $endDate];
-    }
-
-    /**
-     * Returns the mathematical representation of an instance as a left close, right open interval.
-     *
-     * @see https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals
-     * @see https://php.net/manual/en/function.date.php
-     * @see https://www.postgresql.org/docs/9.3/static/rangetypes.html
-     *
-     * @param string $format the format of the outputted date string
-     */
-    public function toNotation(string $format): string
-    {
-        return $this->boundaries[0]
-            .$this->startDate->format($format)
-            .', '
-            .$this->endDate->format($format)
-            .$this->boundaries[1];
     }
 
     /**************************************************
