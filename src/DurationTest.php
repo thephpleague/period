@@ -155,55 +155,6 @@ final class DurationTest extends TestCase
         self::assertSame(0.023658, $duration->toDateInterval()->f);
     }
 
-    public function testCreateFromTimeStringFails(): void
-    {
-        $this->expectException(InvalidTimeRange::class);
-
-        Duration::fromTimeString('123');
-    }
-
-    /**
-     * @dataProvider fromTimeStringProvider
-     */
-    public function testCreateFromTimeStringSucceeds(string $chronometer, string $expected, int $revert): void
-    {
-        $duration = Duration::fromTimeString($chronometer);
-
-        self::assertSame($expected, $this->formatDuration($duration));
-        self::assertSame($revert, $duration->toDateInterval()->invert);
-    }
-
-    public function fromTimeStringProvider(): iterable
-    {
-        return [
-            'hour and minute' => [
-                'chronometer' => '1:2',
-                'expected' => 'PT1H2M',
-                'invert' => 0,
-            ],
-            'hour, minute, seconds' => [
-                'chronometer' => '1:2:3',
-                'expected' => 'PT1H2M3S',
-                'invert' => 0,
-            ],
-            'handling 0 prefix' => [
-                'chronometer' => '00001:00002:000003.0004',
-                'expected' => 'PT1H2M3.0004S',
-                'invert' => 0,
-            ],
-            'negative chrono' => [
-                'chronometer' => '-12:28',
-                'expected' => 'PT12H28M',
-                'invert' => 1,
-            ],
-            'negative chrono with seconds' => [
-                'chronometer' => '-00:00:28.5',
-                'expected' => 'PT28.5S',
-                'invert' => 1,
-            ],
-        ];
-    }
-
     /**
      * @dataProvider fromChronoFailsProvider
      */

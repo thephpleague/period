@@ -30,18 +30,11 @@ final class Duration
 {
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
-
     private const REGEXP_CHRONO_FORMAT = '@^
         (?<sign>\+|-)?                  # optional sign
         ((?<hour>\d+):)?                # optional hour
         ((?<minute>\d+):)(?<second>\d+) # required minute and second
         (\.(?<fraction>\d{1,6}))?       # optional fraction
-    $@x';
-
-    private const REGEXP_TIME_FORMAT = '@^
-        (?<sign>\+|-)?                               # optional sign
-        (?<hour>\d+)(:(?<minute>\d+))                # required hour and minute
-        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
     $@x';
 
     private function __construct(private DateInterval $duration)
@@ -124,20 +117,6 @@ final class Duration
 
         if ('' === $units['hour']) {
             $units['hour'] = '0';
-        }
-
-        return self::fromTimeUnits($units);
-    }
-
-    /**
-     * Creates a new instance from a time string representation following RDBMS specification.
-     *
-     * @throws InvalidTimeRange
-     */
-    public static function fromTimeString(string $duration): self
-    {
-        if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
-            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
         }
 
         return self::fromTimeUnits($units);
