@@ -249,9 +249,16 @@ final class Period implements JsonSerializable
             throw InvalidTimeRange::dueToUnknownNotation($notation);
         }
 
+        $startDate = trim($found['startdate']);
+        $endDate = trim($found['enddate']);
+
+        if (in_array('', [$startDate, $endDate], true)) {
+            throw InvalidTimeRange::dueToUnknownNotation($notation);
+        }
+
         return self::fromDatepoint(
-            trim($found['startdate']),
-            trim($found['enddate']),
+            $startDate,
+            $endDate,
             $found['startboundary'].$found['endboundary']
         );
     }

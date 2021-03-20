@@ -395,6 +395,7 @@ final class ConstructorTest extends TestCase
             'missing boundaries' => ['2021-01-02,2021-01-03'],
             'too many boundaries' => ['[2021-01-02,2021-)01-03]'],
             'too many separator' => ['[2021-01-02,2021-,01-03]'],
+            'missing dates' => ['[2021-01-02,  ]'],
         ];
     }
 }
