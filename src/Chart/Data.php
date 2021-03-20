@@ -15,10 +15,12 @@ namespace League\Period\Chart;
 
 use Countable;
 use Iterator;
+use IteratorAggregate;
+use JsonSerializable;
 use League\Period\Period;
 use League\Period\Sequence;
 
-interface Data extends Countable, \IteratorAggregate, \JsonSerializable
+interface Data extends Countable, IteratorAggregate, JsonSerializable
 {
     /**
      * Returns the number of pairs.
@@ -28,7 +30,7 @@ interface Data extends Countable, \IteratorAggregate, \JsonSerializable
     /**
      * Returns the pairs.
      *
-     * @return \Iterator<int, array{0: int|string, 1: Sequence}>
+     * @return Iterator<int, array{0: int|string, 1: Sequence}>
      */
     public function getIterator(): Iterator;
 
@@ -55,7 +57,7 @@ interface Data extends Countable, \IteratorAggregate, \JsonSerializable
     /**
      * Returns the dataset length.
      */
-    public function length(): ?Period;
+    public function length(): Period|null;
 
     /**
      * Returns the label maximum length.

@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
-use InvalidArgumentException;
 use function array_filter;
 use function array_map;
 use function mb_convert_encoding;
 use function mb_strlen;
 use function preg_match;
 use function preg_replace;
-use function sprintf;
 use const STDOUT;
 use const STR_PAD_BOTH;
 use const STR_PAD_LEFT;
@@ -210,14 +208,14 @@ final class GanttChartConfig
     /**
      * Filter the submitted string.
      *
-     * @throws InvalidArgumentException if the pattern is invalid
+     * @throws UnableToDrawChart if the pattern is invalid
      */
     private function filterPattern(string $str, string $part): string
     {
         return match (true) {
             1 === mb_strlen($str) => $str,
             1 === preg_match(self::REGEXP_UNICODE, $str) => $this->filterUnicodeCharacter($str),
-            default => throw new InvalidArgumentException(sprintf('The %s pattern must be a single character', $part)),
+            default => throw UnableToDrawChart::dueToInvalidPattern($part),
         };
     }
 
@@ -226,7 +224,7 @@ final class GanttChartConfig
      *
      * @see http://stackoverflow.com/a/37415135/2316257
      *
-     * @throws InvalidArgumentException if the character is not valid.
+     * @throws UnableToDrawChart if the character is not valid.
      */
     private function filterUnicodeCharacter(string $str): string
     {
@@ -237,7 +235,7 @@ final class GanttChartConfig
             return $result;
         }
 
-        throw new InvalidArgumentException(sprintf('The given string `%s` is not a valid unicode string', $str));
+        throw UnableToDrawChart::dueToInvalidUnicodeChar($str);
     }
 
     /**

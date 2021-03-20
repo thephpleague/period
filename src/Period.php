@@ -63,7 +63,7 @@ final class Period implements JsonSerializable
         }
 
         if (!isset(self::BOUNDARY_TYPE[$boundaries])) {
-            throw InvalidTimeRange::dueToInvalidBoundaryType($boundaries, self::BOUNDARY_TYPE);
+            throw InvalidTimeRange::dueToUnknownBoundaries($boundaries, self::BOUNDARY_TYPE);
         }
 
         $this->startDate = $startDate;

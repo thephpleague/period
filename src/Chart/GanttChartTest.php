@@ -38,7 +38,7 @@ final class GanttChartTest extends TestCase
     public function setUp(): void
     {
         $this->stream = $this->setStream();
-        $config = (new GanttChartConfig(new \League\Period\Chart\ConsoleOutput($this->stream)))->withColors('red');
+        $config = (new GanttChartConfig(new ConsoleOutput($this->stream)))->withColors('red');
         $this->graph = new GanttChart($config);
     }
 
@@ -68,7 +68,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayEmptyDataset(): void
     {
-        $this->graph->stroke(new \League\Period\Chart\Dataset());
+        $this->graph->stroke(new Dataset());
         rewind($this->stream);
         $data = stream_get_contents($this->stream);
 
@@ -83,7 +83,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayPeriods(): void
     {
-        $this->graph->stroke(new \League\Period\Chart\Dataset([
+        $this->graph->stroke(new Dataset([
             ['A', Period::fromDatepoint('2018-01-01', '2018-01-15')],
             ['B', Period::fromDatepoint('2018-01-15', '2018-02-01')],
         ]));
@@ -103,7 +103,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplaySequence(): void
     {
-        $dataset = new \League\Period\Chart\Dataset([
+        $dataset = new Dataset([
             ['A', new Sequence(Period::fromDatepoint('2018-01-01', '2018-01-15'))],
             ['B', new Sequence(Period::fromDatepoint('2018-01-15', '2018-02-01'))],
         ]);
