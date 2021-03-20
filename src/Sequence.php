@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Period;
 
 use ArrayAccess;
+use Closure;
 use Countable;
 use Iterator;
 use IteratorAggregate;
@@ -77,7 +78,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         $sequence = new self();
         $interval = null;
-        foreach ($this->sorted([$this, 'sortByStartDate']) as $period) {
+        foreach ($this->sorted(Closure::fromCallable([$this, 'sortByStartDate'])) as $period) {
             if (null === $interval) {
                 $interval = $period;
                 continue;
@@ -136,7 +137,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $sequence;
         };
 
-        return $this->sorted([$this, 'sortByStartDate'])->reduce($reducer, new self());
+        return $this->sorted(Closure::fromCallable([$this, 'sortByStartDate']))->reduce($reducer, new self());
     }
 
     /**
@@ -145,8 +146,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function unions(): self
     {
         $sequence = $this
-            ->sorted([$this, 'sortByStartDate'])
-            ->reduce([$this, 'calculateUnion'], new self())
+            ->sorted(Closure::fromCallable([$this, 'sortByStartDate']))
+            ->reduce(Closure::fromCallable([$this, 'calculateUnion']), new self())
         ;
 
         if ($sequence->periods === $this->periods) {
@@ -192,7 +193,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $this;
         }
 
-        $new = $sequence->reduce([$this, 'subtractOne'], $this);
+        $new = $sequence->reduce(Closure::fromCallable([$this, 'subtractOne']), $this);
         if ($new->periods === $this->periods) {
             return $this;
         }
@@ -236,7 +237,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Tells whether some intervals in the current instance satisfies the predicate.
      */
-    public function some(callable $predicate): bool
+    public function some(Closure $predicate): bool
     {
         foreach ($this->periods as $offset => $interval) {
             if (true === $predicate($interval, $offset)) {
@@ -250,7 +251,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Tells whether all intervals in the current instance satisfies the predicate.
      */
-    public function every(callable $predicate): bool
+    public function every(Closure $predicate): bool
     {
         foreach ($this->periods as $offset => $interval) {
             if (true !== $predicate($interval, $offset)) {
@@ -429,12 +430,12 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Sort the current instance according to the given comparison callable
+     * Sort the current instance according to the given comparison closure
      * and maintain index association.
      *
      * Returns true on success or false on failure
      */
-    public function sort(callable $compare): bool
+    public function sort(Closure $compare): bool
     {
         return uasort($this->periods, $compare);
     }
@@ -535,7 +536,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the interval which validate the predicate.
      */
-    public function filter(callable $predicate): self
+    public function filter(Closure $predicate): self
     {
         $intervals = array_filter($this->periods, $predicate, ARRAY_FILTER_USE_BOTH);
         if ($intervals === $this->periods) {
@@ -554,13 +555,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns an instance sorted according to the given comparison callable
+     * Returns an instance sorted according to the given comparison closure
      * but does not maintain index association.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the sorted intervals. The key are re-indexed
      */
-    public function sorted(callable $compare): self
+    public function sorted(Closure $compare): self
     {
         $intervals = $this->periods;
         usort($intervals, $compare);
@@ -573,13 +574,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * Returns an instance where the given function is applied to each element in
-     * the collection. The callable MUST return a Period object and takes a Period
+     * the collection. The Closure MUST return a Period object and takes a Period
      * and its associated key as argument.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the returned intervals.
      */
-    public function map(callable $func): self
+    public function map(Closure $func): self
     {
         $intervals = [];
         foreach ($this->periods as $offset => $interval) {
@@ -599,15 +600,15 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Iteratively reduces the sequence to a single value using a callback.
      *
-     * @param callable $func Accepts the carry, the current value and the current offset, and
-     *                       returns an updated carry value.
+     * @param Closure $func Accepts the carry, the current value and the current offset, and
+     *                      returns an updated carry value.
      *
      * @param mixed|null $carry Optional initial carry value.
      *
      * @return mixed The carry value of the final iteration, or the initial
      *               value if the sequence was empty.
      */
-    public function reduce(callable $func, $carry = null)
+    public function reduce(Closure $func, $carry = null)
     {
         foreach ($this->periods as $offset => $interval) {
             $carry = $func($carry, $interval, $offset);

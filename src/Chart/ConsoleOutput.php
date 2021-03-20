@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Closure;
 use TypeError;
 use function array_keys;
 use function chr;
@@ -103,7 +104,7 @@ final class ConsoleOutput implements Output
     /**
      * Return a writer formatter depending on the OS.
      */
-    private function formatter(): callable
+    private function formatter(): Closure
     {
         static $formatter;
         if (null !== $formatter) {
