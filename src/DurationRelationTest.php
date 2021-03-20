@@ -105,7 +105,7 @@ final class DurationRelationTest extends TestCase
      */
     public function testDurationCompare(Period $interval1, Period $interval2, int $expected): void
     {
-        self::assertSame($expected, $interval1->durationCompare($interval2));
+        self::assertSame($expected, $interval1->durationCompareTo($interval2));
     }
 
     public function durationCompareDataProvider(): array

@@ -391,18 +391,10 @@ final class Period implements JsonSerializable
      * <li>  0 if both Interval objects have the same duration</li>
      * </ul>
      */
-    public function durationCompare(self $interval): int
+    public function durationCompareTo(self $interval): int
     {
         return $this->startDate->add($this->dateInterval())
             <=> $this->startDate->add($interval->dateInterval());
-    }
-
-    /**
-     * Tells whether the current instance duration is equal to the submitted one.
-     */
-    public function durationEquals(self $interval): bool
-    {
-        return 0 === $this->durationCompare($interval);
     }
 
     /**
@@ -410,7 +402,31 @@ final class Period implements JsonSerializable
      */
     public function durationGreaterThan(self $interval): bool
     {
-        return 1 === $this->durationCompare($interval);
+        return 1 === $this->durationCompareTo($interval);
+    }
+
+    /**
+     * Tells whether the current instance duration is greater than or equal to the submitted one.
+     */
+    public function durationGreaterThanOrEqualTo(self $interval): bool
+    {
+        return 0 <= $this->durationCompareTo($interval);
+    }
+
+    /**
+     * Tells whether the current instance duration is equal to the submitted one.
+     */
+    public function durationEquals(self $interval): bool
+    {
+        return 0 === $this->durationCompareTo($interval);
+    }
+
+    /**
+     * Tells whether the current instance duration is greater than or equal to the submitted one.
+     */
+    public function durationLessThanOrEqualTo(self $interval): bool
+    {
+        return 0 >= $this->durationCompareTo($interval);
     }
 
     /**
@@ -418,7 +434,7 @@ final class Period implements JsonSerializable
      */
     public function durationLessThan(self $interval): bool
     {
-        return -1 === $this->durationCompare($interval);
+        return -1 === $this->durationCompareTo($interval);
     }
 
     /**************************************************

@@ -185,7 +185,7 @@ final class SequenceTest extends TestCase
             Period::fromIsoWeek(2018, 3)
         );
 
-        self::assertNotSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => $event1->durationCompare($event2)));
+        self::assertNotSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => $event1->durationCompareTo($event2)));
     }
 
     public function testSort(): void
