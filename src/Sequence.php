@@ -41,16 +41,16 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * @var Period[]
      */
-    private $intervals = [];
+    private $periods = [];
 
     /**
      * new instance.
      *
-     * @param Period ...$intervals
+     * @param Period ...$periods
      */
-    public function __construct(Period ...$intervals)
+    public function __construct(Period ...$periods)
     {
-        $this->intervals = $intervals;
+        $this->periods = $periods;
     }
 
     /**
@@ -62,12 +62,12 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function length(): Period|null
     {
-        $period = reset($this->intervals);
+        $period = reset($this->periods);
         if (false === $period) {
             return null;
         }
 
-        return $period->merge(...$this->intervals);
+        return $period->merge(...$this->periods);
     }
 
     /**
@@ -98,9 +98,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Sorts two Interval instance using their start datepoint.
      */
-    private function sortByStartDate(Period $interval1, Period $interval2): int
+    private function sortByStartDate(Period $period1, Period $period2): int
     {
-        return $interval1->startDate() <=> $interval2->startDate();
+        return $period1->startDate() <=> $period2->startDate();
     }
 
     /**
@@ -149,7 +149,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             ->reduce([$this, 'calculateUnion'], new self())
         ;
 
-        if ($sequence->intervals === $this->intervals) {
+        if ($sequence->periods === $this->periods) {
             return $this;
         }
 
@@ -193,7 +193,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         $new = $sequence->reduce([$this, 'subtractOne'], $this);
-        if ($new->intervals === $this->intervals) {
+        if ($new->periods === $this->periods) {
             return $this;
         }
 
@@ -226,12 +226,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function totalTimestampInterval(): float
     {
-        $retval = 0;
-        foreach ($this->intervals as $interval) {
-            $retval += $interval->timestampInterval();
-        }
-
-        return $retval;
+        return array_reduce(
+            $this->periods,
+            fn (float|int $timestamp, Period $period): float => $timestamp + $period->timestampInterval(),
+            0
+        );
     }
 
     /**
@@ -239,7 +238,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function some(callable $predicate): bool
     {
-        foreach ($this->intervals as $offset => $interval) {
+        foreach ($this->periods as $offset => $interval) {
             if (true === $predicate($interval, $offset)) {
                 return true;
             }
@@ -253,13 +252,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function every(callable $predicate): bool
     {
-        foreach ($this->intervals as $offset => $interval) {
+        foreach ($this->periods as $offset => $interval) {
             if (true !== $predicate($interval, $offset)) {
                 return false;
             }
         }
 
-        return [] !== $this->intervals;
+        return [] !== $this->periods;
     }
 
     /**
@@ -269,7 +268,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function toArray(): array
     {
-        return $this->intervals;
+        return $this->periods;
     }
 
     /**
@@ -277,7 +276,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function jsonSerialize(): array
     {
-        return $this->intervals;
+        return $this->periods;
     }
 
     /**
@@ -285,7 +284,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function getIterator(): Iterator
     {
-        foreach ($this->intervals as $offset => $interval) {
+        foreach ($this->periods as $offset => $interval) {
             yield $offset => $interval;
         }
     }
@@ -295,7 +294,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function count(): int
     {
-        return count($this->intervals);
+        return count($this->periods);
     }
 
     /**
@@ -317,24 +316,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function filterOffset(int $offset): ?int
     {
-        if ([] === $this->intervals) {
-            return null;
-        }
+        $max = count($this->periods);
 
-        $max = count($this->intervals);
-        if (0 > $max + $offset) {
-            return null;
-        }
-
-        if (0 > $max - $offset - 1) {
-            return null;
-        }
-
-        if (0 > $offset) {
-            return $max + $offset;
-        }
-
-        return $offset;
+        return match(true) {
+            [] === $this->periods, 0 > $max + $offset, 0 > $max - $offset - 1 => null,
+            0 > $offset => $max + $offset,
+            default => $offset,
+        };
     }
 
     /**
@@ -388,7 +376,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function isEmpty(): bool
     {
-        return [] === $this->intervals;
+        return [] === $this->periods;
     }
 
     /**
@@ -416,7 +404,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function indexOf(Period $interval)
     {
-        foreach ($this->intervals as $offset => $period) {
+        foreach ($this->periods as $offset => $period) {
             if ($period->equals($interval)) {
                 return $offset;
             }
@@ -437,7 +425,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
-        return $this->intervals[$index];
+        return $this->periods[$index];
     }
 
     /**
@@ -448,7 +436,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function sort(callable $compare): bool
     {
-        return uasort($this->intervals, $compare);
+        return uasort($this->periods, $compare);
     }
 
     /**
@@ -460,7 +448,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function unshift(Period ...$intervals): void
     {
-        $this->intervals = array_merge($intervals, $this->intervals);
+        $this->periods = array_merge($intervals, $this->periods);
     }
 
     /**
@@ -470,7 +458,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function push(Period ...$intervals): void
     {
-        $this->intervals = array_merge($this->intervals, $intervals);
+        $this->periods = array_merge($this->periods, $intervals);
     }
 
     /**
@@ -490,7 +478,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return;
         }
 
-        if (count($this->intervals) === $offset) {
+        if (count($this->periods) === $offset) {
             $this->push($interval, ...$intervals);
 
             return;
@@ -502,7 +490,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         array_unshift($intervals, $interval);
-        array_splice($this->intervals, $index, 0, $intervals);
+        array_splice($this->periods, $index, 0, $intervals);
     }
 
     /**
@@ -517,7 +505,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
-        $this->intervals[$index] = $interval;
+        $this->periods[$index] = $interval;
     }
 
     /**
@@ -534,9 +522,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             throw CannotAccessPeriod::dueToInvalidIndex($offset);
         }
 
-        $interval = $this->intervals[$index];
-        unset($this->intervals[$index]);
-        $this->intervals = array_values($this->intervals);
+        $interval = $this->periods[$index];
+        unset($this->periods[$index]);
+        $this->periods = array_values($this->periods);
 
         return $interval;
     }
@@ -549,8 +537,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function filter(callable $predicate): self
     {
-        $intervals = array_filter($this->intervals, $predicate, ARRAY_FILTER_USE_BOTH);
-        if ($intervals === $this->intervals) {
+        $intervals = array_filter($this->periods, $predicate, ARRAY_FILTER_USE_BOTH);
+        if ($intervals === $this->periods) {
             return $this;
         }
 
@@ -562,7 +550,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function clear(): void
     {
-        $this->intervals = [];
+        $this->periods = [];
     }
 
     /**
@@ -574,9 +562,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function sorted(callable $compare): self
     {
-        $intervals = $this->intervals;
+        $intervals = $this->periods;
         usort($intervals, $compare);
-        if ($intervals === $this->intervals) {
+        if ($intervals === $this->periods) {
             return $this;
         }
 
@@ -594,16 +582,16 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function map(callable $func): self
     {
         $intervals = [];
-        foreach ($this->intervals as $offset => $interval) {
+        foreach ($this->periods as $offset => $interval) {
             $intervals[$offset] = $func($interval, $offset);
         }
 
-        if ($intervals === $this->intervals) {
+        if ($intervals === $this->periods) {
             return $this;
         }
 
         $mapped = new self();
-        $mapped->intervals = $intervals;
+        $mapped->periods = $intervals;
 
         return $mapped;
     }
@@ -621,7 +609,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function reduce(callable $func, $carry = null)
     {
-        foreach ($this->intervals as $offset => $interval) {
+        foreach ($this->periods as $offset => $interval) {
             $carry = $func($carry, $interval, $offset);
         }
 
