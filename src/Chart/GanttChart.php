@@ -29,16 +29,16 @@ use function str_repeat;
  */
 final class GanttChart implements Chart
 {
-    private GanttChartConfig $config;
     private float $start = 0;
     private float $unit = 1;
 
-    /**
-     * @param ?GanttChartConfig $config
-     */
-    public function __construct(?GanttChartConfig $config = null)
+    public function __construct(private GanttChartConfig $config)
     {
-        $this->config = $config ?? new GanttChartConfig();
+    }
+
+    public static function create(GanttChartConfig $config = null): self
+    {
+        return new self($config ?? new GanttChartConfig());
     }
 
     /**

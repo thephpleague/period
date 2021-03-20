@@ -25,10 +25,7 @@ use function stream_get_contents;
  */
 final class GanttChartTest extends TestCase
 {
-    /**
-     * @var \League\Period\Chart\GanttChart
-     */
-    private $graph;
+    private GanttChart $graph;
 
     /**
      * @var resource
@@ -39,7 +36,7 @@ final class GanttChartTest extends TestCase
     {
         $this->stream = $this->setStream();
         $config = (new GanttChartConfig(new ConsoleOutput($this->stream)))->withColors('red');
-        $this->graph = new GanttChart($config);
+        $this->graph = GanttChart::create($config);
     }
 
     /**
@@ -58,8 +55,7 @@ final class GanttChartTest extends TestCase
      */
     public function testConstructor(): void
     {
-        $graph = new GanttChart();
-        self::assertNotEquals($this->graph, $graph);
+        self::assertNotEquals($this->graph, GanttChart::create());
     }
 
     /**
