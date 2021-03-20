@@ -32,10 +32,10 @@ $interval = new Period(
     new DateTimeImmutable('2014-10-03 08:12:37')
     Period::INCLUDE_START_EXCLUDE_END
 );
-$start = $interval->startDate(); //returns a DateTimeImmutable
-$end = $interval->endDate();     //returns a DateTimeImmutable
-$duration = $interval->dateInterval();       //returns a DateInterval object
-$duration2 = $interval->timestampInterval(); //returns the duration in seconds
+$start = $interval->getStartDate(); //returns a DateTimeImmutable
+$end = $interval->getEndDate();     //returns a DateTimeImmutable
+$duration = $interval->getDateInterval();       //returns a DateInterval object
+$duration2 = $interval->getTimestampInterval(); //returns the duration in seconds
 echo $interval; //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
 ~~~
 

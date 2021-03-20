@@ -27,10 +27,10 @@ public Period::getTimestampInterval(void): float
 use League\Period\Period;
 
 $period = new Period('2012-04-01 08:30:25', new DateTime('2013-09-04 12:35:21'));
-$period->startDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
-$period->endDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
-$duration = $period->dateInterval(); //returns a DateInterval object
-$altduration = $period->timestampInterval(); //returns the interval as expressed in seconds
+$period->getStartDate(); //returns DateTimeImmutable('2012-04-01 08:30:25');
+$period->getEndDate(); //returns DateTimeImmutable('2013-09-04 12:35:21');
+$duration = $period->getDateInterval(); //returns a DateInterval object
+$altduration = $period->getTimestampInterval(); //returns the interval as expressed in seconds
 ~~~
 
 ## Iteration over a Period
@@ -64,7 +64,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 use League\Period\Period;
 
 $period = new Period('2012-01-01', '2013-01-01');
-foreach ($period->toDatePeriod('1 MONTH') as $datetime) {
+foreach ($period->getDatePeriod('1 MONTH') as $datetime) {
     echo $datetime->format('F, Y');
 }
 //will iterate 12 times
@@ -78,7 +78,7 @@ Using the `$option` parameter
 use League\Period\Period;
 
 $period = new Period('2012-01-01', '2013-01-01');
-$iterator = $period->toDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+$iterator = $period->getDatePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($iterator as $datetime) {
     echo $datetime->format('F, Y');
 }
