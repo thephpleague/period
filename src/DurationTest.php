@@ -145,15 +145,33 @@ final class DurationTest extends TestCase
         Duration::fromSeconds(32, -1);
     }
 
-    public function testIntervalWithFraction(): void
+    /**
+     * @dataProvider providesValidIsoString
+     *
+     */
+    public function testIntervalWithFraction(string $input, string $expected): void
     {
-        $duration = Duration::fromIsoString('PT3.1S');
-        self::assertSame('PT3.1S', $this->formatDuration($duration));
-
-        $duration = Duration::fromIsoString('P0000-00-00T00:05:00.023658');
-        self::assertSame('PT5M0.023658S', $this->formatDuration($duration));
-        self::assertSame(0.023658, $duration->toDateInterval()->f);
+        self::assertSame($expected, $this->formatDuration(Duration::fromIsoString($input)));
     }
+
+    public function providesValidIsoString(): iterable
+    {
+        return [
+            'IsoString with fraction v1' => [
+                'input' => 'PT3.1S',
+                'expected' => 'PT3.1S',
+            ],
+            'IsoString with fraction v2' => [
+                'input' => 'P0000-00-00T00:05:00.023658',
+                'expected' => 'PT5M0.023658S',
+            ],
+            'IsoString with fraction v3' => [
+                'input' => 'PT5M23658F',
+                'expected' => 'PT5M0.023658S',
+            ],
+        ];
+    }
+
 
     /**
      * @dataProvider fromChronoFailsProvider
@@ -214,7 +232,7 @@ final class DurationTest extends TestCase
      * @dataProvider adjustedToDataProvider
      * @param int|string|DateTimeInterface $reference_date
      */
-    public function testadjustedTo(string $input, int|string|DateTimeInterface $reference_date, string $expected): void
+    public function testAdjustedTo(string $input, int|string|DateTimeInterface $reference_date, string $expected): void
     {
         $duration = Duration::fromIsoString($input);
         /** @var DateTimeInterface $date */
