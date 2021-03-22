@@ -182,7 +182,7 @@ final class ModificationTest extends TestCase
     {
         $orig = Period::after('2012-01-01', '2 MONTH');
         $period = $orig->moveEndDate('-1 MONTH');
-        self::assertSame(1, $orig->durationCompareTo($period));
+        self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
         self::assertEquals($orig->startDate(), $period->startDate());
     }
@@ -197,7 +197,7 @@ final class ModificationTest extends TestCase
     {
         $orig = Period::fromMonth(2012, 1);
         $period = $orig->moveStartDate('-1 MONTH');
-        self::assertSame(-1, $orig->durationCompareTo($period));
+        self::assertSame(-1, $orig->durationCompare($period));
         self::assertTrue($orig->durationLessThan($period));
         self::assertEquals($orig->endDate(), $period->endDate());
         self::assertNotEquals($orig->startDate(), $period->startDate());
@@ -207,7 +207,7 @@ final class ModificationTest extends TestCase
     {
         $orig = Period::fromMonth(2012, 1);
         $period = $orig->moveStartDate('2 WEEKS');
-        self::assertSame(1, $orig->durationCompareTo($period));
+        self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
         self::assertEquals($orig->endDate(), $period->endDate());
         self::assertNotEquals($orig->startDate(), $period->startDate());

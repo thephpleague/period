@@ -391,50 +391,50 @@ final class Period implements JsonSerializable
      * <li>  0 if both Interval objects have the same duration</li>
      * </ul>
      */
-    public function durationCompareTo(self $interval): int
+    public function durationCompare(self $period): int
     {
         return $this->startDate->add($this->dateInterval())
-            <=> $this->startDate->add($interval->dateInterval());
+            <=> $this->startDate->add($period->dateInterval());
     }
 
     /**
      * Tells whether the current instance duration is greater than the submitted one.
      */
-    public function durationGreaterThan(self $interval): bool
+    public function durationGreaterThan(self $period): bool
     {
-        return 1 === $this->durationCompareTo($interval);
+        return 1 === $this->durationCompare($period);
     }
 
     /**
      * Tells whether the current instance duration is greater than or equal to the submitted one.
      */
-    public function durationGreaterThanOrEqualTo(self $interval): bool
+    public function durationGreaterThanOrEquals(self $period): bool
     {
-        return 0 <= $this->durationCompareTo($interval);
+        return 0 <= $this->durationCompare($period);
     }
 
     /**
      * Tells whether the current instance duration is equal to the submitted one.
      */
-    public function durationEquals(self $interval): bool
+    public function durationEquals(self $period): bool
     {
-        return 0 === $this->durationCompareTo($interval);
+        return 0 === $this->durationCompare($period);
     }
 
     /**
      * Tells whether the current instance duration is greater than or equal to the submitted one.
      */
-    public function durationLessThanOrEqualTo(self $interval): bool
+    public function durationLessThanOrEquals(self $period): bool
     {
-        return 0 >= $this->durationCompareTo($interval);
+        return 0 >= $this->durationCompare($period);
     }
 
     /**
      * Tells whether the current instance duration is less than the submitted one.
      */
-    public function durationLessThan(self $interval): bool
+    public function durationLessThan(self $period): bool
     {
-        return -1 === $this->durationCompareTo($interval);
+        return -1 === $this->durationCompare($period);
     }
 
     /**************************************************

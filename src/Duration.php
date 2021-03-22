@@ -30,7 +30,7 @@ final class Duration
 {
     private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})S$@';
     private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
-    private const REGEXP_INTERVAL_SPEC = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?(?<fraction>\d+F))?$@';
+    private const REGEXP_INTERVAL_SPEC = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?((?<fraction>\d+)F))?$@';
 
     private const REGEXP_CHRONO_FORMAT = '@^
         (?<sign>\+|-)?                  # optional sign
@@ -74,11 +74,8 @@ final class Duration
             1 === preg_match(self::REGEXP_INTERVAL_SPEC, $interval_spec, $matches)
             && isset($matches['fraction'])
         ) {
-            $interval = substr($interval_spec, 0, -strlen($matches['fraction']));
-            $fraction = (int) substr($matches['fraction'], 0, -1);
-
-            $duration = new DateInterval($interval);
-            $duration->f = $fraction / 1_000_000;
+            $duration = new DateInterval(substr($interval_spec, 0, -strlen($matches['fraction'])-1));
+            $duration->f = (int) $matches['fraction'] / 1_000_000;
 
             return new self($duration);
         }
