@@ -7,9 +7,11 @@ All notable changes to `Period` will be documented in this file
 ### Added
 
 - `TimeRangeError` used as the error interface marker.
-- `Period::fromNotation` to instantiate a time range object from a mathematical representation.
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `InvalidTimeRange` exception for anything regarding creating an object.
+- `Duration::fromSeonds` uses a dedicated fraction argument and the seconds are no longer expressed using a `float` value.
+- `Period::fromNotation` to instantiate a time range object from a mathematical representation.
+- `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
 
 ### Fixed
 
@@ -22,7 +24,7 @@ All notable changes to `Period` will be documented in this file
 - `Duration` no longer extends a `DateInterval` object.
 - `Datepoint` no longer extends a `DateTimeImmutable` object.
 - `Datepoint::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
-- Argument names are normalized through out the package. (PHP8 BC break)
+- Argument names are normalized throughout the package. (PHP8 BC break)
 
 ### Deprecated
 
@@ -51,6 +53,7 @@ All notable changes to `Period` will be documented in this file
 - `Duration::create` is removed with no replacement
 - `Duration::fromTimeString` is removed with no replacement
 - `Datepoint::create` is removed with no replacement
+- The `create` prefix is removed from the `Duration` and `Datepoint` named constructors.
 
 Removed all the following namespaced functions from the package: 
 

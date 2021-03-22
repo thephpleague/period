@@ -378,7 +378,7 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * Compares two instances according to their duration.
+     * Compares the instances against a duration.
      *
      * Returns:
      * <ul>
@@ -386,51 +386,62 @@ final class Period implements JsonSerializable
      * <li>  1 if the current Interval is greater than the submitted Interval object</li>
      * <li>  0 if both Interval objects have the same duration</li>
      * </ul>
+     *
+     * @param Period|Duration|DateInterval $duration
      */
-    public function durationCompare(self $period): int
+    public function durationCompare(Period|Duration|DateInterval $duration): int
     {
-        return $this->startDate->add($this->dateInterval())
-            <=> $this->startDate->add($period->dateInterval());
+        return $this->startDate->add($this->dateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
     }
 
     /**
      * Tells whether the current instance duration is greater than the submitted one.
+     *
+     * @param Period|Duration|DateInterval $duration
      */
-    public function durationGreaterThan(self $period): bool
+    public function durationGreaterThan(Period|Duration|DateInterval $duration): bool
     {
-        return 1 === $this->durationCompare($period);
+        return 1 === $this->durationCompare($duration);
     }
 
     /**
      * Tells whether the current instance duration is greater than or equal to the submitted one.
+     *
+     * @param Period|Duration|DateInterval $duration
      */
-    public function durationGreaterThanOrEquals(self $period): bool
+    public function durationGreaterThanOrEquals(Period|Duration|DateInterval $duration): bool
     {
-        return 0 <= $this->durationCompare($period);
+        return 0 <= $this->durationCompare($duration);
     }
 
     /**
      * Tells whether the current instance duration is equal to the submitted one.
+     *
+     * @param Period|Duration|DateInterval $duration
      */
-    public function durationEquals(self $period): bool
+    public function durationEquals(Period|Duration|DateInterval $duration): bool
     {
-        return 0 === $this->durationCompare($period);
+        return 0 === $this->durationCompare($duration);
     }
 
     /**
      * Tells whether the current instance duration is greater than or equal to the submitted one.
+     *
+     * @param Period|Duration|DateInterval $duration
      */
-    public function durationLessThanOrEquals(self $period): bool
+    public function durationLessThanOrEquals(Period|Duration|DateInterval $duration): bool
     {
-        return 0 >= $this->durationCompare($period);
+        return 0 >= $this->durationCompare($duration);
     }
 
     /**
      * Tells whether the current instance duration is less than the submitted one.
+     *
+     * @param Period|Duration|DateInterval $duration
      */
-    public function durationLessThan(self $period): bool
+    public function durationLessThan(Period|Duration|DateInterval $duration): bool
     {
-        return -1 === $this->durationCompare($period);
+        return -1 === $this->durationCompare($duration);
     }
 
     /**************************************************
