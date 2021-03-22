@@ -13,13 +13,15 @@ declare(strict_types=1);
 
 namespace League\Period;
 
+use DateInterval;
+use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 use function json_encode;
 
 /**
- * @coversDefaultClass League\Period\Sequence
+ * @coversDefaultClass \League\Period\Sequence
  */
 final class SequenceTest extends TestCase
 {
@@ -201,7 +203,7 @@ final class SequenceTest extends TestCase
 
     public function testSome(): void
     {
-        $interval = Period::after('2012-02-01 12:00:00', '1 HOUR');
+        $interval = Period::after(new DateTimeImmutable('2012-02-01 12:00:00'), Duration::fromDateString('1 HOUR'));
         $predicate = fn (Period $event): bool => $interval->overlaps($event);
 
         $sequence = new Sequence(
@@ -222,7 +224,7 @@ final class SequenceTest extends TestCase
             Datepoint::fromDateString('2014-02-01')->day()
         );
 
-        $interval = Period::after('2012-01-01', '5 YEARS');
+        $interval = Period::after(new DateTime('2012-01-01'), Duration::fromDateString('5 YEARS'));
         $predicate = fn (Period $event): bool => $interval->contains($event);
 
         self::assertTrue($sequence->every($predicate));
@@ -242,12 +244,12 @@ final class SequenceTest extends TestCase
     public function testSubtract1(): void
     {
         $sequenceA = new Sequence(
-            Period::fromDatepoint('2000-01-01', '2000-01-10'),
-            Period::fromDatepoint('2000-01-12', '2000-01-20')
+            Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-10')),
+            Period::fromDatepoint(new DateTime('2000-01-12'), new DateTime('2000-01-20'))
         );
         $sequenceB = new Sequence(
-            Period::fromDatepoint('2000-01-05', '2000-01-08'),
-            Period::fromDatepoint('2000-01-11', '2000-01-25')
+            Period::fromDatepoint(new DateTime('2000-01-05'), new DateTime('2000-01-08')),
+            Period::fromDatepoint(new DateTime('2000-01-11'), new DateTime('2000-01-25'))
         );
         $diff = $sequenceA->subtract($sequenceB);
 
@@ -269,12 +271,12 @@ final class SequenceTest extends TestCase
     public function testSubtract2(): void
     {
         $sequenceA = new Sequence(
-            Period::fromDatepoint('2000-01-01', '2000-01-05'),
-            Period::fromDatepoint('2000-01-10', '2000-01-15'),
-            Period::fromDatepoint('2000-01-20', '2000-01-25')
+            Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-05')),
+            Period::fromDatepoint(new DateTime('2000-01-10'), new DateTime('2000-01-15')),
+            Period::fromDatepoint(new DateTime('2000-01-20'), new DateTime('2000-01-25'))
         );
         $sequenceB = new Sequence(
-            Period::fromDatepoint('2000-01-01', '2000-01-30')
+            Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-30'))
         );
         $diff = $sequenceA->subtract($sequenceB);
 
@@ -287,8 +289,8 @@ final class SequenceTest extends TestCase
     public function testSubtract3(): void
     {
         $sequenceA = new Sequence(
-            Period::fromDatepoint('2000-01-01', '2000-01-10'),
-            Period::fromDatepoint('2000-01-12', '2000-01-20')
+            Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-10')),
+            Period::fromDatepoint(new DateTime('2000-01-12'), new DateTime('2000-01-20'))
         );
         $sequenceB = new Sequence();
 
@@ -307,10 +309,10 @@ final class SequenceTest extends TestCase
     public function testSubtract4(): void
     {
         $sequenceA = new Sequence(
-            Period::fromDatepoint('2000-01-01', '2000-01-10'),
-            Period::fromDatepoint('2000-01-12', '2000-01-20')
+            Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-10')),
+            Period::fromDatepoint(new DateTime('2000-01-12'), new DateTime('2000-01-20'))
         );
-        $sequenceB = new Sequence(Period::fromDatepoint('2003-01-12', '2003-01-20'));
+        $sequenceB = new Sequence(Period::fromDatepoint(new DateTime('2003-01-12'), new DateTime('2003-01-20')));
         self::assertSame($sequenceA, $sequenceA->subtract($sequenceB));
     }
 
@@ -320,10 +322,10 @@ final class SequenceTest extends TestCase
     public function testSubtract5(): void
     {
         $sequenceA = new Sequence(
-            Period::fromDatepoint('2000-01-01', '2000-01-10'),
-            Period::fromDatepoint('2001-01-01', '2001-01-10')
+            Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-10')),
+            Period::fromDatepoint(new DateTime('2001-01-01'), new DateTime('2001-01-10'))
         );
-        $sequenceB = new Sequence(Period::fromDatepoint('2000-01-01', '2000-01-10'));
+        $sequenceB = new Sequence(Period::fromDatepoint(new DateTime('2000-01-01'), new DateTime('2000-01-10')));
         self::assertCount(0, $sequenceB->subtract($sequenceA));
     }
 
@@ -341,9 +343,9 @@ final class SequenceTest extends TestCase
     public function testGetIntersections1(): void
     {
         $sequence = new Sequence(
-            Period::fromDatepoint('2018-01-01', '2018-01-31'),
-            Period::fromDatepoint('2018-01-10', '2018-01-15'),
-            Period::fromDatepoint('2018-01-10', '2018-01-31')
+            Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-31')),
+            Period::fromDatepoint(new DateTime('2018-01-10'), new DateTime('2018-01-15')),
+            Period::fromDatepoint(new DateTime('2018-01-10'), new DateTime('2018-01-31'))
         );
         $intersections = $sequence->intersections();
 
@@ -367,10 +369,10 @@ final class SequenceTest extends TestCase
     public function testGetIntersections2(): void
     {
         $sequence = new Sequence(
-            Period::fromDatepoint('2018-01-01', '2018-01-31'),
-            Period::fromDatepoint('2018-02-10', '2018-02-20'),
-            Period::fromDatepoint('2018-03-01', '2018-03-31'),
-            Period::fromDatepoint('2018-01-20', '2018-03-10')
+            Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-31')),
+            Period::fromDatepoint(new DateTime('2018-02-10'), new DateTime('2018-02-20')),
+            Period::fromDatepoint(new DateTime('2018-03-01'), new DateTime('2018-03-31')),
+            Period::fromDatepoint(new DateTime('2018-01-20'), new DateTime('2018-03-10'))
         );
         $intersections = $sequence->intersections();
         self::assertCount(3, $intersections);
@@ -394,8 +396,8 @@ final class SequenceTest extends TestCase
     {
         $sequence = new Sequence(
             Datepoint::fromDateString('2018-11-29')->day(),
-            Period::after('2018-11-29 + 7 DAYS', '1 DAY'),
-            Period::around('2018-11-29', '4 DAYS')
+            Period::after(new DateTimeImmutable('2018-11-29 + 7 DAYS'), DateInterval::createFromDateString('1 DAY')),
+            Period::around(new DateTimeImmutable('2018-11-29'), DateInterval::createFromDateString('4 DAYS'))
         );
 
         $gaps = $sequence->gaps();
@@ -415,7 +417,7 @@ final class SequenceTest extends TestCase
     {
         $sequence = new Sequence(
             Datepoint::fromDateString('2018-11-29')->day(),
-            Period::around('2018-11-29', '4 DAYS')
+            Period::around(new DateTime('2018-11-29'), Duration::fromDateString('4 DAYS'))
         );
 
         $gaps = $sequence->gaps();
@@ -433,14 +435,14 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence(
             Datepoint::fromDateString('2018-11-29')->year(),
             Datepoint::fromDateString('2018-11-29')->month(),
-            Period::around('2016-06-01', '3 MONTHS')
+            Period::around(new DateTimeImmutable('2016-06-01'), Duration::fromDateString('3 MONTHS'))
         );
 
         $unions = $sequence->unions();
         self::assertEquals($sequence->length(), $unions->length());
         self::assertTrue($unions->intersections()->isEmpty());
         self::assertEquals($sequence->gaps(), $unions->gaps());
-        self::assertTrue(Period::around('2016-06-01', '3 MONTHS')->equals($unions->get(0)));
+        self::assertTrue(Period::around(new DateTimeImmutable('2016-06-01'), Duration::fromDateString('3 MONTHS'))->equals($unions->get(0)));
         self::assertTrue(Datepoint::fromDateString('2018-11-29')->year()->equals($unions->get(1)));
     }
 
@@ -456,7 +458,7 @@ final class SequenceTest extends TestCase
                 return $period;
             }
 
-            return $period->startingOn('2018-01-15');
+            return $period->startingOn(new DateTimeImmutable('2018-01-15'));
         });
 
         self::assertSame($newSequence->get(1), $sequence->get(1));
@@ -477,10 +479,10 @@ final class SequenceTest extends TestCase
 
     public function testMapperDoesNotReIndexAfterModification(): void
     {
-        $sequence = new Sequence(Period::fromDay(2018, 3), Period::fromDay(2018, 1));
+        $sequence = new Sequence(Period::fromDay(2018, 3, 1), Period::fromDay(2018, 1, 1));
         $sequence->sort(fn (Period $interval1, Period $interval2): int => $interval1->startDate() <=> $interval2->startDate());
 
-        $retval = $sequence->map(fn (Period $interval): Period => $interval->moveEndDate('+1 DAY'));
+        $retval = $sequence->map(fn (Period $interval): Period => $interval->moveEndDate(Duration::fromDateString('+1 DAY')));
 
         self::assertSame(array_keys($sequence->toArray()), array_keys($retval->toArray()));
     }

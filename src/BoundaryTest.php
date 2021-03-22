@@ -64,7 +64,7 @@ final class BoundaryTest extends TestCase
                 'endExcluded' => true,
             ],
             'left close right open' => [
-                'interval' => Period::around('2012-08-12', '1 HOUR', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::around(new DateTime('2012-08-12'), Duration::fromDateString('1 HOUR'), Period::EXCLUDE_START_INCLUDE_END),
                 'rangeType' => Period::EXCLUDE_START_INCLUDE_END,
                 'startIncluded' => false,
                 'startExcluded' => true,
@@ -72,7 +72,7 @@ final class BoundaryTest extends TestCase
                 'endExcluded' => false,
             ],
             'left open right open' => [
-                'interval' => Period::after('2012-08-12', '1 DAY', Period::INCLUDE_ALL),
+                'interval' => Period::after(new DateTime('2012-08-12'), Duration::fromDateString('1 DAY'), Period::INCLUDE_ALL),
                 'rangeType' => Period::INCLUDE_ALL,
                 'startIncluded' => true,
                 'startExcluded' => false,
@@ -80,7 +80,7 @@ final class BoundaryTest extends TestCase
                 'endExcluded' => false,
             ],
             'left close right close' => [
-                'interval' => Period::before('2012-08-12', '1 WEEK', Period::EXCLUDE_ALL),
+                'interval' => Period::before(new DateTime('2012-08-12'), Duration::fromDateString('1 WEEK'), Period::EXCLUDE_ALL),
                 'rangeType' => Period::EXCLUDE_ALL,
                 'startIncluded' => false,
                 'startExcluded' => true,

@@ -11,6 +11,7 @@
 
 namespace League\Period;
 
+use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -63,17 +64,17 @@ class IntervalRelationTest extends TestCase
                 'expected' => false,
             ],
             'range exclude start date success' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => new DateTime('2015-01-01'),
                 'expected' => true,
             ],
             'range exclude start date fails' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => new DateTime('2010-01-01'),
                 'expected' => false,
             ],
             'range exclude start date abuts date success' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => new DateTime('2012-02-01'),
                 'expected' => false,
             ],
@@ -93,18 +94,18 @@ class IntervalRelationTest extends TestCase
                 'expected' => true,
             ],
             'exclude start date is before interval' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => Period::fromMonth(2012, 2),
                 'expected' => true,
             ],
             'exclude start date is not before interval' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => Period::fromMonth(2012, 2),
                 'expected' => true,
             ],
             'exclude start date abuts interval start date' => [
-                'interval' => Period::after('2011-12-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
-                'input' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2011-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
+                'input' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'expected' => true,
             ],
         ];
@@ -134,12 +135,12 @@ class IntervalRelationTest extends TestCase
                 'expected' => false,
             ],
             'range exclude end date abuts date fails' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => new DateTime('2012-02-01'),
                 'expected' => false,
             ],
             'range exclude start date success' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'input' => new DateTime('2012-01-01'),
                 'expected' => true,
             ],
@@ -160,17 +161,17 @@ class IntervalRelationTest extends TestCase
             ],
             'exclude start date is before interval' => [
                 'interval' => Period::fromMonth(2012, 2),
-                'input' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'input' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'expected' => true,
             ],
             'exclude start date is not before interval' => [
                 'interval' => Period::fromMonth(2012, 2),
-                'input' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'input' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'expected' => true,
             ],
             'exclude start date abuts interval start date' => [
-                'interval' => Period::after('2012-01-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
-                'input' => Period::after('2011-12-01', '1 MONTH', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
+                'input' => Period::after(new DateTimeImmutable('2011-12-01'), DateInterval::createFromDateString('1 MONTH'), Period::EXCLUDE_START_INCLUDE_END),
                 'expected' => true,
             ],
             'exclude start date abuts interval start date -2-' => [
@@ -264,8 +265,12 @@ class IntervalRelationTest extends TestCase
      *
      * @param DateTimeInterface|Period|string $arg
      */
-    public function testContains(Period $interval, $arg, bool $expected): void
+    public function testContains(Period $interval, DateTimeInterface|Period|string $arg, bool $expected): void
     {
+        if (is_string($arg)) {
+            $arg = Datepoint::fromDateString($arg);
+        }
+
         self::assertSame($expected, $interval->contains($arg));
         if ($arg instanceof Period) {
             self::assertSame($expected, $arg->isDuring($interval));
@@ -331,12 +336,12 @@ class IntervalRelationTest extends TestCase
             ],
             'contains returns false with a DateTimeInterface object after the interval' => [
                 Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
-                '2012-03-12',
+                new DateTime('2012-03-12'),
                 false,
             ],
             'contains returns false with a DateTimeInterface object before the interval' => [
                 Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
-                '2014-04-01',
+                new DateTime('2014-04-01'),
                 false,
             ],
             'contains returns false with abuts interval' => [
@@ -355,58 +360,58 @@ class IntervalRelationTest extends TestCase
                 false,
             ],
             'contains datetime edge case datetime equals start date' => [
-                Period::after('2012-01-08', '1 DAY'),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY')),
                 new DateTime('2012-01-08'),
                 true,
             ],
             'contains datetime edge case datetime equals end date' => [
-                Period::after('2012-01-08', '1 DAY'),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY')),
                 new DateTime('2012-01-09'),
                 false,
             ],
             'contains datetime edge case datetime equals start date OLCR interval' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_START_INCLUDE_END),
                 new DateTime('2012-01-08'),
                 false,
             ],
             'contains datetime edge case datetime equals end date CLCR interval' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_ALL),
                 new DateTime('2012-01-09'),
                 false,
             ],
             'contains period same duration + boundary type CLCR vs CLCR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_ALL),
                 true,
             ],
             'contains period same duration + boundary type OLOR vs OLOR' => [
-                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
-                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::INCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::INCLUDE_ALL),
                 true,
             ],
             'contains period same duration + boundary type CLOR vs CLOR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_START_INCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_START_INCLUDE_END),
                 true,
             ],
             'contains period same duration + boundary type CLOR vs OLCR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
-                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_START_EXCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_START_INCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::INCLUDE_START_EXCLUDE_END),
                 false,
             ],
             'contains period same duration + boundary type OLCR vs CLOR' => [
-                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_START_EXCLUDE_END),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_START_INCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::INCLUDE_START_EXCLUDE_END),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_START_INCLUDE_END),
                 false,
             ],
             'contains period same duration + boundary type CLCR vs OLOR' => [
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
-                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::INCLUDE_ALL),
                 false,
             ],
             'contains period same duration + boundary type OLOR vs CLCR' => [
-                Period::after('2012-01-08', '1 DAY', Period::INCLUDE_ALL),
-                Period::after('2012-01-08', '1 DAY', Period::EXCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::INCLUDE_ALL),
+                Period::after(new DateTimeImmutable('2012-01-08'), DateInterval::createFromDateString('1 DAY'), Period::EXCLUDE_ALL),
                 true,
             ],
         ];
@@ -437,12 +442,12 @@ class IntervalRelationTest extends TestCase
             ],
             [
                 $interval,
-                $interval->moveEndDate('+3 MINUTES'),
+                $interval->moveEndDate(Duration::fromDateString('+3 MINUTES')),
                 true,
             ],
             [
                 $interval,
-                $interval->moveStartDate('+3 MINUTES'),
+                $interval->moveStartDate(Duration::fromDateString('+3 MINUTES')),
                 false,
             ],
             [
@@ -488,7 +493,7 @@ class IntervalRelationTest extends TestCase
                 true,
             ],
             [
-                $interval->moveEndDate('+ 3 MINUTES'),
+                $interval->moveEndDate(Duration::fromDateString('+ 3 MINUTES')),
                 $interval,
                 false,
             ],
@@ -553,7 +558,7 @@ class IntervalRelationTest extends TestCase
     {
         $orig = Period::fromDatepoint(new DateTime('2011-12-01'), new DateTime('2012-04-01'));
         $alt = Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
-        self::assertTrue($orig->intersect($alt)->equals(Period::fromDatepoint('2012-01-01', '2012-03-01')));
+        self::assertTrue($orig->intersect($alt)->equals(Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-03-01'))));
     }
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange(): void
@@ -569,8 +574,8 @@ class IntervalRelationTest extends TestCase
      */
     public function testIntersectBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
     {
-        $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
-        $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $boundary2);
+        $interval0 = Period::fromDatepoint(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $boundary1);
+        $interval1 = Period::fromDatepoint(new DateTime('2014-05-01'), new DateTime('2014-08-01'), $boundary2);
         self::assertSame($expected, $interval0->intersect($interval1)->boundaries());
     }
 
@@ -707,8 +712,8 @@ class IntervalRelationTest extends TestCase
      */
     public function testGapBoundaryTypeResult(string $boundary1, string $boundary2, string $expected): void
     {
-        $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
-        $interval1 = Period::fromDatepoint('2014-07-01', '2014-09-01', $boundary2);
+        $interval0 = Period::fromDatepoint(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $boundary1);
+        $interval1 = Period::fromDatepoint(new DateTime('2014-07-01'), new DateTime('2014-09-01'), $boundary2);
         self::assertSame($expected, $interval0->gap($interval1)->boundaries());
     }
 
@@ -861,8 +866,8 @@ class IntervalRelationTest extends TestCase
         string $expected1,
         string $expected2
     ): void {
-        $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $boundary1);
-        $interval1 = Period::fromDatepoint('2014-05-01', '2014-09-01', $boundary2);
+        $interval0 = Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-06-01'), $boundary1);
+        $interval1 = Period::fromDatepoint(new DateTimeImmutable('2014-05-01'), new DateTimeImmutable('2014-09-01'), $boundary2);
         $sequence = $interval0->diff($interval1);
 
         if (0 < count($sequence)) {
@@ -980,8 +985,8 @@ class IntervalRelationTest extends TestCase
     {
         foreach (['[]', '[)', '()', '(]'] as $bound1) {
             foreach (['[]', '[)', '()', '(]'] as $bound2) {
-                $interval0 = Period::fromDatepoint('2014-03-01', '2014-06-01', $bound1);
-                $interval1 = Period::fromDatepoint('2014-05-01', '2014-08-01', $bound2);
+                $interval0 = Period::fromDatepoint(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $bound1);
+                $interval1 = Period::fromDatepoint(new DateTime('2014-05-01'), new DateTime('2014-08-01'), $bound2);
                 $sequence = $interval0->diff($interval1);
                 $intersect = $interval0->intersect($interval1);
 
@@ -1004,8 +1009,8 @@ class IntervalRelationTest extends TestCase
 
     public function testSubtractWithOverlappingUnequalPeriods(): void
     {
-        $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
-        $periodB = Period::after('2000-01-01 14:00:00', '6 HOURS');
+        $periodA = Period::after(new DateTimeImmutable('2000-01-01 10:00:00'), DateInterval::createFromDateString('8 HOURS'));
+        $periodB = Period::after(new DateTimeImmutable('2000-01-01 14:00:00'), DateInterval::createFromDateString('6 HOURS'));
 
         $diff1 = $periodA->subtract($periodB);
 
@@ -1022,8 +1027,8 @@ class IntervalRelationTest extends TestCase
 
     public function testSubtractWithSeparatePeriods(): void
     {
-        $periodA = Period::after('2000-01-01 10:00:00', '4 HOURS');
-        $periodB = Period::after('2000-01-01 15:00:00', '3 HOURS');
+        $periodA = Period::after(new DateTimeImmutable('2000-01-01 10:00:00'), DateInterval::createFromDateString('4 HOURS'));
+        $periodB = Period::after(new DateTimeImmutable('2000-01-01 15:00:00'), DateInterval::createFromDateString('3 HOURS'));
 
         $diff1 = $periodA->subtract($periodB);
 
@@ -1038,8 +1043,8 @@ class IntervalRelationTest extends TestCase
 
     public function testSubtractWithOnePeriodContainedInAnother(): void
     {
-        $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
-        $periodB = Period::after('2000-01-01 15:00:00', '1 HOUR');
+        $periodA = Period::after(new DateTimeImmutable('2000-01-01 10:00:00'), DateInterval::createFromDateString('8 HOURS'));
+        $periodB = Period::after(new DateTimeImmutable('2000-01-01 15:00:00'), DateInterval::createFromDateString('1 HOUR'));
 
         $diff1 = $periodA->subtract($periodB);
 
@@ -1056,7 +1061,7 @@ class IntervalRelationTest extends TestCase
 
     public function testSubtractWithEqualPeriodObjec(): void
     {
-        $periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
+        $periodA = Period::after(new DateTimeImmutable('2000-01-01 10:00:00'), DateInterval::createFromDateString('8 HOURS'));
         $diff = $periodA->subtract($periodA);
 
         self::assertCount(0, $diff);

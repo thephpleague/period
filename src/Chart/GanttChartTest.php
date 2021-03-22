@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use DateTime;
+use DateTimeImmutable;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -80,8 +82,8 @@ final class GanttChartTest extends TestCase
     public function testDisplayPeriods(): void
     {
         $this->graph->stroke(new Dataset([
-            ['A', Period::fromDatepoint('2018-01-01', '2018-01-15')],
-            ['B', Period::fromDatepoint('2018-01-15', '2018-02-01')],
+            ['A', Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-15'))],
+            ['B', Period::fromDatepoint(new DateTime('2018-01-15'), new DateTime('2018-02-01'))],
         ]));
 
         rewind($this->stream);
@@ -100,8 +102,8 @@ final class GanttChartTest extends TestCase
     public function testDisplaySequence(): void
     {
         $dataset = new Dataset([
-            ['A', new Sequence(Period::fromDatepoint('2018-01-01', '2018-01-15'))],
-            ['B', new Sequence(Period::fromDatepoint('2018-01-15', '2018-02-01'))],
+            ['A', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
+            ['B', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
 
         $this->graph->stroke($dataset);
