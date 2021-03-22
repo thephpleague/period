@@ -28,11 +28,10 @@ use function str_pad;
  */
 final class Duration
 {
-    private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})S$@';
-    private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
-    private const REGEXP_INTERVAL_SPEC = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?((?<fraction>\d+)F))?$@';
-
-    private const REGEXP_CHRONO_FORMAT = '@^
+    private const REGEXP_DATE_FLOATING_SECONDS = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
+    private const REGEXP_INTERVAL_FLOATING_SECONDS = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})S$@';
+    private const REGEXP_INTERVAL_FRACTION_DESIGNATOR = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?((?<fraction>\d+)F))?$@';
+    private const REGEXP_INTERVAL_CHRONOMETER = '@^
         (?<sign>\+|-)?                  # optional sign
         ((?<hour>\d+):)?                # optional hour
         ((?<minute>\d+):)(?<second>\d+) # required minute and second
@@ -52,35 +51,35 @@ final class Duration
     }
 
     /**
-     * Returns a new instance from an Interval specification.
+     * Returns a new instance from an interval specification.
      */
-    public static function fromIsoString(string $interval_spec): self
+    public static function fromIsoString(string $duration): self
     {
-        if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
-            $duration = new DateInterval($matches['interval'].'S');
-            $duration->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
+        if (1 === preg_match(self::REGEXP_INTERVAL_FLOATING_SECONDS, $duration, $matches)) {
+            $interval = new DateInterval($matches['interval'].'S');
+            $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
-            return new self($duration);
+            return new self($interval);
         }
 
-        if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
-            $duration = new DateInterval($matches['interval']);
-            $duration->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
+        if (1 === preg_match(self::REGEXP_DATE_FLOATING_SECONDS, $duration, $matches)) {
+            $interval = new DateInterval($matches['interval']);
+            $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
-            return new self($duration);
+            return new self($interval);
         }
 
         if (
-            1 === preg_match(self::REGEXP_INTERVAL_SPEC, $interval_spec, $matches)
+            1 === preg_match(self::REGEXP_INTERVAL_FRACTION_DESIGNATOR, $duration, $matches)
             && isset($matches['fraction'])
         ) {
-            $duration = new DateInterval(substr($interval_spec, 0, -strlen($matches['fraction'])-1));
-            $duration->f = (int) $matches['fraction'] / 1_000_000;
+            $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction'])-1));
+            $interval->f = (int) $matches['fraction'] / 1_000_000;
 
-            return new self($duration);
+            return new self($interval);
         }
 
-        return new self(new DateInterval($interval_spec));
+        return new self(new DateInterval($duration));
     }
 
     /**
@@ -123,7 +122,7 @@ final class Duration
      */
     public static function fromChronoString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $units)) {
+        if (1 !== preg_match(self::REGEXP_INTERVAL_CHRONOMETER, $duration, $units)) {
             throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
         }
 
