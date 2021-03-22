@@ -5,7 +5,6 @@ Period
 [![Latest Version](https://img.shields.io/github/release/thephpleague/period.svg?style=flat-square)](https://github.com/thephpleague/period/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build](https://github.com/thephpleague/period/workflows/build/badge.svg)](https://github.com/thephpleague/period/actions?query=workflow%3A%22build%22)
-[![Infection MSI](https://badge.stryker-mutator.io/github.com/thephpleague/period/master)](https://infection.github.io)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
 
 `Period` is PHP's missing time range API. Based on ideas from [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
@@ -27,7 +26,7 @@ Full documentation can be found at [period.thephpleague.com](http://period.theph
 System Requirements
 -------
 
-You need **PHP >= 7.2.0** but the latest stable version of PHP is recommended.
+You need **PHP >= 8.0.0** but the latest stable version of PHP is recommended.
 
 Install
 -------
@@ -48,7 +47,7 @@ require 'path/to/period/repo/autoload.php';
 
 use League\Period\Datepoint;
 
-Datepoint::create('2012-05-23')->getDay()->getDateInterval();
+Datepoint::fromDateString('2012-05-23')->day()->dateInterval();
 //returns new DateInterval('P1D');
 ~~~
 
