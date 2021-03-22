@@ -28,10 +28,10 @@ use function str_pad;
  */
 final class Duration
 {
-    private const REGEXP_DATE_FLOATING_SECONDS = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
-    private const REGEXP_INTERVAL_FLOATING_SECONDS = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})S$@';
-    private const REGEXP_INTERVAL_FRACTION_DESIGNATOR = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?((?<fraction>\d+)F))?$@';
-    private const REGEXP_INTERVAL_CHRONOMETER = '@^
+    private const REGEXP_FLOATING_SECONDS_DATE = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
+    private const REGEXP_FLOATING_SECONDS_INTERVAL = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})S$@';
+    private const REGEXP_FRACTION_DESIGNATOR = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?((?<fraction>\d+)F))?$@';
+    private const REGEXP_CHRONOMETER = '@^
         (?<sign>\+|-)?                  # optional sign
         ((?<hour>\d+):)?                # optional hour
         ((?<minute>\d+):)(?<second>\d+) # required minute and second
@@ -55,14 +55,14 @@ final class Duration
      */
     public static function fromIsoString(string $duration): self
     {
-        if (1 === preg_match(self::REGEXP_INTERVAL_FLOATING_SECONDS, $duration, $matches)) {
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_INTERVAL, $duration, $matches)) {
             $interval = new DateInterval($matches['interval'].'S');
             $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
             return new self($interval);
         }
 
-        if (1 === preg_match(self::REGEXP_DATE_FLOATING_SECONDS, $duration, $matches)) {
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_DATE, $duration, $matches)) {
             $interval = new DateInterval($matches['interval']);
             $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
@@ -70,7 +70,7 @@ final class Duration
         }
 
         if (
-            1 === preg_match(self::REGEXP_INTERVAL_FRACTION_DESIGNATOR, $duration, $matches)
+            1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $duration, $matches)
             && isset($matches['fraction'])
         ) {
             $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction'])-1));
@@ -122,7 +122,7 @@ final class Duration
      */
     public static function fromChronoString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_INTERVAL_CHRONOMETER, $duration, $units)) {
+        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $duration, $units)) {
             throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
         }
 
@@ -130,24 +130,9 @@ final class Duration
             $units['hour'] = '0';
         }
 
-        return self::fromTimeUnits($units);
-    }
-
-    /**
-     * Creates an instance from DateInterval units.
-     *
-     * @param array<string,string> $units
-     */
-    private static function fromTimeUnits(array $units): self
-    {
-        $units = $units + ['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
-
+        $units = array_merge(['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'], $units);
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
-
-        $expression = $units['hour'].' hours '
-            .$units['minute'].' minutes '
-            .$units['second'].' seconds '
-            .$units['fraction'].' microseconds';
+        $expression = $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds';
 
         $instance = DateInterval::createFromDateString($expression);
         if ('-' === $units['sign']) {
