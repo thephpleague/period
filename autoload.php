@@ -19,7 +19,9 @@ spl_autoload_register(function (string $className): void {
     }
 
     $file = __DIR__.'/src/'.str_replace('\\', '/', substr($className, strlen($prefix))).'.php';
-    if (is_readable($file)) {
-        require $file;
+    if (!is_readable($file)) {
+        return;
     }
+
+    require $file;
 });
