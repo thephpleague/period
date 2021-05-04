@@ -319,7 +319,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         $max = count($this->periods);
 
-        return match(true) {
+        return match (true) {
             [] === $this->periods, 0 > $max + $offset, 0 > $max - $offset - 1 => null,
             0 > $offset => $max + $offset,
             default => $offset,
