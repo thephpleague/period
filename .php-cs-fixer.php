@@ -13,8 +13,9 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/src')
 ;
 
-return PhpCsFixer\Config::create()
-    ->setRules([
+$config = new PhpCsFixer\Config();
+
+return $config->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'none'],
@@ -24,7 +25,7 @@ return PhpCsFixer\Config::create()
             'import_functions' => true,
         ],
         'header_comment' => [
-            'commentType' => 'PHPDoc',
+            'comment_type' => 'PHPDoc',
             'header' => $header,
             'location' => 'after_open',
             'separate' => 'both',
@@ -34,7 +35,6 @@ return PhpCsFixer\Config::create()
         'no_empty_phpdoc' => true,
         'no_empty_comment' => true,
         'no_leading_import_slash' => true,
-        'no_superfluous_phpdoc_tags' => true,
         'no_trailing_comma_in_singleline_array' => true,
         'no_superfluous_phpdoc_tags' => true,
         'no_unused_imports' => true,
@@ -46,14 +46,13 @@ return PhpCsFixer\Config::create()
         'phpdoc_scalar' => true,
         'phpdoc_to_comment' => true,
         'phpdoc_summary' => true,
-        'psr0' => true,
-        'psr4' => true,
+        'psr_autoloading' => true,
         'return_type_declaration' => ['space_before' => 'none'],
         'single_blank_line_before_namespace' => true,
         'single_quote' => true,
         'space_after_semicolon' => true,
         'ternary_operator_spaces' => true,
-        'trailing_comma_in_multiline_array' => true,
+        'trailing_comma_in_multiline' => true,
         'trim_array_spaces' => true,
         'whitespace_after_comma_in_array' => true,
     ])
