@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use ArrayObject;
+use DateTime;
 use DateTimeImmutable;
+use League\Period\Duration;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +55,7 @@ final class DatasetTest extends TestCase
         $dataset = Dataset::fromIterable($input);
         self::assertCount($expectedCount, $dataset);
         self::assertSame($isEmpty, $dataset->isEmpty());
-        self::assertSame($boundaryIsNull, null === $dataset->boundaries());
+        self::assertSame($boundaryIsNull, null === $dataset->length());
     }
 
     public function provideIterableStructure(): iterable
@@ -100,9 +102,9 @@ final class DatasetTest extends TestCase
 
     public function testAppendDataset(): void
     {
-        $dataset = new \League\Period\Chart\Dataset([
-            ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
-            ['B', new Period('2018-01-15', '2018-02-01')],
+        $dataset = new Dataset([
+            ['A', new Sequence(Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-15')))],
+            ['B', Period::fromDatepoint(new DateTime('2018-01-15'), new DateTime('2018-02-01'))],
         ]);
 
         self::assertCount(2, $dataset);
@@ -112,21 +114,21 @@ final class DatasetTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        new Dataset([[new DateTimeImmutable(), Period::around('2018-01-15', '1 DAY')]]);
+        new Dataset([[new DateTimeImmutable(), Period::around(new DateTimeImmutable('2018-01-15'), Duration::fromDateString('1 DAY'))]]);
     }
 
     public function testAppendDatasetThrowWithInvalidItem(): void
     {
         $this->expectException(TypeError::class);
 
-        new \League\Period\Chart\Dataset([['foo', 'bar']]);
+        new Dataset([['foo', 'bar']]);
     }
 
     public function testLabelizeDataset(): void
     {
         $dataset = new Dataset([
-            ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
-            ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
+            ['A', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
+            ['B', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
         self::assertSame(['A', 'B'], $dataset->labels());
         self::assertSame(1, $dataset->labelMaxLength());
@@ -140,8 +142,8 @@ final class DatasetTest extends TestCase
     public function testLabelizeDatasetReturnsSameInstance(): void
     {
         $dataset = new Dataset([
-            ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
-            ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
+            ['A', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
+            ['B', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
 
         self::assertEquals($dataset, Dataset::fromItems($dataset->items(), new LatinLetter()));
@@ -158,10 +160,10 @@ final class DatasetTest extends TestCase
 
     public function testJsonEncoding(): void
     {
-        self::assertSame('[]', json_encode(new \League\Period\Chart\Dataset()));
+        self::assertSame('[]', json_encode(new Dataset()));
         $dataset = new Dataset([
-            ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
-            ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
+            ['A', new Sequence(Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-15')))],
+            ['B', new Sequence(Period::fromDatepoint(new DateTime('2018-01-15'), new DateTime('2018-02-01')))],
         ]);
 
         self::assertStringContainsString('label', (string) json_encode($dataset));

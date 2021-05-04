@@ -37,47 +37,47 @@ final class ModificationTest extends TestCase
     public function testStartingOn(): void
     {
         $expected = new DateTime('2012-03-02');
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->startingOn($expected);
-        self::assertTrue($newInterval->getStartDate() == $expected);
-        self::assertEquals($interval->getStartDate(), new DateTimeImmutable('2014-01-13'));
-        self::assertSame($interval->startingOn($interval->getStartDate()), $interval);
+        self::assertSame($newInterval->startDate()->getTimestamp(), $expected->getTimestamp());
+        self::assertEquals($interval->startDate(), new DateTimeImmutable('2014-01-13'));
+        self::assertSame($interval->startingOn($interval->startDate()), $interval);
     }
 
     public function testStartingOnFailedWithWrongStartDate(): void
     {
-        $this->expectException(Exception::class);
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $this->expectException(InvalidTimeRange::class);
+        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->startingOn(new DateTime('2015-03-02'));
     }
 
     public function testEndingOn(): void
     {
         $expected  = new DateTime('2015-03-02');
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->endingOn($expected);
-        self::assertTrue($newInterval->getEndDate() == $expected);
-        self::assertEquals($interval->getEndDate(), new DateTimeImmutable('2014-01-20'));
-        self::assertSame($interval->endingOn($interval->getEndDate()), $interval);
+        self::assertSame($newInterval->endDate()->getTimestamp(), $expected->getTimestamp());
+        self::assertEquals($interval->endDate(), new DateTimeImmutable('2014-01-20'));
+        self::assertSame($interval->endingOn($interval->endDate()), $interval);
     }
 
     public function testEndingOnFailedWithWrongEndDate(): void
     {
-        $this->expectException(Exception::class);
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $this->expectException(InvalidTimeRange::class);
+        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->endingOn(new DateTime('2012-03-02'));
     }
 
     public function testExpand(): void
     {
-        $interval = (new Period(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand(new DateInterval('P1D'));
-        self::assertEquals(new DateTimeImmutable('2012-02-01'), $interval->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2012-02-04'), $interval->getEndDate());
+        $interval = (Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand(new DateInterval('P1D'));
+        self::assertEquals(new DateTimeImmutable('2012-02-01'), $interval->startDate());
+        self::assertEquals(new DateTimeImmutable('2012-02-04'), $interval->endDate());
     }
 
     public function testExpandRetunsSameInstance(): void
     {
-        $interval = new Period(new DateTime('2012-02-02'), new DateTime('2012-02-03'));
+        $interval = Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03'));
         self::assertSame($interval->expand(new DateInterval('PT0S')), $interval);
     }
 
@@ -85,22 +85,22 @@ final class ModificationTest extends TestCase
     {
         $dateInterval = new DateInterval('PT12H');
         $dateInterval->invert = 1;
-        $interval = (new Period(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
-        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->getStartDate());
-        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->getEndDate());
+        $interval = (Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
+        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->startDate());
+        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->endDate());
     }
 
     public function testExpandThrowsException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidTimeRange::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
-        $interval = (new Period(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
+        $interval = (Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
     }
 
     public function testMove(): void
     {
-        $interval = new Period(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
+        $interval = Period::fromDatepoint(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
         $moved = $interval->move(new DateInterval('P1D'));
         self::assertFalse($interval->equals($moved));
         self::assertTrue($interval->move(new DateInterval('PT0S'))->equals($interval));
@@ -108,16 +108,16 @@ final class ModificationTest extends TestCase
 
     public function testMoveSupportStringIntervals(): void
     {
-        $interval = new Period(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
+        $interval = Period::fromDatepoint(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
         $advanced = $interval->move(DateInterval::createFromDateString('1 DAY'));
-        $alt = new Period(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
+        $alt = Period::fromDatepoint(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
         self::assertTrue($alt->equals($advanced));
     }
 
     public function testMoveWithInvertedInterval(): void
     {
-        $orig = new Period(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
-        $alt = new Period(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
+        $orig = Period::fromDatepoint(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
+        $alt = Period::fromDatepoint(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
         $duration = new DateInterval('P1D');
         $duration->invert = 1;
         self::assertTrue($orig->equals($alt->move($duration)));
@@ -125,22 +125,22 @@ final class ModificationTest extends TestCase
 
     public function testMoveWithInvertedStringInterval(): void
     {
-        $orig = new Period(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
-        $alt = new Period(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
+        $orig = Period::fromDatepoint(new DateTime('2016-01-01 15:32:12'), new DateTime('2016-01-15 12:00:01'));
+        $alt = Period::fromDatepoint(new DateTime('2016-01-02 15:32:12'), new DateTime('2016-01-16 12:00:01'));
         self::assertTrue($orig->equals($alt->move(DateInterval::createFromDateString('-1 DAY'))));
     }
 
     public function testWithDurationAfterStart(): void
     {
-        $expected = new Period('2014-03-01', '2014-04-01');
-        $period = new Period('2014-03-01', '2014-03-15');
-        self::assertEquals($expected, $period->withDurationAfterStart('1 MONTH'));
+        $expected = Period::fromDatepoint(new DateTime('2014-03-01'), new DateTimeImmutable('2014-04-01'));
+        $period = Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTime('2014-03-15'));
+        self::assertEquals($expected, $period->withDurationAfterStart(DateInterval::createFromDateString('1 MONTH')));
     }
 
     public function testWithDurationAfterStartThrowsException(): void
     {
-        $this->expectException(Exception::class);
-        $period = new Period('2014-03-01', '2014-03-15');
+        $this->expectException(InvalidTimeRange::class);
+        $period = Period::fromDatepoint(new DateTime('2014-03-01'), new DateTime('2014-03-15'));
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
         $period->withDurationAfterStart($interval);
@@ -148,15 +148,15 @@ final class ModificationTest extends TestCase
 
     public function testWithDurationBeforeEnd(): void
     {
-        $expected = new Period('2014-02-01', '2014-03-01');
-        $period = new Period('2014-02-15', '2014-03-01');
-        self::assertEquals($expected, $period->withDurationBeforeEnd('1 MONTH'));
+        $expected = Period::fromDatepoint(new DateTimeImmutable('2014-02-01'), new DateTime('2014-03-01'));
+        $period = Period::fromDatepoint(new DateTimeImmutable('2014-02-15'), new DateTime('2014-03-01'));
+        self::assertEquals($expected, $period->withDurationBeforeEnd(DateInterval::createFromDateString('1 MONTH')));
     }
 
     public function testWithDurationBeforeEndThrowsException(): void
     {
-        $this->expectException(Exception::class);
-        $period = new Period('2014-02-15', '2014-03-01');
+        $this->expectException(InvalidTimeRange::class);
+        $period = Period::fromDatepoint(new DateTimeImmutable('2014-02-15'), new DateTimeImmutable('2014-03-01'));
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
         $period->withDurationBeforeEnd($interval);
@@ -166,7 +166,7 @@ final class ModificationTest extends TestCase
     {
         $period = Period::fromMonth(2014, 3);
         $altPeriod = Period::fromMonth(2014, 4);
-        $expected = Period::after('2014-03-01', '2 MONTHS');
+        $expected = Period::after(new DateTimeImmutable('2014-03-01'), DateInterval::createFromDateString('2 MONTHS'));
         self::assertEquals($expected, $period->merge($altPeriod));
         self::assertEquals($expected, $altPeriod->merge($period));
         self::assertEquals($expected, $expected->merge($period, $altPeriod));
@@ -180,42 +180,46 @@ final class ModificationTest extends TestCase
 
     public function testMoveEndDate(): void
     {
-        $orig = Period::after('2012-01-01', '2 MONTH');
-        $period = $orig->moveEndDate('-1 MONTH');
+        $orig = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('2 MONTH'));
+        $period = $orig->moveEndDate(DateInterval::createFromDateString('-1 MONTH'));
         self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
-        self::assertEquals($orig->getStartDate(), $period->getStartDate());
+        self::assertEquals($orig->startDate(), $period->startDate());
     }
 
     public function testMoveEndDateThrowsException(): void
     {
-        $this->expectException(Exception::class);
-        Period::after('2012-01-01', '1 MONTH')->moveEndDate('-3 MONTHS');
+        $this->expectException(InvalidTimeRange::class);
+
+        Period::after(
+            new DateTimeImmutable('2012-01-01'),
+            DateInterval::createFromDateString('1 MONTH')
+        )->moveEndDate(DateInterval::createFromDateString('-3 MONTHS'));
     }
 
     public function testMoveStartDateBackward(): void
     {
         $orig = Period::fromMonth(2012, 1);
-        $period = $orig->moveStartDate('-1 MONTH');
+        $period = $orig->moveStartDate(DateInterval::createFromDateString('-1 MONTH'));
         self::assertSame(-1, $orig->durationCompare($period));
         self::assertTrue($orig->durationLessThan($period));
-        self::assertEquals($orig->getEndDate(), $period->getEndDate());
-        self::assertNotEquals($orig->getStartDate(), $period->getStartDate());
+        self::assertEquals($orig->endDate(), $period->endDate());
+        self::assertNotEquals($orig->startDate(), $period->startDate());
     }
 
     public function testMoveStartDateForward(): void
     {
         $orig = Period::fromMonth(2012, 1);
-        $period = $orig->moveStartDate('2 WEEKS');
+        $period = $orig->moveStartDate(DateInterval::createFromDateString('2 WEEKS'));
         self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
-        self::assertEquals($orig->getEndDate(), $period->getEndDate());
-        self::assertNotEquals($orig->getStartDate(), $period->getStartDate());
+        self::assertEquals($orig->endDate(), $period->endDate());
+        self::assertNotEquals($orig->startDate(), $period->startDate());
     }
 
     public function testMoveStartDateThrowsException(): void
     {
-        $this->expectException(Exception::class);
-        Period::after('2012-01-01', '1 MONTH')->moveStartDate('3 MONTHS');
+        $this->expectException(InvalidTimeRange::class);
+        Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'))->moveStartDate(DateInterval::createFromDateString('3 MONTHS'));
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use function in_array;
 use function strtolower;
 use function strtoupper;
@@ -29,22 +30,13 @@ final class RomanNumber implements LabelGenerator
         'I'  => 1,
     ];
 
-    /**
-     * @var DecimalNumber
-     */
-    private $decimalNumber;
+    private int $case;
 
     /**
-     * @var int
+     * @param DecimalNumber $decimalNumber
      */
-    private $case;
-
-    /**
-     * New instance.
-     */
-    public function __construct(DecimalNumber $decimalNumber, int $case = self::UPPER)
+    public function __construct(private DecimalNumber $decimalNumber, int $case = self::UPPER)
     {
-        $this->decimalNumber = $decimalNumber;
         $this->case = $this->filterLetterCase($case);
     }
 
@@ -63,7 +55,7 @@ final class RomanNumber implements LabelGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         foreach ($this->decimalNumber->generate($nbLabels) as $key => $label) {
             yield $key => $this->convert($label);
@@ -89,11 +81,12 @@ final class RomanNumber implements LabelGenerator
      */
     private function convert(string $number): string
     {
+        $numberInt = (int) $number;
         $retVal = '';
-        while ($number > 0) {
+        while ($numberInt > 0) {
             foreach (self::CHARACTER_MAP as $roman => $int) {
-                if ($number >= $int) {
-                    $number -= $int;
+                if ($numberInt >= $int) {
+                    $numberInt -= $int;
                     $retVal .= $roman;
                     break;
                 }

@@ -13,16 +13,12 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
+
 final class DecimalNumber implements LabelGenerator
 {
-    /**
-     * @var int
-     */
-    private $int;
+    private int $int;
 
-    /**
-     * New instance.
-     */
     public function __construct(int $int = 1)
     {
         if (0 >= $int) {
@@ -35,7 +31,7 @@ final class DecimalNumber implements LabelGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         if (0 >= $nbLabels) {
             return;

@@ -19,7 +19,6 @@ use function mb_convert_encoding;
 use function mb_strlen;
 use function preg_match;
 use function preg_replace;
-use function sprintf;
 use const STDOUT;
 use const STR_PAD_BOTH;
 use const STR_PAD_LEFT;
@@ -38,65 +37,19 @@ final class GanttChartConfig
 
     public const ALIGN_CENTER = STR_PAD_BOTH;
 
-    /**
-     * @var Output
-     */
-    private $output;
-
-    /**
-     * @var string[]
-     */
-    private $colors = [Output::COLOR_DEFAULT];
-
-    /**
-     * @var int
-     */
-    private $width = 60;
-
-    /**
-     * @var string
-     */
-    private $endExcludedChar = ')';
-
-    /**
-     * @var string
-     */
-    private $endIncludedChar = ']';
-
-    /**
-     * @var string
-     */
-    private $startExcludedChar = '(';
-
-    /**
-     * @var string
-     */
-    private $startIncludedChar = '[';
-
-    /**
-     * @var string
-     */
-    private $body = '-';
-
-    /**
-     * @var string
-     */
-    private $space = ' ';
-
-    /**
-     * @var int
-     */
-    private $leftMarginSize = 1;
-
-    /**
-     * @var int
-     */
-    private $gapSize = 1;
-
-    /**
-     * @var int
-     */
-    private $alignLabel = self::ALIGN_LEFT;
+    private Output $output;
+    /** @var string[] */
+    private array $colors = [Output::COLOR_DEFAULT];
+    private int $width = 60;
+    private string $endExcludedChar = ')';
+    private string $endIncludedChar = ']';
+    private string $startExcludedChar = '(';
+    private string $startIncludedChar = '[';
+    private string $body = '-';
+    private string $space = ' ';
+    private int $leftMarginSize = 1;
+    private int $gapSize = 1;
+    private int $alignLabel = self::ALIGN_LEFT;
 
     /**
      * New instance.
@@ -255,19 +208,15 @@ final class GanttChartConfig
     /**
      * Filter the submitted string.
      *
-     * @throws \InvalidArgumentException if the pattern is invalid
+     * @throws UnableToDrawChart if the pattern is invalid
      */
     private function filterPattern(string $str, string $part): string
     {
-        if (1 === mb_strlen($str)) {
-            return $str;
-        }
-
-        if (1 === preg_match(self::REGEXP_UNICODE, $str)) {
-            return $this->filterUnicodeCharacter($str);
-        }
-
-        throw new \InvalidArgumentException(sprintf('The %s pattern must be a single character', $part));
+        return match (true) {
+            1 === mb_strlen($str) => $str,
+            1 === preg_match(self::REGEXP_UNICODE, $str) => $this->filterUnicodeCharacter($str),
+            default => throw UnableToDrawChart::dueToInvalidPattern($part),
+        };
     }
 
     /**
@@ -275,7 +224,7 @@ final class GanttChartConfig
      *
      * @see http://stackoverflow.com/a/37415135/2316257
      *
-     * @throws \InvalidArgumentException if the character is not valid.
+     * @throws UnableToDrawChart if the character is not valid.
      */
     private function filterUnicodeCharacter(string $str): string
     {
@@ -286,7 +235,7 @@ final class GanttChartConfig
             return $result;
         }
 
-        throw new \InvalidArgumentException(sprintf('The given string `%s` is not a valid unicode string', $str));
+        throw UnableToDrawChart::dueToInvalidUnicodeChar($str);
     }
 
     /**
@@ -426,15 +375,15 @@ final class GanttChartConfig
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified color palette.
      *
-     * @param string... $colors
+     * @param string ...$colors
      */
     public function withColors(string ...$colors): self
     {
-        $filter = static function ($value): bool {
-            return in_array($value, Output::COLORS, true);
-        };
+        $colors = array_filter(
+            array_map('strtolower', $colors),
+            fn (string $value): bool => in_array($value, Output::COLORS, true)
+        );
 
-        $colors = array_filter(array_map('strtolower', $colors), $filter);
         if ([] === $colors) {
             $colors = [Output::COLOR_DEFAULT];
         }

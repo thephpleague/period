@@ -13,13 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period;
 
-/**
- * League Period Base Exception.
- *
- * @package League.period
- * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @since   4.0.0
- */
-class Exception extends \Exception
+use Throwable;
+
+interface TimeRangeError extends Throwable
 {
 }

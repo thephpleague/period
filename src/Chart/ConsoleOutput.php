@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Closure;
+use TypeError;
 use function array_keys;
 use function chr;
 use function fflush;
@@ -42,16 +44,6 @@ final class ConsoleOutput implements Output
     ];
 
     /**
-     * @var callable
-     */
-    private static $formatter;
-
-    /**
-     * @var string
-     */
-    private static $regexp;
-
-    /**
      * @var resource
      */
     private $stream;
@@ -64,11 +56,11 @@ final class ConsoleOutput implements Output
     public function __construct($resource)
     {
         if (!is_resource($resource)) {
-            throw new \TypeError(sprintf('Argument passed must be a stream resource, %s given', gettype($resource)));
+            throw new TypeError(sprintf('Argument passed must be a stream resource, %s given', gettype($resource)));
         }
 
         if ('stream' !== ($type = get_resource_type($resource))) {
-            throw new \TypeError(sprintf('Argument passed must be a stream resource, %s resource given', $type));
+            throw new TypeError(sprintf('Argument passed must be a stream resource, %s resource given', $type));
         }
 
         $this->stream = $resource;
@@ -101,27 +93,36 @@ final class ConsoleOutput implements Output
      */
     private function format(string $str): string
     {
-        self::$formatter = self::$formatter ?? $this->formatter();
-        self::$regexp = self::$regexp ?? ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
+        static $regexp;
+        if (null === $regexp) {
+            $regexp = ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
+        }
 
-        return (string) preg_replace_callback(self::$regexp, self::$formatter, $str);
+        return (string) preg_replace_callback($regexp, $this->formatter(), $str);
     }
 
     /**
      * Return a writer formatter depending on the OS.
      */
-    private function formatter(): callable
+    private function formatter(): Closure
     {
+        static $formatter;
+        if (null !== $formatter) {
+            return $formatter;
+        }
+
         if (0 !== stripos(PHP_OS, 'WIN')) {
-            return function (array $matches): string {
+            $formatter = function (array $matches): string {
                 $str = (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]);
 
                 return chr(27).'['.strtr($str, self::POSIX_COLOR_CODES).'m';
             };
+
+            return $formatter;
         }
 
-        return function (array $matches): string {
-            return (string) $matches[0];
-        };
+        $formatter =  fn (array $matches): string => (string) $matches[0];
+
+        return $formatter;
     }
 }

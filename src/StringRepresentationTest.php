@@ -35,11 +35,11 @@ final class StringRepresentationTest extends TestCase
     public function testToString(): void
     {
         date_default_timezone_set('Africa/Nairobi');
-        $period = new Period('2014-05-01', '2014-05-08');
-        $res = (string) $period;
+        $period = Period::fromDatepoint(new DateTimeImmutable('2014-05-01'), new DateTimeImmutable('2014-05-08'));
+        $res = $period->toIso8601();
 
-        self::assertTrue(false !== strpos($res, '2014-04-30T21:00:00'));
-        self::assertTrue(false !== strpos($res, '2014-05-07T21:00:00'));
+        self::assertTrue(str_contains($res, '2014-04-30T21:00:00'));
+        self::assertTrue(str_contains($res, '2014-05-07T21:00:00'));
     }
 
     public function testJsonSerialize(): void
@@ -51,17 +51,17 @@ final class StringRepresentationTest extends TestCase
 
         $res = json_decode($json);
 
-        self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));
-        self::assertEquals($period->getEndDate(), new DateTimeImmutable($res->endDate));
+        self::assertEquals($period->startDate(), new DateTimeImmutable($res->startDate));
+        self::assertEquals($period->endDate(), new DateTimeImmutable($res->endDate));
     }
 
     public function testFormat(): void
     {
         date_default_timezone_set('Africa/Nairobi');
-        self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->format('Y-m'));
+        self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->toNotation('Y-m'));
         self::assertSame(
             '[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)',
-            (new Period('2015-04-01', '2015-04-01'))->format('Y-m-d e')
+            (Period::fromDatepoint(new DateTimeImmutable('2015-04-01'), new DateTimeImmutable('2015-04-01')))->toNotation('Y-m-d e')
         );
     }
 }

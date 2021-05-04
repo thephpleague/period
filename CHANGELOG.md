@@ -6,11 +6,25 @@ All notable changes to `Period` will be documented in this file
 
 ### Added
 
-- Nothing
+- `TimeRangeError` used as the error interface marker.
+- `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
+- `InvalidTimeRange` exception for anything regarding creating an object.
+- `Duration::fromSeonds` uses a dedicated fraction argument and the seconds are no longer expressed using a `float` value.
+- `Period::fromNotation` to instantiate a time range object from a mathematical representation.
+- `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
 
 ### Fixed
 
-- None
+- Switch from using `Closure` object instead of the `callable` pseudo type with the `Sequence` methods.
+- `Period::diff` returns a `Sequence` instance instead of an array.
+- `Period::__construct` is private.
+- `Period` named constructors no longer supports scalar values only objects can be used for instantiation.
+- `Period` named constructors only optional value is the boundaries, all others values are required.
+- `Period::timestampInterval` now returns an `int` instead of a `float` value.  
+- `Duration` no longer extends a `DateInterval` object.
+- `Datepoint` no longer extends a `DateTimeImmutable` object.
+- `Datepoint::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
+- Argument names are normalized throughout the package. (PHP8 BC break)
 
 ### Deprecated
 
@@ -18,7 +32,48 @@ All notable changes to `Period` will be documented in this file
 
 ### Removed
 
-- None
+- Support for PHP7
+- `Period::getStartDate` replaced by `Period::startDate`
+- `Period::getEndDate` replaced by `Period::endDate`
+- `Period::getDateInterval` replaced by `Period::dateInterval`
+- `Period::getTimestampInterval` replaced by `Period::timestampInterval`
+- `Period::getBoundaryType` replaced by `Period::boundaries`
+- `Period::withBoundaryType` replaced by `Period::withBoundaries`
+- `Period::getDatePeriod` replaced by `Period::toDatePeriod`
+- `Period::getDatePeriodBackwards` replaced by `Period::toDatePeriodBackwards`
+- `Period::__string` replaced by `Period::toIso8601`
+- `Period::format` replaced by `Period::toNotation`
+- `Period::substract` use `Period::subtract` instead
+- `Sequence::substract` use `Sequence::subtract` instead
+- `Sequence::getIntersections` use `Sequence::intersections` instead
+- `Sequence::getGaps` use `Sequence::gaps` instead
+- `Sequence::getBoundaries` use `Sequence::length` instead
+- `Sequence::getTotalTimestampInterval` use `Sequence::totalTimestampInterval` instead  
+- `Duration::__toString` and `Duration::format` with no replacement
+- `Duration::create` is removed with no replacement
+- `Duration::fromTimeString` is removed with no replacement
+- `Datepoint::create` is removed with no replacement
+- The `create` prefix is removed from the `Duration` and `Datepoint` named constructors.
+
+Removed all the following namespaced functions from the package: 
+
+- `League\Period\datepoint`
+- `League\Period\duration`
+- `League\Period\year`
+- `League\Period\semester`
+- `League\Period\quarter`
+- `League\Period\month`
+- `League\Period\day`
+- `League\Period\hour`
+- `League\Period\minute`
+- `League\Period\second`
+- `League\Period\instant`
+- `League\Period\iso_year`
+- `League\Period\iso_week`
+- `League\Period\interval_after`
+- `League\Period\interval_before`
+- `League\Period\interval_around`
+- `League\Period\interval_from_dateperiod`
 
 ## 4.11.0 - 2020-11-11
 

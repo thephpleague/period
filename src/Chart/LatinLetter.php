@@ -13,19 +13,14 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use function preg_match;
 use function trim;
 
 final class LatinLetter implements LabelGenerator
 {
-    /**
-     * @var string
-     */
-    private $str;
+    private string $str;
 
-    /**
-     * New instance.
-     */
     public function __construct(string $str = 'A')
     {
         $this->str = $this->filterLetter($str);
@@ -55,8 +50,10 @@ final class LatinLetter implements LabelGenerator
 
     /**
      * {@inheritdoc}
+     *
+     * @psalm-suppress StringIncrement
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         if (0 >= $nbLabels) {
             $nbLabels = 0;

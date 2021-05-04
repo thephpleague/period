@@ -18,6 +18,11 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'none'],
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_constants' => true,
+            'import_functions' => true,
+        ],
         'header_comment' => [
             'commentType' => 'PHPDoc',
             'header' => $header,

@@ -15,17 +15,9 @@ namespace League\Period;
 
 use DateInterval;
 use DateTimeImmutable;
-use TypeError;
-use function filter_var;
-use function gettype;
-use function is_string;
-use function method_exists;
+use DateTimeInterface;
 use function preg_match;
-use function property_exists;
-use function rtrim;
-use function sprintf;
 use function str_pad;
-use const FILTER_VALIDATE_FLOAT;
 
 /**
  * League Period Duration.
@@ -34,314 +26,130 @@ use const FILTER_VALIDATE_FLOAT;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
  */
-final class Duration extends DateInterval
+final class Duration
 {
-    private const REGEXP_DATEINTERVAL_WORD_SPEC = '/^P\S*$/';
-
-    private const REGEXP_DATEINTERVAL_SPEC = '@^P
-        (?!$)                             # making sure there something after the interval delimiter
-        (?:(\d+Y)?(\d+M)?(\d+W)?(\d+D)?)? # day, week, month, year part
-        (?:T                              # interval time delimiter
-            (?!$)                         # making sure there something after the interval time delimiter
-            (?:\d+H)?(?:\d+M)?(?:\d+S)?   # hour, minute, second part
-        )?
-    $@x';
-
-    private const REGEXP_MICROSECONDS_INTERVAL_SPEC = '@^(?<interval>.*)(\.|,)(?<fraction>\d{1,6})S$@';
-
-    private const REGEXP_MICROSECONDS_DATE_SPEC = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
-
-    private const REGEXP_CHRONO_FORMAT = '@^
+    private const REGEXP_FLOATING_SECONDS_DATE = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})$@';
+    private const REGEXP_FLOATING_SECONDS_INTERVAL = '@^(?<interval>.*)(\.)(?<fraction>\d{1,6})S$@';
+    private const REGEXP_FRACTION_DESIGNATOR = '@^P([^T]+)?(T(?=\d+[HMSF])(\d+H)?(\d+M)?(\d+S)?((?<fraction>\d+)F))?$@';
+    private const REGEXP_CHRONOMETER = '@^
         (?<sign>\+|-)?                  # optional sign
         ((?<hour>\d+):)?                # optional hour
         ((?<minute>\d+):)(?<second>\d+) # required minute and second
         (\.(?<fraction>\d{1,6}))?       # optional fraction
     $@x';
 
-    private const REGEXP_TIME_FORMAT = '@^
-        (?<sign>\+|-)?                               # optional sign
-        (?<hour>\d+)(:(?<minute>\d+))                # required hour and minute
-        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
-    $@x';
-
-    /**
-     * New instance.
-     *
-     * Returns a new instance from an Interval specification
-     */
-    public function __construct(string $interval_spec)
+    private function __construct(private DateInterval $duration)
     {
-        if (1 === preg_match(self::REGEXP_MICROSECONDS_INTERVAL_SPEC, $interval_spec, $matches)) {
-            parent::__construct($matches['interval'].'S');
-            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
-            return;
-        }
-
-        if (1 === preg_match(self::REGEXP_MICROSECONDS_DATE_SPEC, $interval_spec, $matches)) {
-            parent::__construct($matches['interval']);
-            $this->f = (float) str_pad($matches['fraction'], 6, '0') / 1e6;
-            return;
-        }
-
-        parent::__construct($interval_spec);
     }
 
     /**
-     * Returns a continuous portion of time between two datepoints expressed as a DateInterval object.
-     *
-     * The duration can be
-     * <ul>
-     * <li>an Period object</li>
-     * <li>a DateInterval object</li>
-     * <li>an integer interpreted as the duration expressed in seconds.</li>
-     * <li>a string parsable by DateInterval::createFromDateString</li>
-     * </ul>
-     *
-     * @param mixed $duration a continuous portion of time
-     *
-     * @throws TypeError if the duration type is not a supported
+     * @inheritDoc
      */
-    public static function create($duration): self
+    public static function __set_state(array $properties)
     {
-        if ($duration instanceof Period) {
-            return self::createFromDateInterval($duration->getDateInterval());
-        }
-
-        if ($duration instanceof DateInterval) {
-            return self::createFromDateInterval($duration);
-        }
-
-        $seconds = filter_var($duration, FILTER_VALIDATE_FLOAT);
-        if (false !== $seconds) {
-            return self::createFromSeconds($seconds);
-        }
-
-        if (!is_string($duration) && !method_exists($duration, '__toString')) {
-            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
-        }
-
-        $duration = (string) $duration;
-
-        if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
-            return self::createFromChronoString($duration);
-        }
-
-        if (1 === preg_match(self::REGEXP_DATEINTERVAL_WORD_SPEC, $duration)) {
-            if (1 === preg_match(self::REGEXP_DATEINTERVAL_SPEC, $duration)) {
-                return new self($duration);
-            }
-
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
-        }
-
-        try {
-            $instance = self::createFromDateString($duration);
-        } catch (\Exception $exception) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration), 0, $exception);
-        }
-
-        if (false !== $instance) {
-            return $instance;
-        }
-
-        throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+        return new self($properties['duration']);
     }
 
     /**
-     * Creates a new instance from a DateInterval object.
-     *
-     * the second value will be overflow up to the hour time unit.
+     * Returns a new instance from an interval specification.
      */
-    public static function createFromDateInterval(DateInterval $duration): self
+    public static function fromIsoString(string $duration): self
     {
-        $new = new self('PT0S');
-        foreach ($duration as $name => $value) {
-            if (property_exists($new, $name)) {
-                $new->$name = $value;
-            }
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_INTERVAL, $duration, $matches)) {
+            $interval = new DateInterval($matches['interval'].'S');
+            $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
+
+            return new self($interval);
         }
 
-        return $new;
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_DATE, $duration, $matches)) {
+            $interval = new DateInterval($matches['interval']);
+            $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
+
+            return new self($interval);
+        }
+
+        if (
+            1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $duration, $matches)
+            && isset($matches['fraction'])
+        ) {
+            $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction'])-1));
+            $interval->f = (int) $matches['fraction'] / 1_000_000;
+
+            return new self($interval);
+        }
+
+        return new self(new DateInterval($duration));
     }
 
     /**
-     * Creates a new instance from a seconds.
-     *
-     * the second value will be overflow up to the hour time unit.
+     * Returns a new instance from a DateInterval object.
      */
-    public static function createFromSeconds(float $seconds): self
+    public static function fromDateInterval(DateInterval $duration): self
     {
-        $invert = 0 > $seconds;
+        return new self($duration);
+    }
+
+    /**
+     * Returns a new instance from a seconds.
+     */
+    public static function fromSeconds(int $second, int $fraction = 0): self
+    {
+        $invert = 0 > $second;
         if ($invert) {
-            $seconds = $seconds * -1;
+            $second = $second * -1;
         }
 
-        $secondsInt = (int) $seconds;
-        $fraction = (int) (($seconds - $secondsInt) * 1e6);
-        $minute = intdiv($secondsInt, 60);
-        $secondsInt = $secondsInt - ($minute * 60);
-        $hour = intdiv($minute, 60);
-        $minute = $minute - ($hour * 60);
+        if (0 > $fraction) {
+            throw InvalidTimeRange::dueToInvalidFraction();
+        }
 
-        return self::createFromTimeUnits([
-            'hour' => (string) $hour,
-            'minute' => (string) $minute,
-            'second' => (string) $secondsInt,
-            'fraction' => (string) $fraction,
-            'sign' => $invert ? '-' : '+',
-        ]);
+        $duration = new DateInterval('PT0S');
+        $duration->s = $second;
+        $duration->f = $fraction / 1_000_000;
+
+        if ($invert) {
+            $duration->invert = 1;
+        }
+
+        return new self($duration);
     }
 
     /**
      * Creates a new instance from a timer string representation.
      *
-     * @throws Exception
+     * @throws InvalidTimeRange
      */
-    public static function createFromChronoString(string $duration): self
+    public static function fromChronoString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $units)) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
+        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $duration, $units)) {
+            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
         }
 
         if ('' === $units['hour']) {
             $units['hour'] = '0';
         }
 
-        return self::createFromTimeUnits($units);
-    }
-
-    /**
-     * Creates a new instance from a time string representation following RDBMS specification.
-     *
-     * @throws Exception
-     */
-    public static function createFromTimeString(string $duration): self
-    {
-        if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
-            throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
-        }
-
-        return self::createFromTimeUnits($units);
-    }
-
-    /**
-     * Creates an instance from DateInterval units.
-     *
-     * @param array<string,string> $units
-     */
-    private static function createFromTimeUnits(array $units): self
-    {
-        $units = $units + ['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
-
+        $units = array_merge(['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'], $units);
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
+        $expression = $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds';
 
-        $expression = $units['hour'].' hours '
-            .$units['minute'].' minutes '
-            .$units['second'].' seconds '
-            .$units['fraction'].' microseconds';
-
-        /** @var Duration $instance */
-        $instance = self::createFromDateString($expression);
+        $instance = DateInterval::createFromDateString($expression);
         if ('-' === $units['sign']) {
             $instance->invert = 1;
         }
 
-        return $instance;
+        return new self($instance);
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @param mixed $duration a date with relative parts
-     *
-     * @return self|false
-     */
-    public static function createFromDateString($duration)
+    public static function fromDateString(string $duration): self
     {
-        $duration = parent::createFromDateString($duration);
-        if (false === $duration) {
-            return false;
-        }
-
-        $new = new self('PT0S');
-        foreach ($duration as $name => $value) {
-            $new->$name = $value;
-        }
-
-        return $new;
+        return new self(DateInterval::createFromDateString($duration));
     }
 
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.5
-     * @see ::format
-     *
-     * Returns the ISO8601 interval string representation.
-     *
-     * Microseconds fractions are included
-     */
-    public function __toString(): string
+    public function toDateInterval(): DateInterval
     {
-        $date = 'P';
-        foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
-            if (0 !== $this->$value) {
-                $date .= '%'.$value.$key;
-            }
-        }
-
-        $time = 'T';
-        foreach (['H' => 'h', 'M' => 'i'] as $key => $value) {
-            if (0 !== $this->$value) {
-                $time .= '%'.$value.$key;
-            }
-        }
-
-        if (0.0 !== $this->f) {
-            $second = $this->s + $this->f;
-            if (0 > $this->s) {
-                $second = $this->s - $this->f;
-            }
-
-            $second = rtrim(sprintf('%f', $second), '0');
-
-            return $this->format($date.$time).$second.'S';
-        }
-
-        if (0 !== $this->s) {
-            $time .= '%sS';
-
-            return $this->format($date.$time);
-        }
-
-        if ('T' !== $time) {
-            return $this->format($date.$time);
-        }
-
-        if ('P' !== $date) {
-            return $this->format($date);
-        }
-
-        return 'PT0S';
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.6
-     * @see ::adjustedTo
-     *
-     * Returns a new instance with recalculate time and date segments to remove carry over points.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the time and date segments recalculate to remove
-     * carry over points.
-     *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
-     */
-    public function withoutCarryOver($reference_date): self
-    {
-        return $this->adjustedTo($reference_date);
+        return $this->duration;
     }
 
     /**
@@ -350,15 +158,11 @@ final class Duration extends DateInterval
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
-     *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
      */
-    public function adjustedTo($reference_date): self
+    public function adjustedTo(DateTimeInterface $datepoint): self
     {
-        if (!$reference_date instanceof DateTimeImmutable) {
-            $reference_date = Datepoint::create($reference_date);
-        }
+        $datepoint = DateTimeImmutable::createFromInterface($datepoint);
 
-        return self::create($reference_date->diff($reference_date->add($this)));
+        return new self($datepoint->diff($datepoint->add($this->duration)));
     }
 }

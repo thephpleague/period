@@ -29,29 +29,16 @@ use function str_repeat;
  */
 final class GanttChart implements Chart
 {
-    /**
-     * @var GanttChartConfig
-     */
-    private $config;
+    private float $start = 0;
+    private float $unit = 1;
 
-    /**
-     * @var float
-     */
-    private $start;
-
-    /**
-     * @var float
-     */
-    private $unit;
-
-    /**
-     * New instance.
-     *
-     * @param ?GanttChartConfig $config
-     */
-    public function __construct(?GanttChartConfig $config = null)
+    public function __construct(private GanttChartConfig $config)
     {
-        $this->config = $config ?? new GanttChartConfig();
+    }
+
+    public static function create(GanttChartConfig $config = null): self
+    {
+        return new self($config ?? new GanttChartConfig());
     }
 
     /**
@@ -78,7 +65,7 @@ final class GanttChart implements Chart
         $output = $this->config->output();
         foreach ($dataset as $offset => [$label, $item]) {
             $colorIndex = $colorCodeIndexes[$offset % $colorCodeCount];
-            $labelPortion = str_pad($label, $labelMaxLength, ' ', $padding);
+            $labelPortion = str_pad((string) $label, $labelMaxLength, ' ', $padding);
             $dataPortion = $this->drawDataPortion($item, $lineCharacters);
             $output->writeln($leftMargin.$labelPortion.$gap.$dataPortion, $colorIndex);
         }
@@ -91,10 +78,10 @@ final class GanttChart implements Chart
     {
         $this->start = 0;
         $this->unit = 1;
-        $boundaries = $dataset->boundaries();
+        $boundaries = $dataset->length();
         if (null !== $boundaries) {
-            $this->start = $boundaries->getStartDate()->getTimestamp();
-            $this->unit = $this->config->width() / $boundaries->getTimestampInterval();
+            $this->start = $boundaries->startDate()->getTimestamp();
+            $this->unit = $this->config->width() / $boundaries->timestampInterval();
         }
     }
 
@@ -106,8 +93,8 @@ final class GanttChart implements Chart
     private function drawDataPortion(Sequence $item, array $lineCharacters): string
     {
         $reducer = function (array $lineCharacters, Period $period): array {
-            $startIndex = (int) floor(($period->getStartDate()->getTimestamp() - $this->start) * $this->unit);
-            $endIndex = (int) ceil(($period->getEndDate()->getTimestamp() - $this->start) * $this->unit);
+            $startIndex = (int) floor(($period->startDate()->getTimestamp() - $this->start) * $this->unit);
+            $endIndex = (int) ceil(($period->endDate()->getTimestamp() - $this->start) * $this->unit);
             $periodLength = $endIndex - $startIndex;
 
             array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->body()));

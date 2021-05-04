@@ -45,7 +45,7 @@ final class BoundaryTest extends TestCase
         bool $endIncluded,
         bool $endExcluded
     ): void {
-        self::assertSame($rangeType, $interval->getBoundaryType());
+        self::assertSame($rangeType, $interval->boundaries());
         self::assertSame($startIncluded, $interval->isStartIncluded());
         self::assertSame($startExcluded, $interval->isStartExcluded());
         self::assertSame($endIncluded, $interval->isEndIncluded());
@@ -64,7 +64,7 @@ final class BoundaryTest extends TestCase
                 'endExcluded' => true,
             ],
             'left close right open' => [
-                'interval' => Period::around('2012-08-12', '1 HOUR', Period::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::around(new DateTime('2012-08-12'), Duration::fromDateString('1 HOUR'), Period::EXCLUDE_START_INCLUDE_END),
                 'rangeType' => Period::EXCLUDE_START_INCLUDE_END,
                 'startIncluded' => false,
                 'startExcluded' => true,
@@ -72,7 +72,7 @@ final class BoundaryTest extends TestCase
                 'endExcluded' => false,
             ],
             'left open right open' => [
-                'interval' => Period::after('2012-08-12', '1 DAY', Period::INCLUDE_ALL),
+                'interval' => Period::after(new DateTime('2012-08-12'), Duration::fromDateString('1 DAY'), Period::INCLUDE_ALL),
                 'rangeType' => Period::INCLUDE_ALL,
                 'startIncluded' => true,
                 'startExcluded' => false,
@@ -80,7 +80,7 @@ final class BoundaryTest extends TestCase
                 'endExcluded' => false,
             ],
             'left close right close' => [
-                'interval' => Period::before('2012-08-12', '1 WEEK', Period::EXCLUDE_ALL),
+                'interval' => Period::before(new DateTime('2012-08-12'), Duration::fromDateString('1 WEEK'), Period::EXCLUDE_ALL),
                 'rangeType' => Period::EXCLUDE_ALL,
                 'startIncluded' => false,
                 'startExcluded' => true,
@@ -92,17 +92,17 @@ final class BoundaryTest extends TestCase
 
     public function testWithBoundaryType(): void
     {
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->withBoundaryType(Period::EXCLUDE_ALL);
-        self::assertEquals($interval->getDateInterval(), $interval->getDateInterval());
-        self::assertNotEquals($interval->getBoundaryType(), $altInterval->getBoundaryType());
-        self::assertSame($interval, $interval->withBoundaryType(Period::INCLUDE_START_EXCLUDE_END));
+        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $altInterval = $interval->withBoundaries(Period::EXCLUDE_ALL);
+        self::assertEquals($interval->dateInterval(), $interval->dateInterval());
+        self::assertNotEquals($interval->boundaries(), $altInterval->boundaries());
+        self::assertSame($interval, $interval->withBoundaries(Period::INCLUDE_START_EXCLUDE_END));
     }
 
     public function testWithBoundaryTypeFails(): void
     {
-        $this->expectException(Exception::class);
-        $interval = new Period(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $interval->withBoundaryType('foobar');
+        $this->expectException(InvalidTimeRange::class);
+        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $interval->withBoundaries('foobar');
     }
 }

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use DateTime;
+use DateTimeImmutable;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -25,10 +27,7 @@ use function stream_get_contents;
  */
 final class GanttChartTest extends TestCase
 {
-    /**
-     * @var \League\Period\Chart\GanttChart
-     */
-    private $graph;
+    private GanttChart $graph;
 
     /**
      * @var resource
@@ -38,8 +37,8 @@ final class GanttChartTest extends TestCase
     public function setUp(): void
     {
         $this->stream = $this->setStream();
-        $config = (new GanttChartConfig(new \League\Period\Chart\ConsoleOutput($this->stream)))->withColors('red');
-        $this->graph = new GanttChart($config);
+        $config = (new GanttChartConfig(new ConsoleOutput($this->stream)))->withColors('red');
+        $this->graph = GanttChart::create($config);
     }
 
     /**
@@ -58,8 +57,7 @@ final class GanttChartTest extends TestCase
      */
     public function testConstructor(): void
     {
-        $graph = new GanttChart();
-        self::assertNotEquals($this->graph, $graph);
+        self::assertNotEquals($this->graph, GanttChart::create());
     }
 
     /**
@@ -68,7 +66,7 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayEmptyDataset(): void
     {
-        $this->graph->stroke(new \League\Period\Chart\Dataset());
+        $this->graph->stroke(new Dataset());
         rewind($this->stream);
         $data = stream_get_contents($this->stream);
 
@@ -83,9 +81,9 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplayPeriods(): void
     {
-        $this->graph->stroke(new \League\Period\Chart\Dataset([
-            ['A', new Period('2018-01-01', '2018-01-15')],
-            ['B', new Period('2018-01-15', '2018-02-01')],
+        $this->graph->stroke(new Dataset([
+            ['A', Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-15'))],
+            ['B', Period::fromDatepoint(new DateTime('2018-01-15'), new DateTime('2018-02-01'))],
         ]));
 
         rewind($this->stream);
@@ -103,9 +101,9 @@ final class GanttChartTest extends TestCase
      */
     public function testDisplaySequence(): void
     {
-        $dataset = new \League\Period\Chart\Dataset([
-            ['A', new Sequence(new Period('2018-01-01', '2018-01-15'))],
-            ['B', new Sequence(new Period('2018-01-15', '2018-02-01'))],
+        $dataset = new Dataset([
+            ['A', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
+            ['B', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
 
         $this->graph->stroke($dataset);

@@ -13,27 +13,19 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use Iterator;
 use function iterator_to_array;
 
 final class ReverseLabel implements LabelGenerator
 {
-    /**
-     * @var LabelGenerator
-     */
-    private $labelGenerator;
-
-    /**
-     * New instance.
-     */
-    public function __construct(LabelGenerator $labelGenerator)
+    public function __construct(private LabelGenerator $labelGenerator)
     {
-        $this->labelGenerator = $labelGenerator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generate(int $nbLabels): \Iterator
+    public function generate(int $nbLabels): Iterator
     {
         $iterable = $this->labelGenerator->generate($nbLabels);
         $data = iterator_to_array($iterable, false);
