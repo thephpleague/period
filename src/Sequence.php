@@ -36,6 +36,8 @@ use const ARRAY_FILTER_USE_BOTH;
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0
+ *
+ * @implements IteratorAggregate<int, Period>
  */
 final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
@@ -281,7 +283,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * {@inheritDoc}
+     * @return Iterator<int, Period>
      */
     public function getIterator(): Iterator
     {

@@ -133,7 +133,7 @@ final class DurationTest extends TestCase
             'negative seconds' => [
                 'seconds' => -3,
                 'fraction' => 2345,
-                'expected' => 'PT3.002345S',
+                'expected' => 'PT-3.002345S',
             ],
         ];
     }
@@ -194,12 +194,11 @@ final class DurationTest extends TestCase
     /**
      * @dataProvider fromChronoProvider
      */
-    public function testCreateFromChronoStringSucceeds(string $chronometer, string $expected, int $revert): void
+    public function testCreateFromChronoStringSucceeds(string $chronometer, string $expected): void
     {
         $duration = Duration::fromChronoString($chronometer);
 
         self::assertSame($expected, $this->formatDuration($duration));
-        self::assertSame($revert, $duration->toDateInterval()->invert);
     }
 
     public function fromChronoProvider(): iterable
@@ -208,22 +207,18 @@ final class DurationTest extends TestCase
             'minute and seconds' => [
                 'chronometer' => '1:2',
                 'expected' => 'PT1M2S',
-                'invert' => 0,
             ],
             'hour, minute, seconds' => [
                 'chronometer' => '1:2:3',
                 'expected' => 'PT1H2M3S',
-                'invert' => 0,
             ],
             'handling 0 prefix' => [
                 'chronometer' => '00001:00002:000003.0004',
                 'expected' => 'PT1H2M3.0004S',
-                'invert' => 0,
             ],
             'negative chrono' => [
                 'chronometer' => '-12:28.5',
                 'expected' => 'PT12M28.5S',
-                'invert' => 1,
             ],
         ];
     }
