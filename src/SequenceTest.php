@@ -53,9 +53,6 @@ final class SequenceTest extends TestCase
     {
         $sequence = new Sequence(Period::fromDay(2012, 6, 23), Period::fromDay(2012, 6, 23));
         self::assertCount(2, $sequence);
-        foreach ($sequence as $event) {
-            self::assertInstanceOf(Period::class, $event);
-        }
     }
 
     public function testRemove(): void

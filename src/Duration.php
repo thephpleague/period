@@ -95,11 +95,6 @@ final class Duration
      */
     public static function fromSeconds(int $second, int $fraction = 0): self
     {
-        $invert = 0 > $second;
-        if ($invert) {
-            $second = $second * -1;
-        }
-
         if (0 > $fraction) {
             throw InvalidTimeRange::dueToInvalidFraction();
         }
@@ -107,10 +102,6 @@ final class Duration
         $duration = new DateInterval('PT0S');
         $duration->s = $second;
         $duration->f = $fraction / 1_000_000;
-
-        if ($invert) {
-            $duration->invert = 1;
-        }
 
         return new self($duration);
     }
@@ -136,7 +127,7 @@ final class Duration
 
         $instance = DateInterval::createFromDateString($expression);
         if ('-' === $units['sign']) {
-            $instance->invert = 1;
+            $instance->h *= -1;
         }
 
         return new self($instance);
