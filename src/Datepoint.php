@@ -16,6 +16,8 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
+use function date_default_timezone_get;
 use function intdiv;
 
 /**
@@ -48,9 +50,11 @@ final class Datepoint
         return new self($datepoint);
     }
 
-    public static function fromDateString(string $datepoint): self
+    public static function fromDateString(string $datepoint, DateTimeZone $timezone = null): self
     {
-        return new self(new DateTimeImmutable($datepoint));
+        $timezone = $timezone ?? new DateTimeZone(date_default_timezone_get());
+
+        return new self(new DateTimeImmutable($datepoint, $timezone));
     }
 
     public static function fromTimestamp(int $timestamp): self
