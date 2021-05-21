@@ -44,7 +44,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * @var Period[]
      */
-    private $periods = [];
+    private $periods;
 
     /**
      * new instance.
@@ -60,8 +60,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * Returns the sequence boundaries as a Period instance.
      *
      * If the sequence contains no interval null is returned.
-     *
-     * @return Period|null
      */
     public function length(): Period|null
     {
