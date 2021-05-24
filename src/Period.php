@@ -128,6 +128,7 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a starting datepoint and a duration.
+     *
      * @param Datepoint|DateTimeInterface  $startDate
      * @param Period|Duration|DateInterval $duration
      */
@@ -144,6 +145,7 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance where the given duration is simultaneously
      * subtracted from and added to the given datepoint.
+     *
      * @param Datepoint|DateTimeInterface  $datepoint
      * @param Period|Duration|DateInterval $duration
      */
@@ -160,6 +162,7 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a ending datepoint and a duration.
+     *
      * @param Datepoint|DateTimeInterface  $endDate
      * @param Period|Duration|DateInterval $duration
      */
@@ -373,6 +376,7 @@ final class Period implements JsonSerializable
      * <li>  1 if the current Interval is greater than the submitted Interval object</li>
      * <li>  0 if both Interval objects have the same duration</li>
      * </ul>
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function durationCompare(Period|Duration|DateInterval $duration): int
@@ -382,6 +386,7 @@ final class Period implements JsonSerializable
 
     /**
      * Tells whether the current instance duration is greater than the submitted one.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function durationGreaterThan(Period|Duration|DateInterval $duration): bool
@@ -391,6 +396,7 @@ final class Period implements JsonSerializable
 
     /**
      * Tells whether the current instance duration is greater than or equal to the submitted one.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function durationGreaterThanOrEquals(Period|Duration|DateInterval $duration): bool
@@ -400,6 +406,7 @@ final class Period implements JsonSerializable
 
     /**
      * Tells whether the current instance duration is equal to the submitted one.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function durationEquals(Period|Duration|DateInterval $duration): bool
@@ -409,6 +416,7 @@ final class Period implements JsonSerializable
 
     /**
      * Tells whether the current instance duration is greater than or equal to the submitted one.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function durationLessThanOrEquals(Period|Duration|DateInterval $duration): bool
@@ -418,6 +426,7 @@ final class Period implements JsonSerializable
 
     /**
      * Tells whether the current instance duration is less than the submitted one.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function durationLessThan(Period|Duration|DateInterval $duration): bool
@@ -501,6 +510,7 @@ final class Period implements JsonSerializable
      * Tells whether an instance fully contains the specified index.
      *
      * The index can be a DateTimeInterface object or another Period object.
+     *
      * @param Period|Datepoint|DateTimeInterface $timeSlot
      */
     public function contains(Period|Datepoint|DateTimeInterface $timeSlot): bool
@@ -572,6 +582,7 @@ final class Period implements JsonSerializable
      *
      *    [--------------------)
      *               [---------)
+     *
      * @param Period|Datepoint|DateTimeInterface $timeSlot
      */
     public function isEndedBy(Period|Datepoint|DateTimeInterface $timeSlot): bool
@@ -667,6 +678,7 @@ final class Period implements JsonSerializable
      * recurring at regular intervals, over the instance.
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function toDatePeriod(Period|Duration|DateInterval $duration, int $option = 0): DatePeriod
@@ -678,6 +690,7 @@ final class Period implements JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from
      * the instance ending datepoint.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function toDatePeriodBackwards(Period|Duration|DateInterval $duration, int $option = 0): iterable
@@ -705,7 +718,8 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
      *
-     * @param  Period|Duration|DateInterval $duration
+     * @param Period|Duration|DateInterval $duration
+     *
      * @return iterable<Period>
      */
     public function split(Period|Duration|DateInterval $duration): iterable
@@ -733,7 +747,8 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
      *
-     * @param  Period|Duration|DateInterval $duration
+     * @param Period|Duration|DateInterval $duration
+     *
      * @return iterable<Period>
      */
     public function splitBackwards(Period|Duration|DateInterval $duration): iterable
@@ -909,8 +924,7 @@ final class Period implements JsonSerializable
      */
     public function merge(self ...$periods): self
     {
-        $carry = $this;
-        foreach ($periods as $period) {
+        $reducer = function (Period $carry, Period $period): Period {
             if ($carry->startDate > $period->startDate) {
                 $carry = new self(
                     $period->startDate,
@@ -926,11 +940,12 @@ final class Period implements JsonSerializable
                     $carry->boundaries[0].$period->boundaries[1]
                 );
             }
-        }
 
-        return $carry;
+            return $carry;
+        };
+
+        return array_reduce($periods, $reducer, $this);
     }
-
 
     /**************************************************
      * Mutation methods
@@ -1062,6 +1077,7 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function expand(Period|Duration|DateInterval $duration): self
