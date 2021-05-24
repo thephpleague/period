@@ -30,10 +30,10 @@ final class AffixLabelTest extends TestCase
         string $suffix,
         array $expected
     ): void {
-        $generator = new \League\Period\Chart\AffixLabel(new \League\Period\Chart\LatinLetter($letter), $prefix, $suffix);
+        $generator = new AffixLabel(new LatinLetter($letter), $prefix, $suffix);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
 
-        $generator = (new \League\Period\Chart\AffixLabel(new \League\Period\Chart\LatinLetter($letter)))->withPrefix($prefix)->withSuffix($suffix);
+        $generator = (new AffixLabel(new LatinLetter($letter)))->withPrefix($prefix)->withSuffix($suffix);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
@@ -87,7 +87,7 @@ final class AffixLabelTest extends TestCase
 
     public function testGetter(): void
     {
-        $generator = new \League\Period\Chart\AffixLabel(new RomanNumber(new DecimalNumber(10)));
+        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)));
         self::assertSame('', $generator->suffix());
         self::assertSame('', $generator->prefix());
         $new = $generator->withPrefix('o')->withSuffix('');
@@ -98,7 +98,7 @@ final class AffixLabelTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new \League\Period\Chart\AffixLabel(new \League\Period\Chart\RomanNumber(new DecimalNumber(10)), ':', '.');
+        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)), ':', '.');
         self::assertSame(':FOOBAR.', $generator->format('foobar'));
     }
 }

@@ -25,7 +25,7 @@ final class ReverseLabelTest extends TestCase
      */
     public function testGetLabels(int $nbLabels, string $letter, array $expected): void
     {
-        $generator = new \League\Period\Chart\ReverseLabel(new \League\Period\Chart\LatinLetter($letter));
+        $generator = new ReverseLabel(new LatinLetter($letter));
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 

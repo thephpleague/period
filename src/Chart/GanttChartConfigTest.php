@@ -29,7 +29,7 @@ final class GanttChartConfigTest extends TestCase
 
     public function setUp(): void
     {
-        $this->config = new \League\Period\Chart\GanttChartConfig();
+        $this->config = new GanttChartConfig();
     }
 
     public function testNewInstance(): void
@@ -48,8 +48,8 @@ final class GanttChartConfigTest extends TestCase
 
     public function testCreateFromRandom(): void
     {
-        $config1 = GanttChartConfig::createFromRandom();
-        $config2 = GanttChartConfig::createFromRainbow();
+        $config1 = GanttChartConfig::fromRandom();
+        $config2 = GanttChartConfig::fromRainbow();
         self::assertContains($config1->colors()[0], $config2->colors());
     }
 

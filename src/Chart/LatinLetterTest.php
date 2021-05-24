@@ -67,7 +67,7 @@ final class LatinLetterTest extends TestCase
 
     public function testStartWith(): void
     {
-        $generator = new \League\Period\Chart\LatinLetter('i');
+        $generator = new LatinLetter('i');
         self::assertSame('i', $generator->startingAt());
         $new = $generator->startsWith('o');
         self::assertNotSame($new, $generator);
@@ -77,7 +77,7 @@ final class LatinLetterTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new \League\Period\Chart\LatinLetter('i');
+        $generator = new LatinLetter('i');
         self::assertSame('foobar', $generator->format('foobar'));
     }
 }
