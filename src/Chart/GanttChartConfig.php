@@ -66,14 +66,11 @@ final class GanttChartConfig
      *
      * @param ?Output $output
      */
-    public static function createFromRandom(?Output $output = null): self
+    public static function fromRandom(?Output $output = null): self
     {
         $index = array_rand(Output::COLORS);
 
-        $config = new self($output);
-        $config->colors = [Output::COLORS[$index]];
-
-        return $config;
+        return (new self($output))->withColors(Output::COLORS[$index]);
     }
 
     /**
@@ -81,12 +78,9 @@ final class GanttChartConfig
      *
      * @param ?Output $output
      */
-    public static function createFromRainbow(?Output $output = null): self
+    public static function fromRainbow(?Output $output = null): self
     {
-        $config = new self($output);
-        $config->colors = Output::COLORS;
-
-        return $config;
+        return (new self($output))->withColors(...Output::COLORS);
     }
 
     /**

@@ -50,7 +50,7 @@ final class ConsoleOutputTest extends TestCase
     }
 
     /**
-     * @dataProvider provideWritelnTexts
+     * @dataProvider providesWritelnTexts
      */
     public function testWriteln(string $message, string $expected): void
     {
@@ -64,7 +64,7 @@ final class ConsoleOutputTest extends TestCase
         self::assertStringContainsString($expected, $data);
     }
 
-    public function provideWritelnTexts(): iterable
+    public function providesWritelnTexts(): iterable
     {
         return [
             'empty message' => [

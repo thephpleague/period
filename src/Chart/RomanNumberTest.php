@@ -35,7 +35,7 @@ final class RomanNumberTest extends TestCase
             'empty labels' => [
                 'nbLabels' => 0,
                 'label' => 1,
-                'lettercase' => \League\Period\Chart\RomanNumber::UPPER,
+                'lettercase' => RomanNumber::UPPER,
                 'expected' => [],
             ],
             'labels starts at 3' => [
@@ -53,7 +53,7 @@ final class RomanNumberTest extends TestCase
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'label' => -1,
-                'lettercase' => \League\Period\Chart\RomanNumber::LOWER,
+                'lettercase' => RomanNumber::LOWER,
                 'expected' => ['i'],
             ],
             'labels starts at 0 (2)' => [
@@ -91,7 +91,7 @@ final class RomanNumberTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new RomanNumber(new \League\Period\Chart\DecimalNumber(10));
+        $generator = new RomanNumber(new DecimalNumber(10));
         $newGenerator = $generator->withLetterCase(RomanNumber::LOWER);
         self::assertSame('FOOBAR', $generator->format('fOoBaR'));
         self::assertSame('foobar', $newGenerator->format('fOoBaR'));

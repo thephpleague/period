@@ -25,7 +25,7 @@ final class DecimalNumberTest extends TestCase
      */
     public function testGetLabels(int $nbLabels, int $label, array $expected): void
     {
-        $generator = new \League\Period\Chart\DecimalNumber($label);
+        $generator = new DecimalNumber($label);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
@@ -62,19 +62,19 @@ final class DecimalNumberTest extends TestCase
 
     public function testStartWith(): void
     {
-        $generator = new \League\Period\Chart\DecimalNumber(42);
+        $generator = new DecimalNumber(42);
         self::assertSame(42, $generator->startingAt());
         $new = $generator->startsWith(69);
         self::assertNotSame($new, $generator);
         self::assertSame(69, $new->startingAt());
         self::assertSame($generator, $generator->startsWith(42));
-        self::assertSame(1, (new \League\Period\Chart\DecimalNumber(-3))->startingAt());
+        self::assertSame(1, (new DecimalNumber(-3))->startingAt());
         self::assertSame(1, $generator->startsWith(-3)->startingAt());
     }
 
     public function testFormat(): void
     {
-        $generator = new \League\Period\Chart\DecimalNumber(42);
+        $generator = new DecimalNumber(42);
         self::assertSame('', $generator->format(''));
     }
 }
