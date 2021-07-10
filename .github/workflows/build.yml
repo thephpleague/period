@@ -7,7 +7,8 @@ on:
 jobs:
   linux_tests:
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         php: ['8.0']
