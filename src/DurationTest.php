@@ -238,7 +238,6 @@ final class DurationTest extends TestCase
         };
 
         self::assertSame($expected, $this->formatDuration($duration->adjustedTo($date)));
-        self::assertSame($expected, $this->formatDuration($duration->adjustedTo($date)));
     }
 
     public function adjustedToDataProvider(): iterable
