@@ -53,16 +53,16 @@ final class Duration
     /**
      * Returns a new instance from an interval specification.
      */
-    public static function fromIsoString(string $duration): self
+    public static function fromIsoString(string $durationIsoString): self
     {
-        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_INTERVAL, $duration, $matches)) {
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_INTERVAL, $durationIsoString, $matches)) {
             $interval = new DateInterval($matches['interval'].'S');
             $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
             return new self($interval);
         }
 
-        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_DATE, $duration, $matches)) {
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_DATE, $durationIsoString, $matches)) {
             $interval = new DateInterval($matches['interval']);
             $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
@@ -70,24 +70,24 @@ final class Duration
         }
 
         if (
-            1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $duration, $matches)
+            1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $durationIsoString, $matches)
             && isset($matches['fraction'])
         ) {
-            $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction'])-1));
+            $interval = new DateInterval(substr($durationIsoString, 0, -strlen($matches['fraction'])-1));
             $interval->f = (int) $matches['fraction'] / 1_000_000;
 
             return new self($interval);
         }
 
-        return new self(new DateInterval($duration));
+        return new self(new DateInterval($durationIsoString));
     }
 
     /**
      * Returns a new instance from a DateInterval object.
      */
-    public static function fromInterval(DateInterval $duration): self
+    public static function fromInterval(DateInterval $interval): self
     {
-        return new self($duration);
+        return new self($interval);
     }
 
     /**
@@ -111,10 +111,10 @@ final class Duration
      *
      * @throws InvalidTimeRange
      */
-    public static function fromChronoString(string $duration): self
+    public static function fromChronoString(string $chronoString): self
     {
-        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $duration, $units)) {
-            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($duration);
+        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $chronoString, $units)) {
+            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($chronoString);
         }
 
         if ('' === $units['hour']) {
@@ -133,9 +133,9 @@ final class Duration
         return new self($instance);
     }
 
-    public static function fromDateString(string $duration): self
+    public static function fromDateString(string $durationString): self
     {
-        return new self(DateInterval::createFromDateString($duration));
+        return new self(DateInterval::createFromDateString($durationString));
     }
 
     public function toInterval(): DateInterval
@@ -150,10 +150,10 @@ final class Duration
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      */
-    public function adjustedTo(DateTimeInterface $datepoint): self
+    public function adjustedTo(DateTimeInterface $date): self
     {
-        $datepoint = DateTimeImmutable::createFromInterface($datepoint);
+        $date = DateTimeImmutable::createFromInterface($date);
 
-        return new self($datepoint->diff($datepoint->add($this->duration)));
+        return new self($date->diff($date->add($this->duration)));
     }
 }
