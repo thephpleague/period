@@ -111,7 +111,7 @@ final class Period implements JsonSerializable
     private static function filterDatepoint(Datepoint|DateTimeInterface $datepoint): DateTimeImmutable
     {
         return match (true) {
-            $datepoint instanceof Datepoint => $datepoint->toDateTimeImmutable(),
+            $datepoint instanceof Datepoint => $datepoint->toDate(),
             $datepoint instanceof DateTimeImmutable => $datepoint,
             default => DateTimeImmutable::createFromInterface($datepoint),
         };
@@ -121,7 +121,7 @@ final class Period implements JsonSerializable
     {
         return match (true) {
             $duration instanceof Period => $duration->dateInterval(),
-            $duration instanceof Duration => $duration->toDateInterval(),
+            $duration instanceof Duration => $duration->toInterval(),
             default => $duration,
         };
     }
