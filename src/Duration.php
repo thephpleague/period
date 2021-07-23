@@ -85,7 +85,7 @@ final class Duration
     /**
      * Returns a new instance from a DateInterval object.
      */
-    public static function fromDateInterval(DateInterval $duration): self
+    public static function fromInterval(DateInterval $duration): self
     {
         return new self($duration);
     }
@@ -138,7 +138,7 @@ final class Duration
         return new self(DateInterval::createFromDateString($duration));
     }
 
-    public function toDateInterval(): DateInterval
+    public function toInterval(): DateInterval
     {
         return $this->duration;
     }

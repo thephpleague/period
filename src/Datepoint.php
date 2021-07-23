@@ -62,7 +62,7 @@ final class Datepoint
         return new self((new DateTimeImmutable())->setTimestamp($timestamp));
     }
 
-    public function toDateTimeImmutable(): DateTimeImmutable
+    public function toDate(): DateTimeImmutable
     {
         return $this->datepoint;
     }
