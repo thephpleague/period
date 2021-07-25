@@ -37,6 +37,9 @@ final class AffixLabelTest extends TestCase
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
+    /**
+     * @return array<string, array{nbLabels:int, letter:string, prefix:string, suffix:string, expected:array<int, string>}>
+     */
     public function providerLetter(): iterable
     {
         return [

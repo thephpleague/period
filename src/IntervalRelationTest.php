@@ -268,7 +268,7 @@ class IntervalRelationTest extends TestCase
     public function testContains(Period $interval, DateTimeInterface|Period|string $arg, bool $expected): void
     {
         if (is_string($arg)) {
-            $arg = Datepoint::fromDateString($arg);
+            $arg = DatePoint::fromDateString($arg);
         }
 
         self::assertSame($expected, $interval->contains($arg));
@@ -425,7 +425,7 @@ class IntervalRelationTest extends TestCase
     {
         self::assertSame($expected, $interval->isStartedBy($index));
         if ($index instanceof DateTimeInterface) {
-            self::assertSame($expected, Datepoint::fromDate($index)->isStarting($interval));
+            self::assertSame($expected, DatePoint::fromDate($index)->isStarting($interval));
         }
     }
 

@@ -44,6 +44,8 @@ final class Duration
 
     /**
      * @inheritDoc
+     *
+     * @param array{duration: DateInterval} $properties
      */
     public static function __set_state(array $properties)
     {

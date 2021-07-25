@@ -110,6 +110,9 @@ final class DatasetTest extends TestCase
         self::assertCount(2, $dataset);
     }
 
+    /**
+     * @psalm-suppress InvalidArgument
+     */
     public function testAppendDatasetThrowWithInvalidLabel(): void
     {
         $this->expectException(TypeError::class);
@@ -117,6 +120,9 @@ final class DatasetTest extends TestCase
         new Dataset([[new DateTimeImmutable(), Period::around(new DateTimeImmutable('2018-01-15'), Duration::fromDateString('1 DAY'))]]);
     }
 
+    /**
+     * @psalm-suppress InvalidArgument
+     */
     public function testAppendDatasetThrowWithInvalidItem(): void
     {
         $this->expectException(TypeError::class);

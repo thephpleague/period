@@ -54,7 +54,7 @@ final class ConstructorTest extends TestCase
 
     public function testSetState(): void
     {
-        $period = Period::fromDatepoint(Datepoint::fromDateString('2014-05-01'), Datepoint::fromDateString('2014-05-08'));
+        $period = Period::fromDatepoint(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
         $generatedPeriod = eval('return '.var_export($period, true).';');
         self::assertTrue($generatedPeriod->equals($period));
         self::assertEquals($generatedPeriod, $period);
@@ -62,7 +62,7 @@ final class ConstructorTest extends TestCase
 
     public function testConstructor(): void
     {
-        $period = Period::fromDatepoint(Datepoint::fromDateString('2014-05-01'), Datepoint::fromDateString('2014-05-08'));
+        $period = Period::fromDatepoint(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
         self::assertEquals(new DateTimeImmutable('2014-05-01'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2014-05-08'), $period->endDate());
     }
@@ -106,7 +106,7 @@ final class ConstructorTest extends TestCase
             $duration = Duration::fromSeconds($duration);
         }
 
-        $period = Period::after(Datepoint::fromDateString($startDate), $duration);
+        $period = Period::after(DatePoint::fromDateString($startDate), $duration);
         self::assertEquals(new DateTimeImmutable($startDate), $period->startDate());
         self::assertEquals(new DateTimeImmutable($endDate), $period->endDate());
     }
@@ -124,7 +124,7 @@ final class ConstructorTest extends TestCase
                 '2015-01-01 10:00:00', '2015-01-01 11:00:00', new DateInterval('PT1H'),
             ],
             'usingAnInterval' => [
-                '2015-01-01 10:00:00', '2015-01-01 11:00:00', Datepoint::fromDateString('2012-01-03 12:00:00')->hour(),
+                '2015-01-01 10:00:00', '2015-01-01 11:00:00', DatePoint::fromDateString('2012-01-03 12:00:00')->hour(),
             ],
         ];
     }
@@ -151,7 +151,7 @@ final class ConstructorTest extends TestCase
             $duration = Duration::fromSeconds($duration);
         }
 
-        $period = Period::before(Datepoint::fromDateString($endDate), $duration);
+        $period = Period::before(DatePoint::fromDateString($endDate), $duration);
         self::assertEquals(new DateTimeImmutable($startDate), $period->startDate());
         self::assertEquals(new DateTimeImmutable($endDate), $period->endDate());
     }
@@ -257,7 +257,7 @@ final class ConstructorTest extends TestCase
     public function testISOYear(): void
     {
         $period = Period::fromIsoYear(2014);
-        $interval = Datepoint::fromDateString('2014-06-25')->isoYear();
+        $interval = DatePoint::fromDateString('2014-06-25')->isoYear();
         self::assertEquals(new DateTimeImmutable('2013-12-30'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2014-12-29'), $period->endDate());
         self::assertTrue($period->equals($interval));
@@ -268,7 +268,7 @@ final class ConstructorTest extends TestCase
         $extendedDate = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
 
-        $period = Datepoint::fromDate($extendedDate)->day();
+        $period = DatePoint::fromDate($extendedDate)->day();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2008-07-02T00:00:00+08:00'), $period->endDate());
         self::assertEquals('+08:00', $period->startDate()->format('P'));
@@ -277,7 +277,7 @@ final class ConstructorTest extends TestCase
 
     public function testAlternateDay(): void
     {
-        $period = Datepoint::fromDateString('2008-07-01')->day();
+        $period = DatePoint::fromDateString('2008-07-01')->day();
         $alt_period = Period::fromDay(2008, 7, 1);
         self::assertEquals($period, $alt_period);
     }
@@ -286,7 +286,7 @@ final class ConstructorTest extends TestCase
     {
         $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
-        $period = Datepoint::fromDate($today)->hour();
+        $period = DatePoint::fromDate($today)->hour();
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2008-07-01T23:00:00+08:00'), $period->endDate());
         self::assertEquals('+08:00', $period->startDate()->format('P'));
@@ -295,18 +295,18 @@ final class ConstructorTest extends TestCase
 
     public function testCreateFromWithDateTimeInterface(): void
     {
-        self::assertTrue(Datepoint::fromDateString('2008W27')->isoWeek()->equals(Period::fromIsoWeek(2008, 27)));
-        self::assertTrue(Datepoint::fromDateString('2008-07')->month()->equals(Period::fromMonth(2008, 7)));
-        self::assertTrue(Datepoint::fromDateString('2008-02')->quarter()->equals(Period::fromQuarter(2008, 1)));
-        self::assertTrue(Datepoint::fromDateString('2008-10')->semester()->equals(Period::fromSemester(2008, 2)));
-        self::assertTrue(Datepoint::fromDateString('2008-01')->year()->equals(Period::fromYear(2008)));
+        self::assertTrue(DatePoint::fromDateString('2008W27')->isoWeek()->equals(Period::fromIsoWeek(2008, 27)));
+        self::assertTrue(DatePoint::fromDateString('2008-07')->month()->equals(Period::fromMonth(2008, 7)));
+        self::assertTrue(DatePoint::fromDateString('2008-02')->quarter()->equals(Period::fromQuarter(2008, 1)));
+        self::assertTrue(DatePoint::fromDateString('2008-10')->semester()->equals(Period::fromSemester(2008, 2)));
+        self::assertTrue(DatePoint::fromDateString('2008-01')->year()->equals(Period::fromYear(2008)));
     }
 
     public function testMonthWithDateTimeInterface(): void
     {
         $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
-        $period = Datepoint::fromDate($today)->month();
+        $period = DatePoint::fromDate($today)->month();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2008-08-01T00:00:00+08:00'), $period->endDate());
         self::assertEquals('+08:00', $period->startDate()->format('P'));
@@ -317,7 +317,7 @@ final class ConstructorTest extends TestCase
     {
         $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
-        $period = Datepoint::fromDate($today)->year();
+        $period = DatePoint::fromDate($today)->year();
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2009-01-01T00:00:00+08:00'), $period->endDate());
         self::assertEquals('+08:00', $period->startDate()->format('P'));
@@ -326,7 +326,7 @@ final class ConstructorTest extends TestCase
 
     public function testInstantiateWithTimeStamp(): void
     {
-        $period = Period::after(Datepoint::fromTimestamp(12000000), new DateInterval('P1D'));
+        $period = Period::after(DatePoint::fromTimestamp(12000000), new DateInterval('P1D'));
 
         self::assertEquals('+00:00', $period->endDate()->format('P'));
     }

@@ -24,12 +24,15 @@ use function strlen;
 final class Dataset implements Data
 {
     /**
-     * @var array{0:int|string, 1:Sequence}[]
+     * @var array<array{0:int|string, 1:Sequence}>
      */
     private array $pairs = [];
     private int $labelMaxLength = 0;
     private Period|null $length = null;
 
+    /**
+     * @param iterable<array{0:string|int, 1:Period|Sequence}> $pairs
+     */
     public function __construct(iterable $pairs = [])
     {
         $this->appendAll($pairs);
@@ -45,6 +48,10 @@ final class Dataset implements Data
     {
         $nbItems = count($items);
         $items = (function () use ($items): Iterator {
+            /**
+             * @var string|int $key
+             * @var Period|Sequence $value
+             */
             foreach ($items as $key => $value) {
                 yield $key => $value;
             }
@@ -56,11 +63,14 @@ final class Dataset implements Data
         $pairs->attachIterator($labelGenerator->generate($nbItems), '0');
         $pairs->attachIterator($items, '1');
 
+        /** @param MultipleIterator<array{0:string|int, 1:Period|Sequence}> $pairs */
         return new self($pairs);
     }
 
     /**
      * Creates a new collection from a generic iterable structure.
+     *
+     * @param iterable<string|int, Period|Sequence> $iterable
      */
     public static function fromIterable(iterable $iterable): self
     {
@@ -72,6 +82,9 @@ final class Dataset implements Data
         return $dataset;
     }
 
+    /**
+     * @param iterable<array{0:string|int, 1:Period|Sequence}> $pairs
+     */
     public function appendAll(iterable $pairs): void
     {
         foreach ($pairs as [$label, $item]) {

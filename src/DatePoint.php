@@ -27,18 +27,20 @@ use function intdiv;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.2.0
  */
-final class Datepoint
+final class DatePoint
 {
-    private function __construct(private DateTimeImmutable $datepoint)
+    private function __construct(private DateTimeImmutable $datePoint)
     {
     }
 
     /**
      * @inheritDoc
+     *
+     * @param array{datePoint: DateTimeImmutable} $properties
      */
     public static function __set_state(array $properties)
     {
-        return new self($properties['datepoint']);
+        return new self($properties['datePoint']);
     }
 
     public static function fromDate(DateTimeInterface $date): self
@@ -64,7 +66,7 @@ final class Datepoint
 
     public function toDate(): DateTimeImmutable
     {
-        return $this->datepoint;
+        return $this->datePoint;
     }
 
     /**************************************************
@@ -80,10 +82,10 @@ final class Datepoint
     public function second(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint->setTime(
-                (int) $this->datepoint->format('H'),
-                (int) $this->datepoint->format('i'),
-                (int) $this->datepoint->format('s')
+            $this->datePoint->setTime(
+                (int) $this->datePoint->format('H'),
+                (int) $this->datePoint->format('i'),
+                (int) $this->datePoint->format('s')
             ),
             new DateInterval('PT1S'),
             $boundaries
@@ -99,9 +101,9 @@ final class Datepoint
     public function minute(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint->setTime(
-                (int) $this->datepoint->format('H'),
-                (int) $this->datepoint->format('i')
+            $this->datePoint->setTime(
+                (int) $this->datePoint->format('H'),
+                (int) $this->datePoint->format('i')
             ),
             new DateInterval('PT1M'),
             $boundaries
@@ -117,7 +119,7 @@ final class Datepoint
     public function hour(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint->setTime((int) $this->datepoint->format('H'), 0),
+            $this->datePoint->setTime((int) $this->datePoint->format('H'), 0),
             new DateInterval('PT1H'),
             $boundaries
         );
@@ -132,7 +134,7 @@ final class Datepoint
     public function day(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint->setTime(0, 0),
+            $this->datePoint->setTime(0, 0),
             new DateInterval('P1D'),
             $boundaries
         );
@@ -147,11 +149,11 @@ final class Datepoint
     public function isoWeek(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint
+            $this->datePoint
                 ->setTime(0, 0)
                 ->setISODate(
-                    (int) $this->datepoint->format('o'),
-                    (int) $this->datepoint->format('W')
+                    (int) $this->datePoint->format('o'),
+                    (int) $this->datePoint->format('W')
                 ),
             new DateInterval('P7D'),
             $boundaries
@@ -167,11 +169,11 @@ final class Datepoint
     public function month(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint
+            $this->datePoint
                 ->setTime(0, 0)
                 ->setDate(
-                    (int) $this->datepoint->format('Y'),
-                    (int) $this->datepoint->format('n'),
+                    (int) $this->datePoint->format('Y'),
+                    (int) $this->datePoint->format('n'),
                     1
                 ),
             new DateInterval('P1M'),
@@ -188,11 +190,11 @@ final class Datepoint
     public function quarter(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint
+            $this->datePoint
                 ->setTime(0, 0)
                 ->setDate(
-                    (int) $this->datepoint->format('Y'),
-                    (intdiv((int) $this->datepoint->format('n'), 3) * 3) + 1,
+                    (int) $this->datePoint->format('Y'),
+                    (intdiv((int) $this->datePoint->format('n'), 3) * 3) + 1,
                     1
                 ),
             new DateInterval('P3M'),
@@ -209,11 +211,11 @@ final class Datepoint
     public function semester(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint
+            $this->datePoint
                 ->setTime(0, 0)
                 ->setDate(
-                    (int) $this->datepoint->format('Y'),
-                    (intdiv((int) $this->datepoint->format('n'), 6) * 6) + 1,
+                    (int) $this->datePoint->format('Y'),
+                    (intdiv((int) $this->datePoint->format('n'), 6) * 6) + 1,
                     1
                 ),
             new DateInterval('P6M'),
@@ -230,9 +232,9 @@ final class Datepoint
     public function year(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
-            $this->datepoint
+            $this->datePoint
                 ->setTime(0, 0)
-                ->setDate((int) $this->datepoint->format('Y'), 1, 1),
+                ->setDate((int) $this->datePoint->format('Y'), 1, 1),
             new DateInterval('P1Y'),
             $boundaries
         );
@@ -246,8 +248,8 @@ final class Datepoint
      */
     public function isoYear(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
-        $currentYear = (int) $this->datepoint->format('o');
-        $startDate = $this->datepoint->setTime(0, 0)->setISODate($currentYear, 1);
+        $currentYear = (int) $this->datePoint->format('o');
+        $startDate = $this->datePoint->setTime(0, 0)->setISODate($currentYear, 1);
 
         return Period::fromDatepoint(
             $startDate,
@@ -273,7 +275,7 @@ final class Datepoint
      */
     public function bordersOnStart(Period $interval): bool
     {
-        return $this->datepoint == $interval->startDate() && $interval->isStartExcluded();
+        return $this->datePoint == $interval->startDate() && $interval->isStartExcluded();
     }
 
     /**
@@ -281,7 +283,7 @@ final class Datepoint
      */
     public function isStarting(Period $interval): bool
     {
-        return $interval->isStartedBy($this->datepoint);
+        return $interval->isStartedBy($this->datePoint);
     }
 
     /**
@@ -289,7 +291,7 @@ final class Datepoint
      */
     public function isDuring(Period $interval): bool
     {
-        return $interval->contains($this->datepoint);
+        return $interval->contains($this->datePoint);
     }
 
     /**
@@ -297,7 +299,7 @@ final class Datepoint
      */
     public function isEnding(Period $interval): bool
     {
-        return $interval->isEndedBy($this->datepoint);
+        return $interval->isEndedBy($this->datePoint);
     }
 
     /**
@@ -305,7 +307,7 @@ final class Datepoint
      */
     public function bordersOnEnd(Period $interval): bool
     {
-        return $this->datepoint == $interval->endDate() && $interval->isEndExcluded();
+        return $this->datePoint == $interval->endDate() && $interval->isEndExcluded();
     }
 
     /**
@@ -321,6 +323,6 @@ final class Datepoint
      */
     public function isAfter(Period $interval): bool
     {
-        return $interval->isBefore($this->datepoint);
+        return $interval->isBefore($this->datePoint);
     }
 }

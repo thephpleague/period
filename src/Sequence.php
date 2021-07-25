@@ -38,11 +38,12 @@ use const ARRAY_FILTER_USE_BOTH;
  * @since   4.1.0
  *
  * @implements IteratorAggregate<int, Period>
+ * @implements ArrayAccess<int, Period>
  */
 final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
     /**
-     * @var Period[]
+     * @var array<Period>
      */
     private $periods;
 
@@ -84,6 +85,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
                 continue;
             }
 
+            /** @var Period $interval */
             if (!$interval->overlaps($period) && !$interval->abuts($period)) {
                 $sequence->push($interval->gap($period));
             }
@@ -118,6 +120,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
                 return $sequence;
             }
 
+            /** @var Period $current */
             $isContained = $current->contains($period);
             if ($isContained && $isPreviouslyContained) {
                 $sequence->push($current->intersect($period));
@@ -125,6 +128,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
                 return $sequence;
             }
 
+            /** @var Period $current */
             if ($current->overlaps($period)) {
                 $sequence->push($current->intersect($period));
             }
@@ -137,7 +141,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $sequence;
         };
 
-        return $this->sorted(Closure::fromCallable([$this, 'sortByStartDate']))->reduce($reducer, new self());
+        /** @var Sequence $sequence */
+        $sequence = $this->sorted(Closure::fromCallable([$this, 'sortByStartDate']))->reduce($reducer, new self());
+
+        return $sequence;
     }
 
     /**
@@ -145,6 +152,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function unions(): self
     {
+        /** @var Sequence $sequence */
         $sequence = $this
             ->sorted(Closure::fromCallable([$this, 'sortByStartDate']))
             ->reduce(Closure::fromCallable([$this, 'calculateUnion']), new self())
@@ -193,6 +201,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return $this;
         }
 
+        /** @var Sequence $new */
         $new = $sequence->reduce(Closure::fromCallable([$this, 'subtractOne']), $this);
         if ($new->periods === $this->periods) {
             return $this;
@@ -211,15 +220,15 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         $reducer = function (Sequence $sequence, Period $period) use ($interval): Sequence {
-            $subtract = $period->subtract($interval);
-            if (!$subtract->isEmpty()) {
-                $sequence->push(...$subtract);
-            }
+            $sequence->push(...$period->subtract($interval));
 
             return $sequence;
         };
 
-        return $sequence->reduce($reducer, new self());
+        /** @var Sequence $newSequence */
+        $newSequence = $sequence->reduce($reducer, new self());
+
+        return $newSequence;
     }
 
     /**
@@ -285,6 +294,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function getIterator(): Iterator
     {
+        /**
+         * @var int $offset
+         * @var Period $interval
+         */
         foreach ($this->periods as $offset => $interval) {
             yield $offset => $interval;
         }
@@ -301,7 +314,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * @inheritDoc
      *
-     * @param mixed $offset the integer index of the Period instance to validate.
+     * @param int $offset the integer index of the Period instance to validate.
      */
     public function offsetExists($offset): bool
     {
@@ -328,10 +341,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @param mixed $offset the integer index of the Period instance to retrieve.
+     * @param int $offset the integer index of the Period instance to retrieve.
      *
      * @throws CannotAccessPeriod If the offset is illegal for the current sequence
-     *@see ::get
+     * @see ::get
      *
      */
     public function offsetGet($offset): Period
@@ -341,10 +354,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @param mixed $offset the integer index of the Period instance to remove
+     * @param int $offset the integer index of the Period instance to remove
      *
      * @throws CannotAccessPeriod If the offset is illegal for the current sequence
-     *@see ::remove
+     * @see ::remove
      *
      */
     public function offsetUnset($offset): void
@@ -354,8 +367,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @param mixed $offset   the integer index of the Period to add or update
-     * @param mixed $interval the Period instance to add
+     * @param int|null $offset   the integer index of the Period to add or update
+     * @param Period   $interval the Period instance to add
      *
      * @throws CannotAccessPeriod If the offset is illegal for the current sequence
      *
@@ -400,11 +413,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * Attempts to find the first offset attached to the submitted interval.
      *
      * If no offset is found the method returns boolean false.
-     *
-     * @return int|bool
      */
-    public function indexOf(Period $interval)
+    public function indexOf(Period $interval): int|false
     {
+        /**
+         * @var int $offset
+         * @var Period $period
+         */
         foreach ($this->periods as $offset => $period) {
             if ($period->equals($interval)) {
                 return $offset;
@@ -584,7 +599,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         $intervals = [];
         foreach ($this->periods as $offset => $interval) {
-            $intervals[$offset] = $func($interval, $offset);
+            /** @var Period $period */
+            $period = $func($interval, $offset);
+            $intervals[$offset] = $period;
         }
 
         if ($intervals === $this->periods) {
@@ -608,9 +625,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @return mixed The carry value of the final iteration, or the initial
      *               value if the sequence was empty.
      */
-    public function reduce(Closure $func, $carry = null)
+    public function reduce(Closure $func, mixed $carry = null): mixed
     {
         foreach ($this->periods as $offset => $interval) {
+            /** @var mixed $carry */
             $carry = $func($carry, $interval, $offset);
         }
 

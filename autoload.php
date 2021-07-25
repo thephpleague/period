@@ -23,5 +23,8 @@ spl_autoload_register(function (string $className): void {
         return;
     }
 
+    /**
+     * @psalm-suppress UnresolvableInclude
+     */
     require $file;
 });

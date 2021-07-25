@@ -232,8 +232,8 @@ final class DurationTest extends TestCase
         $duration = Duration::fromIsoString($input);
         /** @var DateTimeInterface $date */
         $date = match (true) {
-            is_int($reference_date) => Datepoint::fromTimestamp($reference_date)->toDate(),
-            is_string($reference_date) => Datepoint::fromDateString($reference_date)->toDate(),
+            is_int($reference_date) => DatePoint::fromTimestamp($reference_date)->toDate(),
+            is_string($reference_date) => DatePoint::fromDateString($reference_date)->toDate(),
             default  => $reference_date,
         };
 

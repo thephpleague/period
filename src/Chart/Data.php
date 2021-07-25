@@ -34,9 +34,6 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
      */
     public function getIterator(): Iterator;
 
-    /**
-     * @var array<int, array{label:string, item:Sequence}>.
-     */
     public function jsonSerialize(): array;
 
     /**
@@ -73,6 +70,8 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
 
     /**
      * Add a collection of pairs to the collection.
+     *
+     * @param iterable<array{0:string|int, 1:Period|Sequence}> $pairs
      */
     public function appendAll(iterable $pairs): void;
 }
