@@ -16,4 +16,8 @@ parameters:
           path: src/DurationRelationTest.php
         - message: '#Generator expects value type string, string\|false given.#'
           path: src/Chart/ReverseLabel.php
+        - message: '#^Parameter \#1 \$pairs of class League\\Period\\Chart\\Dataset constructor expects#'
+          path: src/Chart/Dataset.php
+        - message: '#^Parameter \#1 \$pairs of class League\\Period\\Chart\\Dataset constructor expects#'
+          path: src/Chart/DatasetTest.php
     reportUnmatchedIgnoredErrors: true
