@@ -104,6 +104,9 @@ final class GanttChart implements Chart
             return $lineCharacters;
         };
 
-        return implode('', $item->reduce($reducer, $lineCharacters));
+        /** @var array<string> $lineCharacters */
+        $lineCharacters = $item->reduce($reducer, $lineCharacters);
+
+        return implode('', $lineCharacters);
     }
 }

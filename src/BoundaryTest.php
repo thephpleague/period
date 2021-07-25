@@ -52,6 +52,9 @@ final class BoundaryTest extends TestCase
         self::assertSame($endExcluded, $interval->isEndExcluded());
     }
 
+    /**
+     * @return array<string, array{interval:Period, rangeType:string, startIncluded:bool, startExcluded:bool, endIncluded:bool, endExcluded:bool}>
+     */
     public function providerGetRangType(): array
     {
         return [

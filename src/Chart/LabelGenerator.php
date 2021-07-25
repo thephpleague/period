@@ -20,7 +20,7 @@ interface LabelGenerator
     /**
      * Returns the labels to associate with all items.
      *
-     * @return Iterator<string>
+     * @return Iterator<int, string>
      */
     public function generate(int $nbLabels): Iterator;
 

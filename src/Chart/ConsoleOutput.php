@@ -98,6 +98,7 @@ final class ConsoleOutput implements Output
             $regexp = ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
         }
 
+        /** @var string $regexp */
         return (string) preg_replace_callback($regexp, $this->formatter(), $str);
     }
 
@@ -107,7 +108,7 @@ final class ConsoleOutput implements Output
     private function formatter(): Closure
     {
         static $formatter;
-        if (null !== $formatter) {
+        if ($formatter instanceof Closure) {
             return $formatter;
         }
 
@@ -121,7 +122,7 @@ final class ConsoleOutput implements Output
             return $formatter;
         }
 
-        $formatter =  fn (array $matches): string => (string) $matches[0];
+        $formatter = fn (array $matches): string => (string) $matches[0];
 
         return $formatter;
     }
