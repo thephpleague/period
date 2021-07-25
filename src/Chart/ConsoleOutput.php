@@ -98,7 +98,7 @@ final class ConsoleOutput implements Output
             $regexp = ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
         }
 
-        /** @var string $regexp */
+        /* @var string $regexp */
         return (string) preg_replace_callback($regexp, $this->formatter(), $str);
     }
 

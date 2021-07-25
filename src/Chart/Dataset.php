@@ -49,7 +49,7 @@ final class Dataset implements Data
         $nbItems = count($items);
         $items = (function () use ($items): Iterator {
             /**
-             * @var string|int $key
+             * @var string|int      $key
              * @var Period|Sequence $value
              */
             foreach ($items as $key => $value) {
@@ -59,11 +59,13 @@ final class Dataset implements Data
 
         $labelGenerator = $labelGenerator ?? new LatinLetter();
 
+        /**
+         * @template-implements MultipleIterator<array{0:string|int, 1:Period|Sequence}> $pairs
+         */
         $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
         $pairs->attachIterator($labelGenerator->generate($nbItems), '0');
         $pairs->attachIterator($items, '1');
 
-        /** @param MultipleIterator<array{0:string|int, 1:Period|Sequence}> $pairs */
         return new self($pairs);
     }
 

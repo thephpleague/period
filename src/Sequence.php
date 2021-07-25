@@ -295,7 +295,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function getIterator(): Iterator
     {
         /**
-         * @var int $offset
+         * @var int    $offset
          * @var Period $interval
          */
         foreach ($this->periods as $offset => $interval) {
@@ -417,7 +417,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function indexOf(Period $interval): int|false
     {
         /**
-         * @var int $offset
+         * @var int    $offset
          * @var Period $period
          */
         foreach ($this->periods as $offset => $period) {
