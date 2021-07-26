@@ -85,7 +85,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
                 continue;
             }
 
-            /** @var Period $interval */
             if (!$interval->overlaps($period) && !$interval->abuts($period)) {
                 $sequence->push($interval->gap($period));
             }
@@ -128,7 +127,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
                 return $sequence;
             }
 
-            /** @var Period $current */
             if ($current->overlaps($period)) {
                 $sequence->push($current->intersect($period));
             }
@@ -295,8 +293,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function getIterator(): Iterator
     {
         /**
-         * @var int    $offset
-         * @var Period $interval
+         * @var int $offset
          */
         foreach ($this->periods as $offset => $interval) {
             yield $offset => $interval;
@@ -417,8 +414,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function indexOf(Period $interval): int|false
     {
         /**
-         * @var int    $offset
-         * @var Period $period
+         * @var int $offset
          */
         foreach ($this->periods as $offset => $period) {
             if ($period->equals($interval)) {

@@ -214,26 +214,23 @@ final class DurationRelationTest extends TestCase
     public function testSplit(): void
     {
         $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        /** @var Generator $range */
         $range = $period->split(new DateInterval('PT1H'));
-        $i = 0;
-        foreach ($range as $innerPeriod) {
-            ++$i;
-        }
-        self::assertSame(24, $i);
+
+        self::assertSame(24, iterator_count($range));
     }
 
     public function testSplitMustRecreateParentObject(): void
     {
         $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = $period->split(new DateInterval('PT1H'));
+        /** @var Period|null $total */
         $total = null;
         foreach ($range as $part) {
             if (null === $total) {
-                /** @var Period $total */
                 $total = $part;
                 continue;
             }
-            /** @var Period $total */
             $total = $total->endingOn($part->endDate());
         }
         self::assertInstanceOf(Period::class, $total);
@@ -312,23 +309,17 @@ final class DurationRelationTest extends TestCase
     {
         date_default_timezone_set('Canada/Central');
         $period = Period::fromDatepoint(new DateTime('2018-11-04 00:00:00.000000'), new DateTime('2018-11-04 05:00:00.000000'));
+        /** @var Generator $splits */
         $splits = $period->split(new DateInterval('PT30M'));
-        $i = 0;
-        foreach ($splits as $inner_period) {
-            ++$i;
-        }
-        self::assertSame(10, $i);
+        self::assertSame(10, iterator_count($splits));
     }
 
     public function testSplitBackwardsDaylightSavingsDayIntoHoursStartInterval(): void
     {
         date_default_timezone_set('Canada/Central');
         $period = Period::fromDatepoint(new DateTime('2018-04-11 00:00:00.000000'), new DateTime('2018-04-11 05:00:00.000000'));
+        /** @var Generator $splits */
         $splits = $period->splitBackwards(new DateInterval('PT30M'));
-        $i = 0;
-        foreach ($splits as $inner_period) {
-            ++$i;
-        }
-        self::assertSame(10, $i);
+        self::assertSame(10, iterator_count($splits));
     }
 }

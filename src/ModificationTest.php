@@ -95,7 +95,7 @@ final class ModificationTest extends TestCase
         $this->expectException(InvalidTimeRange::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
-        $interval = (Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
+        (Period::fromDatepoint(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
     }
 
     public function testMove(): void
