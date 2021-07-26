@@ -19,15 +19,14 @@ use PHPUnit\Framework\TestCase;
 
 final class DurationTest extends TestCase
 {
-    /** @var string **/
-    private $timezone;
+    private string $timezone;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->timezone = date_default_timezone_get();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         date_default_timezone_set($this->timezone);
     }
@@ -84,6 +83,9 @@ final class DurationTest extends TestCase
         self::assertFalse($duration->toInterval()->days);
     }
 
+    /**
+     * @return iterable<string, array<string>>
+     */
     public function getDurationCreateFailsProvider(): iterable
     {
         return [
@@ -107,6 +109,9 @@ final class DurationTest extends TestCase
         Duration::fromDateString($input);
     }
 
+    /**
+     * @return iterable<string,array<string>>
+     */
     public function getDurationCreateFromDateStringFailsProvider(): iterable
     {
         return [
@@ -122,6 +127,9 @@ final class DurationTest extends TestCase
         self::assertSame($expected, $this->formatDuration(Duration::fromSeconds($seconds, $fraction)));
     }
 
+    /**
+     * @return array<string, array{seconds:int, fraction:int, expected:string}>
+     */
     public function getDurationFromSecondsSuccessfulProvider(): array
     {
         return [
@@ -154,6 +162,9 @@ final class DurationTest extends TestCase
         self::assertSame($expected, $this->formatDuration(Duration::fromIsoString($input)));
     }
 
+    /**
+     * @return iterable<string, array{input:string, expected:string}>
+     */
     public function providesValidIsoString(): iterable
     {
         return [
@@ -183,6 +194,9 @@ final class DurationTest extends TestCase
         Duration::fromChronoString($input);
     }
 
+    /**
+     * @return iterable<string, array<string>>
+     */
     public function fromChronoFailsProvider(): iterable
     {
         return [
@@ -201,6 +215,9 @@ final class DurationTest extends TestCase
         self::assertSame($expected, $this->formatDuration($duration));
     }
 
+    /**
+     * @return iterable<string, array{chronometer:string, expected:string}>
+     */
     public function fromChronoProvider(): iterable
     {
         return [
@@ -240,6 +257,9 @@ final class DurationTest extends TestCase
         self::assertSame($expected, $this->formatDuration($duration->adjustedTo($date)));
     }
 
+    /**
+     * @return iterable<string, array{input:string, reference_date:int|string|DateTimeInterface, expected:string}>
+     */
     public function adjustedToDataProvider(): iterable
     {
         return [

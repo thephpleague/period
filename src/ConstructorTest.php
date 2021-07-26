@@ -23,17 +23,14 @@ use PHPUnit\Framework\TestCase;
  */
 final class ConstructorTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $timezone;
+    private string $timezone;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->timezone = date_default_timezone_get();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         date_default_timezone_set($this->timezone);
     }
@@ -55,6 +52,7 @@ final class ConstructorTest extends TestCase
     public function testSetState(): void
     {
         $period = Period::fromDatepoint(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
+        /** @var Period $generatedPeriod */
         $generatedPeriod = eval('return '.var_export($period, true).';');
         self::assertTrue($generatedPeriod->equals($period));
         self::assertEquals($generatedPeriod, $period);
@@ -111,6 +109,9 @@ final class ConstructorTest extends TestCase
         self::assertEquals(new DateTimeImmutable($endDate), $period->endDate());
     }
 
+    /**
+     * @return array<string, array{0:string, 1:string, 2:int|DateInterval|string|Period}>
+     */
     public function provideIntervalAfterData(): array
     {
         return [
@@ -143,7 +144,7 @@ final class ConstructorTest extends TestCase
      *
      * @param int|DateInterval|string $duration
      */
-    public function testIntervalBefore(string $startDate, string $endDate, $duration): void
+    public function testIntervalBefore(string $startDate, string $endDate, int|DateInterval|string $duration): void
     {
         if (is_string($duration)) {
             $duration = DateInterval::createFromDateString($duration);
@@ -156,6 +157,9 @@ final class ConstructorTest extends TestCase
         self::assertEquals(new DateTimeImmutable($endDate), $period->endDate());
     }
 
+    /**
+     * @return array<string, array{0:string, 1:string, 2:int|DateInterval|string}>
+     */
     public function intervalBeforeProviderData(): array
     {
         return [
@@ -339,6 +343,9 @@ final class ConstructorTest extends TestCase
         self::assertSame($expected, Period::fromNotation($notation)->toNotation($format));
     }
 
+    /**
+     * @return iterable<string, array{notation:string, format:string, expected:string}>
+     */
     public function provideValidIntervalNotation(): iterable
     {
         yield 'date string' => [
@@ -373,6 +380,9 @@ final class ConstructorTest extends TestCase
         Period::fromNotation($notation);
     }
 
+    /**
+     * @return iterable<string, array<string>>
+     */
     public function provideInvalidIntervalNotation(): iterable
     {
         return [

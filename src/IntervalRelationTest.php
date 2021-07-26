@@ -25,12 +25,12 @@ class IntervalRelationTest extends TestCase
     /** @var string **/
     private $timezone;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->timezone = date_default_timezone_get();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         date_default_timezone_set($this->timezone);
     }
@@ -40,11 +40,14 @@ class IntervalRelationTest extends TestCase
      *
      * @param DateTimeInterface|Period $input
      */
-    public function testIsBefore(Period $interval, $input, bool $expected): void
+    public function testIsBefore(Period $interval, DateTimeInterface|Period $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isBefore($input));
     }
 
+    /**
+     * @return array<string, array{interval:Period, input:DateTimeInterface|Period, expected:bool}>
+     */
     public function isBeforeProvider(): array
     {
         return [
@@ -116,11 +119,14 @@ class IntervalRelationTest extends TestCase
      *
      * @param DateTimeInterface|Period $input
      */
-    public function testIsAfer(Period $interval, $input, bool $expected): void
+    public function testIsAfer(Period $interval, DateTimeInterface|Period $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isAfter($input));
     }
 
+    /**
+     * @return array<string, array{interval:Period, input:DateTimeInterface|Period, expected:bool}>
+     */
     public function isAfterProvider(): array
     {
         return [
@@ -190,6 +196,9 @@ class IntervalRelationTest extends TestCase
         self::assertSame($expected, $interval->abuts($arg));
     }
 
+    /**
+     * @return array<string, array{0:Period, 1:Period, 2:bool}>
+     */
     public function abutsDataProvider(): array
     {
         return [
@@ -224,6 +233,9 @@ class IntervalRelationTest extends TestCase
         self::assertSame($expected, $interval->overlaps($arg));
     }
 
+    /**
+     * @return array<string, array{0:Period, 1:Period, 2:bool}>
+     */
     public function overlapsDataProvider(): array
     {
         return [
@@ -277,6 +289,9 @@ class IntervalRelationTest extends TestCase
         }
     }
 
+    /**
+     * @return array<string, array{0:Period, 1:Period|DateTimeInterface|string, 2:bool}>
+     */
     public function containsDataProvider(): array
     {
         return [
@@ -429,6 +444,9 @@ class IntervalRelationTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array{0:Period, 1:Period|DateTimeInterface, 2:bool}>
+     */
     public function startsDataProvider(): array
     {
         $startingDate = new DateTime('2012-01-01');
@@ -477,11 +495,14 @@ class IntervalRelationTest extends TestCase
      * @dataProvider finishesDataProvider
      * @param DateTimeInterface|Period $index
      */
-    public function testFinishes(Period $interval, $index, bool $expected): void
+    public function testFinishes(Period $interval, DateTimeInterface|Period $index, bool $expected): void
     {
         self::assertSame($expected, $interval->isEndedBy($index));
     }
 
+    /**
+     * @return array<array{0:Period, 1:Period|DateTimeInterface, 2:bool}>
+     */
     public function finishesDataProvider(): array
     {
         $endingDate = new DateTime('2012-01-16');
@@ -528,6 +549,9 @@ class IntervalRelationTest extends TestCase
         self::assertSame($expected, $interval1->equals($interval2));
     }
 
+    /**
+     * @return array<string, array{0:Period, 1:Period, 2:bool}>
+     */
     public function equalsDataProvider(): array
     {
         return [
@@ -579,6 +603,9 @@ class IntervalRelationTest extends TestCase
         self::assertSame($expected, $interval0->intersect($interval1)->boundaries());
     }
 
+    /**
+     * @return array<string, array{boundary1:string, boundary2:string, expected:string}>
+     */
     public function intersectBoundaryResultProvider(): array
     {
         return [
@@ -717,6 +744,9 @@ class IntervalRelationTest extends TestCase
         self::assertSame($expected, $interval0->gap($interval1)->boundaries());
     }
 
+    /**
+     * @return array<string, array{boundary1:string, boundary2:string, expected:string}>
+     */
     public function gapBoundaryResultProvider(): array
     {
         return [
@@ -879,6 +909,9 @@ class IntervalRelationTest extends TestCase
         }
     }
 
+    /**
+     * @return array<string, array{boundary1:string, boundary2:string, expected1:string, expected2:string}>
+     */
     public function diffBoundaryResultProvider(): array
     {
         return [

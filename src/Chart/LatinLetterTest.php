@@ -29,6 +29,9 @@ final class LatinLetterTest extends TestCase
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
+    /**
+     * @return iterable<string, array{nbLabels:int, letter:string, expected:array<string>}>
+     */
     public function providerLetter(): iterable
     {
         return [
