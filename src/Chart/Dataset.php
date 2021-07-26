@@ -61,7 +61,7 @@ final class Dataset implements Data
         $labelGenerator = $labelGenerator ?? new LatinLetter();
 
         /**
-         * @template-implements MultipleIterator<array-key, array{0:int, 1:Period|Sequence}> $pairs
+         * @template-implements MultipleIterator<array-key, array{0:int|string, 1:Period|Sequence}> $pairs
          */
         $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
         $pairs->attachIterator($labelGenerator->generate($nbItems), 0);

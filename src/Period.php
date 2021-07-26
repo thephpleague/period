@@ -205,8 +205,8 @@ final class Period implements JsonSerializable
     public static function fromIsoYear(int $year, string $boundaries = self::INCLUDE_START_EXCLUDE_END): self
     {
         return new self(
-            (new DateTimeImmutable())->setISODate($year, 1)->setTime(0, 0),
-            (new DateTimeImmutable())->setISODate(++$year, 1)->setTime(0, 0),
+            (new DateTimeImmutable())->setTime(0, 0)->setISODate($year, 1),
+            (new DateTimeImmutable())->setTime(0, 0)->setISODate($year + 1, 1),
             $boundaries
         );
     }

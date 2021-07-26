@@ -162,7 +162,7 @@ final class SequenceTest extends TestCase
             DatePoint::fromDateString('2012-06-12')->day()
         );
 
-        self::assertSame($sequence, $sequence->filter(fn (Period $interval): bool => true));
+        self::assertSame($sequence, $sequence->filter(fn (Period $interval): bool => $interval->endDate() >= $interval->startDate()));
     }
 
     public function testSortedReturnsSameInstance(): void
@@ -172,7 +172,7 @@ final class SequenceTest extends TestCase
             DatePoint::fromDateString('2012-06-12')->day()
         );
 
-        self::assertSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => 0));
+        self::assertSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => strlen(get_class($event1)) - strlen(get_class($event2))));
     }
 
     public function testSortedReturnsNewInstance(): void
