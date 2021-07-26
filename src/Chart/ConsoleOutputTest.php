@@ -16,7 +16,6 @@ namespace League\Period\Chart;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 use function chr;
-use function curl_init;
 use function fopen;
 use function rewind;
 use function stream_get_contents;
@@ -43,12 +42,6 @@ final class ConsoleOutputTest extends TestCase
         new ConsoleOutput(__DIR__.'/data/foo.csv');
     }
 
-    public function testCreateStreamWithWrongResourceType(): void
-    {
-        $this->expectException(TypeError::class);
-        new ConsoleOutput(curl_init());
-    }
-
     /**
      * @dataProvider providesWritelnTexts
      */
@@ -64,6 +57,9 @@ final class ConsoleOutputTest extends TestCase
         self::assertStringContainsString($expected, $data);
     }
 
+    /**
+     * @return iterable<string, array{message:string, expected:string}>
+     */
     public function providesWritelnTexts(): iterable
     {
         return [

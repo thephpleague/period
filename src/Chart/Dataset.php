@@ -31,7 +31,7 @@ final class Dataset implements Data
     private Period|null $length = null;
 
     /**
-     * @param iterable<array{0:string|int, 1:Period|Sequence}> $pairs
+     * @param iterable<array-key, array{0:string|int, 1:Period|Sequence}> $pairs
      */
     public function __construct(iterable $pairs = [])
     {
@@ -43,6 +43,7 @@ final class Dataset implements Data
      *
      * @param array|(\Countable&iterable) $items
      * @param null|LabelGenerator|null    $labelGenerator
+     * @psalm-suppress MixedArgumentTypeCoercion
      */
     public static function fromItems($items, LabelGenerator|null $labelGenerator = null): self
     {
@@ -60,11 +61,11 @@ final class Dataset implements Data
         $labelGenerator = $labelGenerator ?? new LatinLetter();
 
         /**
-         * @template-implements MultipleIterator<array{0:string|int, 1:Period|Sequence}> $pairs
+         * @template-implements MultipleIterator<array-key, array{0:int, 1:Period|Sequence}> $pairs
          */
         $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
-        $pairs->attachIterator($labelGenerator->generate($nbItems), '0');
-        $pairs->attachIterator($items, '1');
+        $pairs->attachIterator($labelGenerator->generate($nbItems), 0);
+        $pairs->attachIterator($items, 1);
 
         return new self($pairs);
     }

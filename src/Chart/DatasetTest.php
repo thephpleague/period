@@ -49,6 +49,8 @@ final class DatasetTest extends TestCase
 
     /**
      * @dataProvider provideIterableStructure
+     *
+     * @param iterable<int, Period|Sequence> $input
      */
     public function testFromIterableConstructor(iterable $input, int $expectedCount, bool $isEmpty, bool $boundaryIsNull): void
     {
@@ -58,7 +60,10 @@ final class DatasetTest extends TestCase
         self::assertSame($boundaryIsNull, null === $dataset->length());
     }
 
-    public function provideIterableStructure(): iterable
+    /**
+     * @return array<string, array{input:iterable<int, Period|Sequence>, expectedCount:int, isEmpty:bool, boundaryIsNull:bool}>
+     */
+    public function provideIterableStructure(): array
     {
         return [
             'empty structure' => [

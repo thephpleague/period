@@ -22,12 +22,12 @@ final class StringRepresentationTest extends TestCase
     /** @var string **/
     private $timezone;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->timezone = date_default_timezone_get();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         date_default_timezone_set($this->timezone);
     }
@@ -49,10 +49,11 @@ final class StringRepresentationTest extends TestCase
 
         self::assertTrue(false !== $json);
 
-        $res = json_decode($json);
+        /** @var array{startDate:string, endDate:string} $res */
+        $res = json_decode($json, true);
 
-        self::assertEquals($period->startDate(), new DateTimeImmutable($res->startDate));
-        self::assertEquals($period->endDate(), new DateTimeImmutable($res->endDate));
+        self::assertEquals($period->startDate(), new DateTimeImmutable($res['startDate']));
+        self::assertEquals($period->endDate(), new DateTimeImmutable($res['endDate']));
     }
 
     public function testFormat(): void

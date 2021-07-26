@@ -22,12 +22,9 @@ use const STDOUT;
  */
 final class GanttChartConfigTest extends TestCase
 {
-    /**
-     * @var GanttChartConfig
-     */
-    private $config;
+    private GanttChartConfig $config;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->config = new GanttChartConfig();
     }
@@ -61,6 +58,9 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame($expected, $this->config->withWidth($size)->width());
     }
 
+    /**
+     * @return array<string, array{0:int, 1:int}>
+     */
     public function widthProvider(): array
     {
         return [
@@ -119,6 +119,9 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame($expected, $this->config->withSpace($char)->space());
     }
 
+    /**
+     * @return array<array{0:string, 1:string}>
+     */
     public function providerChars(): array
     {
         return [
@@ -146,6 +149,9 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame($expected, $this->config->withColors($char)->colors()[0]);
     }
 
+    /**
+     * @return array<array{0:string, 1:string}>
+     */
     public function colorsProvider(): array
     {
         return [
@@ -159,6 +165,9 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame($this->config, $this->config->withColors());
     }
 
+    /**
+     * @return array<array{0:string}>
+     */
     public function providerInvalidChars(): array
     {
         return [
@@ -191,6 +200,9 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame($expected, $this->config->withGapSize($gap)->gapSize());
     }
 
+    /**
+     * @return iterable<string, array{gap:int, expected:int}>
+     */
     public function providerGaps(): iterable
     {
         return [
@@ -217,6 +229,9 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame($expected, $this->config->withLabelAlign($padding)->labelAlign());
     }
 
+    /**
+     * @return iterable<string, array{padding:int, expected:int}>
+     */
     public function providerPaddings(): iterable
     {
         return [

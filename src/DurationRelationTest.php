@@ -23,15 +23,14 @@ use PHPUnit\Framework\TestCase;
  */
 final class DurationRelationTest extends TestCase
 {
-    /** @var string **/
-    private $timezone;
+    private string $timezone;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->timezone = date_default_timezone_get();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         date_default_timezone_set($this->timezone);
     }
@@ -53,7 +52,7 @@ final class DurationRelationTest extends TestCase
      *
      * @param DateInterval|int|string $duration
      */
-    public function testGetDatePeriod($duration, int $option, int $count): void
+    public function testGetDatePeriod(DateInterval|int|string $duration, int $option, int $count): void
     {
         if (is_string($duration)) {
             $duration = DateInterval::createFromDateString($duration);
@@ -66,17 +65,19 @@ final class DurationRelationTest extends TestCase
         self::assertCount($count, iterator_to_array($range));
     }
 
+    /**
+     * @return array<string, array{0:DateInterval|int|string, 1:int, 2:int}>
+     */
     public function providerGetDatePeriod(): array
     {
         return [
             'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
             'useString' => ['2 HOUR', 0, 12],
             'useInt' => [9600, 0, 9],
-            'useFloat' => [14400.0, 0, 6],
-            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
-            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
-            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
-            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
+            'exclude start date use DateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
+            'exclude start date use String' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
+            'exclude start date use Int' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
+            'exclude start date use Float' => [14400, DatePeriod::EXCLUDE_START_DATE, 5],
         ];
     }
 
@@ -99,17 +100,19 @@ final class DurationRelationTest extends TestCase
         self::assertCount($count, iterator_to_array($range));
     }
 
+    /**
+     * @return array<string,array{0:DateInterval|string|int, 1:int, 2:int}>
+     */
     public function providerGetDatePeriodBackwards(): array
     {
         return [
             'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
             'useString' => ['2 HOUR', 0, 12],
             'useInt' => [9600, 0, 9],
-            'useFloat' => [14400.0, 0, 6],
             'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
             'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
             'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
-            'exclude start date useFloat' => [14400.0, DatePeriod::EXCLUDE_START_DATE, 5],
+            'exclude start date useFloat' => [14400, DatePeriod::EXCLUDE_START_DATE, 5],
         ];
     }
     /**
@@ -120,6 +123,9 @@ final class DurationRelationTest extends TestCase
         self::assertSame($expected, $interval1->durationCompare($interval2));
     }
 
+    /**
+     * @return array<string,array{0:Period, 1:Period, 2:int}>
+     */
     public function durationCompareDataProvider(): array
     {
         return [
@@ -154,6 +160,9 @@ final class DurationRelationTest extends TestCase
         self::assertSame($expected, $period1->$method($period2));
     }
 
+    /**
+     * @return array<string,array{0:Period, 1:Period, 2:string, 3:bool}>
+     */
     public function durationCompareInnerMethodsDataProvider(): array
     {
         return [
@@ -220,9 +229,11 @@ final class DurationRelationTest extends TestCase
         $total = null;
         foreach ($range as $part) {
             if (null === $total) {
+                /** @var Period $total */
                 $total = $part;
                 continue;
             }
+            /** @var Period $total */
             $total = $total->endingOn($part->endDate());
         }
         self::assertInstanceOf(Period::class, $total);
