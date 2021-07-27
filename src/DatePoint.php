@@ -249,10 +249,11 @@ final class DatePoint
     public function isoYear(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $currentIsoYear = (int) $this->datePoint->format('o');
+        $currentDay = $this->datePoint->setTime(0, 0);
 
         return Period::fromDatepoint(
-            $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear, 1),
-            $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear + 1, 1),
+            $currentDay->setISODate($currentIsoYear, 1),
+            $currentDay->setISODate($currentIsoYear + 1, 1),
             $boundaries
         );
     }

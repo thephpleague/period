@@ -25,11 +25,11 @@ final class UnableToDrawChart extends InvalidArgumentException implements TimeRa
 
     public static function dueToInvalidPattern(string $pattern): self
     {
-        return new self('The "'.$pattern.'" pattern must be a single character');
+        return new self('The `'.$pattern.'` pattern must be a single character');
     }
 
     public static function dueToInvalidUnicodeChar(string $character): self
     {
-        return new self('The given string "'.$character.'" is not a valid unicode string');
+        return new self('The given string `'.$character.'` is not a valid unicode string');
     }
 }
