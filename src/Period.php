@@ -95,17 +95,15 @@ final class Period implements JsonSerializable
         $endDateString = trim($found['enddate']);
 
         if (in_array('', [$startDateString, $endDateString], true)) {
-            throw InvalidTimeRange::dueToUnknownNotation($notation);
+            throw InvalidTimeRange::dueToUnsupportedNotation($notation);
         }
 
-        $startDate = DateTimeImmutable::createFromFormat($format, $startDateString);
-        if (false === $startDate) {
-            throw InvalidTimeRange::dueToUnknownDatePointFormat($format, $startDateString);
+        if (false === ($startDate = DateTimeImmutable::createFromFormat($format, $startDateString))) {
+            throw InvalidTimeRange::dueToInvalidDateFormat($format, $startDateString);
         }
 
-        $endDate = DateTimeImmutable::createFromFormat($format, $endDateString);
-        if (false === $endDate) {
-            throw InvalidTimeRange::dueToUnknownDatePointFormat($format, $startDateString);
+        if (false === ($endDate = DateTimeImmutable::createFromFormat($format, $endDateString))) {
+            throw InvalidTimeRange::dueToInvalidDateFormat($format, $endDateString);
         }
 
         return new self($startDate, $endDate, $found['startboundary'].$found['endboundary']);
@@ -329,13 +327,17 @@ final class Period implements JsonSerializable
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
      *
-     * @return array<string>
+     * @return array{startDate:string, endDate:string, boundaries:string}
      */
     public function jsonSerialize()
     {
-        [$startDate, $endDate] = explode('/', $this->toIso8601(), 2);
+        $utc = new DateTimeZone('UTC');
 
-        return ['startDate' => $startDate, 'endDate' => $endDate];
+        return [
+            'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
+            'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
+            'boundaries' => $this->boundaries,
+        ];
     }
 
     /**************************************************
