@@ -140,7 +140,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         };
 
         /** @var Sequence $sequence */
-        $sequence = $this->sorted(Closure::fromCallable([$this, 'sortByStartDate']))->reduce($reducer, new self());
+        $sequence = $this
+            ->sorted(Closure::fromCallable([$this, 'sortByStartDate']))
+            ->reduce($reducer, new self());
 
         return $sequence;
     }

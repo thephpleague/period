@@ -38,7 +38,7 @@ final class DatePoint
      *
      * @param array{datePoint: DateTimeImmutable} $properties
      */
-    public static function __set_state(array $properties)
+    public static function __set_state(array $properties): self
     {
         return new self($properties['datePoint']);
     }
@@ -249,11 +249,10 @@ final class DatePoint
     public function isoYear(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $currentIsoYear = (int) $this->datePoint->format('o');
-        $currentDay = $this->datePoint->setTime(0, 0);
 
         return Period::fromDatepoint(
-            $currentDay->setISODate($currentIsoYear, 1),
-            $currentDay->setISODate($currentIsoYear + 1, 1),
+            $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear, 1),
+            $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear + 1, 1),
             $boundaries
         );
     }
