@@ -6,7 +6,6 @@
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /.php-cs-fixer.php  export-ignore
-/infection.json     export-ignore
 /phpstan.neon       export-ignore
 /CHANGELOG.md       export-ignore
 /CONDUCT.md         export-ignore
