@@ -40,12 +40,12 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
 
     public static function dueToUnknownDurationFormat(string $duration): self
     {
-        return new self('Unknown or bad format ('.$duration.').');
+        return new self('Unknown or bad format `'.$duration.'`.');
     }
 
-    public static function dueToUnknownDatePointFormat(string $format, string $date): self
+    public static function dueToInvalidDateFormat(string $format, string $date): self
     {
-        return new self('`'.$date.'` notation is invalid for the following format `'.$format.'`.');
+        return new self('The date notation `'.$date.'` is incompatible with the date format `'.$format.'`.');
     }
 
     public static function dueToInvalidDatePeriod(): self
@@ -55,7 +55,12 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
 
     public static function dueToUnknownNotation(string $notation): self
     {
-        return new self('Unknown or bad interval notation ('.$notation.').');
+        return new self('Unknown or unsupported interval notation `'.$notation.'`.');
+    }
+
+    public static function dueToUnsupportedNotation(string $notation): self
+    {
+        return new self('Unsupported interval notation `'.$notation.'`.');
     }
 
     public static function dueToInvalidFraction(): self
