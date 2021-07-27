@@ -76,13 +76,11 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * @param array{startDate:DateTimeImmutable, endDate:DateTimeImmutable, boundaries:string} $interval
-     *
-     * @return Period
+     * @param array{startDate:DateTimeImmutable, endDate:DateTimeImmutable, boundaries:string} $properties
      */
-    public static function __set_state(array $interval)
+    public static function __set_state(array $properties): self
     {
-        return new self($interval['startDate'], $interval['endDate'], $interval['boundaries']);
+        return new self($properties['startDate'], $properties['endDate'], $properties['boundaries']);
     }
 
     public static function fromNotation(string $format, string $notation): self
@@ -109,7 +107,7 @@ final class Period implements JsonSerializable
         return new self($startDate, $endDate, $found['startboundary'].$found['endboundary']);
     }
 
-    public static function fromDatepoint(
+    public static function fromDate(
         DatePoint|DateTimeInterface $startDate,
         DatePoint|DateTimeInterface $endDate,
         string $boundaries = self::INCLUDE_START_EXCLUDE_END

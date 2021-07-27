@@ -156,27 +156,27 @@ final class DatePointTest extends TestCase
     {
         return [
             'contains returns true with a DateTimeInterface object' => [
-                Period::fromDatepoint(new DateTimeImmutable('2014-03-10'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDate(new DateTimeImmutable('2014-03-10'), new DateTimeImmutable('2014-03-15')),
                 new DateTime('2014-03-12'),
                 true,
             ],
             'contains returns false with a DateTimeInterface object' => [
-                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDate(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 new DateTime('2015-03-12'),
                 false,
             ],
             'contains returns false with a DateTimeInterface object after the interval' => [
-                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDate(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 '2012-03-12',
                 false,
             ],
             'contains returns false with a DateTimeInterface object before the interval' => [
-                Period::fromDatepoint(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
+                Period::fromDate(new DateTimeImmutable('2014-03-13'), new DateTimeImmutable('2014-03-15')),
                 '2014-04-01',
                 false,
             ],
             'contains returns false with O duration Period object' => [
-                Period::fromDatepoint(new DateTimeImmutable('2012-03-12'), new DateTimeImmutable('2012-03-12')),
+                Period::fromDate(new DateTimeImmutable('2012-03-12'), new DateTimeImmutable('2012-03-12')),
                 new DateTime('2012-03-12'),
                 false,
             ],
@@ -220,12 +220,12 @@ final class DatePointTest extends TestCase
 
         return [
             [
-                Period::fromDatepoint($datepoint, new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
+                Period::fromDate($datepoint, new DateTime('2012-01-15'), Period::EXCLUDE_ALL),
                 $datepoint,
                 false,
             ],
             [
-                Period::fromDatepoint($datepoint, new DateTime('2012-01-15'), Period::INCLUDE_START_EXCLUDE_END),
+                Period::fromDate($datepoint, new DateTime('2012-01-15'), Period::INCLUDE_START_EXCLUDE_END),
                 $datepoint,
                 true,
             ],
@@ -249,12 +249,12 @@ final class DatePointTest extends TestCase
 
         return [
             [
-                Period::fromDatepoint(new DateTime('2012-01-01'), $datepoint, Period::EXCLUDE_ALL),
+                Period::fromDate(new DateTime('2012-01-01'), $datepoint, Period::EXCLUDE_ALL),
                 $datepoint,
                 false,
             ],
             [
-                Period::fromDatepoint(new DateTime('2012-01-01'), $datepoint, Period::INCLUDE_ALL),
+                Period::fromDate(new DateTime('2012-01-01'), $datepoint, Period::INCLUDE_ALL),
                 $datepoint,
                 true,
             ],

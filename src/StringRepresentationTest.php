@@ -35,7 +35,7 @@ final class StringRepresentationTest extends TestCase
     public function testToString(): void
     {
         date_default_timezone_set('Africa/Nairobi');
-        $period = Period::fromDatepoint(new DateTimeImmutable('2014-05-01'), new DateTimeImmutable('2014-05-08'));
+        $period = Period::fromDate(new DateTimeImmutable('2014-05-01'), new DateTimeImmutable('2014-05-08'));
         $res = $period->toIso8601();
 
         self::assertTrue(str_contains($res, '2014-04-30T21:00:00'));
@@ -62,7 +62,7 @@ final class StringRepresentationTest extends TestCase
         self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->toNotation('Y-m'));
         self::assertSame(
             '[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)',
-            (Period::fromDatepoint(new DateTimeImmutable('2015-04-01'), new DateTimeImmutable('2015-04-01')))->toNotation('Y-m-d e')
+            (Period::fromDate(new DateTimeImmutable('2015-04-01'), new DateTimeImmutable('2015-04-01')))->toNotation('Y-m-d e')
         );
     }
 }

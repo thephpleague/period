@@ -95,7 +95,7 @@ final class BoundaryTest extends TestCase
 
     public function testWithBoundaryType(): void
     {
-        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $altInterval = $interval->withBoundaries(Period::EXCLUDE_ALL);
         self::assertEquals($interval->dateInterval(), $interval->dateInterval());
         self::assertNotEquals($interval->boundaries(), $altInterval->boundaries());
@@ -105,7 +105,7 @@ final class BoundaryTest extends TestCase
     public function testWithBoundaryTypeFails(): void
     {
         $this->expectException(InvalidTimeRange::class);
-        $interval = Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
+        $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->withBoundaries('foobar');
     }
 }
