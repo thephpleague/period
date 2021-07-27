@@ -39,20 +39,20 @@ final class ConstructorTest extends TestCase
     public function testConstructorThrowExceptionIfUnknownBoundPeriodDay(): void
     {
         $this->expectException(InvalidTimeRange::class);
-        Period::fromDatepoint(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
+        Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
     public function testCreateFromDateTimeInterface(): void
     {
         self::assertEquals(
-            Period::fromDatepoint(new DateTime('TODAY'), new DateTimeImmutable('TOMORROW')),
-            Period::fromDatepoint(new DateTime('TODAY'), new DateTime('TOMORROW'))
+            Period::fromDate(new DateTime('TODAY'), new DateTimeImmutable('TOMORROW')),
+            Period::fromDate(new DateTime('TODAY'), new DateTime('TOMORROW'))
         );
     }
 
     public function testSetState(): void
     {
-        $period = Period::fromDatepoint(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
+        $period = Period::fromDate(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
         /** @var Period $generatedPeriod */
         $generatedPeriod = eval('return '.var_export($period, true).';');
         self::assertTrue($generatedPeriod->equals($period));
@@ -61,21 +61,21 @@ final class ConstructorTest extends TestCase
 
     public function testConstructor(): void
     {
-        $period = Period::fromDatepoint(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
+        $period = Period::fromDate(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
         self::assertEquals(new DateTimeImmutable('2014-05-01'), $period->startDate());
         self::assertEquals(new DateTimeImmutable('2014-05-08'), $period->endDate());
     }
 
     public function testConstructorWithMicroSecondsSucceed(): void
     {
-        $period = Period::fromDatepoint(new DateTimeImmutable('2014-05-01 00:00:00'), new DateTimeImmutable('2014-05-01 00:00:00'));
+        $period = Period::fromDate(new DateTimeImmutable('2014-05-01 00:00:00'), new DateTimeImmutable('2014-05-01 00:00:00'));
         self::assertEquals(new DateInterval('PT0S'), $period->dateInterval());
     }
 
     public function testConstructorThrowException(): void
     {
         $this->expectException(InvalidTimeRange::class);
-        Period::fromDatepoint(
+        Period::fromDate(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
         );
@@ -85,7 +85,7 @@ final class ConstructorTest extends TestCase
     {
         $start = '2014-05-01';
         $end = new DateTime('2014-05-08');
-        $period = Period::fromDatepoint(new DateTimeImmutable($start), $end);
+        $period = Period::fromDate(new DateTimeImmutable($start), $end);
         self::assertSame($start, $period->startDate()->format('Y-m-d'));
         self::assertEquals($end, $period->endDate());
     }

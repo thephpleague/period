@@ -108,8 +108,8 @@ final class DatasetTest extends TestCase
     public function testAppendDataset(): void
     {
         $dataset = new Dataset([
-            ['A', new Sequence(Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-15')))],
-            ['B', Period::fromDatepoint(new DateTime('2018-01-15'), new DateTime('2018-02-01'))],
+            ['A', new Sequence(Period::fromDate(new DateTime('2018-01-01'), new DateTime('2018-01-15')))],
+            ['B', Period::fromDate(new DateTime('2018-01-15'), new DateTime('2018-02-01'))],
         ]);
 
         self::assertCount(2, $dataset);
@@ -138,8 +138,8 @@ final class DatasetTest extends TestCase
     public function testLabelizeDataset(): void
     {
         $dataset = new Dataset([
-            ['A', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
-            ['B', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
+            ['A', new Sequence(Period::fromDate(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
+            ['B', new Sequence(Period::fromDate(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
         self::assertSame(['A', 'B'], $dataset->labels());
         self::assertSame(1, $dataset->labelMaxLength());
@@ -153,8 +153,8 @@ final class DatasetTest extends TestCase
     public function testLabelizeDatasetReturnsSameInstance(): void
     {
         $dataset = new Dataset([
-            ['A', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
-            ['B', new Sequence(Period::fromDatepoint(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
+            ['A', new Sequence(Period::fromDate(new DateTimeImmutable('2018-01-01'), new DateTimeImmutable('2018-01-15')))],
+            ['B', new Sequence(Period::fromDate(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
 
         self::assertEquals($dataset, Dataset::fromItems($dataset->items(), new LatinLetter()));
@@ -173,8 +173,8 @@ final class DatasetTest extends TestCase
     {
         self::assertSame('[]', json_encode(new Dataset()));
         $dataset = new Dataset([
-            ['A', new Sequence(Period::fromDatepoint(new DateTime('2018-01-01'), new DateTime('2018-01-15')))],
-            ['B', new Sequence(Period::fromDatepoint(new DateTime('2018-01-15'), new DateTime('2018-02-01')))],
+            ['A', new Sequence(Period::fromDate(new DateTime('2018-01-01'), new DateTime('2018-01-15')))],
+            ['B', new Sequence(Period::fromDate(new DateTime('2018-01-15'), new DateTime('2018-02-01')))],
         ]);
 
         self::assertStringContainsString('label', (string) json_encode($dataset));

@@ -9,8 +9,8 @@ All notable changes to `Period` will be documented in this file
 - `TimeRangeError` used as the error interface marker.
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `InvalidTimeRange` exception for anything regarding creating an object.
-- `Duration::fromSeonds` uses a dedicated fraction argument and the seconds are no longer expressed using a `float` value.
-- `Period::fromNotation` to instantiate a time range object from a mathematical representation.
+- `Duration::fromSeonds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
+- `Period::fromNotation` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
 
 ### Fixed
@@ -19,7 +19,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::diff` returns a `Sequence` instance instead of an array.
 - `Period::__construct` is private.
 - `Period` named constructors no longer supports scalar values only objects can be used for instantiation.
-- `Period` named constructors only optional value is the boundaries, all others values are required.
+- `Period` named constructors, all parameters are required except for the boundaries.
 - `Period::timestampInterval` now returns an `int` instead of a `float` value.  
 - `Duration` no longer extends a `DateInterval` object.
 - `Datepoint` class renamed `DatePoint`.
@@ -34,6 +34,7 @@ All notable changes to `Period` will be documented in this file
 ### Removed
 
 - Support for PHP7
+- `Period::fromDatepoint` replaced by `Period::fromDate`
 - `Period::getStartDate` replaced by `Period::startDate`
 - `Period::getEndDate` replaced by `Period::endDate`
 - `Period::getDateInterval` replaced by `Period::dateInterval`

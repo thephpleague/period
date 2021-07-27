@@ -37,13 +37,13 @@ final class DurationRelationTest extends TestCase
 
     public function testGetDateInterval(): void
     {
-        $interval = Period::fromDatepoint(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
+        $interval = Period::fromDate(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
         self::assertSame(1, $interval->dateInterval()->days);
     }
 
     public function testGetTimestampInterval(): void
     {
-        $interval = Period::fromDatepoint(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
+        $interval = Period::fromDate(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
         self::assertSame(86400, $interval->timestampInterval());
     }
 
@@ -60,7 +60,7 @@ final class DurationRelationTest extends TestCase
             $duration = Duration::fromSeconds($duration);
         }
 
-        $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = $period->toDatePeriod($duration, $option);
         self::assertCount($count, iterator_to_array($range));
     }
@@ -94,7 +94,7 @@ final class DurationRelationTest extends TestCase
             $duration = Duration::fromSeconds($duration);
         }
 
-        $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = $period->toDatePeriodBackwards($duration, $option);
         self::assertInstanceOf(Generator::class, $range);
         self::assertCount($count, iterator_to_array($range));
@@ -130,23 +130,23 @@ final class DurationRelationTest extends TestCase
     {
         return [
             'duration less than' => [
-                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                Period::fromDatepoint(new DateTime('2013-01-01'), new DateTime('2013-01-16')),
+                Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
+                Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-01-16')),
                 -1,
             ],
             'duration greater than' => [
-                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                Period::fromDatepoint(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
+                Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
                 1,
             ],
             'duration equals with microsecond' => [
-                Period::fromDatepoint(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00.123456')),
-                Period::fromDatepoint(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
+                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00.123456')),
+                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
                 0,
             ],
             'duration with DST' => [
-                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                Period::fromDatepoint(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDate(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDate(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
                 0,
             ],
         ];
@@ -167,20 +167,20 @@ final class DurationRelationTest extends TestCase
     {
         return [
             'testDurationLessThan' => [
-                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
-                Period::fromDatepoint(new DateTime('2013-01-01'), new DateTime('2013-02-01')),
+                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01')),
                 'durationLessThan',
                 true,
             ],
             'testDurationGreaterThanReturnsTrue' => [
-                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTime('2012-02-01')),
-                Period::fromDatepoint(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-02-01')),
+                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
                 'durationGreaterThan',
                 true,
             ],
             'testdurationEqualsReturnsTrueWithMicroseconds' => [
-                Period::fromDatepoint(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
-                Period::fromDatepoint(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
+                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
+                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
                 'durationEquals',
                 true,
             ],
@@ -213,7 +213,7 @@ final class DurationRelationTest extends TestCase
 
     public function testSplit(): void
     {
-        $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         /** @var Generator $range */
         $range = $period->split(new DateInterval('PT1H'));
 
@@ -222,7 +222,7 @@ final class DurationRelationTest extends TestCase
 
     public function testSplitMustRecreateParentObject(): void
     {
-        $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = $period->split(new DateInterval('PT1H'));
         /** @var Period|null $total */
         $total = null;
@@ -239,7 +239,7 @@ final class DurationRelationTest extends TestCase
 
     public function testSplitWithLargeInterval(): void
     {
-        $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
         $range = [];
         foreach ($period->split(new DateInterval('P1Y')) as $innerPeriod) {
             $range[] = $innerPeriod;
@@ -251,7 +251,7 @@ final class DurationRelationTest extends TestCase
     public function testSplitWithInconsistentInterval(): void
     {
         $last = null;
-        $period = Period::fromDatepoint(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
 
         foreach ($period->split(new DateInterval('PT10H')) as $innerPeriod) {
             $last = $innerPeriod;
@@ -262,7 +262,7 @@ final class DurationRelationTest extends TestCase
 
     public function testSplitBackwards(): void
     {
-        $period = Period::fromDatepoint(new DateTime('2015-01-01'), new DateTime('2015-01-04'));
+        $period = Period::fromDate(new DateTime('2015-01-01'), new DateTime('2015-01-04'));
         $range = $period->splitBackwards(new DateInterval('P1D'));
         $list = [];
         foreach ($range as $innerPeriod) {
@@ -295,7 +295,7 @@ final class DurationRelationTest extends TestCase
 
     public function testSplitBackwardsWithInconsistentInterval(): void
     {
-        $period = Period::fromDatepoint(new DateTime('2010-01-01'), new DateTime('2010-01-02'));
+        $period = Period::fromDate(new DateTime('2010-01-01'), new DateTime('2010-01-02'));
         $last = null;
         foreach ($period->splitBackwards(new DateInterval('PT10H')) as $innerPeriod) {
             $last = $innerPeriod;
@@ -308,7 +308,7 @@ final class DurationRelationTest extends TestCase
     public function testSplitDaylightSavingsDayIntoHoursEndInterval(): void
     {
         date_default_timezone_set('Canada/Central');
-        $period = Period::fromDatepoint(new DateTime('2018-11-04 00:00:00.000000'), new DateTime('2018-11-04 05:00:00.000000'));
+        $period = Period::fromDate(new DateTime('2018-11-04 00:00:00.000000'), new DateTime('2018-11-04 05:00:00.000000'));
         /** @var Generator $splits */
         $splits = $period->split(new DateInterval('PT30M'));
         self::assertSame(10, iterator_count($splits));
@@ -317,7 +317,7 @@ final class DurationRelationTest extends TestCase
     public function testSplitBackwardsDaylightSavingsDayIntoHoursStartInterval(): void
     {
         date_default_timezone_set('Canada/Central');
-        $period = Period::fromDatepoint(new DateTime('2018-04-11 00:00:00.000000'), new DateTime('2018-04-11 05:00:00.000000'));
+        $period = Period::fromDate(new DateTime('2018-04-11 00:00:00.000000'), new DateTime('2018-04-11 05:00:00.000000'));
         /** @var Generator $splits */
         $splits = $period->splitBackwards(new DateInterval('PT30M'));
         self::assertSame(10, iterator_count($splits));

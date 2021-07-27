@@ -250,7 +250,7 @@ final class DatePoint
     {
         $currentIsoYear = (int) $this->datePoint->format('o');
 
-        return Period::fromDatepoint(
+        return Period::fromDate(
             $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear, 1),
             $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear + 1, 1),
             $boundaries
