@@ -15,6 +15,7 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 
@@ -340,7 +341,7 @@ final class ConstructorTest extends TestCase
      */
     public function testCreateNewInstanceFromNotation(string $notation, string $format, string $expected): void
     {
-        self::assertSame($expected, Period::fromNotation($notation)->toNotation($format));
+        self::assertSame($expected, Period::fromNotation($format, $notation)->toNotation($format));
     }
 
     /**
@@ -360,12 +361,12 @@ final class ConstructorTest extends TestCase
             'expected' =>   '(2021-01-03, 2021-01-04]',
         ];
 
-        $now = (new DateTimeImmutable('now'))->format('Y-m-d');
-        $tomorrow = (new DateTimeImmutable('tomorrow'))->format('Y-m-d');
+        $now = (new DateTimeImmutable('now'))->format(DateTimeInterface::ATOM);
+        $tomorrow = (new DateTimeImmutable('tomorrow'))->format(DateTimeInterface::ATOM);
 
         yield 'date string with dynamic names' => [
-            'notation' => '[now  ,  tomorrow]',
-            'format' => 'Y-m-d',
+            'notation' => '[    '.$now.'   , '.$tomorrow.'   ]',
+            'format' => DateTimeInterface::ATOM,
             'expected' =>   '['.$now.', '.$tomorrow.']',
         ];
     }
@@ -373,11 +374,11 @@ final class ConstructorTest extends TestCase
     /**
      * @dataProvider provideInvalidIntervalNotation
      */
-    public function testFailsToCreateNewInstanceFromNotation(string $notation, ): void
+    public function testFailsToCreateNewInstanceFromNotation(string $notation, string $format): void
     {
         $this->expectException(InvalidTimeRange::class);
 
-        Period::fromNotation($notation);
+        Period::fromNotation($format, $notation);
     }
 
     /**
@@ -386,12 +387,13 @@ final class ConstructorTest extends TestCase
     public function provideInvalidIntervalNotation(): iterable
     {
         return [
-            'empty string' => [''],
-            'missing separator' => ['[2021-01-02 2021-01-03]'],
-            'missing boundaries' => ['2021-01-02,2021-01-03'],
-            'too many boundaries' => ['[2021-01-02,2021-)01-03]'],
-            'too many separator' => ['[2021-01-02,2021-,01-03]'],
-            'missing dates' => ['[2021-01-02,  ]'],
+            'empty string' => ['', 'Y-m-d'],
+            'missing separator' => ['[2021-01-02 2021-01-03]', 'Y-m-d'],
+            'missing boundaries' => ['2021-01-02,2021-01-03', 'Y-m-d'],
+            'too many boundaries' => ['[2021-01-02,2021-)01-03]', 'Y-m-d'],
+            'too many separator' => ['[2021-01-02,2021-,01-03]', 'Y-m-d'],
+            'missing dates' => ['[2021-01-02,  ]', 'Y-m-d'],
+            'wrong format' => ['[2021-01-02,  ]', 'Ymd'],
         ];
     }
 }
