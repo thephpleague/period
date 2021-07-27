@@ -116,7 +116,7 @@ final class Duration
     public static function fromChronoString(string $chronoString): self
     {
         if (1 !== preg_match(self::REGEXP_CHRONOMETER, $chronoString, $units)) {
-            throw InvalidTimeRange::dueToUnknownDuratiomFormnat($chronoString);
+            throw InvalidTimeRange::dueToUnknownDurationFormat($chronoString);
         }
 
         if ('' === $units['hour']) {

@@ -38,9 +38,14 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
         return new self('Both '.Period::class.' objects should overlaps');
     }
 
-    public static function dueToUnknownDuratiomFormnat(string $duration): self
+    public static function dueToUnknownDurationFormat(string $duration): self
     {
         return new self('Unknown or bad format ('.$duration.').');
+    }
+
+    public static function dueToUnknownDatePointFormat(string $format, string $date): self
+    {
+        return new self('`'.$date.'` notation is invalid for the following format `'.$format.'`.');
     }
 
     public static function dueToInvalidDatePeriod(): self

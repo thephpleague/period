@@ -85,24 +85,30 @@ final class Period implements JsonSerializable
         return new self($interval['startDate'], $interval['endDate'], $interval['boundaries']);
     }
 
-    public static function fromNotation(string $notation): self
+    public static function fromNotation(string $format, string $notation): self
     {
         if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
             throw InvalidTimeRange::dueToUnknownNotation($notation);
         }
 
-        $startDate = trim($found['startdate']);
-        $endDate = trim($found['enddate']);
+        $startDateString = trim($found['startdate']);
+        $endDateString = trim($found['enddate']);
 
-        if (in_array('', [$startDate, $endDate], true)) {
+        if (in_array('', [$startDateString, $endDateString], true)) {
             throw InvalidTimeRange::dueToUnknownNotation($notation);
         }
 
-        return new self(
-            new DateTimeImmutable($startDate),
-            new DateTimeImmutable($endDate),
-            $found['startboundary'].$found['endboundary']
-        );
+        $startDate = DateTimeImmutable::createFromFormat($format, $startDateString);
+        if (false === $startDate) {
+            throw InvalidTimeRange::dueToUnknownDatePointFormat($format, $startDateString);
+        }
+
+        $endDate = DateTimeImmutable::createFromFormat($format, $endDateString);
+        if (false === $endDate) {
+            throw InvalidTimeRange::dueToUnknownDatePointFormat($format, $startDateString);
+        }
+
+        return new self($startDate, $endDate, $found['startboundary'].$found['endboundary']);
     }
 
     public static function fromDatepoint(
