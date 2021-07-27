@@ -542,8 +542,10 @@ final class Period implements JsonSerializable
     private function containsInterval(self $period): bool
     {
         return match (true) {
-            $this->startDate < $period->startDate && $this->endDate > $period->endDate => true,
-            $this->startDate == $period->startDate && $this->endDate == $period->endDate => $this->boundaries === $period->boundaries || '[]' === $this->boundaries,
+            $this->startDate < $period->startDate && $this->endDate > $period->endDate =>
+                true,
+            $this->startDate == $period->startDate && $this->endDate == $period->endDate =>
+                $this->boundaries === $period->boundaries || '[]' === $this->boundaries,
             $this->startDate == $period->startDate =>
                 ($this->boundaries[0] === $period->boundaries[0] || '[' === $this->boundaries[0])
                 && $this->containsDatepoint($this->startDate->add($period->dateInterval()), $this->boundaries),
@@ -575,11 +577,11 @@ final class Period implements JsonSerializable
      * [--------------------)
      * [--------------------)
      */
-    public function equals(self $period): bool
+    public function equals(self $timeSlot): bool
     {
-        return $this->startDate == $period->startDate
-            && $this->endDate == $period->endDate
-            && $this->boundaries === $period->boundaries;
+        return $this->startDate == $timeSlot->startDate
+            && $this->endDate == $timeSlot->endDate
+            && $this->boundaries === $timeSlot->boundaries;
     }
 
     /**
@@ -623,6 +625,7 @@ final class Period implements JsonSerializable
      *
      *                          [--------------------)
      * [--------------------)
+     *
      * @param Period|DatePoint|DateTimeInterface $timeSlot
      */
     public function isAfter(Period|DatePoint|DateTimeInterface $timeSlot): bool
@@ -708,7 +711,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         $date = $this->endDate;
-        if ((bool) ($option & DatePeriod::EXCLUDE_START_DATE)) {
+        if (DatePeriod::EXCLUDE_START_DATE === ($option & DatePeriod::EXCLUDE_START_DATE)) {
             $date = $this->endDate->sub($duration);
         }
 
@@ -967,6 +970,7 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting datepoint.
+     *
      * @param DatePoint|DateTimeInterface $startDate
      */
     public function startingOn(DatePoint|DateTimeInterface $startDate): self
@@ -984,6 +988,7 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending datepoint.
+     *
      * @param DatePoint|DateTimeInterface $endDate
      */
     public function endingOn(DatePoint|DateTimeInterface $endDate): self
@@ -1041,6 +1046,7 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting datepoint.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function moveStartDate(Period|Duration|DateInterval $duration): self
@@ -1054,6 +1060,7 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending datepoint.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function moveEndDate(Period|Duration|DateInterval $duration): self
@@ -1067,6 +1074,7 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
+     *
      * @param Period|Duration|DateInterval $duration
      */
     public function move(Period|Duration|DateInterval $duration): self
@@ -1084,7 +1092,7 @@ final class Period implements JsonSerializable
      * Returns an instance where the given DateInterval is simultaneously
      * subtracted from the starting datepoint and added to the ending datepoint.
      *
-     * Depending on the duration value, the resulting instance duration will be expanded or shrinked.
+     * Depending on the duration value, the resulting instance duration will be expanded or shrunken.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
