@@ -11,6 +11,7 @@
 
 namespace League\Period;
 
+use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
@@ -73,6 +74,23 @@ final class DurationTest extends TestCase
         }
 
         return 'PT0S';
+    }
+
+    public function testInstantiationFromSetState(): void
+    {
+        $duration = Duration::fromInterval(new DateInterval('P1D'));
+        /** @var Duration $generatedDuration */
+        $generatedDuration = eval('return '.var_export($duration, true).';');
+
+        self::assertEquals($duration, $generatedDuration);
+    }
+
+    public function testCreateFromDateInterval(): void
+    {
+        $duration = Duration::fromInterval(new DateInterval('P1D'));
+
+        self::assertSame(1, $duration->toInterval()->d);
+        self::assertFalse($duration->toInterval()->days);
     }
 
     public function testCreateFromDateString(): void
