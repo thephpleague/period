@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class BoundaryTest extends TestCase
+final class PeriodBoundariesTest extends TestCase
 {
     /**
      * @var string

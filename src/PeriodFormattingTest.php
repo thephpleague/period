@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class StringRepresentationTest extends TestCase
+final class PeriodFormattingTest extends TestCase
 {
     /** @var string **/
     private $timezone;
@@ -49,11 +49,13 @@ final class StringRepresentationTest extends TestCase
 
         self::assertTrue(false !== $json);
 
-        /** @var array{startDate:string, endDate:string} $res */
+        /** @var array{startDate:string, endDate:string, startExcluded:bool, endExcluded:bool} $res */
         $res = json_decode($json, true);
 
         self::assertEquals($period->startDate(), new DateTimeImmutable($res['startDate']));
         self::assertEquals($period->endDate(), new DateTimeImmutable($res['endDate']));
+        self::assertSame($period->isStartExcluded(), $res['startExcluded']);
+        self::assertSame($period->isEndExcluded(), $res['endExcluded']);
     }
 
     public function testFormat(): void

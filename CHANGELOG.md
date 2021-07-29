@@ -12,6 +12,7 @@ All notable changes to `Period` will be documented in this file
 - `Duration::fromSeonds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
 - `Period::fromNotation` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
+- `Period::snapTo*` methods family to ease period expansion.
 
 ### Fixed
 
