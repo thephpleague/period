@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-class IntervalRelationTest extends TestCase
+class PeriodRelationTest extends TestCase
 {
     /** @var string **/
     private $timezone;

@@ -37,6 +37,7 @@ final class Period implements JsonSerializable
             (?<enddate>[^,\]\)\[\(]*)
             (?<endboundary>\]|\))
         $/x';
+    private const REGEXP_ISO_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
     private const BOUNDARY_TYPE = [
         self::INCLUDE_START_EXCLUDE_END => 1,
         self::INCLUDE_ALL => 1,
@@ -83,19 +84,36 @@ final class Period implements JsonSerializable
         return new self($properties['startDate'], $properties['endDate'], $properties['boundaries']);
     }
 
+    public static function fromIso8601(string $format, string $notation, string $boundaries = self::INCLUDE_START_EXCLUDE_END): self
+    {
+        if (1 !== preg_match(self::REGEXP_ISO_NOTATION, $notation, $found)) {
+            throw InvalidTimeRange::dueToUnknownNotation($notation);
+        }
+
+        return self::fromDateString(
+            $format,
+            trim($found['startdate']),
+            trim($found['enddate']),
+            $boundaries
+        );
+    }
+
     public static function fromNotation(string $format, string $notation): self
     {
         if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
             throw InvalidTimeRange::dueToUnknownNotation($notation);
         }
 
-        $startDateString = trim($found['startdate']);
-        $endDateString = trim($found['enddate']);
+        return self::fromDateString(
+            $format,
+            trim($found['startdate']),
+            trim($found['enddate']),
+            $found['startboundary'].$found['endboundary']
+        );
+    }
 
-        if (in_array('', [$startDateString, $endDateString], true)) {
-            throw InvalidTimeRange::dueToUnsupportedNotation($notation);
-        }
-
+    private static function fromDateString(string $format, string $startDateString, string $endDateString, string $boundaries): self
+    {
         if (false === ($startDate = DateTimeImmutable::createFromFormat($format, $startDateString))) {
             throw InvalidTimeRange::dueToInvalidDateFormat($format, $startDateString);
         }
@@ -104,7 +122,7 @@ final class Period implements JsonSerializable
             throw InvalidTimeRange::dueToInvalidDateFormat($format, $endDateString);
         }
 
-        return new self($startDate, $endDate, $found['startboundary'].$found['endboundary']);
+        return new self($startDate, $endDate, $boundaries);
     }
 
     public static function fromDate(
@@ -325,7 +343,7 @@ final class Period implements JsonSerializable
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
      *
-     * @return array{startDate:string, endDate:string, boundaries:string}
+     * @return array{startDate:string, endDate:string, startExcluded:bool, endExcluded:bool}
      */
     public function jsonSerialize()
     {
@@ -334,7 +352,8 @@ final class Period implements JsonSerializable
         return [
             'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
             'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
-            'boundaries' => $this->boundaries,
+            'startExcluded' => $this->isStartExcluded(),
+            'endExcluded' => $this->isEndExcluded(),
         ];
     }
 
@@ -1108,5 +1127,125 @@ final class Period implements JsonSerializable
         }
 
         return $interval;
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a second interval.
+     */
+    public function snapToSecond(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->second()->startDate(),
+            DatePoint::fromDate($this->endDate())->second()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a minute interval.
+     */
+    public function snapToMinute(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->minute()->startDate(),
+            DatePoint::fromDate($this->endDate())->minute()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a hour interval.
+     */
+    public function snapToHour(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->hour()->startDate(),
+            DatePoint::fromDate($this->endDate())->hour()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a day interval.
+     */
+    public function snapToDay(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->day()->startDate(),
+            DatePoint::fromDate($this->endDate())->day()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a iso week interval.
+     */
+    public function snapToIsoWeek(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->isoWeek()->startDate(),
+            DatePoint::fromDate($this->endDate())->isoWeek()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a month interval.
+     */
+    public function snapToMonth(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->month()->startDate(),
+            DatePoint::fromDate($this->endDate())->month()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a quarter interval.
+     */
+    public function snapToQuarter(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->quarter()->startDate(),
+            DatePoint::fromDate($this->endDate())->quarter()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a semeter interval.
+     */
+    public function snapToSemester(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->semester()->startDate(),
+            DatePoint::fromDate($this->endDate())->semester()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a year interval.
+     */
+    public function snapToYear(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->year()->startDate(),
+            DatePoint::fromDate($this->endDate())->year()->endDate(),
+            $this->boundaries
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a iso year interval.
+     */
+    public function snapToIsoYear(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate())->isoYear()->startDate(),
+            DatePoint::fromDate($this->endDate())->isoYear()->endDate(),
+            $this->boundaries
+        );
     }
 }

@@ -58,11 +58,6 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
         return new self('Unknown or unsupported interval notation `'.$notation.'`.');
     }
 
-    public static function dueToUnsupportedNotation(string $notation): self
-    {
-        return new self('Unsupported interval notation `'.$notation.'`.');
-    }
-
     public static function dueToInvalidFraction(): self
     {
         return new self('The fraction should be a valid positive integer or zero.');

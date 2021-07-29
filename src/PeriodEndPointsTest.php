@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class ModificationTest extends TestCase
+final class PeriodEndPointsTest extends TestCase
 {
     /** @var string **/
     private $timezone;
@@ -172,7 +172,7 @@ final class ModificationTest extends TestCase
         self::assertEquals($expected, $expected->merge($period, $altPeriod));
     }
 
-    public function testMergeThrowsException(): void
+    public function testMergingWithoutArguments(): void
     {
         $period = Period::fromMonth(2014, 3);
         self::assertSame($period, $period->merge());
@@ -221,5 +221,163 @@ final class ModificationTest extends TestCase
     {
         $this->expectException(InvalidTimeRange::class);
         Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'))->moveStartDate(DateInterval::createFromDateString('3 MONTHS'));
+    }
+
+    public function testSnapToSecond(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_ALL
+        );
+
+        $snapToSeconds = $period->snapToSecond();
+
+        self::assertSame('2021-07-18 12:12:12.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-23 12:12:13.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToMinute(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::EXCLUDE_ALL
+        );
+
+        $snapToSeconds = $period->snapToMinute();
+
+        self::assertSame('2021-07-18 12:12:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-23 12:13:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToHour(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::EXCLUDE_START_INCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToHour();
+
+        self::assertSame('2021-07-18 12:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-23 13:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToDay(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToDay();
+
+        self::assertSame('2021-07-18 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-24 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToMonth(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToMonth();
+
+        self::assertSame('2021-07-01 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-08-01 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToYear(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToYear();
+
+        self::assertSame('2021-01-01 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame('2022-01-01 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToQuarter(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToQuarter();
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->quarter()->startDate()->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->quarter()->endDate()->format('Y-m-d H:i:s.u');
+
+        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToSemester(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToSemester();
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->semester()->startDate()->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->semester()->endDate()->format('Y-m-d H:i:s.u');
+
+        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToIsoWeek(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToIsoWeek();
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoWeek()->startDate()->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoWeek()->endDate()->format('Y-m-d H:i:s.u');
+
+        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+    }
+
+    public function testSnapToIsoYear(): void
+    {
+        $period = Period::fromDate(
+            new DateTimeImmutable('2021-07-18 12:12:12.123456'),
+            new DateTimeImmutable('2021-07-23 12:12:12.435672'),
+            Period::INCLUDE_START_EXCLUDE_END
+        );
+
+        $snapToSeconds = $period->snapToIsoYear();
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoYear()->startDate()->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoYear()->endDate()->format('Y-m-d H:i:s.u');
+
+        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
     }
 }

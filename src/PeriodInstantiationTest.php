@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class ConstructorTest extends TestCase
+final class PeriodInstantiationTest extends TestCase
 {
     private string $timezone;
 
@@ -36,58 +36,49 @@ final class ConstructorTest extends TestCase
         date_default_timezone_set($this->timezone);
     }
 
-    public function testConstructorThrowExceptionIfUnknownBoundPeriodDay(): void
+    public function testInstantiationFailsIfTheBoundariesDeclararionAreUnknown(): void
     {
         $this->expectException(InvalidTimeRange::class);
         Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
-    public function testCreateFromDateTimeInterface(): void
+    public function testInstantiationFromDatePointInstance(): void
     {
         self::assertEquals(
-            Period::fromDate(new DateTime('TODAY'), new DateTimeImmutable('TOMORROW')),
-            Period::fromDate(new DateTime('TODAY'), new DateTime('TOMORROW'))
+            Period::fromDate(DatePoint::fromDateString('TODAY'), DatePoint::fromDateString('TOMORROW')),
+            Period::fromDate(new DateTimeImmutable('TODAY'), new DateTime('TOMORROW'))
         );
     }
 
-    public function testSetState(): void
+    public function testInstantiationFromDateTimeInterfaceImplementingInstanceResultInEqualInstance(): void
+    {
+        self::assertEquals(
+            Period::fromDate(new DateTime('TODAY'), new DateTimeImmutable('TOMORROW')),
+            Period::fromDate(new DateTimeImmutable('TODAY'), new DateTime('TOMORROW'))
+        );
+    }
+
+    public function testInstantiationFromSetState(): void
     {
         $period = Period::fromDate(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
         /** @var Period $generatedPeriod */
         $generatedPeriod = eval('return '.var_export($period, true).';');
         self::assertTrue($generatedPeriod->equals($period));
-        self::assertEquals($generatedPeriod, $period);
     }
 
-    public function testConstructor(): void
+    public function testInstantiationPrecision(): void
     {
-        $period = Period::fromDate(DatePoint::fromDateString('2014-05-01'), DatePoint::fromDateString('2014-05-08'));
-        self::assertEquals(new DateTimeImmutable('2014-05-01'), $period->startDate());
-        self::assertEquals(new DateTimeImmutable('2014-05-08'), $period->endDate());
+        $date = new DateTimeImmutable('2014-05-01 00:00:00');
+        self::assertEquals(new DateInterval('PT0S'), Period::fromDate($date, $date)->dateInterval());
     }
 
-    public function testConstructorWithMicroSecondsSucceed(): void
-    {
-        $period = Period::fromDate(new DateTimeImmutable('2014-05-01 00:00:00'), new DateTimeImmutable('2014-05-01 00:00:00'));
-        self::assertEquals(new DateInterval('PT0S'), $period->dateInterval());
-    }
-
-    public function testConstructorThrowException(): void
+    public function testInstantiationThrowExceptionIfTimeZoneIsWronglyUsed(): void
     {
         $this->expectException(InvalidTimeRange::class);
         Period::fromDate(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
         );
-    }
-
-    public function testConstructorWithDateTimeInterface(): void
-    {
-        $start = '2014-05-01';
-        $end = new DateTime('2014-05-08');
-        $period = Period::fromDate(new DateTimeImmutable($start), $end);
-        self::assertSame($start, $period->startDate()->format('Y-m-d'));
-        self::assertEquals($end, $period->endDate());
     }
 
     /**
@@ -97,16 +88,15 @@ final class ConstructorTest extends TestCase
      */
     public function testIntervalAfter(string $startDate, string $endDate, Period|DateInterval|int|string $duration): void
     {
-        if ($duration instanceof Period) {
-            $duration = $duration->dateInterval();
-        } elseif (is_string($duration)) {
-            $duration = DateInterval::createFromDateString($duration);
-        } elseif (!$duration instanceof DateInterval) {
-            $duration = Duration::fromSeconds($duration);
-        }
+        $start = new DateTimeImmutable($startDate);
+        $period = match (true) {
+            $duration instanceof Period => Period::after($start, $duration->dateInterval()),
+            is_string($duration) => Period::after($start, DateInterval::createFromDateString($duration)),
+            !$duration instanceof DateInterval => Period::after($start, Duration::fromSeconds($duration)),
+            default => Period::after($start, $duration),
+        };
 
-        $period = Period::after(DatePoint::fromDateString($startDate), $duration);
-        self::assertEquals(new DateTimeImmutable($startDate), $period->startDate());
+        self::assertEquals($start, $period->startDate());
         self::assertEquals(new DateTimeImmutable($endDate), $period->endDate());
     }
 
@@ -131,7 +121,7 @@ final class ConstructorTest extends TestCase
         ];
     }
 
-    public function testIntervalAfterFailedWithOutofRangeInterval(): void
+    public function testIntervalAfterFailedWithOutOfRangeInterval(): void
     {
         $this->expectException(InvalidTimeRange::class);
         $duration = new DateInterval('PT1S');
@@ -147,15 +137,16 @@ final class ConstructorTest extends TestCase
      */
     public function testIntervalBefore(string $startDate, string $endDate, int|DateInterval|string $duration): void
     {
-        if (is_string($duration)) {
-            $duration = DateInterval::createFromDateString($duration);
-        } elseif (!$duration instanceof DateInterval) {
-            $duration = Duration::fromSeconds($duration);
-        }
+        $end = new DateTimeImmutable($endDate);
+        $duration = match (true) {
+            is_string($duration) => DateInterval::createFromDateString($duration),
+            !$duration instanceof DateInterval => Duration::fromSeconds($duration),
+            default => $duration,
+        };
 
-        $period = Period::before(DatePoint::fromDateString($endDate), $duration);
+        $period = Period::before($end, $duration);
         self::assertEquals(new DateTimeImmutable($startDate), $period->startDate());
-        self::assertEquals(new DateTimeImmutable($endDate), $period->endDate());
+        self::assertEquals($end, $period->endDate());
     }
 
     /**
@@ -394,6 +385,70 @@ final class ConstructorTest extends TestCase
             'too many separator' => ['[2021-01-02,2021-,01-03]', 'Y-m-d'],
             'missing dates' => ['[2021-01-02,  ]', 'Y-m-d'],
             'wrong format' => ['[2021-01-02,  ]', 'Ymd'],
+        ];
+    }
+
+    /**
+     * @dataProvider providesValidIso8601Notation
+     */
+    public function testCreateNewInstanceFromIsoNotation(
+        string $inputFormat,
+        string $notation,
+        string $boundaries,
+        string $outputFormat,
+        string $expected
+    ): void {
+        $period = Period::fromIso8601($inputFormat, $notation, $boundaries);
+
+        self::assertSame($expected, $period->toIso8601($outputFormat));
+        self::assertSame($boundaries, $period->boundaries());
+    }
+
+    /**
+     * @return array<string, array{inputFormat:string, notation:string, boundaries:string, outputFormat:string, expected:string}>
+     */
+    public function providesValidIso8601Notation(): array
+    {
+        return [
+            'same input/output format' => [
+                'inputFormat' => 'Y-m-d',
+                'notation' => '2021-03-25/2021-03-26',
+                'boundaries' => '[]',
+                'outputFormat'=> 'Y-m-d',
+                'expected' => '2021-03-25/2021-03-26',
+            ],
+            'different input/output format' => [
+                'inputFormat' => 'Y-m-d',
+                'notation' => '2021-03-25/2021-03-26',
+                'boundaries' => '()',
+                'outputFormat'=> 'Y-n-d',
+                'expected' => '2021-3-25/2021-3-26',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidIsoNotation
+     */
+    public function testFailsToCreateNewInstanceFromIsoNotation(string $notation, string $format, string $boundaries): void
+    {
+        $this->expectException(InvalidTimeRange::class);
+
+        Period::fromIso8601($format, $notation, $boundaries);
+    }
+
+    /**
+     * @return iterable<string, array<string>>
+     */
+    public function provideInvalidIsoNotation(): iterable
+    {
+        return [
+            'empty string' => ['', 'Y-m-d', Period::INCLUDE_ALL],
+            'missing separator' => ['2021-01-02 2021-01-03', 'Y-m-d', Period::INCLUDE_ALL],
+            'invalid boundaries' => ['2021-01-02/2021-01-03', 'Y-m-d', 'foobar'],
+            'too many separator' => ['2021-01-02/2021-/01-03', 'Y-m-d', Period::INCLUDE_ALL],
+            'missing dates' => ['2021-01-02/', 'Y-m-d', Period::INCLUDE_ALL],
+            'wrong format' => ['2021-01-02/2021-01-03', 'Ymd', Period::INCLUDE_ALL],
         ];
     }
 }

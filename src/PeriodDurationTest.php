@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class DurationRelationTest extends TestCase
+final class PeriodDurationTest extends TestCase
 {
     private string $timezone;
 
@@ -166,22 +166,46 @@ final class DurationRelationTest extends TestCase
     public function durationCompareInnerMethodsDataProvider(): array
     {
         return [
-            'testDurationLessThan' => [
+            'test Duration Less Than' => [
                 Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
                 Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01')),
                 'durationLessThan',
                 true,
             ],
-            'testDurationGreaterThanReturnsTrue' => [
+            'test Duration Less Than Or Equals' => [
+                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01')),
+                'durationLessThanOrEquals',
+                true,
+            ],
+            'test Duration Greater Than Returns True' => [
                 Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-02-01')),
                 Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
                 'durationGreaterThan',
                 true,
             ],
-            'testdurationEqualsReturnsTrueWithMicroseconds' => [
+            'test Duration Greater Than Or Equals Returns True' => [
+                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-02-01')),
+                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
+                'durationGreaterThanOrEquals',
+                true,
+            ],
+            'test Duratio Greater Than Or Equals Returns True Wit hMicroseconds' => [
                 Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
                 Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
                 'durationEquals',
+                true,
+            ],
+            'test Duration Greater Than Or Equals Returns True With Microseconds' => [
+                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
+                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
+                'durationGreaterThanOrEquals',
+                true,
+            ],
+            'test Duration Less Than Equals Returns True With Microseconds' => [
+                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
+                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
+                'durationLessThanOrEquals',
                 true,
             ],
         ];
