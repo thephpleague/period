@@ -8,7 +8,6 @@ title: Examples
 [![Author](//img.shields.io/badge/author-@nyamsprod-blue.svg?style=flat-square)](//twitter.com/nyamsprod)
 [![Latest Version](//img.shields.io/github/release/thephpleague/period.svg?style=flat-square)](//github.com/thephpleague/period/releases)
 [![Software License](//img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](//img.shields.io/travis/thephpleague/period/master.svg?style=flat-square)](//travis-ci.org/thephpleague/period)
 [![Total Downloads](//img.shields.io/packagist/dt/league/period.svg?style=flat-square)](//packagist.org/packages/league/period)
 
 `Period` is PHP's missing time range API. Based on ideas from [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
@@ -56,7 +55,7 @@ DatePoint::fromDateString('2014-02-10')->isDuring($period); //returns false
 ~~~
 
 The class comes with other ways to [compare time ranges](/5.0/comparing/) based on their duration and/or their datepoints.  
-`Datepoint` extends `DateTimeImmutable` and offers more [methods](/5.0/datepoint/).
+`Datepoint` decorates the `DateTimeImmutable` object and offers more [methods](/5.0/datepoint/).
 
 
 ## Modifying interval
