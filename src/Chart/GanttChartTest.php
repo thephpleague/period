@@ -54,6 +54,7 @@ final class GanttChartTest extends TestCase
 
     /**
      * @covers ::__construct
+     * @covers ::create
      */
     public function testConstructor(): void
     {
