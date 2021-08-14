@@ -561,17 +561,18 @@ final class Period implements JsonSerializable
     private function containsInterval(self $period): bool
     {
         return match (true) {
-            $this->startDate < $period->startDate && $this->endDate > $period->endDate =>
-                true,
-            $this->startDate == $period->startDate && $this->endDate == $period->endDate =>
-                $this->boundaries === $period->boundaries || '[]' === $this->boundaries,
-            $this->startDate == $period->startDate =>
-                ($this->boundaries[0] === $period->boundaries[0] || '[' === $this->boundaries[0])
-                && $this->containsDatepoint($this->startDate->add($period->dateInterval()), $this->boundaries),
-            $this->endDate == $period->endDate =>
-                ($this->boundaries[1] === $period->boundaries[1] || ']' === $this->boundaries[1])
-                && $this->containsDatepoint($this->endDate->sub($period->dateInterval()), $this->boundaries),
-            default => false,
+            $this->startDate < $period->startDate && $this->endDate > $period->endDate
+                => true,
+            $this->startDate == $period->startDate && $this->endDate == $period->endDate
+                => $this->boundaries === $period->boundaries || '[]' === $this->boundaries,
+            $this->startDate == $period->startDate
+                => ($this->boundaries[0] === $period->boundaries[0] || '[' === $this->boundaries[0])
+                    && $this->containsDatepoint($this->startDate->add($period->dateInterval()), $this->boundaries),
+            $this->endDate == $period->endDate
+                => ($this->boundaries[1] === $period->boundaries[1] || ']' === $this->boundaries[1])
+                    && $this->containsDatepoint($this->endDate->sub($period->dateInterval()), $this->boundaries),
+            default
+                => false,
         };
     }
 
@@ -596,9 +597,10 @@ final class Period implements JsonSerializable
      * [--------------------)
      * [--------------------)
      */
-    public function equals(self $timeSlot): bool
+    public function equals(mixed $timeSlot): bool
     {
-        return $this->startDate == $timeSlot->startDate
+        return $timeSlot instanceof self
+            && $this->startDate == $timeSlot->startDate
             && $this->endDate == $timeSlot->endDate
             && $this->boundaries === $timeSlot->boundaries;
     }
@@ -1135,8 +1137,8 @@ final class Period implements JsonSerializable
     public function snapToSecond(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->second()->startDate(),
-            DatePoint::fromDate($this->endDate())->second()->endDate(),
+            DatePoint::fromDate($this->startDate)->second()->startDate(),
+            DatePoint::fromDate($this->endDate)->second()->endDate(),
             $this->boundaries
         );
     }
@@ -1147,8 +1149,8 @@ final class Period implements JsonSerializable
     public function snapToMinute(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->minute()->startDate(),
-            DatePoint::fromDate($this->endDate())->minute()->endDate(),
+            DatePoint::fromDate($this->startDate)->minute()->startDate(),
+            DatePoint::fromDate($this->endDate)->minute()->endDate(),
             $this->boundaries
         );
     }
@@ -1159,8 +1161,8 @@ final class Period implements JsonSerializable
     public function snapToHour(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->hour()->startDate(),
-            DatePoint::fromDate($this->endDate())->hour()->endDate(),
+            DatePoint::fromDate($this->startDate)->hour()->startDate(),
+            DatePoint::fromDate($this->endDate)->hour()->endDate(),
             $this->boundaries
         );
     }
@@ -1171,8 +1173,8 @@ final class Period implements JsonSerializable
     public function snapToDay(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->day()->startDate(),
-            DatePoint::fromDate($this->endDate())->day()->endDate(),
+            DatePoint::fromDate($this->startDate)->day()->startDate(),
+            DatePoint::fromDate($this->endDate)->day()->endDate(),
             $this->boundaries
         );
     }
@@ -1183,8 +1185,8 @@ final class Period implements JsonSerializable
     public function snapToIsoWeek(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->isoWeek()->startDate(),
-            DatePoint::fromDate($this->endDate())->isoWeek()->endDate(),
+            DatePoint::fromDate($this->startDate)->isoWeek()->startDate(),
+            DatePoint::fromDate($this->endDate)->isoWeek()->endDate(),
             $this->boundaries
         );
     }
@@ -1195,8 +1197,8 @@ final class Period implements JsonSerializable
     public function snapToMonth(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->month()->startDate(),
-            DatePoint::fromDate($this->endDate())->month()->endDate(),
+            DatePoint::fromDate($this->startDate)->month()->startDate(),
+            DatePoint::fromDate($this->endDate)->month()->endDate(),
             $this->boundaries
         );
     }
@@ -1207,8 +1209,8 @@ final class Period implements JsonSerializable
     public function snapToQuarter(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->quarter()->startDate(),
-            DatePoint::fromDate($this->endDate())->quarter()->endDate(),
+            DatePoint::fromDate($this->startDate)->quarter()->startDate(),
+            DatePoint::fromDate($this->endDate)->quarter()->endDate(),
             $this->boundaries
         );
     }
@@ -1219,8 +1221,8 @@ final class Period implements JsonSerializable
     public function snapToSemester(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->semester()->startDate(),
-            DatePoint::fromDate($this->endDate())->semester()->endDate(),
+            DatePoint::fromDate($this->startDate)->semester()->startDate(),
+            DatePoint::fromDate($this->endDate)->semester()->endDate(),
             $this->boundaries
         );
     }
@@ -1231,8 +1233,8 @@ final class Period implements JsonSerializable
     public function snapToYear(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->year()->startDate(),
-            DatePoint::fromDate($this->endDate())->year()->endDate(),
+            DatePoint::fromDate($this->startDate)->year()->startDate(),
+            DatePoint::fromDate($this->endDate)->year()->endDate(),
             $this->boundaries
         );
     }
@@ -1243,8 +1245,8 @@ final class Period implements JsonSerializable
     public function snapToIsoYear(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate())->isoYear()->startDate(),
-            DatePoint::fromDate($this->endDate())->isoYear()->endDate(),
+            DatePoint::fromDate($this->startDate)->isoYear()->startDate(),
+            DatePoint::fromDate($this->endDate)->isoYear()->endDate(),
             $this->boundaries
         );
     }
