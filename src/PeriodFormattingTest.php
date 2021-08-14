@@ -54,8 +54,8 @@ final class PeriodFormattingTest extends TestCase
 
         self::assertEquals($period->startDate(), new DateTimeImmutable($res['startDate']));
         self::assertEquals($period->endDate(), new DateTimeImmutable($res['endDate']));
-        self::assertSame($period->isStartExcluded(), $res['startExcluded']);
-        self::assertSame($period->isEndExcluded(), $res['endExcluded']);
+        self::assertSame($period->isStartDateExcluded(), $res['startExcluded']);
+        self::assertSame($period->isEndDateExcluded(), $res['endExcluded']);
     }
 
     public function testFormat(): void
