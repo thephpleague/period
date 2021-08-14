@@ -23,9 +23,9 @@ All notable changes to `Period` will be documented in this file
 - `Period` named constructors, all parameters are required except for the boundaries.
 - `Period::timestampInterval` now returns an `int` instead of a `float` value.  
 - `Duration` no longer extends a `DateInterval` object.
+- `Duration::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - `Datepoint` class renamed `DatePoint`.
 - `DatePoint` no longer extends a `DateTimeImmutable` object.
-- `Datepoint::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - Argument names are normalized throughout the package. (PHP8 BC break)
 
 ### Deprecated
@@ -42,6 +42,10 @@ All notable changes to `Period` will be documented in this file
 - `Period::getTimestampInterval` replaced by `Period::timestampInterval`
 - `Period::getBoundaryType` replaced by `Period::boundaries`
 - `Period::withBoundaryType` replaced by `Period::withBoundaries`
+- `Period::isStartIncluded` replaced by `Period::isStartDateIncluded`
+- `Period::isStartExcluded` replaced by `Period::isStartDateExcluded`
+- `Period::isEndIncluded` replaced by `Period::isEndDateIncluded`
+- `Period::isEndExcluded` replaced by `Period::isEndDateExcluded`
 - `Period::getDatePeriod` replaced by `Period::toDatePeriod`
 - `Period::getDatePeriodBackwards` replaced by `Period::toDatePeriodBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
