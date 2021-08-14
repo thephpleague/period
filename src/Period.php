@@ -343,7 +343,7 @@ final class Period implements JsonSerializable
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
      *
-     * @return array{startDate:string, endDate:string, startExcluded:bool, endExcluded:bool}
+     * @return array{startDate:string, endDate:string, startDateExcluded:bool, endDateExcluded:bool}
      */
     public function jsonSerialize()
     {
