@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class PeriodInstantiationTest extends TestCase
+final class PeriodFactoryTest extends TestCase
 {
     private string $timezone;
 

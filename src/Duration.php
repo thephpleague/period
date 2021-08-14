@@ -71,8 +71,7 @@ final class Duration
             return new self($interval);
         }
 
-        if (
-            1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $durationIsoString, $matches)
+        if (1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $durationIsoString, $matches)
             && isset($matches['fraction'])
         ) {
             $interval = new DateInterval(substr($durationIsoString, 0, -strlen($matches['fraction'])-1));
@@ -125,14 +124,13 @@ final class Duration
 
         $units = array_merge(['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'], $units);
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
-        $expression = $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds';
-
-        $instance = DateInterval::createFromDateString($expression);
         if ('-' === $units['sign']) {
-            $instance->h *= -1;
+            $units['hour'] = '-'.$units['hour'];
         }
 
-        return new self($instance);
+        return new self(DateInterval::createFromDateString(
+            $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds'
+        ));
     }
 
     public static function fromDateString(string $durationString): self
