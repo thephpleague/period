@@ -60,7 +60,7 @@ They are now removed from the package.
 | `Duration::fromTimeString`     | none                        |
 | `Duration::format`             | none                        |
 | `Duration::withoutCarryOver`   | `Duration::adjustedTo`      |
-| `Period::__toString`           | `Period::toIso9601`         |
+| `Period::__toString`           | `Period::toIso8601`         |
 | `Period::substract`            | `Period::subtract`          |
 | `Sequence::getIntersections`   | `Sequence::intersections`   |
 | `Sequence::getGaps`            | `Sequence::gaps`            |
@@ -82,6 +82,7 @@ Most notably:
 - the `create` prefix is removed.
 - the `__toString` method and usage is removed from the package. 
 - conversions methods are explicitly named with a `to` or a `from` prefix.
+- methods name hhave been changed for consistency throughout the package.
 
 | `4.x` method name                     | `5.x` method name                  |
 | ------------------------------------- | ---------------------------------- |
@@ -92,6 +93,10 @@ Most notably:
 | `Period::getTimestampInterval`        | `Period::timestampInterval`        |
 | `Period::getBoundaryType`             | `Period::boundaries`               |
 | `Period::withBoundaryType`            | `Period::withBoundaries`           |
+| `Period::isStartIncluded`             | `Period::isStartDateIncluded`      |
+| `Period::isStartExcluded`             | `Period::isStartDateExcluded`      |
+| `Period::isEndIncluded`               | `Period::isEndDateIncluded`        |
+| `Period::isEndExcluded`               | `Period::isEndDateExcluded`        |
 | `Period::getDatePeriod`               | `Period::toDatePeriod`             |
 | `Period::getDatePeriodBackwards`      | `Period::toDatePeriodBackwards`    |
 | `Period::__toString`                  | `Period::toIso8601`                |
@@ -117,8 +122,8 @@ Most notably:
 
 `Period::jsonSerialize` representation adds two new boolean properties
 
-- `startExcluded`
-- `endExcluded`
+- `startDateExcluded`
+- `endDateExcluded`
 
 to expose the boundaries properties of the `Period` object.
 
@@ -130,8 +135,8 @@ echo json_encode($period), PHP_EOL;
 // {
 //     "startDate": "2015-04-01T00:00:00.000000Z",
 //     "endDate": "2015-05-01T00:00:00.000000Z",
-+ //     "startExcluded": false,
-+ //     "endExcluded": true
++ //     "startDateExcluded": false,
++ //     "endDateExcluded": true
 // }
 ```
 
@@ -144,8 +149,8 @@ In version `4.x` a method expecting a date accepts the following types:
 - a string that can be parsed by the DateTimeImmutable construct
 - a string like integer that would be converted to a timestamp
 
-In version `5.x` to avoid some subtil and/or hard to debug issue and by taking advantage of the type 
-the date can only accept the following types:
+In version `5.x` to avoid hard to debug issues and by taking advantage 
+of union types a date can only accept the following types:
 
 - a `DateTimeInterface` implementing object
 - a `DatePoint` object
@@ -175,7 +180,7 @@ In version `4.x` a method expecting a duration accepts the following types:
 - a string in a specific DateInterval format
 - a string convertible into a DateInterval object via its `createFromDateString` named constructor
 
-In version `5.x` to avoid some subtil and/or hard to debug issue and by taking advantage of the type
+In version `5.x` to avoid hard to debug issues and by taking advantage of union type
 the duration can only accept the following types:
 
 - a `DateInterval` object
