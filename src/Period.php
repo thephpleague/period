@@ -352,8 +352,8 @@ final class Period implements JsonSerializable
         return [
             'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
             'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
-            'startExcluded' => $this->isStartExcluded(),
-            'endExcluded' => $this->isEndExcluded(),
+            'startDateExcluded' => $this->isStartDateExcluded(),
+            'endDateExcluded' => $this->isEndDateExcluded(),
         ];
     }
 
@@ -364,7 +364,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the start datepoint is included in the boundary.
      */
-    public function isStartIncluded(): bool
+    public function isStartDateIncluded(): bool
     {
         return '[' === $this->boundaries[0];
     }
@@ -372,7 +372,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the start datepoint is excluded from the boundary.
      */
-    public function isStartExcluded(): bool
+    public function isStartDateExcluded(): bool
     {
         return '(' === $this->boundaries[0];
     }
@@ -380,7 +380,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the end datepoint is included in the boundary.
      */
-    public function isEndIncluded(): bool
+    public function isEndDateIncluded(): bool
     {
         return ']' === $this->boundaries[1];
     }
@@ -388,7 +388,7 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the end datepoint is excluded from the boundary.
      */
-    public function isEndExcluded(): bool
+    public function isEndDateExcluded(): bool
     {
         return ')' === $this->boundaries[1];
     }
@@ -932,8 +932,8 @@ final class Period implements JsonSerializable
             throw InvalidTimeRange::dueToNonOverlappingPeriod();
         }
 
-        $boundaries = $this->isEndExcluded() ? '[' : '(';
-        $boundaries .= $period->isStartExcluded() ? ']' : ')';
+        $boundaries = $this->isEndDateExcluded() ? '[' : '(';
+        $boundaries .= $period->isStartDateExcluded() ? ']' : ')';
         if ($period->startDate > $this->startDate) {
             return new self($this->endDate, $period->startDate, $boundaries);
         }

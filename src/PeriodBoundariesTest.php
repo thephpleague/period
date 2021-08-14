@@ -46,10 +46,10 @@ final class PeriodBoundariesTest extends TestCase
         bool $endExcluded
     ): void {
         self::assertSame($rangeType, $interval->boundaries());
-        self::assertSame($startIncluded, $interval->isStartIncluded());
-        self::assertSame($startExcluded, $interval->isStartExcluded());
-        self::assertSame($endIncluded, $interval->isEndIncluded());
-        self::assertSame($endExcluded, $interval->isEndExcluded());
+        self::assertSame($startIncluded, $interval->isStartDateIncluded());
+        self::assertSame($startExcluded, $interval->isStartDateExcluded());
+        self::assertSame($endIncluded, $interval->isEndDateIncluded());
+        self::assertSame($endExcluded, $interval->isEndDateExcluded());
     }
 
     /**

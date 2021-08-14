@@ -98,8 +98,8 @@ final class GanttChart implements Chart
             $periodLength = $endIndex - $startIndex;
 
             array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->body()));
-            $lineCharacters[$startIndex] = $period->isStartIncluded() ? $this->config->startIncluded() : $this->config->startExcluded();
-            $lineCharacters[$endIndex - 1] = $period->isEndIncluded() ? $this->config->endIncluded() : $this->config->endExcluded();
+            $lineCharacters[$startIndex] = $period->isStartDateIncluded() ? $this->config->startIncluded() : $this->config->startExcluded();
+            $lineCharacters[$endIndex - 1] = $period->isEndDateIncluded() ? $this->config->endIncluded() : $this->config->endExcluded();
 
             return $lineCharacters;
         };

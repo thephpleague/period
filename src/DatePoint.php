@@ -274,7 +274,7 @@ final class DatePoint
      */
     public function bordersOnStart(Period $interval): bool
     {
-        return $this->datePoint == $interval->startDate() && $interval->isStartExcluded();
+        return $this->datePoint == $interval->startDate() && $interval->isStartDateExcluded();
     }
 
     /**
@@ -306,7 +306,7 @@ final class DatePoint
      */
     public function bordersOnEnd(Period $interval): bool
     {
-        return $this->datePoint == $interval->endDate() && $interval->isEndExcluded();
+        return $this->datePoint == $interval->endDate() && $interval->isEndDateExcluded();
     }
 
     /**
