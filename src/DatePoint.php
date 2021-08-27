@@ -262,66 +262,66 @@ final class DatePoint
      **************************************************/
 
     /**
-     * Tells whether the datepoint is before the interval.
+     * Tells whether the instance is before the timeslot.
      */
-    public function isBefore(Period $interval): bool
+    public function isBefore(Period $timeSlot): bool
     {
-        return $interval->isAfter($this);
+        return $timeSlot->isAfter($this);
     }
 
     /**
-     * Tell whether the datepoint borders on start the interval.
+     * Tell whether the instance borders on start the timeslot.
      */
-    public function bordersOnStart(Period $interval): bool
+    public function bordersOnStart(Period $timeSlot): bool
     {
-        return $this->datePoint == $interval->startDate() && $interval->isStartDateExcluded();
+        return $this->datePoint == $timeSlot->startDate() && $timeSlot->isStartDateExcluded();
     }
 
     /**
-     * Tells whether the datepoint starts the interval.
+     * Tells whether the instance starts the timeslot.
      */
-    public function isStarting(Period $interval): bool
+    public function isStarting(Period $timeSlot): bool
     {
-        return $interval->isStartedBy($this->datePoint);
+        return $timeSlot->isStartedBy($this->datePoint);
     }
 
     /**
-     * Tells whether the datepoint is contained within the interval.
+     * Tells whether the instance is contained within the timeslot.
      */
-    public function isDuring(Period $interval): bool
+    public function isDuring(Period $timeSlot): bool
     {
-        return $interval->contains($this->datePoint);
+        return $timeSlot->contains($this->datePoint);
     }
 
     /**
-     * Tells whether the datepoint ends the interval.
+     * Tells whether the instance ends the timeslot.
      */
-    public function isEnding(Period $interval): bool
+    public function isEnding(Period $timeSlot): bool
     {
-        return $interval->isEndedBy($this->datePoint);
+        return $timeSlot->isEndedBy($this->datePoint);
     }
 
     /**
-     * Tells whether the datepoint borders on end the interval.
+     * Tells whether the instance borders on end the timeslot.
      */
-    public function bordersOnEnd(Period $interval): bool
+    public function bordersOnEnd(Period $timeSlot): bool
     {
-        return $this->datePoint == $interval->endDate() && $interval->isEndDateExcluded();
+        return $this->datePoint == $timeSlot->endDate() && $timeSlot->isEndDateExcluded();
     }
 
     /**
-     * Tells whether the datepoint abuts the interval.
+     * Tells whether the instance abuts the timeslot.
      */
-    public function abuts(Period $interval): bool
+    public function abuts(Period $timeSlot): bool
     {
-        return $this->bordersOnEnd($interval) || $this->bordersOnStart($interval);
+        return $this->bordersOnEnd($timeSlot) || $this->bordersOnStart($timeSlot);
     }
 
     /**
-     * Tells whether the datepoint is after the interval.
+     * Tells whether the instance is after the timeslot.
      */
-    public function isAfter(Period $interval): bool
+    public function isAfter(Period $timeSlot): bool
     {
-        return $interval->isBefore($this->datePoint);
+        return $timeSlot->isBefore($this->datePoint);
     }
 }
