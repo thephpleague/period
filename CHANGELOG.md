@@ -40,8 +40,8 @@ All notable changes to `Period` will be documented in this file
 - `Period::getEndDate` replaced by `Period::endDate`
 - `Period::getDateInterval` replaced by `Period::dateInterval`
 - `Period::getTimestampInterval` replaced by `Period::timestampInterval`
-- `Period::getBoundaryType` replaced by `Period::boundaries`
-- `Period::withBoundaryType` replaced by `Period::withBoundaries`
+- `Period::getBoundaryType` replaced by `Period::bounds`
+- `Period::withBoundaryType` replaced by `Period::boundedBy`
 - `Period::isStartIncluded` replaced by `Period::isStartDateIncluded`
 - `Period::isStartExcluded` replaced by `Period::isStartDateExcluded`
 - `Period::isEndIncluded` replaced by `Period::isEndDateIncluded`

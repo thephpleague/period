@@ -19,8 +19,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class PeriodFormattingTest extends TestCase
 {
-    /** @var string **/
-    private $timezone;
+    private string $timezone;
 
     protected function setUp(): void
     {

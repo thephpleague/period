@@ -26,7 +26,7 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
         return new self('The ending datepoint must be greater or equal to the starting datepoint');
     }
 
-    public static function dueToUnknownBoundaries(string $unknownBoundaryType, array $supportedTypes): self
+    public static function dueToUnknownBounds(string $unknownBoundaryType, array $supportedTypes): self
     {
         return new self(
             '`'.$unknownBoundaryType.'` is an unknown or invalid boundary rype. The only valid values are `'.implode('`, `', array_keys($supportedTypes)).'`.',

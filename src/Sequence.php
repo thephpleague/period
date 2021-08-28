@@ -45,7 +45,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * @var array<Period>
      */
-    private $periods;
+    private array $periods;
 
     /**
      * new instance.

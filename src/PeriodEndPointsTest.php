@@ -235,7 +235,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame('2021-07-18 12:12:12.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-23 12:12:13.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToMinute(): void
@@ -250,7 +250,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame('2021-07-18 12:12:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-23 12:13:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToHour(): void
@@ -265,7 +265,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame('2021-07-18 12:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-23 13:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToDay(): void
@@ -280,7 +280,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame('2021-07-18 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-24 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToMonth(): void
@@ -295,7 +295,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame('2021-07-01 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-08-01 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToYear(): void
@@ -310,7 +310,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame('2021-01-01 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame('2022-01-01 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToQuarter(): void
@@ -327,7 +327,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToSemester(): void
@@ -344,7 +344,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToIsoWeek(): void
@@ -361,7 +361,7 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 
     public function testSnapToIsoYear(): void
@@ -378,6 +378,6 @@ final class PeriodEndPointsTest extends TestCase
 
         self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
         self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->boundaries(), $snapToSeconds->boundaries());
+        self::assertSame($period->bounds(), $snapToSeconds->bounds());
     }
 }

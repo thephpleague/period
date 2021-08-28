@@ -79,7 +79,7 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint second
      *  - the duration is equal to 1 second
      */
-    public function second(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function second(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint->setTime(
@@ -88,7 +88,7 @@ final class DatePoint
                 (int) $this->datePoint->format('s')
             ),
             new DateInterval('PT1S'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -98,7 +98,7 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint minute
      *  - the duration is equal to 1 minute
      */
-    public function minute(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function minute(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint->setTime(
@@ -106,7 +106,7 @@ final class DatePoint
                 (int) $this->datePoint->format('i')
             ),
             new DateInterval('PT1M'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -116,12 +116,12 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint hour
      *  - the duration is equal to 1 hour
      */
-    public function hour(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function hour(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint->setTime((int) $this->datePoint->format('H'), 0),
             new DateInterval('PT1H'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -131,12 +131,12 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint day
      *  - the duration is equal to 1 day
      */
-    public function day(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function day(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint->setTime(0, 0),
             new DateInterval('P1D'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -146,7 +146,7 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint iso week
      *  - the duration is equal to 7 days
      */
-    public function isoWeek(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function isoWeek(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint
@@ -156,7 +156,7 @@ final class DatePoint
                     (int) $this->datePoint->format('W')
                 ),
             new DateInterval('P7D'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -166,7 +166,7 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint month
      *  - the duration is equal to 1 month
      */
-    public function month(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function month(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint
@@ -177,7 +177,7 @@ final class DatePoint
                     1
                 ),
             new DateInterval('P1M'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -187,7 +187,7 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint quarter
      *  - the duration is equal to 3 months
      */
-    public function quarter(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function quarter(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint
@@ -198,7 +198,7 @@ final class DatePoint
                     1
                 ),
             new DateInterval('P3M'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -208,7 +208,7 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint semester
      *  - the duration is equal to 6 months
      */
-    public function semester(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function semester(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint
@@ -219,7 +219,7 @@ final class DatePoint
                     1
                 ),
             new DateInterval('P6M'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -229,14 +229,14 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint year
      *  - the duration is equal to 1 year
      */
-    public function year(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function year(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         return Period::after(
             $this->datePoint
                 ->setTime(0, 0)
                 ->setDate((int) $this->datePoint->format('Y'), 1, 1),
             new DateInterval('P1Y'),
-            $boundaries
+            $bounds
         );
     }
 
@@ -246,14 +246,14 @@ final class DatePoint
      *  - the starting datepoint represents the beginning of the current datepoint iso year
      *  - the duration is equal to 1 iso year
      */
-    public function isoYear(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period
+    public function isoYear(string $bounds = Period::INCLUDE_START_EXCLUDE_END): Period
     {
         $currentIsoYear = (int) $this->datePoint->format('o');
 
         return Period::fromDate(
             $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear, 1),
             $this->datePoint->setTime(0, 0)->setISODate($currentIsoYear + 1, 1),
-            $boundaries
+            $bounds
         );
     }
 

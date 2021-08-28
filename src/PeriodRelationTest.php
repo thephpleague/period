@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PeriodRelationTest extends TestCase
 {
-    /** @var string **/
-    private $timezone;
+    private string $timezone;
 
     protected function setUp(): void
     {
@@ -469,22 +468,22 @@ class PeriodRelationTest extends TestCase
                 false,
             ],
             [
-                $interval->withBoundaries(Period::INCLUDE_ALL),
+                $interval->boundedBy(Period::INCLUDE_ALL),
                 $interval,
                 true,
             ],
             [
-                $interval->withBoundaries(Period::EXCLUDE_ALL),
-                $interval->withBoundaries(Period::INCLUDE_ALL),
+                $interval->boundedBy(Period::EXCLUDE_ALL),
+                $interval->boundedBy(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                $interval->withBoundaries(Period::EXCLUDE_ALL),
+                $interval->boundedBy(Period::EXCLUDE_ALL),
                 $startingDate,
                 false,
             ],
             [
-                $interval->withBoundaries(Period::INCLUDE_START_EXCLUDE_END),
+                $interval->boundedBy(Period::INCLUDE_START_EXCLUDE_END),
                 $startingDate,
                 true,
             ],
@@ -520,21 +519,21 @@ class PeriodRelationTest extends TestCase
             ],
             [
                 $interval,
-                $interval->withBoundaries(Period::EXCLUDE_ALL),
+                $interval->boundedBy(Period::EXCLUDE_ALL),
                 true,
             ],
             [
-                $interval->withBoundaries(Period::EXCLUDE_ALL),
-                $interval->withBoundaries(Period::INCLUDE_ALL),
+                $interval->boundedBy(Period::EXCLUDE_ALL),
+                $interval->boundedBy(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                $interval->withBoundaries(Period::EXCLUDE_ALL),
+                $interval->boundedBy(Period::EXCLUDE_ALL),
                 $endingDate,
                 false,
             ],
             [
-                $interval->withBoundaries(Period::INCLUDE_ALL),
+                $interval->boundedBy(Period::INCLUDE_ALL),
                 $endingDate,
                 true,
             ],
@@ -600,7 +599,7 @@ class PeriodRelationTest extends TestCase
     {
         $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $boundary1);
         $interval1 = Period::fromDate(new DateTime('2014-05-01'), new DateTime('2014-08-01'), $boundary2);
-        self::assertSame($expected, $interval0->intersect($interval1)->boundaries());
+        self::assertSame($expected, $interval0->intersect($interval1)->bounds());
     }
 
     /**
@@ -741,7 +740,7 @@ class PeriodRelationTest extends TestCase
     {
         $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $boundary1);
         $interval1 = Period::fromDate(new DateTime('2014-07-01'), new DateTime('2014-09-01'), $boundary2);
-        self::assertSame($expected, $interval0->gap($interval1)->boundaries());
+        self::assertSame($expected, $interval0->gap($interval1)->bounds());
     }
 
     /**
@@ -901,11 +900,11 @@ class PeriodRelationTest extends TestCase
         $sequence = $interval0->diff($interval1);
 
         if (0 < count($sequence)) {
-            self::assertSame($expected1, $sequence[0]->boundaries());
+            self::assertSame($expected1, $sequence[0]->bounds());
         }
 
         if (1 < count($sequence)) {
-            self::assertSame($expected2, $sequence[1]->boundaries());
+            self::assertSame($expected2, $sequence[1]->bounds());
         }
     }
 
@@ -1032,9 +1031,9 @@ class PeriodRelationTest extends TestCase
                 }
 
                 $sequence->push($intersect);
-                $boundaries = $sequence->length();
-                if (null !== $boundaries) {
-                    self::assertTrue($boundaries->equals($interval0->merge($interval1)));
+                $bounds = $sequence->length();
+                if (null !== $bounds) {
+                    self::assertTrue($bounds->equals($interval0->merge($interval1)));
                 }
             }
         }

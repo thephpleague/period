@@ -17,12 +17,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class PeriodBoundariesTest extends TestCase
+final class PeriodBoundsTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $timezone;
+    private string $timezone;
 
     protected function setUp(): void
     {
@@ -45,7 +42,7 @@ final class PeriodBoundariesTest extends TestCase
         bool $endIncluded,
         bool $endExcluded
     ): void {
-        self::assertSame($rangeType, $interval->boundaries());
+        self::assertSame($rangeType, $interval->bounds());
         self::assertSame($startIncluded, $interval->isStartDateIncluded());
         self::assertSame($startExcluded, $interval->isStartDateExcluded());
         self::assertSame($endIncluded, $interval->isEndDateIncluded());
@@ -96,16 +93,16 @@ final class PeriodBoundariesTest extends TestCase
     public function testWithBoundaryType(): void
     {
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->withBoundaries(Period::EXCLUDE_ALL);
+        $altInterval = $interval->boundedBy(Period::EXCLUDE_ALL);
         self::assertEquals($interval->dateInterval(), $interval->dateInterval());
-        self::assertNotEquals($interval->boundaries(), $altInterval->boundaries());
-        self::assertSame($interval, $interval->withBoundaries(Period::INCLUDE_START_EXCLUDE_END));
+        self::assertNotEquals($interval->bounds(), $altInterval->bounds());
+        self::assertSame($interval, $interval->boundedBy(Period::INCLUDE_START_EXCLUDE_END));
     }
 
     public function testWithBoundaryTypeFails(): void
     {
         $this->expectException(InvalidTimeRange::class);
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $interval->withBoundaries('foobar');
+        $interval->boundedBy('foobar');
     }
 }
