@@ -38,7 +38,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testInstantiationFailsIfTheboundsDeclararionAreUnknown(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
     }
 
@@ -74,7 +74,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testInstantiationThrowExceptionIfTimeZoneIsWronglyUsed(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         Period::fromDate(
             new DateTime('2014-05-01', new DateTimeZone('Europe/Paris')),
             new DateTime('2014-05-01', new DateTimeZone('Africa/Nairobi'))
@@ -123,7 +123,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testIntervalAfterFailedWithOutOfRangeInterval(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $duration = new DateInterval('PT1S');
         $duration->invert = 1;
 
@@ -169,7 +169,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testIntervalBeforeFailedWithOutofRangeInterval(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $duration = new DateInterval('PT1S');
         $duration->invert = 1;
 
@@ -189,7 +189,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testIntervalAroundThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
 
         $duration = new DateInterval('PT1S');
         $duration->invert = 1;
@@ -210,7 +210,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testIntervalFromDatePeriodThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
 
         Period::fromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
@@ -367,7 +367,7 @@ final class PeriodFactoryTest extends TestCase
      */
     public function testFailsToCreateNewInstanceFromNotation(string $notation, string $format): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
 
         Period::fromNotation($format, $notation);
     }
@@ -432,7 +432,7 @@ final class PeriodFactoryTest extends TestCase
      */
     public function testFailsToCreateNewInstanceFromIsoNotation(string $notation, string $format, string $bounds): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
 
         Period::fromIso8601($format, $notation, $bounds);
     }

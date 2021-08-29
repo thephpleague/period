@@ -31,11 +31,11 @@ final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
     private const REGEXP_INTERVAL_NOTATION = '/^
-            (?<startbound>\[|\()
+            (?<lowerbound>\[|\()
             (?<startdate>[^,\]\)\[\(]*)
             ,
             (?<enddate>[^,\]\)\[\(]*)
-            (?<endbound>\]|\))
+            (?<upperbound>\]|\))
         $/x';
     private const REGEXP_ISO_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
     private const SUPPORTED_BOUNDS = [
@@ -55,16 +55,16 @@ final class Period implements JsonSerializable
     private string $bounds;
 
     /**
-     * @throws InvalidTimeRange If the instance can not be created
+     * @throws DateRangeInvalid If the instance can not be created
      */
     private function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, string $bounds)
     {
         if ($startDate > $endDate) {
-            throw InvalidTimeRange::dueToDatepointMismatch();
+            throw DateRangeInvalid::dueToDatePointMismatch();
         }
 
         if (!isset(self::SUPPORTED_BOUNDS[$bounds])) {
-            throw InvalidTimeRange::dueToUnknownBounds($bounds, self::SUPPORTED_BOUNDS);
+            throw DateRangeInvalid::dueToUnknownBounds($bounds, self::SUPPORTED_BOUNDS);
         }
 
         $this->startDate = $startDate;
@@ -87,7 +87,7 @@ final class Period implements JsonSerializable
     public static function fromIso8601(string $format, string $notation, string $bounds = self::INCLUDE_START_EXCLUDE_END): self
     {
         if (1 !== preg_match(self::REGEXP_ISO_NOTATION, $notation, $found)) {
-            throw InvalidTimeRange::dueToUnknownNotation($notation);
+            throw DateRangeInvalid::dueToUnknownNotation($notation);
         }
 
         return self::fromDateString(
@@ -101,28 +101,28 @@ final class Period implements JsonSerializable
     public static function fromNotation(string $format, string $notation): self
     {
         if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
-            throw InvalidTimeRange::dueToUnknownNotation($notation);
+            throw DateRangeInvalid::dueToUnknownNotation($notation);
         }
 
         return self::fromDateString(
             $format,
             trim($found['startdate']),
             trim($found['enddate']),
-            $found['startbound'].$found['endbound']
+            $found['lowerbound'].$found['upperbound']
         );
     }
 
-    private static function fromDateString(string $format, string $startDateString, string $endDateString, string $bounds): self
+    private static function fromDateString(string $format, string $startDate, string $endDate, string $bounds): self
     {
-        if (false === ($startDate = DateTimeImmutable::createFromFormat($format, $startDateString))) {
-            throw InvalidTimeRange::dueToInvalidDateFormat($format, $startDateString);
+        if (false === ($start = DateTimeImmutable::createFromFormat($format, $startDate))) {
+            throw DateRangeInvalid::dueToInvalidDateFormat($format, $startDate);
         }
 
-        if (false === ($endDate = DateTimeImmutable::createFromFormat($format, $endDateString))) {
-            throw InvalidTimeRange::dueToInvalidDateFormat($format, $endDateString);
+        if (false === ($end = DateTimeImmutable::createFromFormat($format, $endDate))) {
+            throw DateRangeInvalid::dueToInvalidDateFormat($format, $endDate);
         }
 
-        return new self($startDate, $endDate, $bounds);
+        return new self($start, $end, $bounds);
     }
 
     public static function fromDate(
@@ -205,7 +205,7 @@ final class Period implements JsonSerializable
     {
         $endDate = $datePeriod->getEndDate();
         if (null === $endDate) {
-            throw InvalidTimeRange::dueToInvalidDatePeriod();
+            throw DateRangeInvalid::dueToInvalidDatePeriod();
         }
 
         return new self(
@@ -814,12 +814,12 @@ final class Period implements JsonSerializable
      *          =
      *                 [----)
      *
-     * @throws InvalidTimeRange If both objects do not overlaps
+     * @throws DateRangeInvalid If both objects do not overlaps
      */
     public function intersect(self $period): self
     {
         if (!$this->overlaps($period)) {
-            throw InvalidTimeRange::dueToNonOverlappingPeriod();
+            throw DateRangeInvalid::dueToNonOverlappingPeriod();
         }
 
         $startDate = $this->startDate;
@@ -873,14 +873,14 @@ final class Period implements JsonSerializable
             $first = ')' === $intersect->bounds[1] ? '[' : '(';
             $bounds = $first.$merge->bounds[1];
 
-            return new Sequence($merge->startingOn($intersect->endDate)->boundedBy($bounds));
+            return new Sequence($merge->startingOn($intersect->endDate)->boundedWith($bounds));
         }
 
         if ($merge->endDate == $intersect->endDate) {
             $last = '(' === $intersect->bounds[0] ? ']' : ')';
             $bounds = $merge->bounds[0].$last;
 
-            return new Sequence($merge->endingOn($intersect->startDate)->boundedBy($bounds));
+            return new Sequence($merge->endingOn($intersect->startDate)->boundedWith($bounds));
         }
 
         $last = '(' === $intersect->bounds[0] ? ']' : ')';
@@ -890,8 +890,8 @@ final class Period implements JsonSerializable
         $firstBoundary = $first.$merge->bounds[1];
 
         return new Sequence(
-            $merge->endingOn($intersect->startDate)->boundedBy($lastBoundary),
-            $merge->startingOn($intersect->endDate)->boundedBy($firstBoundary),
+            $merge->endingOn($intersect->startDate)->boundedWith($lastBoundary),
+            $merge->startingOn($intersect->endDate)->boundedWith($firstBoundary),
         );
     }
 
@@ -924,12 +924,12 @@ final class Period implements JsonSerializable
      *          =
      *                      [---)
      *
-     * @throws InvalidTimeRange If both instance overlaps
+     * @throws DateRangeInvalid If both instance overlaps
      */
     public function gap(self $period): self
     {
         if ($this->overlaps($period)) {
-            throw InvalidTimeRange::dueToNonOverlappingPeriod();
+            throw DateRangeInvalid::dueToNonOverlappingPeriod();
         }
 
         $bounds = $this->isEndDateExcluded() ? '[' : '(';
@@ -1028,7 +1028,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance with the specified range type.
      */
-    public function boundedBy(string $bounds): self
+    public function boundedWith(string $bounds): self
     {
         if ($bounds === $this->bounds) {
             return $this;

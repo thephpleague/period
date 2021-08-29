@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use InvalidArgumentException;
-use League\Period\TimeRangeError;
+use League\Period\DateRangeError;
 
-final class UnableToDrawChart extends InvalidArgumentException implements TimeRangeError
+final class UnableToDrawChart extends InvalidArgumentException implements DateRangeError
 {
     private function __construct(string $message)
     {

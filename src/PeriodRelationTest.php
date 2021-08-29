@@ -468,22 +468,22 @@ class PeriodRelationTest extends TestCase
                 false,
             ],
             [
-                $interval->boundedBy(Period::INCLUDE_ALL),
+                $interval->boundedWith(Period::INCLUDE_ALL),
                 $interval,
                 true,
             ],
             [
-                $interval->boundedBy(Period::EXCLUDE_ALL),
-                $interval->boundedBy(Period::INCLUDE_ALL),
+                $interval->boundedWith(Period::EXCLUDE_ALL),
+                $interval->boundedWith(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                $interval->boundedBy(Period::EXCLUDE_ALL),
+                $interval->boundedWith(Period::EXCLUDE_ALL),
                 $startingDate,
                 false,
             ],
             [
-                $interval->boundedBy(Period::INCLUDE_START_EXCLUDE_END),
+                $interval->boundedWith(Period::INCLUDE_START_EXCLUDE_END),
                 $startingDate,
                 true,
             ],
@@ -519,21 +519,21 @@ class PeriodRelationTest extends TestCase
             ],
             [
                 $interval,
-                $interval->boundedBy(Period::EXCLUDE_ALL),
+                $interval->boundedWith(Period::EXCLUDE_ALL),
                 true,
             ],
             [
-                $interval->boundedBy(Period::EXCLUDE_ALL),
-                $interval->boundedBy(Period::INCLUDE_ALL),
+                $interval->boundedWith(Period::EXCLUDE_ALL),
+                $interval->boundedWith(Period::INCLUDE_ALL),
                 false,
             ],
             [
-                $interval->boundedBy(Period::EXCLUDE_ALL),
+                $interval->boundedWith(Period::EXCLUDE_ALL),
                 $endingDate,
                 false,
             ],
             [
-                $interval->boundedBy(Period::INCLUDE_ALL),
+                $interval->boundedWith(Period::INCLUDE_ALL),
                 $endingDate,
                 true,
             ],
@@ -586,7 +586,7 @@ class PeriodRelationTest extends TestCase
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $orig = Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01'));
         $alt = Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
         $orig->intersect($alt);
@@ -704,7 +704,7 @@ class PeriodRelationTest extends TestCase
 
     public function testGapThrowsExceptionWithOverlapsInterval(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2011-12-10'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -712,7 +712,7 @@ class PeriodRelationTest extends TestCase
 
     public function testGapWithSameStartingInterval(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -720,7 +720,7 @@ class PeriodRelationTest extends TestCase
 
     public function testGapWithSameEndingInterval(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2012-01-15'), new DateTime('2012-02-01'));
         $orig->gap($alt);
@@ -837,7 +837,7 @@ class PeriodRelationTest extends TestCase
         $interval1 = Period::fromDate(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
         $interval2 = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $interval1->diff($interval2);
     }
 

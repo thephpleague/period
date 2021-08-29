@@ -207,7 +207,7 @@ final class DurationTest extends TestCase
      */
     public function testCreateFromChronoStringFails(string $input): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(InvalidArgumentException::class);
 
         Duration::fromChronoString($input);
     }

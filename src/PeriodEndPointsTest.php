@@ -46,7 +46,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testStartingOnFailedWithWrongStartDate(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->startingOn(new DateTime('2015-03-02'));
     }
@@ -63,7 +63,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testEndingOnFailedWithWrongEndDate(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $interval->endingOn(new DateTime('2012-03-02'));
     }
@@ -92,7 +92,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testExpandThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $dateInterval = new DateInterval('P1D');
         $dateInterval->invert = 1;
         (Period::fromDate(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
@@ -139,7 +139,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testWithDurationAfterStartThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $period = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-03-15'));
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -155,7 +155,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testWithDurationBeforeEndThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $period = Period::fromDate(new DateTimeImmutable('2014-02-15'), new DateTimeImmutable('2014-03-01'));
         $interval = new DateInterval('P1D');
         $interval->invert = 1;
@@ -189,7 +189,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testMoveEndDateThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
 
         Period::after(
             new DateTimeImmutable('2012-01-01'),
@@ -219,7 +219,7 @@ final class PeriodEndPointsTest extends TestCase
 
     public function testMoveStartDateThrowsException(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 MONTH'))->moveStartDate(DateInterval::createFromDateString('3 MONTHS'));
     }
 

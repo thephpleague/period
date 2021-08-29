@@ -80,7 +80,7 @@ public function Dataset::appendAll(iterable $pairs): void; //adds multiple pairs
 public function Dataset::isEmpty(): bool; //Tells whether the collection is empty.
 public function Dataset::labels(): string[]; //the current labels used
 public function Dataset::items(): Sequence[]; //the current objects inside the Dataset
-public function Dataset::boundaries(): ?Period;  //Returns the collection boundaries or null if it is empty.
+public function Dataset::boundaries(): Period|null; //Returns the collection boundaries or null if it is empty.
 public function Dataset::labelMaxLength(): int;  //Returns the label max length.
 ~~~
 

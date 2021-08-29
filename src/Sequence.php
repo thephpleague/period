@@ -342,7 +342,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @inheritDoc
      * @param int $offset the integer index of the Period instance to retrieve.
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence
      * @see ::get
      *
      */
@@ -355,7 +355,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @inheritDoc
      * @param int $offset the integer index of the Period instance to remove
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence
      * @see ::remove
      *
      */
@@ -369,7 +369,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @param int|null $offset   the integer index of the Period to add or update
      * @param Period   $interval the Period instance to add
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence
      *
      * @see ::push
      * @see ::set
@@ -430,13 +430,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the interval specified at a given offset.
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence
      */
     public function get(int $offset): Period
     {
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw CannotAccessPeriod::dueToInvalidIndex($offset);
+            throw DateRangeInaccessible::dueToInvalidIndex($offset);
         }
 
         return $this->periods[$index];
@@ -482,7 +482,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param Period ...$intervals
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence.
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence.
      */
     public function insert(int $offset, Period $interval, Period ...$intervals): void
     {
@@ -500,7 +500,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw CannotAccessPeriod::dueToInvalidIndex($offset);
+            throw DateRangeInaccessible::dueToInvalidIndex($offset);
         }
 
         array_unshift($intervals, $interval);
@@ -510,13 +510,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Updates the interval at the specify offset.
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence.
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence.
      */
     public function set(int $offset, Period $interval): void
     {
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw CannotAccessPeriod::dueToInvalidIndex($offset);
+            throw DateRangeInaccessible::dueToInvalidIndex($offset);
         }
 
         $this->periods[$index] = $interval;
@@ -527,13 +527,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * The sequence is re-indexed after removal
      *
-     * @throws CannotAccessPeriod If the offset is illegal for the current sequence.
+     * @throws DateRangeInaccessible If the offset is illegal for the current sequence.
      */
     public function remove(int $offset): Period
     {
         $index = $this->filterOffset($offset);
         if (null === $index) {
-            throw CannotAccessPeriod::dueToInvalidIndex($offset);
+            throw DateRangeInaccessible::dueToInvalidIndex($offset);
         }
 
         $interval = $this->periods[$index];

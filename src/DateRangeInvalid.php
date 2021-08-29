@@ -14,14 +14,14 @@ namespace League\Period;
 use DatePeriod;
 use InvalidArgumentException;
 
-final class InvalidTimeRange extends InvalidArgumentException implements TimeRangeError
+final class DateRangeInvalid extends InvalidArgumentException implements DateRangeError
 {
     private function __construct(string $message)
     {
         parent::__construct($message);
     }
 
-    public static function dueToDatepointMismatch(): self
+    public static function dueToDatePointMismatch(): self
     {
         return new self('The ending datepoint must be greater or equal to the starting datepoint');
     }
@@ -38,11 +38,6 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
         return new self('Both '.Period::class.' objects should overlaps');
     }
 
-    public static function dueToUnknownDurationFormat(string $duration): self
-    {
-        return new self('Unknown or bad format `'.$duration.'`.');
-    }
-
     public static function dueToInvalidDateFormat(string $format, string $date): self
     {
         return new self('The date notation `'.$date.'` is incompatible with the date format `'.$format.'`.');
@@ -56,10 +51,5 @@ final class InvalidTimeRange extends InvalidArgumentException implements TimeRan
     public static function dueToUnknownNotation(string $notation): self
     {
         return new self('Unknown or unsupported interval notation `'.$notation.'`.');
-    }
-
-    public static function dueToInvalidFraction(): self
-    {
-        return new self('The fraction should be a valid positive integer or zero.');
     }
 }

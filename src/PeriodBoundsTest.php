@@ -93,16 +93,16 @@ final class PeriodBoundsTest extends TestCase
     public function testWithBoundaryType(): void
     {
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->boundedBy(Period::EXCLUDE_ALL);
+        $altInterval = $interval->boundedWith(Period::EXCLUDE_ALL);
         self::assertEquals($interval->dateInterval(), $interval->dateInterval());
         self::assertNotEquals($interval->bounds(), $altInterval->bounds());
-        self::assertSame($interval, $interval->boundedBy(Period::INCLUDE_START_EXCLUDE_END));
+        self::assertSame($interval, $interval->boundedWith(Period::INCLUDE_START_EXCLUDE_END));
     }
 
     public function testWithBoundaryTypeFails(): void
     {
-        $this->expectException(InvalidTimeRange::class);
+        $this->expectException(DateRangeInvalid::class);
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $interval->boundedBy('foobar');
+        $interval->boundedWith('foobar');
     }
 }

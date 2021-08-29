@@ -16,6 +16,7 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use InvalidArgumentException;
 use function preg_match;
 use function str_pad;
 
@@ -93,11 +94,13 @@ final class Duration
 
     /**
      * Returns a new instance from a seconds.
+     *
+     * @throws InvalidArgumentException
      */
     public static function fromSeconds(int $second, int $fraction = 0): self
     {
         if (0 > $fraction) {
-            throw InvalidTimeRange::dueToInvalidFraction();
+            throw new InvalidArgumentException('The fraction should be a valid positive integer or zero.');
         }
 
         $duration = new DateInterval('PT0S');
@@ -110,12 +113,12 @@ final class Duration
     /**
      * Creates a new instance from a timer string representation.
      *
-     * @throws InvalidTimeRange
+     * @throws InvalidArgumentException
      */
     public static function fromChronoString(string $chronoString): self
     {
         if (1 !== preg_match(self::REGEXP_CHRONOMETER, $chronoString, $units)) {
-            throw InvalidTimeRange::dueToUnknownDurationFormat($chronoString);
+            throw new InvalidArgumentException('Unknown or bad format `'.$chronoString.'`.');
         }
 
         if ('' === $units['hour']) {

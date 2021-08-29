@@ -63,8 +63,8 @@ They are now removed from the package.
 | `Period::__toString`           | `Period::toIso8601`         |
 | `Period::substract`            | `Period::subtract`          |
 | `Sequence::getIntersections`   | `Sequence::intersections`   |
-| `Sequence::getGaps`            | `Sequence::gaps`            |
 | `Sequence::getBoundaries`      | `Sequence::boundaries`      |
+| `Sequence::getGaps`            | `Sequence::gaps`            |
 
 ## Change in inheritance
 
@@ -91,8 +91,8 @@ Most notably:
 | `Period::getEndDate`                  | `Period::endDate`                  |
 | `Period::getDateInterval`             | `Period::dateInterval`             |
 | `Period::getTimestampInterval`        | `Period::timestampInterval`        |
-| `Period::getBoundaryType`             | `Period::boundaries`               |
-| `Period::withBoundaryType`            | `Period::withBoundaries`           |
+| `Period::getBoundaryType`             | `Period::bounds`                   |
+| `Period::withBoundaryType`            | `Period::boundedWith`              |
 | `Period::isStartIncluded`             | `Period::isStartDateIncluded`      |
 | `Period::isStartExcluded`             | `Period::isStartDateExcluded`      |
 | `Period::isEndIncluded`               | `Period::isEndDateIncluded`        |

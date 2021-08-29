@@ -22,7 +22,7 @@ use InvalidArgumentException;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   4.1.0
  */
-final class CannotAccessPeriod extends InvalidArgumentException implements TimeRangeError
+final class DateRangeInaccessible extends InvalidArgumentException implements DateRangeError
 {
     private function __construct(string $message)
     {
