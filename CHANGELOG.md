@@ -43,9 +43,9 @@ All notable changes to `Period` will be documented in this file
 - `Period::getBoundaryType` replaced by `Period::bounds`
 - `Period::withBoundaryType` replaced by `Period::boundedBy`
 - `Period::isStartIncluded` replaced by `Period::isStartDateIncluded`
-- `Period::isStartExcluded` replaced by `Period::isStartDateExcluded`
+- `Period::isStartExcluded` with no replacement use `Period::isStartDateIncluded` instead
 - `Period::isEndIncluded` replaced by `Period::isEndDateIncluded`
-- `Period::isEndExcluded` replaced by `Period::isEndDateExcluded`
+- `Period::isEndExcluded` with no replacement use `Period::isEndDateIncluded` instead
 - `Period::getDatePeriod` replaced by `Period::toDatePeriod`
 - `Period::getDatePeriodBackwards` replaced by `Period::toDatePeriodBackwards`
 - `Period::__string` replaced by `Period::toIso8601`

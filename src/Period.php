@@ -343,7 +343,7 @@ final class Period implements JsonSerializable
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
      *
-     * @return array{startDate:string, endDate:string, startDateExcluded:bool, endDateExcluded:bool}
+     * @return array{startDate:string, endDate:string, startDateIncluded:bool, endDateIncluded:bool}
      */
     public function jsonSerialize(): array
     {
@@ -352,13 +352,13 @@ final class Period implements JsonSerializable
         return [
             'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
             'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
-            'startDateExcluded' => $this->isStartDateExcluded(),
-            'endDateExcluded' => $this->isEndDateExcluded(),
+            'startDateIncluded' => $this->isStartDateIncluded(),
+            'endDateIncluded' => $this->isEndDateIncluded(),
         ];
     }
 
     /**************************************************
-     * Boundary related methods
+     * Bounds related methods
      **************************************************/
 
     /**
@@ -370,27 +370,11 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the start datepoint is excluded from the boundary.
-     */
-    public function isStartDateExcluded(): bool
-    {
-        return '(' === $this->bounds[0];
-    }
-
-    /**
      * Tells whether the end datepoint is included in the boundary.
      */
     public function isEndDateIncluded(): bool
     {
         return ']' === $this->bounds[1];
-    }
-
-    /**
-     * Tells whether the end datepoint is excluded from the boundary.
-     */
-    public function isEndDateExcluded(): bool
-    {
-        return ')' === $this->bounds[1];
     }
 
     /**************************************************
@@ -932,8 +916,8 @@ final class Period implements JsonSerializable
             throw DateRangeInvalid::dueToNonOverlappingPeriod();
         }
 
-        $bounds = $this->isEndDateExcluded() ? '[' : '(';
-        $bounds .= $period->isStartDateExcluded() ? ']' : ')';
+        $bounds = $this->isEndDateIncluded() ? '(' : '[';
+        $bounds .= $period->isStartDateIncluded() ? ')' : ']';
         if ($period->startDate > $this->startDate) {
             return new self($this->endDate, $period->startDate, $bounds);
         }

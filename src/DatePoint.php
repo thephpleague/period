@@ -274,7 +274,7 @@ final class DatePoint
      */
     public function bordersOnStart(Period $timeSlot): bool
     {
-        return $this->datePoint == $timeSlot->startDate() && $timeSlot->isStartDateExcluded();
+        return $this->datePoint == $timeSlot->startDate() && !$timeSlot->isStartDateIncluded();
     }
 
     /**
@@ -306,7 +306,7 @@ final class DatePoint
      */
     public function bordersOnEnd(Period $timeSlot): bool
     {
-        return $this->datePoint == $timeSlot->endDate() && $timeSlot->isEndDateExcluded();
+        return $this->datePoint == $timeSlot->endDate() && !$timeSlot->isEndDateIncluded();
     }
 
     /**
