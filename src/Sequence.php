@@ -56,13 +56,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns the sequence boundaries as a Period instance.
+     * Returns the sequence length as a Period instance.
      *
      * If the sequence contains no interval null is returned.
      *
      * @return ?Period
      */
-    public function boundaries(): ?Period
+    public function length(): ?Period
     {
         $period = reset($this->intervals);
         if (false === $period) {
@@ -70,6 +70,23 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         return $period->merge(...$this->intervals);
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Sequence::length()
+     *
+     * Returns the sequence length as a Period instance.
+     *
+     * If the sequence contains no interval null is returned.
+     *
+     * @return ?Period
+     */
+    public function boundaries(): ?Period
+    {
+        return $this->length();
     }
 
     /**
@@ -102,7 +119,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function sortByStartDate(Period $interval1, Period $interval2): int
     {
-        return $interval1->getStartDate() <=> $interval2->getStartDate();
+        return $interval1->startDate() <=> $interval2->startDate();
     }
 
     /**
@@ -233,7 +250,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns the sequence boundaries as a Period instance.
+     * Returns the sequence length as a Period instance.
      *
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
@@ -246,7 +263,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function getBoundaries(): ?Period
     {
-        return $this->boundaries();
+        return $this->length();
     }
 
     /**
@@ -278,14 +295,27 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function getTotalTimestampInterval(): float
+    public function totalTimestampInterval(): float
     {
-        $retval = 0;
+        $retval = 0.0;
         foreach ($this->intervals as $interval) {
-            $retval += $interval->getTimestampInterval();
+            $retval += $interval->timestampInterval();
         }
 
         return $retval;
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Sequence::totalTimestampInterval()
+     *
+     * Returns the sum of all instances durations as expressed in seconds.
+     */
+    public function getTotalTimestampInterval(): float
+    {
+        return $this->totalTimestampInterval();
     }
 
     /**

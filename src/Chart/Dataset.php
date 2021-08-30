@@ -51,7 +51,7 @@ final class Dataset implements Data
      * Creates a new collection from a countable iterable structure.
      *
      * @param array|(\Countable&iterable) $items
-     * @param ?LabelGenerator             $labelGenerator
+     * @param ?LabelGenerator $labelGenerator
      */
     public static function fromItems($items, ?LabelGenerator $labelGenerator = null): self
     {
@@ -135,7 +135,7 @@ final class Dataset implements Data
     private function setBoundaries(Sequence $sequence): void
     {
         if (null === $this->boundaries) {
-            $this->boundaries = $sequence->boundaries();
+            $this->boundaries = $sequence->length();
 
             return;
         }
