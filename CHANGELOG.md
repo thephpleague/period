@@ -6,7 +6,15 @@ All notable changes to `Period` will be documented in this file
 
 ### Added
 
-- Nothing
+- `Datepoint::getSecond` is deprecated in favor of `Datepoint::second`
+- `Datepoint::getMinute` is deprecated in favor of `Datepoint::minute`
+- `Datepoint::getHour` is deprecated in favor of `Datepoint::hour`
+- `Datepoint::getIsoWeek` is deprecated in favor of `Datepoint::isoWeek`
+- `Datepoint::getMonth`  is deprecated in favor of `Datepoint::month`
+- `Datepoint::getQuarter` is deprecated in favor of `Datepoint::quarter`
+- `Datepoint::getSemester` is deprecated in favor of `Datepoint::semester`
+- `Datepoint::getYear` is deprecated in favor of `Datepoint::year`
+- `Datepoint::getIsoYear` is deprecated in favor of `Datepoint::isoYear`
 
 ### Fixed
 
