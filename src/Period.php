@@ -294,41 +294,106 @@ final class Period implements JsonSerializable
     /**
      * Returns the starting datepoint.
      */
-    public function getStartDate(): DateTimeImmutable
+    public function startDate(): DateTimeImmutable
     {
         return $this->startDate;
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::startDate()
+     *
+     * Returns the starting datepoint.
+     */
+    public function getStartDate(): DateTimeImmutable
+    {
+        return $this->startDate();
+    }
+
+    /**
      * Returns the ending datepoint.
      */
-    public function getEndDate(): DateTimeImmutable
+    public function endDate(): DateTimeImmutable
     {
         return $this->endDate;
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::endDate()
+     *
+     * Returns the ending datepoint.
+     */
+    public function getEndDate(): DateTimeImmutable
+    {
+        return $this->endDate();
+    }
+
+    /**
      * Returns the instance boundary type.
      */
-    public function getBoundaryType(): string
+    public function bounds(): string
     {
         return $this->boundaryType;
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::bounds()
+     *
+     * Returns the instance boundary type.
+     */
+    public function getBoundaryType(): string
+    {
+        return $this->bounds();
+    }
+
+    /**
      * Returns the instance duration as expressed in seconds.
      */
-    public function getTimestampInterval(): float
+    public function timestampInterval(): float
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::timestampInterval()
+     *
+     * Returns the instance duration as expressed in seconds.
+     */
+    public function getTimestampInterval(): float
+    {
+        return $this->timestampInterval();
+    }
+
+    /**
+     * Returns the instance duration as a DateInterval object.
+     */
+    public function dateInterval(): DateInterval
+    {
+        return $this->startDate->diff($this->endDate);
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::dateInterval()
+     *
      * Returns the instance duration as a DateInterval object.
      */
     public function getDateInterval(): DateInterval
     {
-        return $this->startDate->diff($this->endDate);
+        return $this->dateInterval();
     }
 
     /**************************************************
@@ -374,7 +439,7 @@ final class Period implements JsonSerializable
      *
      * @return array<string>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         [$startDate, $endDate] = explode('/', $this->toIso8601(), 2);
 
@@ -406,12 +471,30 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the start datepoint is included in the boundary.
      */
-    public function isStartIncluded(): bool
+    public function isStartDateIncluded(): bool
     {
         return '[' === $this->boundaryType[0];
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::isStartDateIncluded()
+     *
+     * Tells whether the start datepoint is included in the boundary.
+     */
+    public function isStartIncluded(): bool
+    {
+        return $this->isStartDateIncluded();
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::isStartDateIncluded()
+     *
      * Tells whether the start datepoint is excluded from the boundary.
      */
     public function isStartExcluded(): bool
@@ -422,12 +505,30 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the end datepoint is included in the boundary.
      */
-    public function isEndIncluded(): bool
+    public function isEndDateIncluded(): bool
     {
         return ']' === $this->boundaryType[1];
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::isEndDateIncluded()
+     *
+     * Tells whether the end datepoint is included in the boundary.
+     */
+    public function isEndIncluded(): bool
+    {
+        return $this->isEndDateIncluded();
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::isEndDateIncluded()
+     *
      * Tells whether the end datepoint is excluded from the boundary.
      */
     public function isEndExcluded(): bool
@@ -726,7 +827,7 @@ final class Period implements JsonSerializable
      */
     public function timestampIntervalDiff(self $interval): float
     {
-        return $this->getTimestampInterval() - $interval->getTimestampInterval();
+        return $this->timestampInterval() - $interval->timestampInterval();
     }
 
     /**
@@ -734,7 +835,7 @@ final class Period implements JsonSerializable
      */
     public function dateIntervalDiff(self $interval): DateInterval
     {
-        return $this->endDate->diff($this->startDate->add($interval->getDateInterval()));
+        return $this->endDate->diff($this->startDate->add($interval->dateInterval()));
     }
 
     /**
@@ -830,7 +931,7 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * Manipulation instance endpoints and boundaries
+     * Manipulation instance endpoints and bounds
      **************************************************/
 
     /**
@@ -903,14 +1004,14 @@ final class Period implements JsonSerializable
             $first = ')' === $intersect->boundaryType[1] ? '[' : '(';
             $boundary = $first.$merge->boundaryType[1];
 
-            return [$merge->startingOn($intersect->endDate)->withBoundaryType($boundary), null];
+            return [$merge->startingOn($intersect->endDate)->boundedWith($boundary), null];
         }
 
         if ($merge->endDate == $intersect->endDate) {
             $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
             $boundary = $merge->boundaryType[0].$last;
 
-            return [$merge->endingOn($intersect->startDate)->withBoundaryType($boundary), null];
+            return [$merge->endingOn($intersect->startDate)->boundedWith($boundary), null];
         }
 
         $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
@@ -920,8 +1021,8 @@ final class Period implements JsonSerializable
         $firstBoundary = $first.$merge->boundaryType[1];
 
         return [
-            $merge->endingOn($intersect->startDate)->withBoundaryType($lastBoundary),
-            $merge->startingOn($intersect->endDate)->withBoundaryType($firstBoundary),
+            $merge->endingOn($intersect->startDate)->boundedWith($lastBoundary),
+            $merge->startingOn($intersect->endDate)->boundedWith($firstBoundary),
         ];
     }
 
@@ -977,10 +1078,10 @@ final class Period implements JsonSerializable
             throw new Exception('Both '.self::class.' objects must not overlaps');
         }
 
-        $boundaryType = $this->isEndExcluded() ? '[' : '(';
-        $boundaryType .= $interval->isStartExcluded() ? ']' : ')';
+        $bounds = $this->isEndDateIncluded() ? '(' : '[';
+        $bounds .= $interval->isStartDateIncluded() ? ')' : ']';
         if ($interval->startDate > $this->startDate) {
-            return new self($this->endDate, $interval->startDate, $boundaryType);
+            return new self($this->endDate, $interval->startDate, $bounds);
         }
 
         return new self($interval->endDate, $this->startDate, $this->boundaryType);
@@ -1073,13 +1174,29 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance with the specified range type.
      */
-    public function withBoundaryType(string $boundaryType): self
+    public function boundedWith(string $bounds): self
     {
-        if ($boundaryType === $this->boundaryType) {
+        if ($bounds === $this->boundaryType) {
             return $this;
         }
 
-        return new self($this->startDate, $this->endDate, $boundaryType);
+        return new self($this->startDate, $this->endDate, $bounds);
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::boundedWith()
+     *
+     * Returns an instance with the specified boundary type.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance with the specified range type.
+     */
+    public function withBoundaryType(string $boundaryType): self
+    {
+        return $this->boundedWith($boundaryType);
     }
 
     /**

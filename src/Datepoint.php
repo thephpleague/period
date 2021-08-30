@@ -65,7 +65,7 @@ final class Datepoint extends DateTimeImmutable
      *
      * @return static|false
      */
-    public static function createFromFormat($format, $datetime, $timezone = null)
+    public static function createFromFormat($format, $datetime, DateTimeZone $timezone = null)
     {
         $datepoint = parent::createFromFormat($format, $datetime, $timezone);
         if (false !== $datepoint) {
@@ -252,7 +252,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function bordersOnStart(Period $interval): bool
     {
-        return $this == $interval->getStartDate() && $interval->isStartExcluded();
+        return $this == $interval->startDate() && !$interval->isStartDateIncluded();
     }
 
     /**
@@ -284,7 +284,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function bordersOnEnd(Period $interval): bool
     {
-        return $this == $interval->getEndDate() && $interval->isEndExcluded();
+        return $this == $interval->endDate() && !$interval->isEndDateIncluded();
     }
 
     /**

@@ -47,10 +47,10 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.16",
+        "friendsofphp/php-cs-fixer": "^2.19 || ^3.0",
         "infection/infection": "^0",
         "phpunit/phpunit" : "^8.0 || ^9.0",
-        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan": "0.12.94",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12"
     },
