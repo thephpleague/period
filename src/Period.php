@@ -134,7 +134,7 @@ final class Period implements JsonSerializable
         }
 
         if ($duration instanceof self) {
-            return $duration->getDateInterval();
+            return $duration->dateInterval();
         }
 
         return Duration::create($duration);
@@ -455,13 +455,32 @@ final class Period implements JsonSerializable
      *
      * @param string $format the format of the outputted date string
      */
-    public function format(string $format): string
+    public function toNotation(string $format): string
     {
         return $this->boundaryType[0]
             .$this->startDate->format($format)
             .', '
             .$this->endDate->format($format)
             .$this->boundaryType[1];
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::toNotation()
+     *
+     * Returns the mathematical representation of an instance as a left close, right open interval.
+     *
+     * @see https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals
+     * @see https://php.net/manual/en/function.date.php
+     * @see https://www.postgresql.org/docs/9.3/static/rangetypes.html
+     *
+     * @param string $format the format of the outputted date string
+     */
+    public function format(string $format): string
+    {
+        return $this->toNotation($format);
     }
 
     /**************************************************
@@ -846,9 +865,27 @@ final class Period implements JsonSerializable
      *
      * @param mixed $duration a Duration
      */
-    public function getDatePeriod($duration, int $option = 0): DatePeriod
+    public function toDatePeriod($duration, int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDuration($duration), $this->endDate, $option);
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::toDatePeriod()
+     *
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance.
+     *
+     * @see http://php.net/manual/en/dateperiod.construct.php
+     *
+     * @param mixed $duration a Duration
+     */
+    public function getDatePeriod($duration, int $option = 0): DatePeriod
+    {
+        return $this->toDatePeriod($duration, $option);
     }
 
     /**
@@ -858,7 +895,7 @@ final class Period implements JsonSerializable
      *
      * @param mixed $duration a Duration
      */
-    public function getDatePeriodBackwards($duration, int $option = 0): iterable
+    public function toDatePeriodBackwards($duration, int $option = 0): iterable
     {
         $duration = self::filterDuration($duration);
         $date = $this->endDate;
@@ -870,6 +907,23 @@ final class Period implements JsonSerializable
             yield $date;
             $date = $date->sub($duration);
         }
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Period::toDatePeriodBackwards()
+     *
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance backwards starting from
+     * the instance ending datepoint.
+     *
+     * @param mixed $duration a Duration
+     */
+    public function getDatePeriodBackwards($duration, int $option = 0): iterable
+    {
+        return $this->toDatePeriodBackwards($duration, $option);
     }
 
     /**
