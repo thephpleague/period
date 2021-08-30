@@ -26,16 +26,9 @@ final class DateRangeInvalid extends InvalidArgumentException implements DateRan
         return new self('The ending datepoint must be greater or equal to the starting datepoint');
     }
 
-    public static function dueToUnknownBounds(string $unknownBoundaryType, array $supportedTypes): self
+    public static function dueToUnknownBounds(string $unknownBound, array $supportedBounds): self
     {
-        return new self(
-            '`'.$unknownBoundaryType.'` is an unknown or invalid boundary rype. The only valid values are `'.implode('`, `', array_keys($supportedTypes)).'`.',
-        );
-    }
-
-    public static function dueToNonOverlappingPeriod(): self
-    {
-        return new self('Both '.Period::class.' objects should overlaps');
+        return new self('`'.$unknownBound.'` is an unknown or invalid boundary rype. The only valid values are `'.implode('`, `', array_keys($supportedBounds)).'`.', );
     }
 
     public static function dueToInvalidDateFormat(string $format, string $date): self

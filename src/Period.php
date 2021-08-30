@@ -798,12 +798,12 @@ final class Period implements JsonSerializable
      *          =
      *                 [----)
      *
-     * @throws DateRangeInvalid If both objects do not overlaps
+     * @throws UnableToProcessDateRange If both objects do not overlaps
      */
     public function intersect(self $period): self
     {
         if (!$this->overlaps($period)) {
-            throw DateRangeInvalid::dueToNonOverlappingPeriod();
+            throw UnableToProcessDateRange::dueToMissingOverlaps();
         }
 
         $startDate = $this->startDate;
@@ -908,12 +908,12 @@ final class Period implements JsonSerializable
      *          =
      *                      [---)
      *
-     * @throws DateRangeInvalid If both instance overlaps
+     * @throws UnableToProcessDateRange If both instance overlaps
      */
     public function gap(self $period): self
     {
         if ($this->overlaps($period)) {
-            throw DateRangeInvalid::dueToNonOverlappingPeriod();
+            throw UnableToProcessDateRange::dueToMissingGaps();
         }
 
         $bounds = $this->isEndDateIncluded() ? '(' : '[';
