@@ -42,7 +42,7 @@ final class Dataset implements Data
      * Creates a new collection from a countable iterable structure.
      *
      * @param array|(\Countable&iterable) $items
-     * @param null|LabelGenerator|null    $labelGenerator
+     * @param null|LabelGenerator|null $labelGenerator
      * @psalm-suppress MixedArgumentTypeCoercion
      */
     public static function fromItems($items, LabelGenerator|null $labelGenerator = null): self

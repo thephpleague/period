@@ -6,7 +6,7 @@ All notable changes to `Period` will be documented in this file
 
 ### Added
 
-- `TimeRangeError` used as the error interface marker.
+- `DateRangeError` used as the error interface marker.
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `InvalidTimeRange` exception for anything regarding creating an object.
 - `Duration::fromSeonds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
