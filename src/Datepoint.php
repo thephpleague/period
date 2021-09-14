@@ -154,11 +154,6 @@ final class Datepoint extends DateTimeImmutable
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Datepoint::hour()
-     *
      * Returns a Period instance.
      *
      *  - the starting datepoint represents the beginning of the current datepoint hour
@@ -171,8 +166,12 @@ final class Datepoint extends DateTimeImmutable
         return new Period($datepoint, $datepoint->add(new DateInterval('PT1H')), $boundaryType);
     }
 
-
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated deprecated since version 4.12
+     * @see Datepoint::hour()
+     *
      * Returns a Period instance.
      *
      *  - the starting datepoint represents the beginning of the current datepoint hour
@@ -226,7 +225,6 @@ final class Datepoint extends DateTimeImmutable
 
         return new Period($startDate, $startDate->add(new DateInterval('P7D')), $boundaryType);
     }
-
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
@@ -323,7 +321,6 @@ final class Datepoint extends DateTimeImmutable
         return new Period($startDate, $startDate->add(new DateInterval('P6M')), $boundaryType);
     }
 
-
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
@@ -381,7 +378,11 @@ final class Datepoint extends DateTimeImmutable
         $year = (int) $this->format('o');
         $datepoint = $this->setTime(0, 0);
 
-        return new Period($datepoint->setISODate($year, 1, 1), $datepoint->setISODate(++$year, 1, 1), $boundaryType);
+        return new Period(
+            $datepoint->setISODate($year, 1, 1),
+            $datepoint->setISODate(++$year, 1, 1),
+            $boundaryType
+        );
     }
 
     /**
