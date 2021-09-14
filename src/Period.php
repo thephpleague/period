@@ -944,7 +944,7 @@ final class Period implements JsonSerializable
     public function split($duration): iterable
     {
         $duration = self::filterDuration($duration);
-        foreach ($this->getDatePeriod($duration) as $startDate) {
+        foreach ($this->toDatePeriod($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
