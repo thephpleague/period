@@ -50,7 +50,6 @@ final class PeriodDurationTest extends TestCase
     /**
      * @dataProvider providerGetDatePeriod
      *
-     * @param DateInterval|int|string $duration
      */
     public function testGetDatePeriod(DateInterval|int|string $duration, int $option, int $count): void
     {

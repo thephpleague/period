@@ -166,7 +166,6 @@ final class DatePointTest extends TestCase
     /**
      * @dataProvider isDuringDataProvider
      *
-     * @param DateTimeInterface|string $input
      */
     public function testIsDuring(Period $interval, DateTimeInterface|string $input, bool $expected): void
     {

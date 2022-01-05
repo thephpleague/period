@@ -84,7 +84,6 @@ final class PeriodFactoryTest extends TestCase
     /**
      * @dataProvider provideIntervalAfterData
      *
-     * @param Period|DateInterval|int|string $duration
      */
     public function testIntervalAfter(string $startDate, string $endDate, Period|DateInterval|int|string $duration): void
     {
@@ -133,7 +132,6 @@ final class PeriodFactoryTest extends TestCase
     /**
      * @dataProvider intervalBeforeProviderData
      *
-     * @param int|DateInterval|string $duration
      */
     public function testIntervalBefore(string $startDate, string $endDate, int|DateInterval|string $duration): void
     {

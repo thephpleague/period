@@ -63,8 +63,6 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
 
     /**
      * Add a new pair to the collection.
-     * @param string|int      $label
-     * @param Period|Sequence $item
      */
     public function append(string|int $label, Period|Sequence $item): void;
 

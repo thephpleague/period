@@ -260,7 +260,6 @@ final class DurationTest extends TestCase
 
     /**
      * @dataProvider adjustedToDataProvider
-     * @param int|string|DateTimeInterface $reference_date
      */
     public function testAdjustedTo(string $input, int|string|DateTimeInterface $reference_date, string $expected): void
     {

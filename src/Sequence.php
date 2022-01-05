@@ -626,7 +626,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function reduce(Closure $func, mixed $carry = null): mixed
     {
         foreach ($this->periods as $offset => $interval) {
-            /** @var mixed $carry */
+            
             $carry = $func($carry, $interval, $offset);
         }
 

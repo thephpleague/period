@@ -37,7 +37,6 @@ class PeriodRelationTest extends TestCase
     /**
      * @dataProvider isBeforeProvider
      *
-     * @param DateTimeInterface|Period $input
      */
     public function testIsBefore(Period $interval, DateTimeInterface|Period $input, bool $expected): void
     {
@@ -116,7 +115,6 @@ class PeriodRelationTest extends TestCase
     /**
      * @dataProvider isAfterProvider
      *
-     * @param DateTimeInterface|Period $input
      */
     public function testIsAfer(Period $interval, DateTimeInterface|Period $input, bool $expected): void
     {
@@ -274,7 +272,6 @@ class PeriodRelationTest extends TestCase
     /**
      * @dataProvider containsDataProvider
      *
-     * @param DateTimeInterface|Period|string $arg
      */
     public function testContains(Period $interval, DateTimeInterface|Period|string $arg, bool $expected): void
     {
@@ -492,7 +489,6 @@ class PeriodRelationTest extends TestCase
 
     /**
      * @dataProvider finishesDataProvider
-     * @param DateTimeInterface|Period $index
      */
     public function testFinishes(Period $interval, DateTimeInterface|Period $index, bool $expected): void
     {
