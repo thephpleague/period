@@ -42,16 +42,9 @@ use const ARRAY_FILTER_USE_BOTH;
  */
 final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
-    /**
-     * @var array<Period>
-     */
+    /** @var array<Period> */
     private array $periods;
 
-    /**
-     * new instance.
-     *
-     * @param Period ...$periods
-     */
     public function __construct(Period ...$periods)
     {
         $this->periods = $periods;
@@ -141,7 +134,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
         /** @var Sequence $sequence */
         $sequence = $this
-            ->sorted(Closure::fromCallable([$this, 'sortByStartDate']))
+            ->sorted($this->sortByStartDate(...))
             ->reduce($reducer, new self());
 
         return $sequence;
@@ -154,8 +147,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         /** @var Sequence $sequence */
         $sequence = $this
-            ->sorted(Closure::fromCallable([$this, 'sortByStartDate']))
-            ->reduce(Closure::fromCallable([$this, 'calculateUnion']), new self())
+            ->sorted($this->sortByStartDate(...))
+            ->reduce($this->calculateUnion(...), new self())
         ;
 
         if ($sequence->periods === $this->periods) {
@@ -202,7 +195,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         /** @var Sequence $new */
-        $new = $sequence->reduce(Closure::fromCallable([$this, 'subtractOne']), $this);
+        $new = $sequence->reduce($this->subtractOne(...), $this);
         if ($new->periods === $this->periods) {
             return $this;
         }

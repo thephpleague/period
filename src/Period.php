@@ -30,13 +30,7 @@ use JsonSerializable;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
-    private const REGEXP_INTERVAL_NOTATION = '/^
-            (?<lowerbound>\[|\()
-            (?<startdate>[^,\]\)\[\(]*)
-            ,
-            (?<enddate>[^,\]\)\[\(]*)
-            (?<upperbound>\]|\))
-        $/x';
+    private const REGEXP_INTERVAL_NOTATION = '/^(?<lowerbound>\[|\()(?<startdate>[^,\]\)\[\(]*),(?<enddate>[^,\]\)\[\(]*)(?<upperbound>\]|\))$/';
     private const REGEXP_ISO_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
 
     private DateTimeImmutable $startDate;
@@ -69,6 +63,9 @@ final class Period implements JsonSerializable
         return new self($properties['startDate'], $properties['endDate'], $properties['bounds']);
     }
 
+    /**
+     * @throws DateRangeInvalid If the notation is not supported or not known
+     */
     public static function fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_LOWER_EXCLUDE_UPPER): self
     {
         if (1 !== preg_match(self::REGEXP_ISO_NOTATION, $notation, $found)) {
@@ -78,6 +75,9 @@ final class Period implements JsonSerializable
         return self::fromDateString($format, trim($found['startdate']), trim($found['enddate']), $bounds);
     }
 
+    /**
+     * @throws DateRangeInvalid If the notation is not supported or not known
+     */
     public static function fromNotation(string $format, string $notation): self
     {
         if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
@@ -92,6 +92,9 @@ final class Period implements JsonSerializable
         );
     }
 
+    /**
+     * @throws DateRangeInvalid If format can not be resolved
+     */
     private static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds): self
     {
         if (false === ($start = DateTimeImmutable::createFromFormat($format, $startDate))) {
@@ -133,7 +136,6 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a starting datepoint and a duration.
-     *
      */
     public static function after(
         DatePoint|DateTimeInterface $startDate,
@@ -148,7 +150,6 @@ final class Period implements JsonSerializable
     /**
      * Creates new instance where the given duration is simultaneously
      * subtracted from and added to the given datepoint.
-     *
      */
     public static function around(
         DatePoint|DateTimeInterface $midpoint,
@@ -163,7 +164,6 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance from a ending datepoint and a duration.
-     *
      */
     public static function before(
         DatePoint|DateTimeInterface $endDate,
@@ -175,6 +175,9 @@ final class Period implements JsonSerializable
         return new self($endDate->sub(self::filterDuration($duration)), $endDate, $bounds);
     }
 
+    /**
+     * @throws DateRangeInvalid If no instance can be generated from a DatePeriod object
+     */
     public static function fromDatePeriod(DatePeriod $datePeriod, Bounds $bounds = Bounds::INCLUDE_LOWER_EXCLUDE_UPPER): self
     {
         $endDate = $datePeriod->getEndDate();
@@ -288,11 +291,7 @@ final class Period implements JsonSerializable
     {
         [$lower, $upper] = str_split($this->bounds->value);
 
-        return $lower
-            .$this->startDate->format($format)
-            .', '
-            .$this->endDate->format($format)
-            .$upper;
+        return $lower.$this->startDate->format($format).', '.$this->endDate->format($format).$upper;
     }
 
     /**
@@ -304,10 +303,9 @@ final class Period implements JsonSerializable
     {
         $utc = new DateTimeZone('UTC');
 
-        $startDate = $this->startDate->setTimezone($utc)->format($format);
-        $endDate = $this->endDate->setTimezone($utc)->format($format);
-
-        return $startDate.'/'.$endDate;
+        return $this->startDate->setTimezone($utc)->format($format)
+            .'/'
+            .$this->endDate->setTimezone($utc)->format($format);
     }
 
     /**
@@ -794,22 +792,22 @@ final class Period implements JsonSerializable
         $intersect = $this->intersect($period);
         $merge = $this->merge($period);
         if ($merge->startDate == $intersect->startDate) {
-            return new Sequence($merge->startingOn($intersect->endDate)->boundedWith(
+            return new Sequence($merge->startingOn($intersect->endDate)->withBounds(
                 $intersect->bounds->isUpperIncluded() ? $merge->bounds->excludeLower() : $merge->bounds->includeLower()
             ));
         }
 
         if ($merge->endDate == $intersect->endDate) {
-            return new Sequence($merge->endingOn($intersect->startDate)->boundedWith(
+            return new Sequence($merge->endingOn($intersect->startDate)->withBounds(
                 $intersect->bounds->isLowerIncluded() ? $merge->bounds->excludeUpper() : $merge->bounds->includeUpper()
             ));
         }
 
         return new Sequence(
-            $merge->endingOn($intersect->startDate)->boundedWith(
+            $merge->endingOn($intersect->startDate)->withBounds(
                 $intersect->bounds->isLowerIncluded() ? $merge->bounds->excludeUpper() : $merge->bounds->includeUpper()
             ),
-            $merge->startingOn($intersect->endDate)->boundedWith(
+            $merge->startingOn($intersect->endDate)->withBounds(
                 $intersect->bounds->isUpperIncluded() ? $merge->bounds->excludeLower() : $merge->bounds->includeLower()
             ),
         );
@@ -947,7 +945,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance with the specified range type.
      */
-    public function boundedWith(Bounds $bounds): self
+    public function withBounds(Bounds $bounds): self
     {
         if ($bounds === $this->bounds) {
             return $this;

@@ -23,7 +23,7 @@ enum Bounds: string
         return '[' === $this->value[0];
     }
 
-    public function equalsLower(Bounds $other): bool
+    public function equalsLower(self $other): bool
     {
         return $other->value[0] === $this->value[0];
     }
@@ -56,7 +56,7 @@ enum Bounds: string
         return ']' === $this->value[1];
     }
 
-    public function equalsUpper(Bounds $other): bool
+    public function equalsUpper(self $other): bool
     {
         return $other->value[1] === $this->value[1];
     }
