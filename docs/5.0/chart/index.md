@@ -160,7 +160,8 @@ Here's a complex example which highlights most of the features introduces along 
 ~~~php
 <?php
 
-use League\Period\Bounds;use League\Period\Chart\AffixLabel;
+use League\Period\Bounds;
+use League\Period\Chart\AffixLabel;
 use League\Period\Chart\ConsoleOutput;
 use League\Period\Chart\Dataset;
 use League\Period\Chart\DecimalNumber;

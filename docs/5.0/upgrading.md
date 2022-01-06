@@ -21,7 +21,7 @@ This will edit (or create) your `composer.json` file.
 
 ## PHP version requirement
 
-`5.0` requires a PHP version greater than or equal 8.0 (was previously 7.1.3).
+`5.0` requires a PHP version greater than or equal 8.1 (was previously 7.1.3).
 
 ## Removed methods
 
@@ -85,14 +85,14 @@ Most notably:
 - methods name hhave been changed for consistency throughout the package.
 
 | `4.x` method name                     | `5.x` method name                  |
-| ------------------------------------- | ---------------------------------- |
+| ------------------------------------- |------------------------------------|
 | `Period::fromDatepoint`               | `Period::fromDate`                 |
 | `Period::getStartDate`                | `Period::startDate`                |
 | `Period::getEndDate`                  | `Period::endDate`                  |
 | `Period::getDateInterval`             | `Period::dateInterval`             |
 | `Period::getTimestampInterval`        | `Period::timestampInterval`        |
 | `Period::getBoundaryType`             | `Period::bounds`                   |
-| `Period::withBoundaryType`            | `Period::boundedWith`              |
+| `Period::withBoundaryType`            | `Period::withBounds`               |
 | `Period::getDatePeriod`               | `Period::toDatePeriod`             |
 | `Period::getDatePeriodBackwards`      | `Period::toDatePeriodBackwards`    |
 | `Period::__toString`                  | `Period::toIso8601`                |
@@ -124,16 +124,15 @@ Most notably:
 to expose the boundaries properties of the `Period` object.
 
 ```diff
-<?php
 $period = Period::fromMonth(2015, 4);
 echo json_encode($period), PHP_EOL;
-// returns 
-// {
-//     "startDate": "2015-04-01T00:00:00.000000Z",
-//     "endDate": "2015-05-01T00:00:00.000000Z",
-+ //     "startDateIncluded": true,
-+ //     "endDateIncluded": false
-// }
+
+{
+     "startDate": "2015-04-01T00:00:00.000000Z",
+     "endDate": "2015-05-01T00:00:00.000000Z",
++    "startDateIncluded": true,
++    "endDateIncluded": false
+}
 ```
 
 ### Change in argument type hinting name
@@ -155,9 +154,6 @@ if you need to use a string you need to first convert it using a `DateTimeInterf
 or a `DatePoint` named constructor.
 
 ```diff
-<?php
-use League\Period\Period;
-
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL);
 + Period::after(
 +    new DateTime('2021-05-23'), 
@@ -187,7 +183,6 @@ if you need to use a string you need to first convert it using a `DateInterval` 
 or one of the `Duration` named constructor.
 
 ```diff
-<?php
 - Period::after('2021-05-23', '1 HOUR', Period::INCLUDE_ALL);
 + Period::after(
 +    new DateTime('2021-05-23'), 
@@ -204,7 +199,6 @@ an `Bounds` enum is expected instead as shown in all previous examples.
 Creating a Duration out of some seconds as changed, the method only accepts integer and the fraction should be explicitly set.
 
 ```diff
-<?php
 - $duration = Duration::createFromSeconds(2015.208);
 + $duration = Duration::fromSeconds(2015, 208);
 ```
@@ -212,9 +206,6 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 `Period` default constructor is now private.
 
 ```diff
-<?php
-use League\Period\Period;
-
 - new Period('2021-03-21 12:23:56', '2021-03-21 13:23:56', Period::EXCLUDE_ALL);
 + Period::fromDate(
 +     new DateTime('2021-03-21 12:23:56'), 
@@ -226,7 +217,6 @@ use League\Period\Period;
 `Period::timestampInterval` now returns an int instead of a float value.
 
 ```diff
-<?php
 - $period->timestampInterval(); //returns float
 + $period->timestampInterval(); //returns int
 ```
@@ -234,7 +224,6 @@ use League\Period\Period;
 `Period::diff` now returns a `Sequence` object, before it was returning an `array`.
 
 ```diff
-<?php
 $period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 $alt = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         
@@ -249,7 +238,6 @@ in `5.x` Closure objects are used instead of the callable pseudo type with the `
 With the introduction of the `Bounds` enum, all bound related methods are moved to the Enum>
 
 ```diff
-<?php
 $period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
         
 - $period->isStartDateIncluded(); // return true
@@ -258,7 +246,7 @@ $period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmu
 
 | `4.x` method name          | `5.x` method name         |
 | -------------------------- |---------------------------|
-| `Period::withBoundaryType` | `Period::boundedWith`     |
+| `Period::withBoundaryType` | `Period::withBounds`      |
 | `Period::isStartIncluded`  | `Bounds::isLowerIncluded` |
 | `Period::isStartExcluded`  | `Bounds::isLowerIncluded` |
 | `Period::isEndIncluded`    | `Bounds::isUpperIncluded` |

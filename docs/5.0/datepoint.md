@@ -120,20 +120,21 @@ where `method` is one of the following date time span:
 
 For each a these methods a `Period` object is returned with:
 
-- the `Period::INCLUDE_START_EXCLUDE_END` boundary type by default unless changed using the `$boundaries` argument;
+- the `Bounds::INCLUDE_LOWER_EXCLUDE_UPPER` bounds type by default unless changed using the `$bounds` argument;
 - the starting datepoint represents the beginning of the current datepoint calendar interval;
 - the duration associated with the given calendar interval;
 
 #### Examples
 
 ~~~php
+use League\Period\Bounds;
 use League\Period\DatePoint;
 
 $datepoint = Datepoint::fromDateString('2018-06-18 08:35:25');
 $hour = $datepoint->hour();
 // new Period('2018-06-18 08:00:00', '2018-06-18 09:00:00');
-$month = $datepoint->month(Period::INCLUDE_ALL);
-echo $month->format('Y-m-d');
+$month = $datepoint->month(Bounds::INCLUDE_ALL);
+echo $month->toNotation('Y-m-d');
 // [2018-06-01, 2018-07-01 00:00:00];
 $month->contains($datepoint); // true
 $hour->contains($datepoint);  // true
@@ -163,7 +164,8 @@ where `method` is one of the basic relation between a datepoint and an interval.
 #### Examples
 
 ~~~php
-use League\Period\Bounds;use League\Period\DatePoint;
+use League\Period\Bounds;
+use League\Period\DatePoint;
 use League\Period\Period;
 
 $datepoint = DatePoint::fromDateString('2018-01-18 10:00:00');
