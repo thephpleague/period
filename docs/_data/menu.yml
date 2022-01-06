@@ -1,12 +1,12 @@
 version:
-  '5.0':
-    Getting Started:
-      Overview: '/5.0/'
-      Installation: '/5.0/installation/'
-      Upgrading from 3.x: '/5.0/upgrading/'
-    Charts:
-      Drawing Intervals: '/5.0/chart/'
-      Generating Labels: '/5.0/chart/labels/'
+    '5.0':
+        Getting Started:
+          Overview: '/5.0/'
+          Installation: '/5.0/installation/'
+          Upgrading from 4.x: '/5.0/upgrading/'
+        Charts:
+          Drawing Intervals: '/5.0/chart/'
+          Generating Labels: '/5.0/chart/labels/'
     '4.0':
         Getting Started:
             Overview: '/4.0/'

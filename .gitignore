@@ -3,6 +3,7 @@ build
 composer.lock
 .idea
 docs/_site
+docs/.jekyll-cache
 docs/node_modules
 .php_cs.cache
 .php-cs-fixer.cache
