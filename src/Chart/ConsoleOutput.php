@@ -112,12 +112,15 @@ final class ConsoleOutput implements Output
             return $formatter;
         }
 
-        if (0 !== stripos(PHP_OS, 'WIN')) {
-            $formatter = function (array $matches): string {
-                $str = (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]);
-
-                return chr(27).'['.strtr($str, self::POSIX_COLOR_CODES).'m';
-            };
+        if (0 !== stripos(strtolower(PHP_OS), 'WIN')) {
+            $formatter = fn (array $matches): string =>
+                chr(27)
+                .'['
+                .strtr(
+                    (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]),
+                    self::POSIX_COLOR_CODES
+                )
+                .'m';
 
             return $formatter;
         }
