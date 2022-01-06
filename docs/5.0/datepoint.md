@@ -170,7 +170,7 @@ use League\Period\Period;
 
 $datepoint = DatePoint::fromDateString('2018-01-18 10:00:00');
 $datepoint->isBorderingOnStart(
-    Period::after($datepoint, new DateInterval('PT3M'), Bounds::EXCLUDE_LOWER_INCLUDE_UPPER)
+    Period::after($datepoint, new DateInterval('PT3M'), Bounds::EXCLUDE_START_INCLUDE_END)
 ); //  true
 
 
@@ -182,7 +182,7 @@ $datepoint->isAfter(
     Period::before(
         DatePoint::fromDateString('2018-01-13 23:34:28'), 
         DateInterval::createFromDateString('3 minutes'), 
-        Bounds::INCLUDE_LOWER_EXCLUDE_UPPER
+        Bounds::INCLUDE_START_EXCLUDE_END
     )
 );  // true
 ~~~

@@ -43,10 +43,10 @@ final class PeriodBoundsTest extends TestCase
         bool $endExcluded
     ): void {
         self::assertTrue($rangeType === $interval->bounds());
-        self::assertSame($startIncluded, $interval->bounds()->isLowerIncluded());
-        self::assertSame($startExcluded, !$interval->bounds()->isLowerIncluded());
-        self::assertSame($endIncluded, $interval->bounds()->isUpperIncluded());
-        self::assertSame($endExcluded, !$interval->bounds()->isUpperIncluded());
+        self::assertSame($startIncluded, $interval->bounds()->isStartIncluded());
+        self::assertSame($startExcluded, !$interval->bounds()->isStartIncluded());
+        self::assertSame($endIncluded, $interval->bounds()->isEndIncluded());
+        self::assertSame($endExcluded, !$interval->bounds()->isEndIncluded());
     }
 
     /**
@@ -57,15 +57,15 @@ final class PeriodBoundsTest extends TestCase
         return [
             'left open right close' => [
                 'interval' => Period::fromDay(2012, 8, 12),
-                'rangeType' => Bounds::INCLUDE_LOWER_EXCLUDE_UPPER,
+                'rangeType' => Bounds::INCLUDE_START_EXCLUDE_END,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => false,
                 'endExcluded' => true,
             ],
             'left close right open' => [
-                'interval' => Period::around(new DateTime('2012-08-12'), Duration::fromDateString('1 HOUR'), Bounds::EXCLUDE_LOWER_INCLUDE_UPPER),
-                'rangeType' => Bounds::EXCLUDE_LOWER_INCLUDE_UPPER,
+                'interval' => Period::around(new DateTime('2012-08-12'), Duration::fromDateString('1 HOUR'), Bounds::EXCLUDE_START_INCLUDE_END),
+                'rangeType' => Bounds::EXCLUDE_START_INCLUDE_END,
                 'startIncluded' => false,
                 'startExcluded' => true,
                 'endIncluded' => true,
@@ -96,6 +96,6 @@ final class PeriodBoundsTest extends TestCase
         $altInterval = $interval->withBounds(Bounds::EXCLUDE_ALL);
         self::assertEquals($interval->dateInterval(), $interval->dateInterval());
         self::assertFalse($interval->bounds() === $altInterval->bounds());
-        self::assertSame($interval, $interval->withBounds(Bounds::INCLUDE_LOWER_EXCLUDE_UPPER));
+        self::assertSame($interval, $interval->withBounds(Bounds::INCLUDE_START_EXCLUDE_END));
     }
 }

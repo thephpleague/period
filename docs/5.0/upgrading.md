@@ -247,7 +247,7 @@ $period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmu
 | `4.x` method name          | `5.x` method name         |
 | -------------------------- |---------------------------|
 | `Period::withBoundaryType` | `Period::withBounds`      |
-| `Period::isStartIncluded`  | `Bounds::isLowerIncluded` |
-| `Period::isStartExcluded`  | `Bounds::isLowerIncluded` |
-| `Period::isEndIncluded`    | `Bounds::isUpperIncluded` |
-| `Period::isEndExcluded`    | `Bounds::isUpperIncluded` |
+| `Period::isStartIncluded`  | `Bounds::isStartIncluded` |
+| `Period::isStartExcluded`  | `Bounds::isStartIncluded` |
+| `Period::isEndIncluded`    | `Bounds::isEndIncluded`   |
+| `Period::isEndExcluded`    | `Bounds::isEndIncluded`   |

@@ -13,74 +13,82 @@ namespace League\Period;
 
 enum Bounds: string
 {
-    case INCLUDE_LOWER_EXCLUDE_UPPER = '[)';
+    case INCLUDE_START_EXCLUDE_END = '[)';
     case INCLUDE_ALL = '[]';
-    case EXCLUDE_LOWER_INCLUDE_UPPER = '(]';
+    case EXCLUDE_START_INCLUDE_END = '(]';
     case EXCLUDE_ALL = '()';
 
-    public function isLowerIncluded(): bool
+    public function isStartIncluded(): bool
     {
         return '[' === $this->value[0];
     }
 
-    public function equalsLower(self $other): bool
-    {
-        return $other->value[0] === $this->value[0];
-    }
-
-    public function includeLower(): self
-    {
-        return match ($this) {
-            self::EXCLUDE_ALL => self::INCLUDE_LOWER_EXCLUDE_UPPER,
-            self::EXCLUDE_LOWER_INCLUDE_UPPER => self::INCLUDE_ALL,
-            default => $this,
-        };
-    }
-
-    public function excludeLower(): self
-    {
-        return match ($this) {
-            self::INCLUDE_ALL => self::EXCLUDE_LOWER_INCLUDE_UPPER,
-            self::INCLUDE_LOWER_EXCLUDE_UPPER => self::EXCLUDE_ALL,
-            default => $this,
-        };
-    }
-
-    public function mergeLower(self $other): self
-    {
-        return self::from($other->value[0].$this->value[1]);
-    }
-
-    public function isUpperIncluded(): bool
+    public function isEndIncluded(): bool
     {
         return ']' === $this->value[1];
     }
 
-    public function equalsUpper(self $other): bool
+    public function equalsStart(self $other): bool
+    {
+        return $other->value[0] === $this->value[0];
+    }
+
+    public function equalsEnd(self $other): bool
     {
         return $other->value[1] === $this->value[1];
     }
 
-    public function includeUpper(): self
+    public function includeStart(): self
     {
         return match ($this) {
-            self::INCLUDE_LOWER_EXCLUDE_UPPER => self::INCLUDE_ALL,
-            self::EXCLUDE_ALL => self::EXCLUDE_LOWER_INCLUDE_UPPER,
+            self::EXCLUDE_ALL => self::INCLUDE_START_EXCLUDE_END,
+            self::EXCLUDE_START_INCLUDE_END => self::INCLUDE_ALL,
             default => $this,
         };
     }
 
-    public function excludeUpper(): self
+    public function includeEnd(): self
     {
         return match ($this) {
-            self::INCLUDE_ALL => self::INCLUDE_LOWER_EXCLUDE_UPPER,
-            self::EXCLUDE_LOWER_INCLUDE_UPPER => self::EXCLUDE_ALL,
+            self::INCLUDE_START_EXCLUDE_END => self::INCLUDE_ALL,
+            self::EXCLUDE_ALL => self::EXCLUDE_START_INCLUDE_END,
             default => $this,
         };
     }
 
-    public function mergeUpper(self $other): self
+    public function excludeStart(): self
     {
+        return match ($this) {
+            self::INCLUDE_ALL => self::EXCLUDE_START_INCLUDE_END,
+            self::INCLUDE_START_EXCLUDE_END => self::EXCLUDE_ALL,
+            default => $this,
+        };
+    }
+
+    public function excludeEnd(): self
+    {
+        return match ($this) {
+            self::INCLUDE_ALL => self::INCLUDE_START_EXCLUDE_END,
+            self::EXCLUDE_START_INCLUDE_END => self::EXCLUDE_ALL,
+            default => $this,
+        };
+    }
+
+    public function replaceStartWith(self $other): self
+    {
+        if ($other->value[0] === $this->value[0]) {
+            return $this;
+        }
+
+        return self::from($other->value[0].$this->value[1]);
+    }
+
+    public function replaceEndWith(self $other): self
+    {
+        if ($other->value[1] === $this->value[1]) {
+            return $this;
+        }
+
         return self::from($this->value[0].$other->value[1]);
     }
 }
