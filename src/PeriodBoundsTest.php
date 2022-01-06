@@ -36,52 +36,52 @@ final class PeriodBoundsTest extends TestCase
      */
     public function testGetRangeType(
         Period $interval,
-        string $rangeType,
+        Bounds $rangeType,
         bool $startIncluded,
         bool $startExcluded,
         bool $endIncluded,
         bool $endExcluded
     ): void {
-        self::assertSame($rangeType, $interval->bounds());
-        self::assertSame($startIncluded, $interval->isStartDateIncluded());
-        self::assertSame($startExcluded, !$interval->isStartDateIncluded());
-        self::assertSame($endIncluded, $interval->isEndDateIncluded());
-        self::assertSame($endExcluded, !$interval->isEndDateIncluded());
+        self::assertTrue($rangeType === $interval->bounds());
+        self::assertSame($startIncluded, $interval->bounds()->isLowerIncluded());
+        self::assertSame($startExcluded, !$interval->bounds()->isLowerIncluded());
+        self::assertSame($endIncluded, $interval->bounds()->isUpperIncluded());
+        self::assertSame($endExcluded, !$interval->bounds()->isUpperIncluded());
     }
 
     /**
-     * @return array<string, array{interval:Period, rangeType:string, startIncluded:bool, startExcluded:bool, endIncluded:bool, endExcluded:bool}>
+     * @return array<string, array{interval:Period, rangeType:Bounds, startIncluded:bool, startExcluded:bool, endIncluded:bool, endExcluded:bool}>
      */
     public function providerGetRangType(): array
     {
         return [
             'left open right close' => [
                 'interval' => Period::fromDay(2012, 8, 12),
-                'rangeType' => Period::INCLUDE_START_EXCLUDE_END,
+                'rangeType' => Bounds::INCLUDE_LOWER_EXCLUDE_UPPER,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => false,
                 'endExcluded' => true,
             ],
             'left close right open' => [
-                'interval' => Period::around(new DateTime('2012-08-12'), Duration::fromDateString('1 HOUR'), Period::EXCLUDE_START_INCLUDE_END),
-                'rangeType' => Period::EXCLUDE_START_INCLUDE_END,
+                'interval' => Period::around(new DateTime('2012-08-12'), Duration::fromDateString('1 HOUR'), Bounds::EXCLUDE_LOWER_INCLUDE_UPPER),
+                'rangeType' => Bounds::EXCLUDE_LOWER_INCLUDE_UPPER,
                 'startIncluded' => false,
                 'startExcluded' => true,
                 'endIncluded' => true,
                 'endExcluded' => false,
             ],
             'left open right open' => [
-                'interval' => Period::after(new DateTime('2012-08-12'), Duration::fromDateString('1 DAY'), Period::INCLUDE_ALL),
-                'rangeType' => Period::INCLUDE_ALL,
+                'interval' => Period::after(new DateTime('2012-08-12'), Duration::fromDateString('1 DAY'), Bounds::INCLUDE_ALL),
+                'rangeType' => Bounds::INCLUDE_ALL,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => true,
                 'endExcluded' => false,
             ],
             'left close right close' => [
-                'interval' => Period::before(new DateTime('2012-08-12'), Duration::fromDateString('1 WEEK'), Period::EXCLUDE_ALL),
-                'rangeType' => Period::EXCLUDE_ALL,
+                'interval' => Period::before(new DateTime('2012-08-12'), Duration::fromDateString('1 WEEK'), Bounds::EXCLUDE_ALL),
+                'rangeType' => Bounds::EXCLUDE_ALL,
                 'startIncluded' => false,
                 'startExcluded' => true,
                 'endIncluded' => false,
@@ -93,16 +93,9 @@ final class PeriodBoundsTest extends TestCase
     public function testWithBoundaryType(): void
     {
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $altInterval = $interval->boundedWith(Period::EXCLUDE_ALL);
+        $altInterval = $interval->boundedWith(Bounds::EXCLUDE_ALL);
         self::assertEquals($interval->dateInterval(), $interval->dateInterval());
-        self::assertNotEquals($interval->bounds(), $altInterval->bounds());
-        self::assertSame($interval, $interval->boundedWith(Period::INCLUDE_START_EXCLUDE_END));
-    }
-
-    public function testWithBoundaryTypeFails(): void
-    {
-        $this->expectException(DateRangeInvalid::class);
-        $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
-        $interval->boundedWith('foobar');
+        self::assertFalse($interval->bounds() === $altInterval->bounds());
+        self::assertSame($interval, $interval->boundedWith(Bounds::INCLUDE_LOWER_EXCLUDE_UPPER));
     }
 }

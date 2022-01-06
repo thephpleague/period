@@ -9,10 +9,11 @@ All notable changes to `Period` will be documented in this file
 - `DateRangeError` used as the error interface marker.
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `InvalidTimeRange` exception for anything regarding creating an object.
-- `Duration::fromSeonds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
+- `Duration::fromSeconds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
 - `Period::fromNotation` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
 - `Period::snapTo*` methods family to ease period expansion.
+- `Bounds` Enum.
 
 ### Fixed
 
@@ -42,10 +43,10 @@ All notable changes to `Period` will be documented in this file
 - `Period::getTimestampInterval` replaced by `Period::timestampInterval`
 - `Period::getBoundaryType` replaced by `Period::bounds`
 - `Period::withBoundaryType` replaced by `Period::boundedBy`
-- `Period::isStartIncluded` replaced by `Period::isStartDateIncluded`
-- `Period::isStartExcluded` with no replacement use `Period::isStartDateIncluded` instead
-- `Period::isEndIncluded` replaced by `Period::isEndDateIncluded`
-- `Period::isEndExcluded` with no replacement use `Period::isEndDateIncluded` instead
+- `Period::isStartIncluded` replaced by `Bounds::isStartIncluded`
+- `Period::isStartExcluded` with no replacement use `Bounds::isStartIncluded` instead
+- `Period::isEndIncluded` replaced by `Bounds::isEndIncluded`
+- `Period::isEndExcluded` with no replacement use `Bounds::isEndIncluded` instead
 - `Period::getDatePeriod` replaced by `Period::toDatePeriod`
 - `Period::getDatePeriodBackwards` replaced by `Period::toDatePeriodBackwards`
 - `Period::__string` replaced by `Period::toIso8601`

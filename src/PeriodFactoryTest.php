@@ -36,12 +36,6 @@ final class PeriodFactoryTest extends TestCase
         date_default_timezone_set($this->timezone);
     }
 
-    public function testInstantiationFailsIfTheboundsDeclararionAreUnknown(): void
-    {
-        $this->expectException(DateRangeInvalid::class);
-        Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'), 'foobar');
-    }
-
     public function testInstantiationFromDatePointInstance(): void
     {
         self::assertEquals(
@@ -392,7 +386,7 @@ final class PeriodFactoryTest extends TestCase
     public function testCreateNewInstanceFromIsoNotation(
         string $inputFormat,
         string $notation,
-        string $bounds,
+        Bounds $bounds,
         string $outputFormat,
         string $expected
     ): void {
@@ -403,7 +397,7 @@ final class PeriodFactoryTest extends TestCase
     }
 
     /**
-     * @return array<string, array{inputFormat:string, notation:string, bounds:string, outputFormat:string, expected:string}>
+     * @return array<string, array{inputFormat:string, notation:string, bounds:Bounds, outputFormat:string, expected:string}>
      */
     public function providesValidIso8601Notation(): array
     {
@@ -411,14 +405,14 @@ final class PeriodFactoryTest extends TestCase
             'same input/output format' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/2021-03-26',
-                'bounds' => '[]',
+                'bounds' => Bounds::INCLUDE_ALL,
                 'outputFormat'=> 'Y-m-d',
                 'expected' => '2021-03-25/2021-03-26',
             ],
             'different input/output format' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/2021-03-26',
-                'bounds' => '()',
+                'bounds' => Bounds::EXCLUDE_ALL,
                 'outputFormat'=> 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
@@ -428,7 +422,7 @@ final class PeriodFactoryTest extends TestCase
     /**
      * @dataProvider provideInvalidIsoNotation
      */
-    public function testFailsToCreateNewInstanceFromIsoNotation(string $notation, string $format, string $bounds): void
+    public function testFailsToCreateNewInstanceFromIsoNotation(string $notation, string $format, Bounds $bounds): void
     {
         $this->expectException(DateRangeInvalid::class);
 
@@ -436,17 +430,16 @@ final class PeriodFactoryTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array<string>>
+     * @return iterable<string, array{0:string, 1:string, 2:Bounds}>
      */
     public function provideInvalidIsoNotation(): iterable
     {
         return [
-            'empty string' => ['', 'Y-m-d', Period::INCLUDE_ALL],
-            'missing separator' => ['2021-01-02 2021-01-03', 'Y-m-d', Period::INCLUDE_ALL],
-            'invalid bounds' => ['2021-01-02/2021-01-03', 'Y-m-d', 'foobar'],
-            'too many separator' => ['2021-01-02/2021-/01-03', 'Y-m-d', Period::INCLUDE_ALL],
-            'missing dates' => ['2021-01-02/', 'Y-m-d', Period::INCLUDE_ALL],
-            'wrong format' => ['2021-01-02/2021-01-03', 'Ymd', Period::INCLUDE_ALL],
+            'empty string' => ['', 'Y-m-d', Bounds::INCLUDE_ALL],
+            'missing separator' => ['2021-01-02 2021-01-03', 'Y-m-d', Bounds::INCLUDE_ALL],
+            'too many separator' => ['2021-01-02/2021-/01-03', 'Y-m-d', Bounds::INCLUDE_ALL],
+            'missing dates' => ['2021-01-02/', 'Y-m-d', Bounds::INCLUDE_ALL],
+            'wrong format' => ['2021-01-02/2021-01-03', 'Ymd', Bounds::INCLUDE_ALL],
         ];
     }
 }

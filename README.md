@@ -26,7 +26,7 @@ Full documentation can be found at [period.thephpleague.com](http://period.theph
 System Requirements
 -------
 
-You need **PHP >= 8.0.0** but the latest stable version of PHP is recommended.
+You need **PHP >= 8.1.0** but the latest stable version of PHP is recommended.
 
 Install
 -------

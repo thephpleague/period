@@ -93,10 +93,6 @@ Most notably:
 | `Period::getTimestampInterval`        | `Period::timestampInterval`        |
 | `Period::getBoundaryType`             | `Period::bounds`                   |
 | `Period::withBoundaryType`            | `Period::boundedWith`              |
-| `Period::isStartIncluded`             | `Period::isStartDateIncluded`      |
-| `Period::isStartExcluded`             | `Period::isStartDateExcluded`      |
-| `Period::isEndIncluded`               | `Period::isEndDateIncluded`        |
-| `Period::isEndExcluded`               | `Period::isEndDateExcluded`        |
 | `Period::getDatePeriod`               | `Period::toDatePeriod`             |
 | `Period::getDatePeriodBackwards`      | `Period::toDatePeriodBackwards`    |
 | `Period::__toString`                  | `Period::toIso8601`                |
@@ -122,8 +118,8 @@ Most notably:
 
 `Period::jsonSerialize` representation adds two new boolean properties
 
-- `startDateExcluded`
-- `endDateExcluded`
+- `startDateIncluded`
+- `endDateIncluded`
 
 to expose the boundaries properties of the `Period` object.
 
@@ -135,8 +131,8 @@ echo json_encode($period), PHP_EOL;
 // {
 //     "startDate": "2015-04-01T00:00:00.000000Z",
 //     "endDate": "2015-05-01T00:00:00.000000Z",
-+ //     "startDateExcluded": false,
-+ //     "endDateExcluded": true
++ //     "startDateIncluded": true,
++ //     "endDateIncluded": false
 // }
 ```
 
@@ -166,7 +162,7 @@ use League\Period\Period;
 + Period::after(
 +    new DateTime('2021-05-23'), 
 +    DatePoint::fromDateString('2021-05-24'), 
-+    Period::INCLUDE_ALL
++    Bounds::INCLUDE_ALL
 + );
 ```
 
@@ -196,9 +192,12 @@ or one of the `Duration` named constructor.
 + Period::after(
 +    new DateTime('2021-05-23'), 
 +    DateInterval::createFromDateString('1 HOUR'), 
-+    Period::INCLUDE_ALL
++    Bounds::INCLUDE_ALL
 + );
 ```
+
+In `4.x` a method expecting or returning bounds information expected a string, in `5.x`
+an `Bounds` enum is expected instead as shown in all previous examples.
 
 ## Changes in method signatures
 
@@ -220,7 +219,7 @@ use League\Period\Period;
 + Period::fromDate(
 +     new DateTime('2021-03-21 12:23:56'), 
 +     new DateTimeImmutable('2021-03-21 13:23:56'), 
-+     Period::EXCLUDE_ALL
++     Bounds::EXCLUDE_ALL
 + );
 ```
 
@@ -244,3 +243,23 @@ $alt = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutab
 ```
 
 in `5.x` Closure objects are used instead of the callable pseudo type with the `Sequence` methods.
+
+## Changes in bounds related methods
+
+With the introduction of the `Bounds` enum, all bound related methods are moved to the Enum>
+
+```diff
+<?php
+$period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
+        
+- $period->isStartDateIncluded(); // return true
++ $period->bounds()->isLowerIncluded(); //return true
+```
+
+| `4.x` method name          | `5.x` method name         |
+| -------------------------- |---------------------------|
+| `Period::withBoundaryType` | `Period::boundedWith`     |
+| `Period::isStartIncluded`  | `Bound::isLowerIncluded`  |
+| `Period::isStartExcluded`  | `Bound::isLowerIncluded`  |
+| `Period::isEndIncluded`    | `Bound::isUpperIncluded`  |
+| `Period::isEndExcluded`    | `Bound::isUpperIncluded`  |

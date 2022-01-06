@@ -160,7 +160,7 @@ Here's a complex example which highlights most of the features introduces along 
 ~~~php
 <?php
 
-use League\Period\Chart\AffixLabel;
+use League\Period\Bounds;use League\Period\Chart\AffixLabel;
 use League\Period\Chart\ConsoleOutput;
 use League\Period\Chart\Dataset;
 use League\Period\Chart\DecimalNumber;
@@ -192,10 +192,10 @@ $labelGenerator = new AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new ReverseLabel($labelGenerator);
 
 $sequence = new Sequence(
-    Datepoint::fromDateString('2018-11-29')->year(Period::EXCLUDE_START_INCLUDE_END),
+    Datepoint::fromDateString('2018-11-29')->year(Bounds::EXCLUDE_LOWER_INCLUDE_UPPER),
     Datepoint::fromDateString('2018-05-29')->month()->expand('3 MONTH'),
-    Datepoint::fromDateString('2017-01-13')->quarter(Period::EXCLUDE_ALL),
-    Period::around(new DateTime('2016-06-01'), DateInterval::createFromDateString('3 MONTHS'), Period::INCLUDE_ALL)
+    Datepoint::fromDateString('2017-01-13')->quarter(Bounds::EXCLUDE_ALL),
+    Period::around(new DateTime('2016-06-01'), DateInterval::createFromDateString('3 MONTHS'), Bounds::INCLUDE_ALL)
 );
 $dataset = Dataset::fromItems($sequence, $labelGenerator);
 $dataset->append($labelGenerator->format('gaps'), $sequence->gaps());

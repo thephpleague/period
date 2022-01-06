@@ -11,12 +11,9 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        php: ['8.0']
+        php: ['8.1']
         stability: [prefer-lowest, prefer-stable]
-        include:
-          -   php: '8.1'
-              flags: "--ignore-platform-req=php"
-              stability: prefer-stable
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,25 +25,35 @@ jobs:
           coverage: xdebug
           tools: composer:v2
 
+      - name: Check PHP Version
+        run: php -v
+
+      - name: Validate composer files
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress ${{ matrix.flags }}
 
       - name: Run Unit tests with coverage
         run: composer phpunit
-        if: ${{ matrix.php == '8.0' }}
-
-      - name: Run Unit tests without coverage
-        run: vendor/bin/phpunit --no-coverage -vvv
-        if: ${{ matrix.php == '8.1' }}
 
       - name: Run PHPStan static analysis
         run: composer phpstan
-        if: ${{ matrix.php == '8.0' }}
+        if: ${{ matrix.php == '8.1' }}
 
       - name: Run Psalm static analysis
         run: composer psalm
-        if: ${{ matrix.php == '8.0' }}
+        if: ${{ matrix.php == '8.1' }}
 
       - name: Run coding style check
         run: composer phpcs
-        if: ${{ matrix.php == '8.0' }}
+        if: ${{ matrix.php == '8.1' }}

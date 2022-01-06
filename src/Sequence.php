@@ -79,7 +79,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         $sequence = new self();
         $interval = null;
-        foreach ($this->sorted(Closure::fromCallable([$this, 'sortByStartDate'])) as $period) {
+        foreach ($this->sorted($this->sortByStartDate(...)) as $period) {
             if (null === $interval) {
                 $interval = $period;
                 continue;
@@ -327,7 +327,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * if no offset is found null is returned otherwise the return type is int
      */
-    private function filterOffset(int $offset): ?int
+    private function filterOffset(int $offset): int|null
     {
         $max = count($this->periods);
 
@@ -626,7 +626,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function reduce(Closure $func, mixed $carry = null): mixed
     {
         foreach ($this->periods as $offset => $interval) {
-            
+            /** @var mixed $carry returned value */
             $carry = $func($carry, $interval, $offset);
         }
 

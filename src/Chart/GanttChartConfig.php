@@ -32,13 +32,11 @@ final class GanttChartConfig
     private const REGEXP_UNICODE = '/\\\\u(?<unicode>[0-9A-F]{1,4})/i';
 
     public const ALIGN_LEFT = STR_PAD_RIGHT;
-
     public const ALIGN_RIGHT = STR_PAD_LEFT;
-
     public const ALIGN_CENTER = STR_PAD_BOTH;
 
     private Output $output;
-    /** @var string[] */
+    /** @var array<string> */
     private array $colors = [Output::COLOR_DEFAULT];
     private int $width = 60;
     private string $endExcludedChar = ')';
@@ -56,17 +54,15 @@ final class GanttChartConfig
      *
      * @param ?Output $output
      */
-    public function __construct(?Output $output = null)
+    public function __construct(Output|null $output = null)
     {
         $this->output = $output ?? new ConsoleOutput(STDOUT);
     }
 
     /**
      * Create a Cli Renderer to Display the millipede in Rainbow.
-     *
-     * @param ?Output $output
      */
-    public static function fromRandom(?Output $output = null): self
+    public static function fromRandom(Output|null $output = null): self
     {
         $index = array_rand(Output::COLORS);
 
@@ -75,10 +71,8 @@ final class GanttChartConfig
 
     /**
      * Create a Cli Renderer to Display the millipede in Rainbow.
-     *
-     * @param ?Output $output
      */
-    public static function fromRainbow(?Output $output = null): self
+    public static function fromRainbow(Output|null $output = null): self
     {
         return (new self($output))->withColors(...Output::COLORS);
     }
