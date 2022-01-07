@@ -7,6 +7,7 @@ version:
         Building Blocks:
           Datepoint: '/5.0/datepoint/'
           Duration: '/5.0/duration/'
+          Bounds: '/5.0/bounds/'
         Charts:
           Drawing Intervals: '/5.0/chart/'
           Generating Labels: '/5.0/chart/labels/'
