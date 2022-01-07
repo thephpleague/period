@@ -8,7 +8,7 @@ All notable changes to `Period` will be documented in this file
 
 - `DateRangeError` used as the error interface marker.
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
-- `InvalidTimeRange` exception for anything regarding creating an object.
+- `DateRangeInvalid` exception for anything regarding creating an object.
 - `Duration::fromSeconds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
 - `Period::fromNotation` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
@@ -42,13 +42,13 @@ All notable changes to `Period` will be documented in this file
 - `Period::getDateInterval` replaced by `Period::dateInterval`
 - `Period::getTimestampInterval` replaced by `Period::timestampInterval`
 - `Period::getBoundaryType` replaced by `Period::bounds`
-- `Period::withBoundaryType` replaced by `Period::boundedBy`
+- `Period::withBoundaryType` replaced by `Period::withBounds`
 - `Period::isStartIncluded` replaced by `Bounds::isStartIncluded`
 - `Period::isStartExcluded` with no replacement use `Bounds::isStartIncluded` instead
 - `Period::isEndIncluded` replaced by `Bounds::isEndIncluded`
 - `Period::isEndExcluded` with no replacement use `Bounds::isEndIncluded` instead
-- `Period::getDatePeriod` replaced by `Period::toDatePeriod`
-- `Period::getDatePeriodBackwards` replaced by `Period::toDatePeriodBackwards`
+- `Period::getDatePeriod` replaced by `Period::dateRangeForward`
+- `Period::getDatePeriodBackwards` replaced by `Period::dateRangeBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
 - `Period::format` replaced by `Period::toNotation`
 - `Period::substract` use `Period::subtract` instead

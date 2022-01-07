@@ -107,10 +107,10 @@ $period->bounds();            // returns Bounds::INCLUDE_START_EXCLUDE_END
 
 ## Iteration over a Period
 
-### Period::datePeriod
+### Period::dateRangeForward
 
 ~~~php
-public Period::datePeriod(Period|Duration|DateInterval|string $duration, int $option = 0): DatePeriod
+public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
 ~~~
 
 Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
@@ -119,7 +119,6 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 
 #### Parameters
 
-- `$duration` can be a `Period`, a `Duration` or a `DateInterval` object
 - `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the start date from the set of recurring dates within the period.
 
 #### Examples
@@ -128,7 +127,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 use League\Period\Duration;
 use League\Period\Period;
 
-foreach (Period::fromYear(2012)->datePeriod('1 MONTH') as $datetime) {
+foreach (Period::fromYear(2012)->dateRangeForward('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -142,8 +141,8 @@ Using the `$option` parameter
 use League\Period\Duration;
 use League\Period\Period;
 
-$datePeriod = Period::fromYear('2012-06-05')->datePeriod('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
-foreach ($datePeriod as $datetime) {
+$dateRange = Period::fromYear(2012)->dateRangeForward('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 11 times
@@ -151,23 +150,22 @@ foreach ($datePeriod as $datetime) {
 //the last date is 2012-12-01
 ~~~
 
-### Period::datePeriodBackwards
+### Period::dateRangeBackwards
 
 ~~~php
-public Period::datePeriodBackwards(Period|Duration|DateInterval|string $duration, int $option = 0): Generator<DateTimeImmutable>
+public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator<DateTimeImmutable>
 ~~~
 
 Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.
 
 #### Parameters
 
-- `$duration` is a interval
 - `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the ending datepoint from the set of recurring dates within the interval.
 
 #### Examples
 
 ~~~php
-foreach (Period::fromYear(2012)->datePeriodBackwards(new DateInterval('P1M')) as $datetime) {
+foreach (Period::fromYear(2012)->dateRangeBackwards(new DateInterval('P1M')) as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -179,8 +177,8 @@ Using the `$option` parameter
 
 ~~~php
 $interval = Period::fromYear('2012-06-05');
-$datePeriod = $interval->datePeriodBackwards(new DateInterval('P1M'), DatePeriod::EXCLUDE_START_DATE);
-foreach ($datePeriod as $datetime) {
+$dateRange = $interval->dateRangeBackwards(new DateInterval('P1M'), DatePeriod::EXCLUDE_START_DATE);
+foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 11 times

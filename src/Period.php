@@ -96,7 +96,7 @@ final class Period implements JsonSerializable
     /**
      * @throws DateRangeInvalid If format can not be resolved
      */
-    public static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    private static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
         if (false === ($start = DateTimeImmutable::createFromFormat($format, $startDate))) {
             throw DateRangeInvalid::dueToInvalidDateFormat($format, $startDate);
@@ -110,8 +110,8 @@ final class Period implements JsonSerializable
     }
 
     public static function fromDate(
-        DatePoint|DateTimeInterface $startDate,
-        DatePoint|DateTimeInterface $endDate,
+        DatePoint|DateTimeInterface|string $startDate,
+        DatePoint|DateTimeInterface|string $endDate,
         Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
     ): self {
         return new self(self::filterDatePoint($startDate), self::filterDatePoint($endDate), $bounds);
@@ -641,31 +641,32 @@ final class Period implements JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance.
      *
-     * @see http://php.net/manual/en/dateperiod.construct.php
+     * The returned DatePeriod object contains only DateTimeImmutable objects.
      *
+     * @see http://php.net/manual/en/dateperiod.construct.php
      */
-    public function datePeriod(Period|Duration|DateInterval|string $duration, int $option = 0): DatePeriod
+    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
     {
-        return new DatePeriod($this->startDate, self::filterDuration($duration), $this->endDate, $option);
+        return new DatePeriod($this->startDate, self::filterDuration($timeDelta), $this->endDate, $option);
     }
 
     /**
      * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the instance backwards starting from
-     * the instance ending datepoint.
+     * recurring at regular intervals, over the instance backwards starting from the instance ending.
      *
+     * @return Generator<DateTimeImmutable>
      */
-    public function datePeriodBackwards(Period|Duration|DateInterval|string $duration, int $option = 0): iterable
+    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator
     {
-        $duration = self::filterDuration($duration);
+        $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
         if (DatePeriod::EXCLUDE_START_DATE === ($option & DatePeriod::EXCLUDE_START_DATE)) {
-            $date = $this->endDate->sub($duration);
+            $date = $this->endDate->sub($timeDelta);
         }
 
         while ($date > $this->startDate) {
             yield $date;
-            $date = $date->sub($duration);
+            $date = $date->sub($timeDelta);
         }
     }
 
@@ -687,7 +688,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->datePeriod($duration) as $startDate) {
+        foreach ($this->dateRangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;

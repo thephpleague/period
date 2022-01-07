@@ -34,7 +34,7 @@ Learn more about how this all works in the [basic usage](/5.0/properties/).
 A simple example on how to get all the days from a selected month.
 
 ~~~php
-foreach (Period::fromMonth(2014, 10)->toDatePeriod(new DateInterval('P1D')) as $day) {
+foreach (Period::fromMonth(2014, 10)->dateRangeForward(new DateInterval('P1D')) as $day) {
     $day->format('Y-m-d');
 }
 ~~~

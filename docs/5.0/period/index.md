@@ -48,10 +48,10 @@ $interval = Period::fromDatePeriod($dateRange);
 //throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~
 
-## Using date objects
+## Using Date objects
 
 ~~~php
-public static Period::fromDate(DatePoint|DateTimeInterface $startDate, DatePoint|DateTimeInterface $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromDate(DatePoint|DateTimeInterface|string $startDate, DatePoint|DateTimeInterface|string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
 ~~~
 
 <p class="message-warning"><code>Period::fromDate</code> does not accept <code>string</code>. To use date as strings please refer to <code>Period::fromDateString</code></p>
@@ -117,13 +117,12 @@ $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 ## Using predefined format
 
 ~~~php
-public static Period::fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
 public static Period::fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
 public static Period::fromNotation(string $format, string $notation): Period
 ~~~
 
 - The `$format` string describes how the date are presented should be a valid string accepted by `DateTimeImmutable::createFromFormat` first argument.
-- The `$notation` string when present contains the date range as expected by each format.
+- The `$notation` string contains the date range as expected by each format.
 
 For better understanding:
 
@@ -131,15 +130,6 @@ For better understanding:
 - the end datepoint is represented as `{endDate}`
 - the lower bound is represented as `{lowerBound}`
 - the upper bound is represented as `{upperBound}`
-
-### Using date strings
-
-for `Period::fromDateString` each datepoint string should be directly parsable by `DateTimeImmutable::createFromFormat`;
-
-~~~php
-$day = Period::fromDateString('!Y-m-d', '2012-01-03', '2012-02-03');
-$day->toNotation('Y-m-d H:i:s'); //return [2012-01-03 00:00:00, 2012-02-03 00:00:00)
-~~~
 
 ### Using ISO 8601 notation
 
