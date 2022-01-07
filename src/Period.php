@@ -96,7 +96,7 @@ final class Period implements JsonSerializable
     /**
      * @throws DateRangeInvalid If format can not be resolved
      */
-    public static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds): self
+    public static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
         if (false === ($start = DateTimeImmutable::createFromFormat($format, $startDate))) {
             throw DateRangeInvalid::dueToInvalidDateFormat($format, $startDate);

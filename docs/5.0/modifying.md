@@ -229,3 +229,33 @@ $merge_interval = $interval->merge($alt, $other);
 // $merge_interval->startDate() equals $period->startDate();
 // $merge_interval->endDate( equals $altPeriod->endDate();
 ~~~
+
+## Snapping the Period object
+
+The following methods returns a new instance which snaps the start datepoint and ending datepoint to the nearest time unit interval.
+
+~~~php
+public Period::snapToSecond(): Period
+public Period::snapToMinute(): Period
+public Period::snapToHour(): Period
+public Period::snapToDay(): Period
+public Period::snapToIsoWeek(): Period
+public Period::snapToMonth(): Period
+public Period::snapToQuarter(): Period
+public Period::snapToSemester(): Period
+public Period::snapToYear(): Period
+public Period::snapToIsoYear(): Period
+~~~
+
+Here's an example to understand the modification
+
+~~~php
+$period = Period::fromDateString('Y-m-d', '2022-01-01', '2022-01-03');
+echo $period->toNotation('c');                // returns [2022-01-01T19:21:42+00:00, 2022-01-03T19:21:42+00:00)
+echo $period->snapToMonth()->toNotation('c'); // returns [2022-01-01T00:00:00+00:00, 2022-02-01T00:00:00+00:00)
+// where 2022-01-01T00:00:00+00:00 is the first day of the interval corresponding to the month containing 2022-01-01T19:21:42+00:00
+// where 2022-02-01T00:00:00+00:00 is the last day of the interval corresponding to the month containing 2022-02-01T19:05:13+00:00
+~~~
+
+The same logic applies to all the other `snapTo*` methods.
+
