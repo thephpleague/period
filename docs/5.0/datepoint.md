@@ -19,7 +19,7 @@ It provides:
 ### DatePoint::fromDate
 
 ~~~php
-public DatePoint::fromDate(\DateTimeInterface $date): self;
+public DatePoint::fromDate(DateTimeInterface $date): self;
 ~~~
 
 Returns a `DatePoint` from a `DateTimeInterface` implementing object
@@ -169,12 +169,12 @@ use League\Period\DatePoint;
 use League\Period\Period;
 
 $datepoint = DatePoint::fromDateString('2018-01-18 10:00:00');
-$datepoint->isBorderingOnStart(
+$datepoint->bordersOnStart(
     Period::after($datepoint, new DateInterval('PT3M'), Bounds::EXCLUDE_START_INCLUDE_END)
 ); //  true
 
 
-$datepoint->isBorderingOnStart(
+$datepoint->bordersOnStart(
     Period::after($datepoint, new DateInterval('PT3M'), Bounds::INCLUDE_ALL)
 ); // false
 

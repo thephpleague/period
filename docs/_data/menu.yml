@@ -4,6 +4,9 @@ version:
           Overview: '/5.0/'
           Installation: '/5.0/installation/'
           Upgrading from 4.x: '/5.0/upgrading/'
+        Building Blocks:
+          Datepoint: '/5.0/datepoint/'
+          Duration: '/5.0/duration/'
         Charts:
           Drawing Intervals: '/5.0/chart/'
           Generating Labels: '/5.0/chart/labels/'
