@@ -5,6 +5,19 @@ title: Accessing Period object properties
 
 # Accessing properties
 
+Whenever a duration is expected the following types are supported:
+
+- `DateInterval`
+- `Period`
+- `Duration`
+- a `string` parsable by `DateInterval::createFromDateString`
+
+Unless explicitly restricted, whenever a datepoint is expected the following types are supported:
+
+- `DateTimeInterface`
+- `DatePoint`
+- a `string` parsable by `DateTimeImmutable::__construct`
+
 ## Period representations
 
 ### String representation
@@ -93,19 +106,6 @@ $period->bounds();            // returns Bounds::INCLUDE_START_EXCLUDE_END
 <p class="message-notice">More information can be extracted from the <code>Bounds</code> enum, please refer to its documentation page.</p>
 
 ## Iteration over a Period
-
-Whenever a duration is expected the following types are supported:
-
-- `DateInterval`
-- `Period`
-- `Duration`
-- a `string` parsable by `DateInterval::createFromDateString`
-
-Unless explicitly restricted, whenever a datepoint is expected the following types are supported:
-
-- `DateTimeInterface`
-- `DatePoint`
-- a `string` parsable by `DateTimeImmutable::__construct`
 
 ### Period::datePeriod
 
