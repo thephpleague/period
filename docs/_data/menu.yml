@@ -9,10 +9,14 @@ version:
           Duration: '/5.0/duration/'
           Bounds: '/5.0/bounds/'
         Period:
-          Instantiation: '/5.0/instantiation/'
-          Properties: '/5.0/properties/'
-          Comparing: '/5.0/comparing/'
-          Modifying: '/5.0/modifying/'
+          Instantiation: '/5.0/period/'
+          Properties: '/5.0/period/properties/'
+          Comparing: '/5.0/period/comparing/'
+          Modifying: '/5.0/period/modifying/'
+        Sequence:
+          Instantiation: '/5.0/sequence/'
+          Period Container: '/5.0/sequence/container/'
+          Period Collection: '/5.0/sequence/collection/'
         Charts:
           Drawing Intervals: '/5.0/chart/'
           Generating Labels: '/5.0/chart/labels/'

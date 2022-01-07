@@ -169,7 +169,7 @@ final class Period implements JsonSerializable
      * Creates new instance from a ending datepoint and a duration.
      */
     public static function before(
-        DatePoint|DateTimeInterface $endDate,
+        DatePoint|DateTimeInterface|string $endDate,
         Period|Duration|DateInterval|string $duration,
         Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
     ): self {

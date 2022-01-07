@@ -267,7 +267,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the array representation of the sequence.
      *
-     * @return Period[]
+     * @return array<Period>
      */
     public function toArray(): array
     {
