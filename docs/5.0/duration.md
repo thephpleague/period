@@ -75,16 +75,14 @@ All these methods converts their inputs into a `Duration` object or throws an ex
 
 ~~~php
 use League\Period\Duration;
-use League\Period\Period;
 
 Duration::fromDateString('1 DAY');                    // is equivalent to new Duration(DateInterval::createFromDateString('1 DAY'))
-Duration::fromSeconds(2018);                          // is equivalent to new Duration(new DateInterval('PT2018S'))
+Duration::fromSeconds(2018, 300_000);                 // is equivalent to new Duration(new DateInterval('PT2018.3S'))
 Duration::fromInterval(new DateInterval('PT1H'));     // is equivalent to new Duration(new DateInterval('PT1H'))
-Duration::fromChronoString('12:30:34.8');             // is equivalent to new Duration(new DateInterval('PT12H30M34.8S'))
 Duration::fromChronoString('12:30');                  // is equivalent to new Duration(new DateInterval('PT12M30S'))
+Duration::fromChronoString('12:30:34.8');             // is equivalent to new Duration(new DateInterval('PT12H30M34.8S'))
 Duration::fromTimeString('12:30');                    // is equivalent to new Duration(new DateInterval('PT12H30M'))
-Duration::fromInterval(Period::fromDateString('today', 'tomorrow')->dateInterval());
-// is equivalent to new Duration((new DateTimeImmutable('today'))->diff(new DateTimeImmutable('tomorrow')))
+Duration::fromTimeString('12:30:34.8');               // is equivalent to new Duration(new DateInterval('PT12H30M34.8S'))
 ~~~
 
 ## Accessing the underlying DateInterval instance
@@ -92,13 +90,13 @@ Duration::fromInterval(Period::fromDateString('today', 'tomorrow')->dateInterval
 To access the decorated `DateInterval` instance use the `Duration::toInterval` method.
 
 ~~~php
-public Duration::toInterval(): DateInterval
+public Duration::dateInterval(): DateInterval
 ~~~
 
 #### Examples
 
 ~~~php
-$dateInterval = Duration::fromChronoString('12:30')->toInterval(); //returns a DateInterval object
+$dateInterval = Duration::fromChronoString('12:30')->dateInterval(); //returns a DateInterval object
 ~~~
 
 

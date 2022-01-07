@@ -164,7 +164,7 @@ final class Duration
         ));
     }
 
-    public function toInterval(): DateInterval
+    public function dateInterval(): DateInterval
     {
         return $this->duration;
     }

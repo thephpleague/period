@@ -35,7 +35,7 @@ final class DurationTest extends TestCase
 
     private function formatDuration(Duration $duration): string
     {
-        $interval = $duration->toInterval();
+        $interval = $duration->dateInterval();
 
         $date = 'P';
         foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
@@ -90,16 +90,16 @@ final class DurationTest extends TestCase
     {
         $duration = Duration::fromInterval(new DateInterval('P1D'));
 
-        self::assertSame(1, $duration->toInterval()->d);
-        self::assertFalse($duration->toInterval()->days);
+        self::assertSame(1, $duration->dateInterval()->d);
+        self::assertFalse($duration->dateInterval()->days);
     }
 
     public function testCreateFromDateString(): void
     {
         $duration = Duration::fromDateString('+1 DAY');
 
-        self::assertSame(1, $duration->toInterval()->d);
-        self::assertFalse($duration->toInterval()->days);
+        self::assertSame(1, $duration->dateInterval()->d);
+        self::assertFalse($duration->dateInterval()->days);
     }
 
     /**
