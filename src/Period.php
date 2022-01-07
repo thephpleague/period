@@ -18,6 +18,7 @@ use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Generator;
 use JsonSerializable;
 
 /**
@@ -116,20 +117,22 @@ final class Period implements JsonSerializable
         return new self(self::filterDatePoint($startDate), self::filterDatePoint($endDate), $bounds);
     }
 
-    private static function filterDatePoint(DatePoint|DateTimeInterface $datepoint): DateTimeImmutable
+    private static function filterDatePoint(DatePoint|DateTimeInterface|string $datepoint): DateTimeImmutable
     {
         return match (true) {
-            $datepoint instanceof DatePoint => $datepoint->toDate(),
             $datepoint instanceof DateTimeImmutable => $datepoint,
-            default => DateTimeImmutable::createFromInterface($datepoint),
+            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
+            $datepoint instanceof DatePoint => $datepoint->toDate(),
+            default => new DateTimeImmutable($datepoint),
         };
     }
 
-    private static function filterDuration(Period|Duration|DateInterval $duration): DateInterval
+    private static function filterDuration(Period|Duration|DateInterval|string $duration): DateInterval
     {
         return match (true) {
             $duration instanceof Period => $duration->dateInterval(),
             $duration instanceof Duration => $duration->dateInterval(),
+            is_string($duration) => Duration::fromDateString($duration)->dateInterval(),
             default => $duration,
         };
     }
@@ -138,8 +141,8 @@ final class Period implements JsonSerializable
      * Creates new instance from a starting datepoint and a duration.
      */
     public static function after(
-        DatePoint|DateTimeInterface $startDate,
-        Period|Duration|DateInterval $duration,
+        DatePoint|DateTimeInterface|string $startDate,
+        Period|Duration|DateInterval|string $duration,
         Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
     ): self {
         $startDate = self::filterDatePoint($startDate);
@@ -152,8 +155,8 @@ final class Period implements JsonSerializable
      * subtracted from and added to the given datepoint.
      */
     public static function around(
-        DatePoint|DateTimeInterface $midpoint,
-        Period|Duration|DateInterval $duration,
+        DatePoint|DateTimeInterface|string $midpoint,
+        Period|Duration|DateInterval|string $duration,
         Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
     ): self {
         $midpoint = self::filterDatePoint($midpoint);
@@ -167,7 +170,7 @@ final class Period implements JsonSerializable
      */
     public static function before(
         DatePoint|DateTimeInterface $endDate,
-        Period|Duration|DateInterval $duration,
+        Period|Duration|DateInterval|string $duration,
         Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
     ): self {
         $endDate = self::filterDatePoint($endDate);
@@ -346,7 +349,7 @@ final class Period implements JsonSerializable
      * </ul>
      *
      */
-    public function durationCompare(Period|Duration|DateInterval $duration): int
+    public function durationCompare(Period|Duration|DateInterval|string $duration): int
     {
         return $this->startDate->add($this->dateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
     }
@@ -355,7 +358,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is greater than the submitted one.
      *
      */
-    public function durationGreaterThan(Period|Duration|DateInterval $duration): bool
+    public function durationGreaterThan(Period|Duration|DateInterval|string $duration): bool
     {
         return 1 === $this->durationCompare($duration);
     }
@@ -364,7 +367,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is greater than or equal to the submitted one.
      *
      */
-    public function durationGreaterThanOrEquals(Period|Duration|DateInterval $duration): bool
+    public function durationGreaterThanOrEquals(Period|Duration|DateInterval|string $duration): bool
     {
         return 0 <= $this->durationCompare($duration);
     }
@@ -373,7 +376,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is equal to the submitted one.
      *
      */
-    public function durationEquals(Period|Duration|DateInterval $duration): bool
+    public function durationEquals(Period|Duration|DateInterval|string $duration): bool
     {
         return 0 === $this->durationCompare($duration);
     }
@@ -382,7 +385,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is greater than or equal to the submitted one.
      *
      */
-    public function durationLessThanOrEquals(Period|Duration|DateInterval $duration): bool
+    public function durationLessThanOrEquals(Period|Duration|DateInterval|string $duration): bool
     {
         return 0 >= $this->durationCompare($duration);
     }
@@ -391,7 +394,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is less than the submitted one.
      *
      */
-    public function durationLessThan(Period|Duration|DateInterval $duration): bool
+    public function durationLessThan(Period|Duration|DateInterval|string $duration): bool
     {
         return -1 === $this->durationCompare($duration);
     }
@@ -408,7 +411,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *                          [--------------------)
      */
-    public function isBefore(Period|DatePoint|DateTimeInterface $timeSlot): bool
+    public function isBefore(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
         if ($timeSlot instanceof self) {
             return $this->endDate <= $timeSlot->startDate;
@@ -444,7 +447,7 @@ final class Period implements JsonSerializable
      *    [--------------------)
      *    [---------)
      */
-    public function isStartedBy(Period|DatePoint|DateTimeInterface $timeSlot): bool
+    public function isStartedBy(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
         if ($timeSlot instanceof self) {
             return $this->startDate == $timeSlot->startDate
@@ -471,7 +474,7 @@ final class Period implements JsonSerializable
      * The index can be a DateTimeInterface object or another Period object.
      *
      */
-    public function contains(Period|DatePoint|DateTimeInterface $timeSlot): bool
+    public function contains(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
         if ($timeSlot instanceof self) {
             return $this->containsInterval($timeSlot);
@@ -546,7 +549,7 @@ final class Period implements JsonSerializable
      *               [---------)
      *
      */
-    public function isEndedBy(Period|DatePoint|DateTimeInterface $timeSlot): bool
+    public function isEndedBy(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
         if ($timeSlot instanceof self) {
             return $this->endDate == $timeSlot->endDate
@@ -575,7 +578,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *
      */
-    public function isAfter(Period|DatePoint|DateTimeInterface $timeSlot): bool
+    public function isAfter(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
         if ($timeSlot instanceof self) {
             return $timeSlot->isBefore($this);
@@ -641,7 +644,7 @@ final class Period implements JsonSerializable
      * @see http://php.net/manual/en/dateperiod.construct.php
      *
      */
-    public function toDatePeriod(Period|Duration|DateInterval $duration, int $option = 0): DatePeriod
+    public function datePeriod(Period|Duration|DateInterval|string $duration, int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDuration($duration), $this->endDate, $option);
     }
@@ -652,7 +655,7 @@ final class Period implements JsonSerializable
      * the instance ending datepoint.
      *
      */
-    public function toDatePeriodBackwards(Period|Duration|DateInterval $duration, int $option = 0): iterable
+    public function datePeriodBackwards(Period|Duration|DateInterval|string $duration, int $option = 0): iterable
     {
         $duration = self::filterDuration($duration);
         $date = $this->endDate;
@@ -678,13 +681,13 @@ final class Period implements JsonSerializable
      * </ul>
      *
      *
-     * @return iterable<Period>
+     * @return Generator<Period>
      */
-    public function split(Period|Duration|DateInterval $duration): iterable
+    public function split(Period|Duration|DateInterval|string $duration): Generator
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->toDatePeriod($duration) as $startDate) {
+        foreach ($this->datePeriod($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
@@ -706,9 +709,9 @@ final class Period implements JsonSerializable
      * </ul>
      *
      *
-     * @return iterable<Period>
+     * @return Generator<Period>
      */
-    public function splitBackwards(Period|Duration|DateInterval $duration): iterable
+    public function splitBackwards(Period|Duration|DateInterval|string $duration): Generator
     {
         $endDate = $this->endDate;
         $duration = self::filterDuration($duration);
@@ -912,7 +915,7 @@ final class Period implements JsonSerializable
      * an instance that contains the specified starting datepoint.
      *
      */
-    public function startingOn(DatePoint|DateTimeInterface $startDate): self
+    public function startingOn(DatePoint|DateTimeInterface|string $startDate): self
     {
         $startDate = self::filterDatePoint($startDate);
         if ($startDate == $this->startDate) {
@@ -929,7 +932,7 @@ final class Period implements JsonSerializable
      * an instance that contains the specified ending datepoint.
      *
      */
-    public function endingOn(DatePoint|DateTimeInterface $endDate): self
+    public function endingOn(DatePoint|DateTimeInterface|string $endDate): self
     {
         $endDate = self::filterDatePoint($endDate);
         if ($endDate == $this->endDate) {
@@ -960,7 +963,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending datepoint.
      */
-    public function withDurationAfterStart(Period|Duration|DateInterval $duration): self
+    public function withDurationAfterStart(Period|Duration|DateInterval|string $duration): self
     {
         return $this->endingOn($this->startDate->add(self::filterDuration($duration)));
     }
@@ -971,7 +974,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting datepoint.
      */
-    public function withDurationBeforeEnd(Period|Duration|DateInterval $duration): self
+    public function withDurationBeforeEnd(Period|Duration|DateInterval|string $duration): self
     {
         return $this->startingOn($this->endDate->sub(self::filterDuration($duration)));
     }
@@ -984,7 +987,7 @@ final class Period implements JsonSerializable
      * an instance that contains the specified starting datepoint.
      *
      */
-    public function moveStartDate(Period|Duration|DateInterval $duration): self
+    public function moveStartDate(Period|Duration|DateInterval|string $duration): self
     {
         return $this->startingOn($this->startDate->add(self::filterDuration($duration)));
     }
@@ -997,7 +1000,7 @@ final class Period implements JsonSerializable
      * an instance that contains the specified ending datepoint.
      *
      */
-    public function moveEndDate(Period|Duration|DateInterval $duration): self
+    public function moveEndDate(Period|Duration|DateInterval|string $duration): self
     {
         return $this->endingOn($this->endDate->add(self::filterDuration($duration)));
     }
@@ -1010,7 +1013,7 @@ final class Period implements JsonSerializable
      * an instance that contains the specified new datepoints.
      *
      */
-    public function move(Period|Duration|DateInterval $duration): self
+    public function move(Period|Duration|DateInterval|string $duration): self
     {
         $duration = self::filterDuration($duration);
         $interval = new self($this->startDate->add($duration), $this->endDate->add($duration), $this->bounds);
@@ -1031,7 +1034,7 @@ final class Period implements JsonSerializable
      * an instance that contains the specified new datepoints.
      *
      */
-    public function expand(Period|Duration|DateInterval $duration): self
+    public function expand(Period|Duration|DateInterval|string $duration): self
     {
         $duration = self::filterDuration($duration);
         $interval = new self($this->startDate->sub($duration), $this->endDate->add($duration), $this->bounds);
