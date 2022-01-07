@@ -151,7 +151,7 @@ foreach ($datePeriod as $datetime) {
 //the last date is 2012-12-01
 ~~~
 
-### Period::getDatePeriodBackwards
+### Period::datePeriodBackwards
 
 ~~~php
 public Period::datePeriodBackwards(Period|Duration|DateInterval|string $duration, int $option = 0): Generator<DateTimeImmutable>

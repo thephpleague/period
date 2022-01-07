@@ -114,7 +114,7 @@ $day->equals($daybis); //return true;
 $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 ~~~
 
-## Using interval format
+## Using predefined format
 
 ~~~php
 public static Period::fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
@@ -132,7 +132,7 @@ For better understanding:
 - the lower bound is represented as `{lowerBound}`
 - the upper bound is represented as `{upperBound}`
 
-### Using datepoints strings
+### Using date strings
 
 for `Period::fromDateString` each datepoint string should be directly parsable by `DateTimeImmutable::createFromFormat`;
 
@@ -141,7 +141,7 @@ $day = Period::fromDateString('!Y-m-d', '2012-01-03', '2012-02-03');
 $day->toNotation('Y-m-d H:i:s'); //return [2012-01-03 00:00:00, 2012-02-03 00:00:00)
 ~~~
 
-## Using ISO 8601 notation
+### Using ISO 8601 notation
 
 The `$notation` should follow the `{startDate}/{endDate}` pattern where `/` serves as delimiter. Each endpoint should be formatted following the `$format` input;
 
@@ -150,7 +150,7 @@ $day = Period::fromIso8601('Y-m-d', '2012-01-03/2012-02-03');
 echo $day->toNotation('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
 ~~~
 
-## Using Mathematical notation
+### Using mathematical notation
 
 The `$notation` should follow the `{lowerbound}{startDate},{endDate}{upperbound}` where `,` serves as delimiter. 
 Each endpoint should be formatted following the `$format` input.
