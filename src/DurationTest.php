@@ -17,6 +17,7 @@ use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 final class DurationTest extends TestCase
 {
@@ -254,6 +255,52 @@ final class DurationTest extends TestCase
             'negative chrono' => [
                 'chronometer' => '-12:28.5',
                 'expected' => 'PT12M28.5S',
+            ],
+        ];
+    }
+
+    public function testCreateFromTimeStringFails(): void
+    {
+        $this->expectException(Throwable::class);
+
+        Duration::fromTimeString('123');
+    }
+
+    /**
+     * @dataProvider fromTimeStringProvider
+     */
+    public function testCreateFromTimeStringSucceeds(string $chronometer, string $expected): void
+    {
+        $duration = Duration::fromTimeString($chronometer);
+
+        self::assertSame($expected, $this->formatDuration($duration));
+    }
+
+    /**
+     * @return array<array{chronometer:string, expected:string}>
+     */
+    public function fromTimeStringProvider(): iterable
+    {
+        return [
+            'hour and minute' => [
+                'chronometer' => '1:2',
+                'expected' => 'PT1H2M',
+            ],
+            'hour, minute, seconds' => [
+                'chronometer' => '1:2:3',
+                'expected' => 'PT1H2M3S',
+            ],
+            'handling 0 prefix' => [
+                'chronometer' => '00001:00002:000003.0004',
+                'expected' => 'PT1H2M3.0004S',
+            ],
+            'negative chrono' => [
+                'chronometer' => '-12:28',
+                'expected' => 'PT-12H28M',
+            ],
+            'negative chrono with seconds' => [
+                'chronometer' => '-00:00:28.5',
+                'expected' => 'PT28.5S',
             ],
         ];
     }

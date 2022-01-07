@@ -39,6 +39,12 @@ final class Duration
         (\.(?<fraction>\d{1,6}))?       # optional fraction
     $@x';
 
+    private const REGEXP_TIME_FORMAT = '@^
+        (?<sign>\+|-)?                               # optional sign
+        (?<hour>\d+)(:(?<minute>\d+))                # required hour and minute
+        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
+    $@x';
+
     private function __construct(private DateInterval $duration)
     {
     }
@@ -56,40 +62,40 @@ final class Duration
     /**
      * Returns a new instance from an interval specification.
      */
-    public static function fromIsoString(string $durationIsoString): self
+    public static function fromIsoString(string $duration): self
     {
-        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_INTERVAL, $durationIsoString, $matches)) {
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_INTERVAL, $duration, $matches)) {
             $interval = new DateInterval($matches['interval'].'S');
             $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
             return new self($interval);
         }
 
-        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_DATE, $durationIsoString, $matches)) {
+        if (1 === preg_match(self::REGEXP_FLOATING_SECONDS_DATE, $duration, $matches)) {
             $interval = new DateInterval($matches['interval']);
             $interval->f = (int) str_pad($matches['fraction'], 6, '0') / 1_000_000;
 
             return new self($interval);
         }
 
-        if (1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $durationIsoString, $matches)
+        if (1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $duration, $matches)
             && isset($matches['fraction'])
         ) {
-            $interval = new DateInterval(substr($durationIsoString, 0, -strlen($matches['fraction'])-1));
+            $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction'])-1));
             $interval->f = (int) $matches['fraction'] / 1_000_000;
 
             return new self($interval);
         }
 
-        return new self(new DateInterval($durationIsoString));
+        return new self(new DateInterval($duration));
     }
 
     /**
      * Returns a new instance from a DateInterval object.
      */
-    public static function fromInterval(DateInterval $interval): self
+    public static function fromInterval(DateInterval $duration): self
     {
-        return new self($interval);
+        return new self($duration);
     }
 
     /**
@@ -97,15 +103,15 @@ final class Duration
      *
      * @throws InvalidArgumentException
      */
-    public static function fromSeconds(int $second, int $fraction = 0): self
+    public static function fromSeconds(int $seconds, int $fractions = 0): self
     {
-        if (0 > $fraction) {
+        if (0 > $fractions) {
             throw new InvalidArgumentException('The fraction should be a valid positive integer or zero.');
         }
 
         $duration = new DateInterval('PT0S');
-        $duration->s = $second;
-        $duration->f = $fraction / 1_000_000;
+        $duration->s = $seconds;
+        $duration->f = $fractions / 1_000_000;
 
         return new self($duration);
     }
@@ -115,16 +121,38 @@ final class Duration
      *
      * @throws InvalidArgumentException
      */
-    public static function fromChronoString(string $chronoString): self
+    public static function fromChronoString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $chronoString, $units)) {
-            throw new InvalidArgumentException('Unknown or bad format `'.$chronoString.'`.');
+        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $duration, $units)) {
+            throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.');
         }
 
         if ('' === $units['hour']) {
             $units['hour'] = '0';
         }
 
+        return self::fromUnits($units);
+    }
+
+    public static function fromTimeString(string $duration): self
+    {
+        if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
+            throw new InvalidArgumentException('Unknown or bad format ('.$duration.')');
+        }
+
+        return self::fromUnits($units);
+    }
+
+    public static function fromDateString(string $duration): self
+    {
+        return new self(DateInterval::createFromDateString($duration));
+    }
+
+    /**
+     * @param array<array-key, string> $units
+     */
+    private static function fromUnits(array $units): self
+    {
         $units = array_merge(['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'], $units);
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
         if ('-' === $units['sign']) {
@@ -134,11 +162,6 @@ final class Duration
         return new self(DateInterval::createFromDateString(
             $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds'
         ));
-    }
-
-    public static function fromDateString(string $durationString): self
-    {
-        return new self(DateInterval::createFromDateString($durationString));
     }
 
     public function toInterval(): DateInterval
