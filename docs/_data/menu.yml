@@ -11,6 +11,7 @@ version:
         Period:
           Properties: '/5.0/properties/'
           Modifying: '/5.0/modifying/'
+          Comparing: '/5.0/comparing/'
         Charts:
           Drawing Intervals: '/5.0/chart/'
           Generating Labels: '/5.0/chart/labels/'
