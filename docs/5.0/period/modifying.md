@@ -26,10 +26,10 @@ Unless explicitly restricted, whenever a datepoint is expected the following typ
 
 ## Using the bounds information
 
-### Period::withBounds
+### Period::boundedBy
 
 ~~~php
-public Period::withBounds(Bounds $bounds): Period
+public Period::boundedBy(Bounds $bounds): Period
 ~~~
 
 Returns a new `Period` object with a different bounds.
@@ -38,7 +38,7 @@ Returns a new `Period` object with a different bounds.
 
 ~~~php
 $interval = Period::fromMonth(2014, 3);
-$newInterval = $interval->withBounds(Bounds::INCLUDE_ALL);
+$newInterval = $interval->boundedBy(Bounds::INCLUDE_ALL);
 $interval->toNotation('Y-m-d');    // '[2014-03-01, 2014-04-01)'
 $newInterval->toNotation('Y-m-d'); // '[2014-03-01, 2014-04-01]'
 ~~~

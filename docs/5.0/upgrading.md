@@ -50,21 +50,20 @@ All namespaced functions are removed from the package:
 The following methods were already marked as deprecated is the `4.x` line. 
 They are now removed from the package.
 
-| Removed methods                | Possible replacements       |
-| ------------------------------ | --------------------------- |
-| `Datepoint::create`            | none                        |
-| `Datepoint::createFromMutable` | none                        |
-| `Datepoint::createFromFormat`  | none                        |
-| `Duration::__toString`         | none                        |
-| `Duration::create`             | none                        |
-| `Duration::fromTimeString`     | none                        |
-| `Duration::format`             | none                        |
-| `Duration::withoutCarryOver`   | `Duration::adjustedTo`      |
-| `Period::__toString`           | `Period::toIso8601`         |
-| `Period::substract`            | `Period::subtract`          |
-| `Sequence::getIntersections`   | `Sequence::intersections`   |
-| `Sequence::getBoundaries`      | `Sequence::boundaries`      |
-| `Sequence::getGaps`            | `Sequence::gaps`            |
+| Removed methods                | Possible replacements     |
+|--------------------------------|---------------------------|
+| `Datepoint::create`            | none                      |
+| `Datepoint::createFromMutable` | none                      |
+| `Datepoint::createFromFormat`  | none                      |
+| `Duration::__toString`         | none                      |
+| `Duration::create`             | none                      |
+| `Duration::format`             | none                      |
+| `Duration::withoutCarryOver`   | `Duration::adjustedTo`    |
+| `Period::__toString`           | `Period::toIso8601`       |
+| `Period::substract`            | `Period::subtract`        |
+| `Sequence::getIntersections`   | `Sequence::intersections` |
+| `Sequence::getBoundaries`      | `Sequence::length`        |
+| `Sequence::getGaps`            | `Sequence::gaps`          |
 
 ## Change in inheritance
 
@@ -82,24 +81,25 @@ Most notably:
 - the `create` prefix is removed.
 - the `__toString` method and usage is removed from the package. 
 - conversions methods are explicitly named with a `to` or a `from` prefix.
-- methods name hhave been changed for consistency throughout the package.
+- methods name have been changed for consistency throughout the package.
 
 | `4.x` method name                     | `5.x` method name                  |
-| ------------------------------------- |------------------------------------|
+|---------------------------------------|------------------------------------|
 | `Period::fromDatepoint`               | `Period::fromDate`                 |
 | `Period::getStartDate`                | `Period::startDate`                |
 | `Period::getEndDate`                  | `Period::endDate`                  |
 | `Period::getDateInterval`             | `Period::dateInterval`             |
 | `Period::getTimestampInterval`        | `Period::timestampInterval`        |
 | `Period::getBoundaryType`             | `Period::bounds`                   |
-| `Period::withBoundaryType`            | `Period::withBounds`               |
-| `Period::getDatePeriod`               | `Period::dateRange`         |
+| `Period::withBoundaryType`            | `Period::boundedBy`                |
+| `Period::getDatePeriod`               | `Period::dateRange`                |
 | `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`       |
 | `Period::__toString`                  | `Period::toIso8601`                |
 | `Period::format`                      | `Period::toNotation`               |
 | `Sequence::getTotalTimestampInterval` | `Sequence::totalTimestampInterval` |
 | `Duration::createFromSeconds`         | `Duration::fromSeconds`            |
 | `Duration::createFromChronoString`    | `Duration::fromChronoString`       |
+| `Duration::createFromTimeString`      | `Duration::fromTimeString`         |
 | `Duration::createFromDateString`      | `Duration::fromDateString`         |
 | `Duration::createFromDateInterval`    | `Duration::fromDateInterval`       |
 | `Datepoint::getSecond`                | `Datepoint::second`                |
@@ -124,9 +124,7 @@ Most notably:
 to expose the boundaries properties of the `Period` object.
 
 ```diff
-$period = Period::fromMonth(2015, 4);
-echo json_encode($period), PHP_EOL;
-
+echo json_encode(Period::fromMonth(2015, 4)), PHP_EOL;
 {
      "startDate": "2015-04-01T00:00:00.000000Z",
      "endDate": "2015-05-01T00:00:00.000000Z",
@@ -149,15 +147,16 @@ of union types a date can only accept the following types:
 
 - a `DateTimeInterface` implementing object
 - a `DatePoint` object
+- a `string` that can be parsed by the `DateTimeImmutable` construct
 
-if you need to use a string you need to first convert it using a `DateTimeInterface` implementing object
+if better or more complex conversion is needed, first convert it using a `DateTimeInterface` implementing object
 or a `DatePoint` named constructor.
 
 ```diff
-- Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL);
-+ Period::after(
-+    new DateTime('2021-05-23'), 
-+    DatePoint::fromDateString('2021-05-24'), 
+- Period::fromDatepoint('1635585868', '2021-05-24', Period::INCLUDE_ALL);
++ Period::fromDate(
++    Datepoint::fromTimestamp(1635585868), 
++    '2021-05-24', 
 +    Bounds::INCLUDE_ALL
 + );
 ```
@@ -178,15 +177,16 @@ the duration can only accept the following types:
 - a `DateInterval` object
 - a `Period` object
 - a `Duration` object
+- a `string` that can be parsed by the `DateInterval::createFromDateString` named constructor
 
-if you need to use a string you need to first convert it using a `DateInterval` object
+if better or more complex conversion is needed, first convert it using a `DateInterval` object
 or one of the `Duration` named constructor.
 
 ```diff
-- Period::after('2021-05-23', '1 HOUR', Period::INCLUDE_ALL);
+- Period::after('2021-05-23', '12:30', Period::INCLUDE_ALL);
 + Period::after(
-+    new DateTime('2021-05-23'), 
-+    DateInterval::createFromDateString('1 HOUR'), 
++    '2021-05-23', 
++    Duration::fromChronoString('12:30'), 
 +    Bounds::INCLUDE_ALL
 + );
 ```
@@ -207,11 +207,7 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 
 ```diff
 - new Period('2021-03-21 12:23:56', '2021-03-21 13:23:56', Period::EXCLUDE_ALL);
-+ Period::fromDate(
-+     new DateTime('2021-03-21 12:23:56'), 
-+     new DateTimeImmutable('2021-03-21 13:23:56'), 
-+     Bounds::EXCLUDE_ALL
-+ );
++ Period::fromDate('2021-03-21 12:23:56', '2021-03-21 13:23:56', Bounds::EXCLUDE_ALL);
 ```
 
 `Period::timestampInterval` now returns an int instead of a float value.
@@ -224,29 +220,35 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 `Period::diff` now returns a `Sequence` object, before it was returning an `array`.
 
 ```diff
-$period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-$alt = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-        
+$period = Period::fromDate('2013-01-01', '2014-01-01');
+$alt = Period::fromDate('2013-01-01', '2014-01-01');
+
 - [] === $alt->diff($period); // return true
 + $alt->diff($period)->isEmpty(); //return true
 ```
 
 in `5.x` Closure objects are used instead of the callable pseudo type with the `Sequence` methods.
 
+```diff
+- $res = $sequence->filter('myFilter');    // a callable string can be given
++ $res = $sequence->filter(myFilter(...)); // a Closure object MUST be given
+```
+
+
+
 ## Changes in bounds related methods
 
-With the introduction of the `Bounds` enum, all bound related methods are moved to the Enum>
+With the introduction of the `Bounds` enum, all bound related methods are moved to the Enum.
 
 ```diff
-$period = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
-        
-- $period->isStartDateIncluded(); // return true
-+ $period->bounds()->isLowerIncluded(); //return true
+- $period->isStartDateIncluded();       // return true
++ $period->bounds()->isStartIncluded(); // return true
 ```
 
 | `4.x` method name          | `5.x` method name         |
-| -------------------------- |---------------------------|
-| `Period::withBoundaryType` | `Period::withBounds`      |
+|----------------------------|---------------------------|
+| `Period::getBoundaryType`  | `Period::bounds`          |
+| `Period::withBoundaryType` | `Period::boundedBy`       |
 | `Period::isStartIncluded`  | `Bounds::isStartIncluded` |
 | `Period::isStartExcluded`  | `Bounds::isStartIncluded` |
 | `Period::isEndIncluded`    | `Bounds::isEndIncluded`   |

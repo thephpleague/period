@@ -125,8 +125,8 @@ $sequence = new Sequence(
 );
 $sequence->get(1)->toNotation('Y-m-d'); // [2018-04-01, 2018-05-01)
 $sequence->insert(1,
-    Period::fromDateString('Y-m-d', '2018-02-01', '2018-03-01'),
-    Period::fromDateString('Y-m-d', '2018-03-01', '2018-04-01')
+    Period::fromDate('2018-02-01', '2018-03-01'),
+    Period::fromDate('2018-03-01', '2018-04-01')
 );
 count($sequence); // 4
 $sequence->get(1)->toNotation('Y-m-d'), PHP_EOL; // [2018-02-01, 2018-03-01)
@@ -136,19 +136,19 @@ $sequence->get(1)->toNotation('Y-m-d'), PHP_EOL; // [2018-02-01, 2018-03-01)
 
 Updates the interval at the specified offset. This method supports negative offsets.
 
-<p class="message-warning">An <code>DateRangeInaccessible</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code> since <code>version 4.2</code>.</p>
+<p class="message-warning">An <code>DateRangeInaccessible</code> exception will be thrown if the <code>$offset</code> does not exists in the instance. In doubt, use <code>Sequence::indexOf</code> before using this method or <code>isset</code>.</p>
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromDateString('Y-m-d', '2018-01-01', '2018-01-31'),
-    Period::fromDateString('Y-m-d', '2018-02-10', '2018-02-20'),
+    Period::fromDate('2018-01-01', '2018-01-31'),
+    Period::fromDate('2018-02-10', '2018-02-20'),
 );
-$sequence->set(0, Period::fromDateString('Y-m-d', '2012-01-01', '2012-01-31'));
-$sequence->set(42, Period::fromDateString('Y-m-d', '2012-01-01', '2012-01-31')); //throws DateRangeInaccessible
-$sequence[1] = Period::fromDateString('Y-m-d', '2012-01-01', '2012-01-31');
-$sequence[42] = Period::fromDateString('Y-m-d', '2012-01-01', '2012-01-31')); //throws DateRangeInaccessible
-$sequence[-1] = Period::fromDateString('Y-m-d', '2012-01-01', '2012-01-31');
-$sequence[-23] = Period::fromDateString('Y-m-d', '2012-01-01', '2012-01-31')); //throws DateRangeInaccessible
+$sequence->set(0, Period::fromDate('2012-01-01', '2012-01-31'));
+$sequence->set(42, Period::fromDate('2012-01-01', '2012-01-31')); //throws DateRangeInaccessible
+$sequence[1] = Period::fromDate('2012-01-01', '2012-01-31');
+$sequence[42] = Period::fromDate('2012-01-01', '2012-01-31')); //throws DateRangeInaccessible
+$sequence[-1] = Period::fromDate('2012-01-01', '2012-01-31');
+$sequence[-23] = Period::fromDate('2012-01-01', '2012-01-31')); //throws DateRangeInaccessible
 ~~~
 
 ### Sequence::remove

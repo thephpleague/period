@@ -86,8 +86,6 @@ $intersections->isEmpty(); // true
 
 ### Sequence unions
 
-<p class="message-info">Since <code>version 4.4</code></p>
-
 Returns the unions inside the instance. The method returns a new `Sequence` object containing the calculated unions expressed as `Period` objects.
 
 ~~~php

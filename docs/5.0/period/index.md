@@ -5,19 +5,18 @@ title: Period instantiation
 
 # The Period value object
 
-A `Period` instance is a PHP implementation of a datetime interval which consists of:
-    - two date endpoints hereafter referred to as datepoints;
-    - the duration between them;
-    - its bounds.
+A `Period` instance is a PHP implementation of a bounded datetime interval which consists of:
 
-- **datepoint** - A position in time expressed as a `DateTimeImmutable` object. The starting datepoint is always less than or equal to the ending datepoint.
-- **duration** - The continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
-- **bounds** - An included datepoint means that the boundary datepoint itself is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included in the interval.  
-  The package supports included and excluded datepoint, thus, the following boundary types are supported:
-    - included starting datepoint and excluded ending datepoint: `[start, end)`;
-    - included starting datepoint and included ending datepoint : `[start, end]`;
-    - excluded starting datepoint and included ending datepoint : `(start, end]`;
-    - excluded starting datepoint and excluded ending datepoint : `(start, end)`;
+- two date endpoints hereafter referred to as datepoints. A **datepoint** is a position in time expressed as a `DateTimeImmutable` object. The starting datepoint is always less than or equal to the ending datepoint.
+- the duration between them which correspond to the continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
+- its bounds. An included datepoint means that the boundary datepoint itself is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included in the interval.  
+
+The package supports included and excluded datepoint, thus, the following bounds are supported:
+
+- included starting datepoint and excluded ending datepoint: `[start, end)`;
+- included starting datepoint and included ending datepoint : `[start, end]`;
+- excluded starting datepoint and included ending datepoint : `(start, end]`;
+- excluded starting datepoint and excluded ending datepoint : `(start, end)`;
 
 <p class="message-warning">infinite or unbounded intervals are not supported.</p>
 
@@ -36,40 +35,14 @@ The `$bounds` is a `Period\Bounds` and only its value are eligible to create a n
 
 <p class="message-info">By default for each named constructor the <code>$bounds</code> is <code>Bounds::INCLUDE_START_EXCLUDE_END</code> when not explicitly provided.</p>
 
-### Using a DatePeriod object
-
-~~~php
-function Period::fromDatePeriod(
-    DatePeriod $datePeriod,
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
-): self
-~~~
-
-#### Example
-
-~~~php
-$daterange = new DatePeriod(
-    new DateTime('2012-08-01'),
-    new DateInterval('PT1H'),
-    new DateTime('2012-08-31')
-);
-$interval = Period::fromDatePeriod($daterange);
-$interval->getStartDate() == $daterange->getStartDate();
-$interval->getEndDate() == $daterange->getEndDate();
-~~~
-
-<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
-
-~~~php
-$dateRange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
-$interval = Period::fromDatePeriod($dateRange);
-//throws a TypeError error because $dateRange->getEndDate() returns null
-~~~
-
 ### Using datepoints
 
 ~~~php
-public static Period::fromDate(DatePoint|DateTimeInterface|string $startDate, DatePoint|DateTimeInterface|string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromDate(
+    DatePoint|DateTimeInterface|string $startDate, 
+    DatePoint|DateTimeInterface|string $endDate, 
+    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+): Period
 ~~~
 
 If the timezone is important use a `DateTimeInterface` object instead of a string. When a string is provided, the timezone information is derived from the underlying system.
@@ -82,9 +55,21 @@ $day->toNotation('Y-m-d'); //return (2012-01-03, 2012-02-03)
 ### Using a datepoint and a duration
 
 ~~~php
-public static Period::after(DatePoint|DateTimeInterface|string $startDate, Period|Duration|DateInterval|string $duration, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::before(DatePoint|DateTimeInterface|string $endDate, Period|Duration|DateInterval|string $duration, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::around(DatePoint|DateTimeInterface|string $midpoint, Period|Duration|DateInterval|string $duration, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+public static Period::after(
+    DatePoint|DateTimeInterface|string $startDate, 
+    Period|Duration|DateInterval|string $duration, 
+    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+): Period
+public static Period::before(
+    DatePoint|DateTimeInterface|string $endDate,
+    Period|Duration|DateInterval|string $duration,
+    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+): Period
+public static Period::around(
+    DatePoint|DateTimeInterface|string $midpoint,
+    Period|Duration|DateInterval|string $duration, 
+    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+): Period
 ~~~
 
 - `Period::after` returns a `Period` object which starts at `$startDate`
@@ -126,10 +111,11 @@ public static Period::fromIsoYear(int $year, Bounds $bounds = Bounds::INCLUDE_ST
 #### Examples
 
 ~~~php
-$day = Period::fromDay(2012);
-$daybis = Period::fromDay(2012, 1);
+$day = Period::fromDay(2012, 1, 3);
+$daybis = Period::fromDate('2012-01-03', '2012-01-04');
 $day->equals($daybis); //return true;
-$day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
+$day->startDate()->format('Y-m-d H:i:s'); //return 2012-01-03 00:00:00
+$day->endDate()->format('Y-m-d H:i:s'); //return 2012-01-04 00:00:00
 ~~~
 
 ### Using standardized notation
@@ -171,4 +157,34 @@ The possible bound values are:
 $day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 ]');
 echo $day->toNotation('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00]
 $day->bounds() === Bounds::INCLUDE_ALL;
+~~~
+
+### Using a DatePeriod object
+
+~~~php
+function Period::fromDatePeriod(
+    DatePeriod $datePeriod,
+    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+): self
+~~~
+
+#### Example
+
+~~~php
+$daterange = new DatePeriod(
+    new DateTime('2012-08-01'),
+    new DateInterval('PT1H'),
+    new DateTime('2012-08-31')
+);
+$interval = Period::fromDatePeriod($daterange);
+$interval->getStartDate() == $daterange->getStartDate();
+$interval->getEndDate() == $daterange->getEndDate();
+~~~
+
+<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
+
+~~~php
+$dateRange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
+$interval = Period::fromDatePeriod($dateRange);
+//throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~

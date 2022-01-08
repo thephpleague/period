@@ -25,10 +25,10 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $sequence = new Sequence(
-    Period::fromDateString('!Y-m-d', '2018-01-01', '2018-01-31'),
-    Period::fromDateString('!Y-m-d', '2018-02-10', '2018-02-20'),
-    Period::fromDateString('!Y-m-d', '2018-03-01', '2018-03-31'),
-    Period::fromDateString('!Y-m-d', '2018-01-20', '2018-03-10')
+    Period::fromDate('2018-01-01', '2018-01-31'),
+    Period::fromDate('2018-02-10', '2018-02-20'),
+    Period::fromDate('2018-03-01', '2018-03-31'),
+    Period::fromDate('2018-01-20', '2018-03-10')
 );
 ~~~
 

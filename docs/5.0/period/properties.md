@@ -95,7 +95,7 @@ public Period::timestampInterval(): int
 ~~~php
 use League\Period\Period;
 
-$period = Period::fromDateString('Y-m-d H:i:s', '2012-04-01 08:30:25', '2013-09-04 12:35:21');
+$period = Period::fromDate('2012-04-01 08:30:25', '2013-09-04 12:35:21');
 $period->startDate();         // returns DateTimeImmutable('2012-04-01 08:30:25');
 $period->endDate();           // returns DateTimeImmutable('2013-09-04 12:35:21');
 $period->dateInterval();      // returns a DateInterval object

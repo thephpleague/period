@@ -90,13 +90,13 @@ Duration::fromTimeString('12:30:34.8');               // is equivalent to new Du
 To access the decorated `DateInterval` instance use the `Duration::toInterval` method.
 
 ~~~php
-public Duration::dateInterval(): DateInterval
+public Duration::toDateInterval(): DateInterval
 ~~~
 
 #### Examples
 
 ~~~php
-$dateInterval = Duration::fromChronoString('12:30')->dateInterval(); //returns a DateInterval object
+$dateInterval = Duration::fromChronoString('12:30')->toDateInterval(); //returns a DateInterval object
 ~~~
 
 
