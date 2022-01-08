@@ -130,10 +130,10 @@ final class Period implements JsonSerializable
     private static function filterDuration(Period|Duration|DateInterval|string $duration): DateInterval
     {
         return match (true) {
+            $duration instanceof DateInterval => $duration,
+            $duration instanceof Duration => $duration->toDateInterval(),
             $duration instanceof Period => $duration->dateInterval(),
-            $duration instanceof Duration => $duration->dateInterval(),
-            is_string($duration) => Duration::fromDateString($duration)->dateInterval(),
-            default => $duration,
+            default => Duration::fromDateString($duration)->toDateInterval(),
         };
     }
 
@@ -796,22 +796,22 @@ final class Period implements JsonSerializable
         $intersect = $this->intersect($period);
         $merge = $this->merge($period);
         if ($merge->startDate == $intersect->startDate) {
-            return new Sequence($merge->startingOn($intersect->endDate)->withBounds(
+            return new Sequence($merge->startingOn($intersect->endDate)->boundedBy(
                 $intersect->bounds->isEndIncluded() ? $merge->bounds->excludeStart() : $merge->bounds->includeStart()
             ));
         }
 
         if ($merge->endDate == $intersect->endDate) {
-            return new Sequence($merge->endingOn($intersect->startDate)->withBounds(
+            return new Sequence($merge->endingOn($intersect->startDate)->boundedBy(
                 $intersect->bounds->isStartIncluded() ? $merge->bounds->excludeEnd() : $merge->bounds->includeEnd()
             ));
         }
 
         return new Sequence(
-            $merge->endingOn($intersect->startDate)->withBounds(
+            $merge->endingOn($intersect->startDate)->boundedBy(
                 $intersect->bounds->isStartIncluded() ? $merge->bounds->excludeEnd() : $merge->bounds->includeEnd()
             ),
-            $merge->startingOn($intersect->endDate)->withBounds(
+            $merge->startingOn($intersect->endDate)->boundedBy(
                 $intersect->bounds->isEndIncluded() ? $merge->bounds->excludeStart() : $merge->bounds->includeStart()
             ),
         );
@@ -949,7 +949,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance with the specified range type.
      */
-    public function withBounds(Bounds $bounds): self
+    public function boundedBy(Bounds $bounds): self
     {
         if ($bounds === $this->bounds) {
             return $this;

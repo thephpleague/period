@@ -153,7 +153,7 @@ final class Duration
      */
     private static function fromUnits(array $units): self
     {
-        $units = array_merge(['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'], $units);
+        $units += ['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
         if ('-' === $units['sign']) {
             $units['hour'] = '-'.$units['hour'];
@@ -164,7 +164,7 @@ final class Duration
         ));
     }
 
-    public function dateInterval(): DateInterval
+    public function toDateInterval(): DateInterval
     {
         return $this->duration;
     }
