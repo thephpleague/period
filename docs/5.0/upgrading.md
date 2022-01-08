@@ -93,7 +93,7 @@ Most notably:
 | `Period::getTimestampInterval`        | `Period::timestampInterval`        |
 | `Period::getBoundaryType`             | `Period::bounds`                   |
 | `Period::withBoundaryType`            | `Period::withBounds`               |
-| `Period::getDatePeriod`               | `Period::dateRangeForward`         |
+| `Period::getDatePeriod`               | `Period::dateRange`         |
 | `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`       |
 | `Period::__toString`                  | `Period::toIso8601`                |
 | `Period::format`                      | `Period::toNotation`               |

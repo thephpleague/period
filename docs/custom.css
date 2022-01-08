@@ -52,6 +52,10 @@ header .search {
   padding-right:.3em;
 }
 
+pre code {
+  line-height:200%;
+}
+
 #doc-search {
   font-family: "Museo Sans 500";
   font-weight: normal;
@@ -182,7 +186,7 @@ main article li code,
 main article div > code {
   font-family: Consolas,Monaco,'Andale Mono',monospace;
   font-size: 17px;
-  line-height: 100%;
+  line-height: 2;
   color:#1672ce;
   background: #fff;
   border:none;

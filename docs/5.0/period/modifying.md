@@ -247,15 +247,36 @@ public Period::snapToYear(): Period
 public Period::snapToIsoYear(): Period
 ~~~
 
-Here's an example to understand the modification
+### Examples
 
 ~~~php
-$period = Period::fromDateString('Y-m-d', '2022-01-01', '2022-01-03');
-echo $period->toNotation('c');                // returns [2022-01-01T19:21:42+00:00, 2022-01-03T19:21:42+00:00)
-echo $period->snapToMonth()->toNotation('c'); // returns [2022-01-01T00:00:00+00:00, 2022-02-01T00:00:00+00:00)
-// where 2022-01-01T00:00:00+00:00 is the first day of the interval corresponding to the month containing 2022-01-01T19:21:42+00:00
-// where 2022-02-01T00:00:00+00:00 is the last day of the interval corresponding to the month containing 2022-02-01T19:05:13+00:00
+$period = Period::fromDate('2022-01-08 09:44:38', '2022-01-08 09:45:01');
+echo 'Period::toNotation '.$period->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToSecond: '.$period->snapToSecond()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToMinute: '.$period->snapToMinute()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToHour: '.$period->snapToHour()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToDay: '.$period->snapToDay()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToIsoWeek: '.$period->snapToIsoWeek()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToMonth: '.$period->snapToMonth()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToQuarter: '.$period->snapToQuarter()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToSemester: '.$period->snapToSemester()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToYear: '.$period->snapToYear()->toNotation('Y-m-d H:i:s');
+echo 'Period::snapToIsoYear: '.$period->snapToIsoYear()->toNotation('Y-m-d H:i:s');
 ~~~
 
-The same logic applies to all the other `snapTo*` methods.
+Here's The results of each line:
 
+
+| Period methods           | Results                                      |
+|--------------------------|----------------------------------------------|
+| `Period::toNotation`     | `[2022-01-08 09:44:38, 2022-01-08 09:45:01)` |
+| `Period::snapToSecond`   | `[2022-01-08 09:44:38, 2022-01-08 09:45:02)` | 
+| `Period::snapToMinute`   | `[2022-01-08 09:44:00, 2022-01-08 09:46:00)` |
+| `Period::snapToHour`     | `[2022-01-08 09:00:00, 2022-01-08 10:00:00)` |
+| `Period::snapToDay`      | `[2022-01-08 00:00:00, 2022-01-09 00:00:00)` |
+| `Period::snapToIsoWeek`  | `[2022-01-03 00:00:00, 2022-01-10 00:00:00)` | 
+| `Period::snapToMonth`    | `[2022-01-01 00:00:00, 2022-02-01 00:00:00)` |
+| `Period::snapToQuarter`  | `[2022-01-01 00:00:00, 2022-04-01 00:00:00)` | 
+| `Period::snapToSemester` | `[2022-01-01 00:00:00, 2022-07-01 00:00:00)` |
+| `Period::snapToYear`     | `[2022-01-01 00:00:00, 2023-01-01 00:00:00)` |
+| `Period::snapToIsoYear`  | `[2022-01-03 00:00:00, 2023-01-02 00:00:00)` | 

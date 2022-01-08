@@ -3,7 +3,25 @@ layout: default
 title: Period instantiation
 ---
 
-# Instantiation
+# The Period value object
+
+A `Period` instance is a PHP implementation of a datetime interval which consists of:
+    - two date endpoints hereafter referred to as datepoints;
+    - the duration between them;
+    - its bounds.
+
+- **datepoint** - A position in time expressed as a `DateTimeImmutable` object. The starting datepoint is always less than or equal to the ending datepoint.
+- **duration** - The continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
+- **bounds** - An included datepoint means that the boundary datepoint itself is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included in the interval.  
+  The package supports included and excluded datepoint, thus, the following boundary types are supported:
+    - included starting datepoint and excluded ending datepoint: `[start, end)`;
+    - included starting datepoint and included ending datepoint : `[start, end]`;
+    - excluded starting datepoint and included ending datepoint : `(start, end]`;
+    - excluded starting datepoint and excluded ending datepoint : `(start, end)`;
+
+<p class="message-warning">infinite or unbounded intervals are not supported.</p>
+
+## Instantiation
 
 Instantiating a `Period` object is done using several named constructors describe below as the default constructor is
 made private. Whichever instance used, a `Period` instance is always created with the following requirements:
@@ -18,7 +36,7 @@ The `$bounds` is a `Period\Bounds` and only its value are eligible to create a n
 
 <p class="message-info">By default for each named constructor the <code>$bounds</code> is <code>Bounds::INCLUDE_START_EXCLUDE_END</code> when not explicitly provided.</p>
 
-## Using a DatePeriod object
+### Using a DatePeriod object
 
 ~~~php
 function Period::fromDatePeriod(
@@ -27,7 +45,7 @@ function Period::fromDatePeriod(
 ): self
 ~~~
 
-### Example
+#### Example
 
 ~~~php
 $daterange = new DatePeriod(
@@ -48,20 +66,20 @@ $interval = Period::fromDatePeriod($dateRange);
 //throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~
 
-## Using Date objects
+### Using datepoints
 
 ~~~php
 public static Period::fromDate(DatePoint|DateTimeInterface|string $startDate, DatePoint|DateTimeInterface|string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
 ~~~
 
-<p class="message-warning"><code>Period::fromDate</code> does not accept <code>string</code>. To use date as strings please refer to <code>Period::fromDateString</code></p>
+If the timezone is important use a `DateTimeInterface` object instead of a string. When a string is provided, the timezone information is derived from the underlying system.
 
 ~~~php
-$day = Period::fromDate(new DateTime('2012-01-03'), Datepoint::fromDateString('2012-02-03'), Bounds::EXCLUDE_ALL);
+$day = Period::fromDate('2012-01-03', Datepoint::fromDateString('2012-02-03'), Bounds::EXCLUDE_ALL);
 $day->toNotation('Y-m-d'); //return (2012-01-03, 2012-02-03)
 ~~~
 
-## Using a datepoint and/or a duration
+### Using a datepoint and a duration
 
 ~~~php
 public static Period::after(DatePoint|DateTimeInterface|string $startDate, Period|Duration|DateInterval|string $duration, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
@@ -73,7 +91,7 @@ public static Period::around(DatePoint|DateTimeInterface|string $midpoint, Perio
 - `Period::before` returns a `Period` object which ends at `$endDate`
 - `Period::around` returns a `Period` object where the given duration is simultaneously subtracted from and added to the `$midpoint`.
 
-### Examples
+#### Examples
 
 Using `Period::after`, `Period::around`, `Period::before`:
 
@@ -89,7 +107,7 @@ $intervalAround = Period::around($date->add($half_duration), $half_duration);
 $intervalAround->equals($intervalBefore); //returns true
 ~~~
 
-## Using date units
+### Using date fields
 
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
@@ -105,7 +123,7 @@ public static Period::fromIsoYear(int $year, Bounds $bounds = Bounds::INCLUDE_ST
 
 <p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
 
-### Examples
+#### Examples
 
 ~~~php
 $day = Period::fromDay(2012);
@@ -114,7 +132,7 @@ $day->equals($daybis); //return true;
 $day->getStartDate()->format('Y-m-d H:i:s'); //return 2012-01-01 00:00:00
 ~~~
 
-## Using predefined format
+### Using standardized notation
 
 ~~~php
 public static Period::fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
@@ -131,7 +149,7 @@ For better understanding:
 - the lower bound is represented as `{lowerBound}`
 - the upper bound is represented as `{upperBound}`
 
-### Using ISO 8601 notation
+#### Using ISO 8601 notation
 
 The `$notation` should follow the `{startDate}/{endDate}` pattern where `/` serves as delimiter. Each endpoint should be formatted following the `$format` input;
 
@@ -140,7 +158,7 @@ $day = Period::fromIso8601('Y-m-d', '2012-01-03/2012-02-03');
 echo $day->toNotation('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
 ~~~
 
-### Using mathematical notation
+#### Using mathematical notation
 
 The `$notation` should follow the `{lowerbound}{startDate},{endDate}{upperbound}` where `,` serves as delimiter. 
 Each endpoint should be formatted following the `$format` input.

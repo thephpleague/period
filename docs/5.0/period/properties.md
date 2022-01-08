@@ -107,13 +107,16 @@ $period->bounds();            // returns Bounds::INCLUDE_START_EXCLUDE_END
 
 ## Iteration over a Period
 
-### Period::dateRangeForward
+Iterating over a `Period` instance can produce two outcomes. A collection of `DateTimeImmutable` discrete values or one
+of smaller `Period` instances.
+
+### Period::dateRange
 
 ~~~php
-public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
+public Period::dateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
 ~~~
 
-Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
+Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`.
 
 <p class="message-notice">When iterating over the resulting <code>DatePeriod</code> object, all the generated datepoints are <code>DateTimeImmutable</code> instances.</p>
 
@@ -127,7 +130,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$duration`.
 use League\Period\Duration;
 use League\Period\Period;
 
-foreach (Period::fromYear(2012)->dateRangeForward('1 MONTH') as $datetime) {
+foreach (Period::fromYear(2012)->dateRange('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -141,7 +144,7 @@ Using the `$option` parameter
 use League\Period\Duration;
 use League\Period\Period;
 
-$dateRange = Period::fromYear(2012)->dateRangeForward('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+$dateRange = Period::fromYear(2012)->dateRange('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
