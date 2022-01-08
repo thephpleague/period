@@ -60,7 +60,7 @@ final class PeriodDurationTest extends TestCase
         }
 
         $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->dateRangeForward($duration, $option);
+        $range = $period->dateRange($duration, $option);
         self::assertCount($count, iterator_to_array($range));
     }
 

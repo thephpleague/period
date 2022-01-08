@@ -195,7 +195,7 @@ final class PeriodFactoryTest extends TestCase
             new DateInterval('P1D'),
             new DateTime('2016-05-20T00:00:00Z')
         );
-        $period = Period::fromDatePeriod($datePeriod);
+        $period = Period::fromDateRange($datePeriod);
         self::assertEquals($datePeriod->getStartDate(), $period->startDate());
         self::assertEquals($datePeriod->getEndDate(), $period->endDate());
     }
@@ -204,7 +204,7 @@ final class PeriodFactoryTest extends TestCase
     {
         $this->expectException(DateRangeInvalid::class);
 
-        Period::fromDatePeriod(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+        Period::fromDateRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
     public function testIsoWeek(): void

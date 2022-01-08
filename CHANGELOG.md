@@ -47,7 +47,8 @@ All notable changes to `Period` will be documented in this file
 - `Period::isStartExcluded` with no replacement use `Bounds::isStartIncluded` instead
 - `Period::isEndIncluded` replaced by `Bounds::isEndIncluded`
 - `Period::isEndExcluded` with no replacement use `Bounds::isEndIncluded` instead
-- `Period::getDatePeriod` replaced by `Period::dateRangeForward`
+- `Period::fromDatePeriod` replaced by `Period::fromDateRange`
+- `Period::getDatePeriod` replaced by `Period::dateRange`
 - `Period::getDatePeriodBackwards` replaced by `Period::dateRangeBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
 - `Period::format` replaced by `Period::toNotation`
@@ -59,7 +60,6 @@ All notable changes to `Period` will be documented in this file
 - `Sequence::getTotalTimestampInterval` use `Sequence::totalTimestampInterval` instead  
 - `Duration::__toString` and `Duration::format` with no replacement
 - `Duration::create` is removed with no replacement
-- `Duration::fromTimeString` is removed with no replacement
 - `Datepoint::create` is removed with no replacement
 - The `create` prefix is removed from the `Duration` and `Datepoint` named constructors.
 

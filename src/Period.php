@@ -181,7 +181,7 @@ final class Period implements JsonSerializable
     /**
      * @throws DateRangeInvalid If no instance can be generated from a DatePeriod object
      */
-    public static function fromDatePeriod(DatePeriod $datePeriod, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromDateRange(DatePeriod $datePeriod, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
         $endDate = $datePeriod->getEndDate();
         if (null === $endDate) {
@@ -645,7 +645,7 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      */
-    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
+    public function dateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDuration($timeDelta), $this->endDate, $option);
     }
@@ -688,7 +688,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->dateRangeForward($duration) as $startDate) {
+        foreach ($this->dateRange($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
