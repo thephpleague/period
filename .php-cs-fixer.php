@@ -15,28 +15,26 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 
-return $config->setRules([
+return $config
+    ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'none'],
-        'global_namespace_import' => [
-            'import_classes' => true,
-            'import_constants' => true,
-            'import_functions' => true,
-        ],
         'header_comment' => [
             'comment_type' => 'PHPDoc',
             'header' => $header,
             'location' => 'after_open',
             'separate' => 'both',
         ],
+        'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
+        'list_syntax' => ['syntax' => 'short'],
         'new_with_braces' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_phpdoc' => true,
         'no_empty_comment' => true,
         'no_leading_import_slash' => true,
-        'no_trailing_comma_in_singleline_array' => true,
         'no_superfluous_phpdoc_tags' => true,
+        'no_trailing_comma_in_singleline_array' => true,
         'no_unused_imports' => true,
         'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'alpha'],
         'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
