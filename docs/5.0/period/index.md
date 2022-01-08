@@ -162,7 +162,7 @@ $day->bounds() === Bounds::INCLUDE_ALL;
 ### Using a DatePeriod object
 
 ~~~php
-function Period::fromDatePeriod(
+function Period::fromDateRange(
     DatePeriod $datePeriod,
     Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
 ): self
@@ -176,7 +176,7 @@ $daterange = new DatePeriod(
     new DateInterval('PT1H'),
     new DateTime('2012-08-31')
 );
-$interval = Period::fromDatePeriod($daterange);
+$interval = Period::fromDateRange($daterange);
 $interval->getStartDate() == $daterange->getStartDate();
 $interval->getEndDate() == $daterange->getEndDate();
 ~~~
@@ -185,6 +185,6 @@ $interval->getEndDate() == $daterange->getEndDate();
 
 ~~~php
 $dateRange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
-$interval = Period::fromDatePeriod($dateRange);
+$interval = Period::fromDateRange($dateRange);
 //throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~
