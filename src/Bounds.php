@@ -20,22 +20,28 @@ enum Bounds: string
 
     public function isStartIncluded(): bool
     {
-        return '[' === $this->value[0];
+        return self::INCLUDE_START_EXCLUDE_END === $this || self::INCLUDE_ALL === $this;
     }
 
     public function isEndIncluded(): bool
     {
-        return ']' === $this->value[1];
+        return self::EXCLUDE_START_INCLUDE_END === $this || self::INCLUDE_ALL === $this;
     }
 
     public function equalsStart(self $other): bool
     {
-        return $other->value[0] === $this->value[0];
+        return match ($this) {
+            self::INCLUDE_ALL, self::INCLUDE_START_EXCLUDE_END => $other->isStartIncluded(),
+            default => !$other->isStartIncluded(),
+        };
     }
 
     public function equalsEnd(self $other): bool
     {
-        return $other->value[1] === $this->value[1];
+        return match ($this) {
+            self::INCLUDE_ALL, self::EXCLUDE_START_INCLUDE_END => $other->isEndIncluded(),
+            default => !$other->isEndIncluded(),
+        };
     }
 
     public function includeStart(): self
@@ -74,21 +80,19 @@ enum Bounds: string
         };
     }
 
-    public function replaceStartWith(self $other): self
+    public function replaceStart(self $other): self
     {
-        if ($other->value[0] === $this->value[0]) {
-            return $this;
-        }
-
-        return self::from($other->value[0].$this->value[1]);
+        return match (true) {
+            $other->isStartIncluded() => $this->includeStart(),
+            default => $this->excludeStart(),
+        };
     }
 
-    public function replaceEndWith(self $other): self
+    public function replaceEnd(self $other): self
     {
-        if ($other->value[1] === $this->value[1]) {
-            return $this;
-        }
-
-        return self::from($this->value[0].$other->value[1]);
+        return match (true) {
+            $other->isEndIncluded() => $this->includeEnd(),
+            default => $this->excludeEnd(),
+        };
     }
 }

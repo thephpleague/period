@@ -22,7 +22,6 @@ use function fwrite;
 use function implode;
 use function preg_replace;
 use function preg_replace_callback;
-use function stripos;
 use function strtolower;
 use const PHP_EOL;
 use const PHP_OS;
@@ -112,20 +111,13 @@ final class ConsoleOutput implements Output
             return $formatter;
         }
 
-        if (0 !== stripos(strtolower(PHP_OS), 'WIN')) {
-            $formatter = fn (array $matches): string =>
-                chr(27)
-                .'['
-                .strtr(
-                    (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]),
-                    self::POSIX_COLOR_CODES
-                )
-                .'m';
+        if (str_starts_with(strtolower(PHP_OS), 'win')) {
+            $formatter = fn (array $matches): string => (string)$matches[0];
 
             return $formatter;
         }
 
-        $formatter = fn (array $matches): string => (string) $matches[0];
+        $formatter = fn (array $matches): string => chr(27).'['.strtr((string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]), self::POSIX_COLOR_CODES).'m';
 
         return $formatter;
     }

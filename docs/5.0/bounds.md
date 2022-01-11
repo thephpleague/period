@@ -68,8 +68,8 @@ public Bounds::includeStart(): Bounds
 public Bounds::includeEnd(): Bounds
 public Bounds::excludeStart(): Bounds
 public Bounds::excludeEnd(): Bounds
-public Bounds::replaceStartWith(Bounds $other): Bounds
-public Bounds::replaceEndWith(Bounds $other): Bounds
+public Bounds::replaceStart(Bounds $other): Bounds
+public Bounds::replaceEnd(Bounds $other): Bounds
 ~~~
 
 #### Examples
@@ -79,6 +79,6 @@ use League\Period\Bounds;
 
 Bounds::INCLUDE_ALL->excludeStart() === Bounds::EXCLUDE_START_INCLUDE_END; // return true;
 Bounds::EXCLUDE_ALL->includeStart() == Bounds::INCLUDE_START_EXCLUDE_END; // return true;
-Bounds::EXCLUDE_ALL->replaceEndWith(Bounds::INCLUDE_ALL) === Bounds::INCLUDE_START_EXCLUDE_END; // return true;
-Bounds::EXCLUDE_ALL->replaceEndWith(Bounds::EXCLUDE_ALL) === Bounds::EXCLUDE_ALL; // return true;
+Bounds::EXCLUDE_ALL->replaceEnd(Bounds::INCLUDE_ALL) === Bounds::INCLUDE_START_EXCLUDE_END; // return true;
+Bounds::EXCLUDE_ALL->replaceEnd(Bounds::EXCLUDE_ALL) === Bounds::EXCLUDE_ALL; // return true;
 ~~~

@@ -292,9 +292,11 @@ final class Period implements JsonSerializable
      */
     public function toNotation(string $format): string
     {
-        [$lower, $upper] = str_split($this->bounds->value);
-
-        return $lower.$this->startDate->format($format).', '.$this->endDate->format($format).$upper;
+        return ($this->bounds->isStartIncluded() ? '[' : '(')
+            .$this->startDate->format($format)
+            .', '
+            .$this->endDate->format($format)
+            .($this->bounds->isEndIncluded() ? ']' : ')');
     }
 
     /**
@@ -752,12 +754,12 @@ final class Period implements JsonSerializable
         $endDate = $this->endDate;
         $bounds = $this->bounds;
         if ($period->startDate > $this->startDate) {
-            $bounds = $bounds->replaceStartWith($period->bounds);
+            $bounds = $bounds->replaceStart($period->bounds);
             $startDate = $period->startDate;
         }
 
         if ($period->endDate < $this->endDate) {
-            $bounds = $bounds->replaceEndWith($period->bounds);
+            $bounds = $bounds->replaceEnd($period->bounds);
             $endDate = $period->endDate;
         }
 
@@ -887,7 +889,7 @@ final class Period implements JsonSerializable
                 $carry = new self(
                     $period->startDate,
                     $carry->endDate,
-                    $carry->bounds->replaceStartWith($period->bounds)
+                    $carry->bounds->replaceStart($period->bounds)
                 );
             }
 
@@ -895,7 +897,7 @@ final class Period implements JsonSerializable
                 $carry = new self(
                     $carry->startDate,
                     $period->endDate,
-                    $carry->bounds->replaceEndWith($period->bounds)
+                    $carry->bounds->replaceEnd($period->bounds)
                 );
             }
 
