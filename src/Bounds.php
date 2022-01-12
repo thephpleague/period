@@ -20,12 +20,18 @@ enum Bounds: string
 
     public function isStartIncluded(): bool
     {
-        return self::INCLUDE_START_EXCLUDE_END === $this || self::INCLUDE_ALL === $this;
+        return match ($this) {
+            self::INCLUDE_START_EXCLUDE_END, self::INCLUDE_ALL => true,
+            default => false,
+        };
     }
 
     public function isEndIncluded(): bool
     {
-        return self::EXCLUDE_START_INCLUDE_END === $this || self::INCLUDE_ALL === $this;
+        return match ($this) {
+            self::EXCLUDE_START_INCLUDE_END, self::INCLUDE_ALL => true,
+            default => false,
+        };
     }
 
     public function equalsStart(self $other): bool
