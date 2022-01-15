@@ -388,7 +388,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Tells whether the given interval is present in the sequence.
      *
-     * @param Period ...$intervals
      */
     public function contains(Period ...$intervals): bool
     {
@@ -451,7 +450,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * The sequence is re-indexed after addition
      *
-     * @param Period ...$intervals
      */
     public function unshift(Period ...$intervals): void
     {
@@ -461,7 +459,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Adds new intervals at the end of the sequence.
      *
-     * @param Period ...$intervals
      */
     public function push(Period ...$intervals): void
     {
@@ -473,7 +470,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * The sequence is re-indexed after addition
      *
-     * @param Period ...$intervals
      *
      * @throws DateRangeInaccessible If the offset is illegal for the current sequence.
      */
