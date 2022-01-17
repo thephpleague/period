@@ -58,7 +58,10 @@
     "autoload": {
         "psr-4": {
             "League\\Period\\": "src"
-        }
+        },
+        "exclude-from-classmap": [
+            "src/**Test.php"
+        ]
     },
     "scripts": {
         "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
