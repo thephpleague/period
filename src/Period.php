@@ -89,7 +89,7 @@ final class Period implements JsonSerializable
             $format,
             trim($found['startdate']),
             trim($found['enddate']),
-            Bounds::from($found['lowerbound'].$found['upperbound'])
+            Bounds::fromNotation($found['lowerbound'].$found['upperbound'])
         );
     }
 

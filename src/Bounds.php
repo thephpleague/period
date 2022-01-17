@@ -11,12 +11,23 @@
 
 namespace League\Period;
 
-enum Bounds: string
+enum Bounds
 {
-    case INCLUDE_START_EXCLUDE_END = '[)';
-    case INCLUDE_ALL = '[]';
-    case EXCLUDE_START_INCLUDE_END = '(]';
-    case EXCLUDE_ALL = '()';
+    case INCLUDE_START_EXCLUDE_END;
+    case INCLUDE_ALL;
+    case EXCLUDE_START_INCLUDE_END;
+    case EXCLUDE_ALL;
+
+    public static function fromNotation(string $bounds): self
+    {
+        return match ($bounds) {
+            '[]' => self::INCLUDE_ALL,
+            '[)', '[[' => self::INCLUDE_START_EXCLUDE_END,
+            '()', '][' => self::EXCLUDE_ALL,
+            '(]', ']]' => self::EXCLUDE_START_INCLUDE_END,
+            default => throw DateRangeInvalid::dueToUnknownBounds($bounds),
+        };
+    }
 
     public function isStartIncluded(): bool
     {

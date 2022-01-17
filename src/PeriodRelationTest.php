@@ -1013,8 +1013,8 @@ class PeriodRelationTest extends TestCase
     {
         foreach (['[]', '[)', '()', '(]'] as $bound1) {
             foreach (['[]', '[)', '()', '(]'] as $bound2) {
-                $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), Bounds::from($bound1));
-                $interval1 = Period::fromDate(new DateTime('2014-05-01'), new DateTime('2014-08-01'), Bounds::from($bound2));
+                $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), Bounds::fromNotation($bound1));
+                $interval1 = Period::fromDate(new DateTime('2014-05-01'), new DateTime('2014-08-01'), Bounds::fromNotation($bound2));
                 $sequence = $interval0->diff($interval1);
                 $intersect = $interval0->intersect($interval1);
 

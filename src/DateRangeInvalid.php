@@ -36,6 +36,11 @@ final class DateRangeInvalid extends InvalidArgumentException implements DateRan
         return new self('The '.DatePeriod::class.' should contain an end date to be instantiate a '.Period::class.' class.');
     }
 
+    public static function dueToUnknownBounds(string $bounds): self
+    {
+        return new self('Unknown or unsupported interval bounds `'.$bounds.'`.');
+    }
+
     public static function dueToUnknownNotation(string $notation): self
     {
         return new self('Unknown or unsupported interval notation `'.$notation.'`.');
