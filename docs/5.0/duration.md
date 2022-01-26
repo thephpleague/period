@@ -90,13 +90,13 @@ Duration::fromTimeString('12:30:34.8');               // is equivalent to new Du
 To access the decorated `DateInterval` instance use the `Duration::toInterval` method.
 
 ~~~php
-public Duration::toDateInterval(): DateInterval
+public readonly DateInterval Duration::interval
 ~~~
 
 #### Examples
 
 ~~~php
-$dateInterval = Duration::fromChronoString('12:30')->toDateInterval(); //returns a DateInterval object
+$dateInterval = Duration::fromChronoString('12:30')->interval; //returns a DateInterval object
 ~~~
 
 
@@ -111,9 +111,9 @@ public Duration::adjustedTo(DateTimeInterface $date): self
 Returns a new instance with recalculate duration according to the given datepoint.
 
 ~~~php
-$duration = Duration::create('29 days');                                  // is equivalent to new Duration(DateInterval::createFromDateString('29 days'))
-$duration->adjustedTo(new DateTime('2019-02-01'));                        // is equivalent to new DateInterval('P1M1D') using a non leap year
-$duration->adjustedTo(Datepoint::fromDateString('2020-02-01')->toDate()); // is equivalent to new DateInterval('P1M') using a leap year
+$duration = Duration::create('29 days');                              // is equivalent to new Duration(DateInterval::createFromDateString('29 days'))
+$duration->adjustedTo(new DateTime('2019-02-01'));                    // is equivalent to new DateInterval('P1M1D') using a non leap year
+$duration->adjustedTo(Datepoint::fromDateString('2020-02-01')->date); // is equivalent to new DateInterval('P1M') using a leap year
 // in both cases the interval `days` property stays at 29 days
 ~~~
 

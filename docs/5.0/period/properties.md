@@ -78,6 +78,26 @@ echo $period->format('Y-m-d'); // [2014-05-01, 2014-05-08)
 
 This representation can be used, for instance, in a PostgreSQL query against a [DateRange field](https://www.postgresql.org/docs/9.3/static/rangetypes.html).
 
+### Duration representation
+
+You can represent a period as a `DateInterval` object or as a duration expressed in seconds. Those representation are
+bounds independent.
+
+~~~php
+use League\Period\Bounds;
+
+public Period::toDateInterval(): DateInterval
+public Period::seconds(): int
+~~~
+
+~~~php
+use League\Period\Period;
+
+$period = Period::fromDate('2012-04-01 08:30:25', '2013-09-04 12:35:21');
+$period->toDateInterval();  // returns a DateInterval object
+$period->seconds();         // returns the duration in seconds
+~~~
+
 ## Period properties
 
 Once you have a instantiated `Period` object you can access the object datepoints, durations and bounds using the following getter methods:
@@ -85,22 +105,18 @@ Once you have a instantiated `Period` object you can access the object datepoint
 ~~~php
 use League\Period\Bounds;
 
-public Period::startDate(): DateTimeImmutable
-public Period::endDate(): DateTimeImmutable
-public Period::bounds(): Bounds
-public Period::toDateInterval(): DateInterval
-public Period::toSeconds(): int
+public readonly DateTimeImmutable Period::startDate
+public readonly DateTimeImmutable Period::endDate
+public readonly Bounds Period::bounds
 ~~~
 
 ~~~php
 use League\Period\Period;
 
 $period = Period::fromDate('2012-04-01 08:30:25', '2013-09-04 12:35:21');
-$period->startDate();         // returns DateTimeImmutable('2012-04-01 08:30:25');
-$period->endDate();           // returns DateTimeImmutable('2013-09-04 12:35:21');
-$period->toDateInterval();      // returns a DateInterval object
-$period->toSeconds(); // returns the duration in seconds
-$period->bounds();            // returns Bounds::INCLUDE_START_EXCLUDE_END
+$period->startDate;         // returns DateTimeImmutable('2012-04-01 08:30:25');
+$period->endDate;           // returns DateTimeImmutable('2013-09-04 12:35:21');
+$period->bounds;            // returns Bounds::INCLUDE_START_EXCLUDE_END
 ~~~
 
 <p class="message-notice">More information can be extracted from the <code>Bounds</code> enum, please refer to its documentation page.</p>
@@ -130,7 +146,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`
 use League\Period\Duration;
 use League\Period\Period;
 
-foreach (Period::fromYear(2012)->toDateRange('1 MONTH') as $datetime) {
+foreach (Period::fromYear(2012)->dateRange('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -144,7 +160,7 @@ Using the `$option` parameter
 use League\Period\Duration;
 use League\Period\Period;
 
-$dateRange = Period::fromYear(2012)->toDateRange('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+$dateRange = Period::fromYear(2012)->dateRange('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }

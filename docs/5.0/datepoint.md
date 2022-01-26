@@ -82,18 +82,18 @@ DatePoint::fromTimestamp(2018);
 ## Accessing the inner Date object
 
 ~~~php
-public DatePoint::toDate(): DateTimeImmutable;;
+public readonly DateTimeImmutable DatePoint::date;
 ~~~
 
 At any given moment you can easily access the underlying `DateTimeImmutable` instance by
-calling the `DatePoint::toDate` method.
+calling the public readonly property `DatePoint::date`.
 
 #### examples
 
 ~~~php
 use League\Period\DatePoint;
 
-DatePoint::fromTimestamp(2018)->toDate();
+DatePoint::fromTimestamp(2018)->date;
 //returns an instance equivalent to `new DateTimeImmutable('@2018')`
 ~~~
 

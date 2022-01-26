@@ -45,18 +45,18 @@ final class Duration
         (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
     $@x';
 
-    private function __construct(private DateInterval $duration)
+    private function __construct(public readonly DateInterval $interval)
     {
     }
 
     /**
      * @inheritDoc
      *
-     * @param array{duration: DateInterval} $properties
+     * @param array{interval: DateInterval} $properties
      */
     public static function __set_state(array $properties): self
     {
-        return new self($properties['duration']);
+        return new self($properties['interval']);
     }
 
     /**
@@ -164,11 +164,6 @@ final class Duration
         ));
     }
 
-    public function toDateInterval(): DateInterval
-    {
-        return $this->duration;
-    }
-
     /**
      * Returns a new instance with recalculate properties according to a given datepoint.
      *
@@ -180,6 +175,6 @@ final class Duration
     {
         $date = DateTimeImmutable::createFromInterface($date);
 
-        return new self($date->diff($date->add($this->duration)));
+        return new self($date->diff($date->add($this->interval)));
     }
 }

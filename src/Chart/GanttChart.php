@@ -36,9 +36,9 @@ final class GanttChart implements Chart
     {
     }
 
-    public static function create(GanttChartConfig $config = null): self
+    public static function create(GanttChartConfig|null $config = null): self
     {
-        return new self($config ?? new GanttChartConfig());
+        return new self($config ?? GanttChartConfig::create());
     }
 
     /**
@@ -55,14 +55,14 @@ final class GanttChart implements Chart
     public function stroke(Data $dataset): void
     {
         $this->setChartScale($dataset);
-        $padding = $this->config->labelAlign();
-        $gap = str_repeat(' ', $this->config->gapSize());
-        $leftMargin = str_repeat(' ', $this->config->leftMarginSize());
-        $lineCharacters = array_fill(0, $this->config->width(), $this->config->space());
+        $padding = $this->config->labelAlignment;
+        $gap = str_repeat(' ', $this->config->gapSize);
+        $leftMargin = str_repeat(' ', $this->config->leftMarginSize);
+        $lineCharacters = array_fill(0, $this->config->width, $this->config->space);
         $labelMaxLength = $dataset->labelMaxLength();
-        $colorCodeIndexes = $this->config->colors();
+        $colorCodeIndexes = $this->config->colors;
         $colorCodeCount = count($colorCodeIndexes);
-        $output = $this->config->output();
+        $output = $this->config->output;
         foreach ($dataset as $offset => [$label, $item]) {
             $colorIndex = $colorCodeIndexes[$offset % $colorCodeCount];
             $labelPortion = str_pad((string) $label, $labelMaxLength, ' ', $padding);
@@ -81,14 +81,14 @@ final class GanttChart implements Chart
         $bounds = $dataset->length();
         if (null !== $bounds) {
             $this->start = $bounds->startDate->getTimestamp();
-            $this->unit = $this->config->width() / $bounds->toSeconds();
+            $this->unit = $this->config->width / $bounds->seconds();
         }
     }
 
     /**
      * Convert a Dataset item into a graph data portion.
      *
-     * @param string[] $lineCharacters
+     * @param array<string> $lineCharacters
      */
     private function drawDataPortion(Sequence $item, array $lineCharacters): string
     {
@@ -97,9 +97,9 @@ final class GanttChart implements Chart
             $endIndex = (int) ceil(($period->endDate->getTimestamp() - $this->start) * $this->unit);
             $periodLength = $endIndex - $startIndex;
 
-            array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->body()));
-            $lineCharacters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncluded() : $this->config->startExcluded();
-            $lineCharacters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncluded() : $this->config->endExcluded();
+            array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->body));
+            $lineCharacters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncludedCharacter : $this->config->startExcludedCharacter;
+            $lineCharacters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncludedCharacter : $this->config->endExcludedCharacter;
 
             return $lineCharacters;
         };

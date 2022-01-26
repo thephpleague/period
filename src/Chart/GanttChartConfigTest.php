@@ -26,28 +26,28 @@ final class GanttChartConfigTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = new GanttChartConfig();
+        $this->config = GanttChartConfig::create();
     }
 
     public function testNewInstance(): void
     {
-        self::assertSame('[', $this->config->startIncluded());
-        self::assertSame('(', $this->config->startExcluded());
-        self::assertSame(']', $this->config->endIncluded());
-        self::assertSame(')', $this->config->endExcluded());
-        self::assertSame('-', $this->config->body());
-        self::assertSame(' ', $this->config->space());
-        self::assertSame(60, $this->config->width());
-        self::assertSame(1, $this->config->gapSize());
-        self::assertSame(['reset'], $this->config->colors());
-        self::assertSame(GanttChartConfig::ALIGN_LEFT, $this->config->labelAlign());
+        self::assertSame('[', $this->config->startIncludedCharacter);
+        self::assertSame('(', $this->config->startExcludedCharacter);
+        self::assertSame(']', $this->config->endIncludedCharacter);
+        self::assertSame(')', $this->config->endExcludedCharacter);
+        self::assertSame('-', $this->config->body);
+        self::assertSame(' ', $this->config->space);
+        self::assertSame(60, $this->config->width);
+        self::assertSame(1, $this->config->gapSize);
+        self::assertSame(['reset'], $this->config->colors);
+        self::assertSame(GanttChartConfig::ALIGN_LEFT, $this->config->labelAlignment);
     }
 
     public function testCreateFromRandom(): void
     {
         $config1 = GanttChartConfig::fromRandom();
         $config2 = GanttChartConfig::fromRainbow();
-        self::assertContains($config1->colors()[0], $config2->colors());
+        self::assertContains($config1->colors[0], $config2->colors);
     }
 
     /**
@@ -55,7 +55,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testWidth(int $size, int $expected): void
     {
-        self::assertSame($expected, $this->config->withWidth($size)->width());
+        self::assertSame($expected, $this->config->withWidth($size)->width);
     }
 
     /**
@@ -76,7 +76,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testBody(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withBody($char)->body());
+        self::assertSame($expected, $this->config->withBody($char)->body);
     }
 
     /**
@@ -84,7 +84,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testEndExcluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withEndExcluded($char)->endExcluded());
+        self::assertSame($expected, $this->config->withEndExcludedCharacter($char)->endExcludedCharacter);
     }
 
     /**
@@ -92,7 +92,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testEndIncluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withEndIncluded($char)->endIncluded());
+        self::assertSame($expected, $this->config->withEndIncludedCharacter($char)->endIncludedCharacter);
     }
 
     /**
@@ -100,7 +100,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testStartExcluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withStartExcluded($char)->startExcluded());
+        self::assertSame($expected, $this->config->withStartExcludedCharacter($char)->startExcludedCharacter);
     }
 
     /**
@@ -108,7 +108,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testStartIncluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withStartIncluded($char)->startIncluded());
+        self::assertSame($expected, $this->config->withStartIncludedCharacter($char)->startIncludedCharacter);
     }
 
     /**
@@ -116,7 +116,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testSpace(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withSpace($char)->space());
+        self::assertSame($expected, $this->config->withSpace($char)->space);
     }
 
     /**
@@ -146,7 +146,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testColors(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withColors($char)->colors()[0]);
+        self::assertSame($expected, $this->config->withColors($char)->colors[0]);
     }
 
     /**
@@ -189,7 +189,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testLeftMargin(int $gap, int $expected): void
     {
-        self::assertSame($expected, $this->config->withLeftMarginSize($gap)->leftMarginSize());
+        self::assertSame($expected, $this->config->withLeftMarginSize($gap)->leftMarginSize);
     }
 
     /**
@@ -197,7 +197,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testGap(int $gap, int $expected): void
     {
-        self::assertSame($expected, $this->config->withGapSize($gap)->gapSize());
+        self::assertSame($expected, $this->config->withGapSize($gap)->gapSize);
     }
 
     /**
@@ -226,7 +226,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testPadding(int $padding, int $expected): void
     {
-        self::assertSame($expected, $this->config->withLabelAlign($padding)->labelAlign());
+        self::assertSame($expected, $this->config->withLabelAlignment($padding)->labelAlignment);
     }
 
     /**
@@ -254,6 +254,6 @@ final class GanttChartConfigTest extends TestCase
     {
         $newConfig = $this->config->withOutput(new ConsoleOutput(STDOUT));
         self::assertNotSame($this->config, $newConfig);
-        self::assertEquals($newConfig->output(), $this->config->output());
+        self::assertEquals($newConfig->output, $this->config->output);
     }
 }

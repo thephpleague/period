@@ -37,7 +37,7 @@ final class GanttChartTest extends TestCase
     protected function setUp(): void
     {
         $this->stream = $this->setStream();
-        $config = (new GanttChartConfig(new ConsoleOutput($this->stream)))->withColors('red');
+        $config = GanttChartConfig::create(new ConsoleOutput($this->stream))->withColors('red');
         $this->graph = GanttChart::create($config);
     }
 

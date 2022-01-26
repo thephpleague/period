@@ -35,7 +35,7 @@ final class DurationTest extends TestCase
 
     private function formatDuration(Duration $duration): string
     {
-        $interval = $duration->toDateInterval();
+        $interval = $duration->interval;
 
         $date = 'P';
         foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
@@ -90,16 +90,16 @@ final class DurationTest extends TestCase
     {
         $duration = Duration::fromInterval(new DateInterval('P1D'));
 
-        self::assertSame(1, $duration->toDateInterval()->d);
-        self::assertFalse($duration->toDateInterval()->days);
+        self::assertSame(1, $duration->interval->d);
+        self::assertFalse($duration->interval->days);
     }
 
     public function testCreateFromDateString(): void
     {
         $duration = Duration::fromDateString('+1 DAY');
 
-        self::assertSame(1, $duration->toDateInterval()->d);
-        self::assertFalse($duration->toDateInterval()->days);
+        self::assertSame(1, $duration->interval->d);
+        self::assertFalse($duration->interval->days);
     }
 
     /**
@@ -313,8 +313,8 @@ final class DurationTest extends TestCase
         $duration = Duration::fromIsoString($input);
         /** @var DateTimeInterface $date */
         $date = match (true) {
-            is_int($reference_date) => DatePoint::fromTimestamp($reference_date)->toDate(),
-            is_string($reference_date) => DatePoint::fromDateString($reference_date)->toDate(),
+            is_int($reference_date) => DatePoint::fromTimestamp($reference_date)->date,
+            is_string($reference_date) => DatePoint::fromDateString($reference_date)->date,
             default  => $reference_date,
         };
 

@@ -122,7 +122,7 @@ final class Period implements JsonSerializable
         return match (true) {
             $datepoint instanceof DateTimeImmutable => $datepoint,
             $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
-            $datepoint instanceof DatePoint => $datepoint->toDate(),
+            $datepoint instanceof DatePoint => $datepoint->date,
             default => new DateTimeImmutable($datepoint),
         };
     }
@@ -131,9 +131,9 @@ final class Period implements JsonSerializable
     {
         return match (true) {
             $duration instanceof DateInterval => $duration,
-            $duration instanceof Duration => $duration->toDateInterval(),
+            $duration instanceof Duration => $duration->interval,
             $duration instanceof Period => $duration->toDateInterval(),
-            default => Duration::fromDateString($duration)->toDateInterval(),
+            default => Duration::fromDateString($duration)->interval,
         };
     }
 
@@ -250,7 +250,7 @@ final class Period implements JsonSerializable
      * Duration representation
      **************************************************/
 
-    public function toSeconds(): int
+    public function seconds(): int
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
@@ -611,7 +611,7 @@ final class Period implements JsonSerializable
      */
     public function timestampIntervalDiff(self $period): int
     {
-        return $this->toSeconds() - $period->toSeconds();
+        return $this->seconds() - $period->seconds();
     }
 
     /**
@@ -630,7 +630,7 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      */
-    public function toDateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
+    public function dateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDuration($timeDelta), $this->endDate, $option);
     }
@@ -641,7 +641,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<DateTimeImmutable>
      */
-    public function toDateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator
+    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
@@ -673,7 +673,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->toDateRange($duration) as $startDate) {
+        foreach ($this->dateRange($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;

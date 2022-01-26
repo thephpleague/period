@@ -135,22 +135,24 @@ The `GanttChartConfig` class exposes the following additional constants and meth
 
 ~~~php
 <?php
+use League\Period\Chart\ConsoleOutput;
+
 const GanttChartConfig::ALIGN_LEFT = 1;
 const GanttChartConfig::ALIGN_RIGHT = 0;
 const GanttChartConfig::ALIGN_CENTER = 2;
-public function GanttChartConfig::__construct(Output $output);
-public function GanttChartConfig::output(): Output;        //Returns the Output instance.
-public function GanttChartConfig::startExcluded(): string; //Retrieves the excluded start block character.
-public function GanttChartConfig::startIncluded(): string; //Retrieves the included start block character.
-public function GanttChartConfig::endExcluded(): string;   //Retrieves the excluded end block character.
-public function GanttChartConfig::endIncluded(): string;   //Retrieves the included end block character.
-public function GanttChartConfig::width(): int;            //Retrieves the max size width.
-public function GanttChartConfig::body(): string;          //Retrieves the body block character.
-public function GanttChartConfig::space(): string;         //Retrieves the space block character.
-public function GanttChartConfig::colors(): string[];      //The selected colors for each row.
-public function GanttChartConfig::gapSize(): int;          //Retrieves the gap sequence between the label and the line.
-public function GanttChartConfig::labelAlign(): int;       //Returns how label should be aligned.
-public function GanttChartConfig::leftMarginSize(): int;   //Retrieves the margin between the label and the console left side.
+public static function GanttChartConfig::create(Output $output = new ConsoleOutput(STDOUT));
+public readonly Output GanttChartConfig::output;        //Returns the Output instance.
+public readonly string GanttChartConfig::startExcludedCharacter; //Retrieves the excluded start block character.
+public readonly string GanttChartConfig::startIncludedCharacter; //Retrieves the included start block character.
+public readonly string GanttChartConfig::endExcludedCharacter;   //Retrieves the excluded end block character.
+public readonly string GanttChartConfig::endIncludedCharacter;   //Retrieves the included end block character.
+public readonly int GanttChartConfig::width;            //Retrieves the max size width.
+public readonly string GanttChartConfig::body;          //Retrieves the body block character.
+public readonly string GanttChartConfig::space;         //Retrieves the space block character.
+public readonly array<string> GanttChartConfig::colors;      //The selected colors for each row.
+public readonly int GanttChartConfig::gapSize;          //Retrieves the gap sequence between the label and the line.
+public readonly int GanttChartConfig::labelAlignment;       //Returns how label should be aligned.
+public readonly int GanttChartConfig::leftMarginSize;   //Retrieves the margin between the label and the console left side.
 ~~~
 
 **`GanttChartConfig` is immutable, modifying its properties returns a new instance with the updated values.**
@@ -161,46 +163,40 @@ Here's a complex example which highlights most of the features introduces along 
 <?php
 
 use League\Period\Bounds;
-use League\Period\Chart\AffixLabel;
-use League\Period\Chart\ConsoleOutput;
-use League\Period\Chart\Dataset;
-use League\Period\Chart\DecimalNumber;
-use League\Period\Chart\GanttChart;
-use League\Period\Chart\GanttChartConfig;
-use League\Period\Chart\ReverseLabel;
-use League\Period\Chart\RomanNumber;
+use League\Period\Chart;
 use League\Period\Datepoint;
 use League\Period\Period;
 use League\Period\Sequence;
+use League\Period\Duration;
 
-$config = GanttChartConfig::createFromRainbow()
-    ->withOutput(new ConsoleOutput(STDOUT))
-    ->withStartExcluded('🍕')
-    ->withStartIncluded('🍅')
-    ->withEndExcluded('🎾')
-    ->withEndIncluded('🍔')
+$config = Chart\GanttChartConfig::fromRainbow()
+    ->withOutput(new Chart\ConsoleOutput(STDOUT))
+    ->withStartExcludedCharacter('🍕')
+    ->withStartIncludedCharacter('🍅')
+    ->withEndExcludedCharacter('🎾')
+    ->withEndIncludedCharacter('🍔')
     ->withWidth(30)
     ->withSpace('💩')
     ->withBody('😊')
     ->withGapSize(2)
     ->withLeftMarginSize(1)
-    ->withLabelAlign(GanttChartConfig::ALIGN_RIGHT)
+    ->withLabelAlignment(Chart\GanttChartConfig::ALIGN_RIGHT)
 ;
 
-$labelGenerator = new DecimalNumber(42);
-$labelGenerator = new RomanNumber($labelGenerator, RomanNumber::UPPER);
-$labelGenerator = new AffixLabel($labelGenerator, '', '.');
-$labelGenerator = new ReverseLabel($labelGenerator);
+$labelGenerator = new Chart\DecimalNumber(42);
+$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\Casing::UPPER);
+$labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
+$labelGenerator = new Chart\ReverseLabel($labelGenerator);
 
 $sequence = new Sequence(
     Datepoint::fromDateString('2018-11-29')->year(Bounds::EXCLUDE_START_INCLUDE_END),
     Datepoint::fromDateString('2018-05-29')->month()->expand('3 MONTH'),
     Datepoint::fromDateString('2017-01-13')->quarter(Bounds::EXCLUDE_ALL),
-    Period::around(new DateTime('2016-06-01'), DateInterval::createFromDateString('3 MONTHS'), Bounds::INCLUDE_ALL)
+    Period::around(new DateTime('2016-06-01'), Duration::fromDateString('3 MONTHS'), Bounds::INCLUDE_ALL)
 );
-$dataset = Dataset::fromItems($sequence, $labelGenerator);
+$dataset = Chart\Dataset::fromItems($sequence, $labelGenerator);
 $dataset->append($labelGenerator->format('gaps'), $sequence->gaps());
-$graph = new GanttChart($config);
+$graph = new Chart\GanttChart($config);
 $graph->stroke($dataset);
 ~~~
 

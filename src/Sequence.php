@@ -72,7 +72,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         return array_reduce(
             $this->periods,
-            fn (int $timestamp, Period $period): int => $timestamp + $period->toSeconds(),
+            fn (int $timestamp, Period $period): int => $timestamp + $period->seconds(),
             0
         );
     }

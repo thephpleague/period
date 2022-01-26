@@ -2,7 +2,7 @@
 
 All notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## [Next] - TBD
 
 ### Added
 
@@ -38,19 +38,19 @@ All notable changes to `Period` will be documented in this file
 
 - Support for PHP7
 - `Period::fromDatepoint` replaced by `Period::fromDate`
-- `Period::getStartDate` replaced by `Period::startDate`
-- `Period::getEndDate` replaced by `Period::endDate`
+- `Period::getStartDate` replaced by accessing readonly property `Period::startDate`
+- `Period::getEndDate` replaced by accessing readonly property `Period::endDate`
+- `Period::getBoundaryType` replaced by accessing readonly property `Period::bounds`
 - `Period::getDateInterval` replaced by `Period::toDateInterval`
-- `Period::getTimestampInterval` replaced by `Period::toSeconds`
-- `Period::getBoundaryType` replaced by `Period::bounds`
+- `Period::getTimestampInterval` replaced by `Period::seconds`
 - `Period::withBoundaryType` replaced by `Period::boundedBy`
 - `Period::isStartIncluded` with no replacement use `Bounds::isStartIncluded`
 - `Period::isStartExcluded` with no replacement use `Bounds::isStartIncluded` instead
 - `Period::isEndIncluded` with no replacement use  `Bounds::isEndIncluded`
 - `Period::isEndExcluded` with no replacement use `Bounds::isEndIncluded` instead
 - `Period::fromDatePeriod` replaced by `Period::fromDateRange`
-- `Period::getDatePeriod` replaced by `Period::toDateRange`
-- `Period::getDatePeriodBackwards` replaced by `Period::toDateRangeBackwards`
+- `Period::getDatePeriod` replaced by `Period::dateRange`
+- `Period::getDatePeriodBackwards` replaced by `Period::dateRangeBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
 - `Period::format` replaced by `Period::toNotation`
 - `Period::substract` use `Period::subtract` instead
@@ -63,6 +63,7 @@ All notable changes to `Period` will be documented in this file
 - `Duration::create` is removed with no replacement
 - `Datepoint::create` is removed with no replacement
 - The `create` prefix is removed from the `Duration` and `Datepoint` named constructors.
+- All charts related classes have their properties exposed as public readonly. All their getters are removed except if they are part of an interface.
 
 Removed all the following namespaced functions from the package: 
 
@@ -84,7 +85,7 @@ Removed all the following namespaced functions from the package:
 - `League\Period\interval_around`
 - `League\Period\interval_from_dateperiod`
 
-## 4.11.0 - 2020-11-11
+## [4.11.0] - 2020-11-11
 
 ### Added
 
@@ -108,7 +109,7 @@ Removed all the following namespaced functions from the package:
 
 - None
 
-## 4.10.0 - 2020-03-22
+## [4.10.0] - 2020-03-22
 
 ### Added
 
@@ -127,7 +128,7 @@ Removed all the following namespaced functions from the package:
 
 - Support for PHP7.1
 
-## 4.9.0 - 2019-09-02
+## [4.9.0] - 2019-09-02
 
 ### Added
 
@@ -156,7 +157,7 @@ Removed all the following namespaced functions from the package:
 
 - None
 
-## 4.8.1 - 2019-07-16
+## [4.8.1] - 2019-07-16
 
 ### Added
 
@@ -174,7 +175,7 @@ Removed all the following namespaced functions from the package:
 
 - None
 
-## 4.8.0 - 2019-06-20
+## [4.8.0] - 2019-06-20
 
 ### Added
 
@@ -197,7 +198,7 @@ Removed all the following namespaced functions from the package:
 
 - None
 
-## 4.7.1 - 2019-05-19
+## [4.7.1] - 2019-05-19
 
 ### Added
 
@@ -217,7 +218,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.7.0 - 2019-03-31
+## [4.7.0] - 2019-03-31
 
 ### Added
 
@@ -239,7 +240,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.6.0 - 2019-03-06
+## [4.6.0] - 2019-03-06
 
 ### Added
 
@@ -258,7 +259,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.5.0 - 2019-02-03
+## [4.5.0] - 2019-02-03
 
 ### Added
 
@@ -285,7 +286,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.4.0 - 2019-01-20
+## [4.4.0] - 2019-01-20
 
 ### Added
 
@@ -332,7 +333,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.3.1 - 2019-01-07
+## [4.3.1] - 2019-01-07
 
 ### Added
 
@@ -350,7 +351,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.3.0 - 2018-12-21
+## [4.3.0] - 2018-12-21
 
 ### Added
 
@@ -368,7 +369,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.2.0 - 2018-12-19
+## [4.2.0] - 2018-12-19
 
 ### Added
 
@@ -415,7 +416,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.1.0 - 2018-12-07
+## [4.1.0] - 2018-12-07
 
 ### Added
 
@@ -434,7 +435,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.0.1 - 2018-11-30
+## [4.0.1] - 2018-11-30
 
 ### Added
 
@@ -452,7 +453,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 4.0.0 - 2018-10-18
+## [4.0.0] - 2018-10-18
 
 ### Added
 
@@ -763,3 +764,21 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 ## 1.0 - 2014-09-24
 
 First stable release of `Period`
+
+[Next]: https://github.com/thephpleague/period/compare/4.11.0...master
+[4.11.0]: https://github.com/thephpleague/period/compare/4.10.0...4.11.0
+[4.10.0]: https://github.com/thephpleague/period/compare/4.9.0...4.10.0
+[4.9.0]: https://github.com/thephpleague/period/compare/4.8.1...4.9.0
+[4.8.1]: https://github.com/thephpleague/period/compare/4.8.0...4.8.1
+[4.8.0]: https://github.com/thephpleague/period/compare/4.7.1...4.8.0
+[4.7.1]: https://github.com/thephpleague/period/compare/4.7.0...4.7.1
+[4.7.0]: https://github.com/thephpleague/period/compare/4.6.0...4.7.0
+[4.6.0]: https://github.com/thephpleague/period/compare/4.5.0...4.6.0
+[4.5.0]: https://github.com/thephpleague/period/compare/4.4.0...4.5.0
+[4.4.0]: https://github.com/thephpleague/period/compare/4.3.1...4.4.0
+[4.3.1]: https://github.com/thephpleague/period/compare/4.3.0...4.3.1
+[4.3.0]: https://github.com/thephpleague/period/compare/4.2.0...4.3.0
+[4.2.0]: https://github.com/thephpleague/period/compare/4.1.0...4.2.0
+[4.1.0]: https://github.com/thephpleague/period/compare/4.0.1...4.1.0
+[4.0.1]: https://github.com/thephpleague/period/compare/4.0.0...4.0.1
+[4.0.0]: https://github.com/thephpleague/period/compare/3.4.0...4.0.0

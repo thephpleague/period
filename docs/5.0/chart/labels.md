@@ -5,7 +5,7 @@ title: Adding labels to the generated charts
 
 # Generating interval labels
 
-By default you are required to provide a label for each item present in a `Dataset` object.
+By default, you are required to provide a label for each item present in a `Dataset` object.
 The package provides a `League\Period\Chart\LabelGenerator` interface that ease generating labels for stroking.
 
 A `LabelGenerator` implementing class is needed for the `Dataset::fromItems` named constructor, to create a new instance from a collection of `Period` and/or `Sequence` objects;
@@ -49,8 +49,8 @@ The `LatinLetter` also exposes the following methods:
 ~~~php
 <?php
 
-public function LatinLetter::startingAt(): string; //returns the first letter to be used
-public function LatinLetter::startsWith(): self;  //returns a new object with a new starting letter
+public readonly string LatinLetter::startingAt;  //returns the first letter to be used
+public function LatinLetter::startsWith(): self; //returns a new object with a new starting letter
 ~~~
 
 ## DecimalNumber
@@ -88,7 +88,7 @@ The `DecimalNumber` also exposes the following methods:
 ~~~php
 <?php
 
-public function DecimalNumber::startingAt(): string; //returns the first decimal number to be used
+public readonly string DecimalNumber::startingAt; //returns the first decimal number to be used
 public function DecimalNumber::startsWith(): self;  //returns a new object with a new starting decimal number
 ~~~
 
@@ -131,11 +131,10 @@ The `RomanNumber` also exposes the following methods:
 <?php
 const RomanNumber::UPPER = 1;
 const RomanNumber::LOWER = 2;
-public function RomanNumber::startingAt(): string; //returns the first decimal number to be used
+public readonly DecimalNumber RomanNumber::decimalNumber; //returns the first decimal number to be used
 public function RomanNumber::startsWith(): self;  //returns a new object with a new starting decimal number
 public function RomanNumber::withLetterCase(int $lettercase): self;  //returns a new object with a new letter casing
-public function RomanNumber::isUpper(): bool;  //Tells whether the roman letter is upper cased.
-public function RomanNumber::isLower(): bool;  //Tells whether the roman letter is lower cased.
+public function RomanNumber::isUpper(): bool;  //Tells whether the roman letter is uppercase.
 ~~~
 
 ## AffixLabel
@@ -180,8 +179,8 @@ The `AffixLabel` also exposes the following methods:
 ~~~php
 <?php
 
-public function AffixLabel::prefix(): string; //returns the current prefix
-public function AffixLabel::suffix(): string;  //returns the current suffix
+public readonly string AffixLabel::prefix;   //returns the current prefix
+public readonly string AffixLabel::suffix(); //returns the current suffix
 public function AffixLabel::withPrefix(string $prefix): self;  //returns a new object with a new prefix
 public function AffixLabel::withSuffix(string $suffix): self;  //returns a new object with a new suffix
 ~~~
