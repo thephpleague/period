@@ -20,7 +20,6 @@ use Iterator;
 use IteratorAggregate;
 use JsonSerializable;
 use function array_filter;
-use function array_merge;
 use function array_splice;
 use function array_unshift;
 use function array_values;
@@ -446,7 +445,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function unshift(Period ...$intervals): void
     {
-        $this->items = array_merge($intervals, $this->items);
+        $this->items = [...$intervals, ...$this->items];
     }
 
     /**
@@ -454,7 +453,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function push(Period ...$intervals): void
     {
-        $this->items = array_merge($this->items, $intervals);
+        $this->items = [...$this->items, ...$intervals];
     }
 
     /**

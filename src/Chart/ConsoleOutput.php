@@ -46,8 +46,7 @@ final class ConsoleOutput implements Output
 
     public function writeln(string $message = '', Color $color = Color::NONE): void
     {
-        $line = $this->format($this->colorize($message, $color)).PHP_EOL;
-        fwrite($this->stream, $line);
+        fwrite($this->stream, $this->format($this->colorize($message, $color)).PHP_EOL);
         fflush($this->stream);
     }
 
@@ -93,12 +92,10 @@ final class ConsoleOutput implements Output
             return $formatter;
         }
 
-        $to = array_reduce(Color::cases(), function (array $carry, Color $color): array {
-            $carry[$color->value] = $color->code();
-            return $carry;
-        }, []);
-
-        $formatter = fn (array $matches): string => chr(27).'['.strtr((string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]), $to).'m';
+        $formatter = fn (array $matches): string => chr(27).'['.strtr(
+            (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]),
+            array_reduce(Color::cases(), fn (array $carry, Color $color): array => [...$carry, ...[$color->value => $color->code()]], [])
+        ).'m';
 
         return $formatter;
     }

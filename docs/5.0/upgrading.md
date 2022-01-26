@@ -241,7 +241,7 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 + Period::fromDate('2021-03-21 12:23:56', '2021-03-21 13:23:56', Bounds::EXCLUDE_ALL);
 ```
 
-`Period::toSeconds` now returns an `int` instead of a `float` value.
+`Period::toTimeDuration` now returns an `int` instead of a `float` value.
 
 ```diff
 - $period->timestampInterval(); //returns float
