@@ -149,7 +149,7 @@ public readonly string GanttChartConfig::endIncludedCharacter;   //Retrieves the
 public readonly int GanttChartConfig::width;            //Retrieves the max size width.
 public readonly string GanttChartConfig::body;          //Retrieves the body block character.
 public readonly string GanttChartConfig::space;         //Retrieves the space block character.
-public readonly array<string> GanttChartConfig::colors;      //The selected colors for each row.
+public readonly array<Chart\Color> GanttChartConfig::colors;      //The selected colors for each row.
 public readonly int GanttChartConfig::gapSize;          //Retrieves the gap sequence between the label and the line.
 public readonly int GanttChartConfig::labelAlignment;       //Returns how label should be aligned.
 public readonly int GanttChartConfig::leftMarginSize;   //Retrieves the margin between the label and the console left side.

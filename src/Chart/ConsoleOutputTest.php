@@ -49,7 +49,7 @@ final class ConsoleOutputTest extends TestCase
     {
         $stream = $this->setStream();
         $output = new ConsoleOutput($stream);
-        $output->writeln($message, 'blue');
+        $output->writeln($message, Color::BLUE);
         rewind($stream);
         /** @var string $data */
         $data = stream_get_contents($stream);
@@ -72,18 +72,5 @@ final class ConsoleOutputTest extends TestCase
                 'expected' => chr(27).'[34m'."I'm the king of the world".chr(27).'[0m'.PHP_EOL,
             ],
         ];
-    }
-
-    public function testWritelnWithUnknownColor(): void
-    {
-        $message = 'foobar the quick brown fox';
-        $stream = $this->setStream();
-        $output = new ConsoleOutput($stream);
-        $output->writeln($message, 'pink');
-        rewind($stream);
-        /** @var string $data */
-        $data = stream_get_contents($stream);
-
-        self::assertStringContainsString($message.PHP_EOL, $data);
     }
 }

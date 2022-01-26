@@ -39,7 +39,7 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame(' ', $this->config->space);
         self::assertSame(60, $this->config->width);
         self::assertSame(1, $this->config->gapSize);
-        self::assertSame(['reset'], $this->config->colors);
+        self::assertSame([Color::RESET], $this->config->colors);
         self::assertSame(Alignment::LEFT, $this->config->labelAlignment);
     }
 
@@ -144,19 +144,19 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @dataProvider colorsProvider
      */
-    public function testColors(string $char, string $expected): void
+    public function testColors(Color $char, Color $expected): void
     {
         self::assertSame($expected, $this->config->withColors($char)->colors[0]);
     }
 
     /**
-     * @return array<array{0:string, 1:string}>
+     * @return array<array{0:Color, 1:Color}>
      */
     public function colorsProvider(): array
     {
         return [
-            ['=', 'reset'],
-            ['white', 'white'],
+            [Color::RESET, Color::RESET],
+            [Color::WHITE, Color::WHITE],
         ];
     }
 

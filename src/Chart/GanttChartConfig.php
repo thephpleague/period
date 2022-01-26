@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
-use function array_filter;
-use function array_map;
 use function mb_convert_encoding;
 use function mb_strlen;
 use function preg_match;
@@ -40,8 +38,8 @@ final class GanttChartConfig
         public readonly int $leftMarginSize = 1,
         public readonly int $gapSize = 1,
         public readonly Alignment $labelAlignment = Alignment::LEFT,
-        /** @var array<string> */
-        public readonly array $colors = [Output::COLOR_DEFAULT],
+        /** @var array<Color> */
+        public readonly array $colors = [Color::RESET],
     ) {
     }
 
@@ -58,7 +56,9 @@ final class GanttChartConfig
      */
     public static function fromRandom(Output $output = new ConsoleOutput(STDOUT)): self
     {
-        return self::create($output)->withColors(Output::COLORS[array_rand(Output::COLORS)]);
+        $cases = Color::cases();
+
+        return self::create($output)->withColors($cases[array_rand($cases)]);
     }
 
     /**
@@ -66,7 +66,7 @@ final class GanttChartConfig
      */
     public static function fromRainbow(Output $output = new ConsoleOutput(STDOUT)): self
     {
-        return self::create($output)->withColors(...Output::COLORS);
+        return self::create($output)->withColors(...Color::cases());
     }
 
     /**
@@ -338,15 +338,10 @@ final class GanttChartConfig
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified color palette.
      */
-    public function withColors(string ...$colors): self
+    public function withColors(Color ...$colors): self
     {
-        $colors = array_filter(
-            array_map('strtolower', $colors),
-            fn (string $value): bool => in_array($value, Output::COLORS, true)
-        );
-
         if ([] === $colors) {
-            $colors = [Output::COLOR_DEFAULT];
+            $colors = [Color::RESET];
         }
 
         if ($colors === $this->colors) {

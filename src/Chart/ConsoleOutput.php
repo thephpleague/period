@@ -15,7 +15,6 @@ namespace League\Period\Chart;
 
 use Closure;
 use TypeError;
-use function array_keys;
 use function chr;
 use function fflush;
 use function fwrite;
@@ -30,26 +29,10 @@ final class ConsoleOutput implements Output
 {
     private const REGEXP_POSIX_PLACEHOLDER = '/(\s+)/msi';
 
-    private const POSIX_COLOR_CODES = [
-        self::COLOR_DEFAULT => '0',
-        self::COLOR_BLACK   => '30',
-        self::COLOR_RED     => '31',
-        self::COLOR_GREEN   => '32',
-        self::COLOR_YELLOW  => '33',
-        self::COLOR_BLUE    => '34',
-        self::COLOR_MAGENTA => '35',
-        self::COLOR_CYAN    => '36',
-        self::COLOR_WHITE   => '37',
-    ];
-
-    /**
-     * @var resource
-     */
+    /** @var resource */
     private $stream;
 
     /**
-     * Stdout constructor.
-     *
      * @param resource|mixed $resource
      */
     public function __construct($resource)
@@ -65,8 +48,7 @@ final class ConsoleOutput implements Output
         $this->stream = $resource;
     }
 
-    
-    public function writeln(string $message = '', string $color = self::COLOR_DEFAULT): void
+    public function writeln(string $message = '', Color $color = Color::NONE): void
     {
         $line = $this->format($this->colorize($message, $color)).PHP_EOL;
         fwrite($this->stream, $line);
@@ -76,13 +58,13 @@ final class ConsoleOutput implements Output
     /**
      * Colorizes the given string.
      */
-    private function colorize(string $characters, string $color): string
+    private function colorize(string $characters, Color $color): string
     {
-        if (!isset(self::POSIX_COLOR_CODES[strtolower($color)])) {
+        if (Color::NONE === $color) {
             return $characters;
         }
 
-        return "<<$color>>$characters<<".Output::COLOR_DEFAULT.'>>';
+        return "<<$color->value>>$characters<<".Color::RESET->value.'>>';
     }
 
     /**
@@ -93,7 +75,7 @@ final class ConsoleOutput implements Output
         /** @var string|null $regexp */
         static $regexp;
         if (null === $regexp) {
-            $regexp = ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
+            $regexp = ',<<\s*((('.implode('|', array_map(fn (Color $c): string => $c->value, Color::cases())).')(\s*))+)>>,Umsi';
         }
 
         return (string) preg_replace_callback($regexp, $this->formatter(), $str);
@@ -115,7 +97,13 @@ final class ConsoleOutput implements Output
             return $formatter;
         }
 
-        $formatter = fn (array $matches): string => chr(27).'['.strtr((string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]), self::POSIX_COLOR_CODES).'m';
+        $mapper = array_combine(
+            array_map(fn (Color $c): string => $c->value, Color::cases()),
+            array_map(fn (Color $c): string => $c->code(), Color::cases())
+        );
+
+
+        $formatter = fn (array $matches): string => chr(27).'['.strtr((string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]), $mapper).'m';
 
         return $formatter;
     }
