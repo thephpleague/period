@@ -62,9 +62,7 @@ final class GanttChartConfig
      */
     public static function fromRandom(Output $output = new ConsoleOutput(STDOUT)): self
     {
-        $index = array_rand(Output::COLORS);
-
-        return self::create($output)->withColors(Output::COLORS[$index]);
+        return self::create($output)->withColors(Output::COLORS[array_rand(Output::COLORS)]);
     }
 
     /**
@@ -72,7 +70,7 @@ final class GanttChartConfig
      */
     public static function fromRainbow(Output $output = new ConsoleOutput(STDOUT)): self
     {
-        return (new self($output))->withColors(...Output::COLORS);
+        return self::create($output)->withColors(...Output::COLORS);
     }
 
     /**
@@ -83,7 +81,7 @@ final class GanttChartConfig
      */
     public function withStartExcludedCharacter(string $startExcludedCharacter): self
     {
-        $startExcludedCharacter = $this->filterPattern($startExcludedCharacter, 'startExcluded');
+        $startExcludedCharacter = $this->filterPattern($startExcludedCharacter, 'startExcludedCharacter');
         if ($startExcludedCharacter === $this->startExcludedCharacter) {
             return $this;
         }
@@ -169,7 +167,7 @@ final class GanttChartConfig
      */
     public function withStartIncludedCharacter(string $startIncludedCharacter): self
     {
-        $startIncludedCharacter = $this->filterPattern($startIncludedCharacter, 'startIncluded');
+        $startIncludedCharacter = $this->filterPattern($startIncludedCharacter, 'startIncludedCharacter');
         if ($startIncludedCharacter === $this->startIncludedCharacter) {
             return $this;
         }
@@ -198,7 +196,7 @@ final class GanttChartConfig
      */
     public function withEndExcludedCharacter(string $endExcludedCharacter): self
     {
-        $endExcludedCharacter = $this->filterPattern($endExcludedCharacter, 'endExcluded');
+        $endExcludedCharacter = $this->filterPattern($endExcludedCharacter, 'endExcludedCharacter');
         if ($endExcludedCharacter === $this->endExcludedCharacter) {
             return $this;
         }
@@ -227,7 +225,7 @@ final class GanttChartConfig
      */
     public function withEndIncludedCharacter(string $endIncludedCharacter): self
     {
-        $endIncludedCharacter = $this->filterPattern($endIncludedCharacter, 'endIncluded');
+        $endIncludedCharacter = $this->filterPattern($endIncludedCharacter, 'endIncludedCharacter');
         if ($endIncludedCharacter === $this->endIncludedCharacter) {
             return $this;
         }
