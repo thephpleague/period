@@ -231,7 +231,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_ALL
         );
 
-        $snapToSeconds = $period->snapToSecond();
+        $snapToSeconds = $period->snapTo(TimeUnit::SECOND);
 
         self::assertSame('2021-07-18 12:12:12.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-23 12:12:13.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
@@ -246,7 +246,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::EXCLUDE_ALL
         );
 
-        $snapToSeconds = $period->snapToMinute();
+        $snapToSeconds = $period->snapTo(TimeUnit::MINUTE);
 
         self::assertSame('2021-07-18 12:12:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-23 12:13:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
@@ -261,7 +261,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::EXCLUDE_START_INCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToHour();
+        $snapToSeconds = $period->snapTo(TimeUnit::HOUR);
 
         self::assertSame('2021-07-18 12:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-23 13:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
@@ -276,7 +276,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToDay();
+        $snapToSeconds = $period->snapTo(TimeUnit::DAY);
 
         self::assertSame('2021-07-18 00:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-07-24 00:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
@@ -291,7 +291,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToMonth();
+        $snapToSeconds = $period->snapTo(TimeUnit::MONTH);
 
         self::assertSame('2021-07-01 00:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
         self::assertSame('2021-08-01 00:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
@@ -306,7 +306,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToYear();
+        $snapToSeconds = $period->snapTo(TimeUnit::YEAR);
 
         self::assertSame('2021-01-01 00:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
         self::assertSame('2022-01-01 00:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
@@ -321,7 +321,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToQuarter();
+        $snapToSeconds = $period->snapTo(TimeUnit::QUARTER);
         $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->quarter()->startDate->format('Y-m-d H:i:s.u');
         $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->quarter()->endDate->format('Y-m-d H:i:s.u');
 
@@ -338,7 +338,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToSemester();
+        $snapToSeconds = $period->snapTo(TimeUnit::SEMESTER);
         $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->semester()->startDate->format('Y-m-d H:i:s.u');
         $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->semester()->endDate->format('Y-m-d H:i:s.u');
 
@@ -355,7 +355,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToIsoWeek();
+        $snapToSeconds = $period->snapTo(TimeUnit::ISO_WEEK);
         $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoWeek()->startDate->format('Y-m-d H:i:s.u');
         $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoWeek()->endDate->format('Y-m-d H:i:s.u');
 
@@ -372,7 +372,7 @@ final class PeriodEndPointsTest extends TestCase
             Bounds::INCLUDE_START_EXCLUDE_END
         );
 
-        $snapToSeconds = $period->snapToIsoYear();
+        $snapToSeconds = $period->snapTo(TimeUnit::ISO_YEAR);
         $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoYear()->startDate->format('Y-m-d H:i:s.u');
         $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoYear()->endDate->format('Y-m-d H:i:s.u');
 
