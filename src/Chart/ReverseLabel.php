@@ -22,9 +22,7 @@ final class ReverseLabel implements LabelGenerator
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function generate(int $nbLabels): Iterator
     {
         $iterable = $this->labelGenerator->generate($nbLabels);
@@ -35,9 +33,7 @@ final class ReverseLabel implements LabelGenerator
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function format(string $label): string
     {
         return $this->labelGenerator->format($label);

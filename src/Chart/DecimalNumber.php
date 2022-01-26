@@ -28,9 +28,7 @@ final class DecimalNumber implements LabelGenerator
         $this->startingAt = $startingAt;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function generate(int $nbLabels): Iterator
     {
         if (0 >= $nbLabels) {
@@ -48,9 +46,7 @@ final class DecimalNumber implements LabelGenerator
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function format(string $label): string
     {
         return $label;

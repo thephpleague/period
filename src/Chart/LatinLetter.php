@@ -40,16 +40,14 @@ final class LatinLetter implements LabelGenerator
         return $str;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function format(string $label): string
     {
         return $label;
     }
 
     /**
-     * {@inheritdoc}
+     *
      *
      * @psalm-suppress StringIncrement
      */

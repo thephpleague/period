@@ -81,7 +81,7 @@ final class GanttChart implements Chart
         $bounds = $dataset->length();
         if (null !== $bounds) {
             $this->start = $bounds->startDate->getTimestamp();
-            $this->unit = $this->config->width / $bounds->seconds();
+            $this->unit = $this->config->width / $bounds->toSeconds();
         }
     }
 

@@ -31,9 +31,7 @@ final class RomanNumber implements LabelGenerator
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->decimalNumber->generate($nbLabels) as $key => $label) {
@@ -41,9 +39,7 @@ final class RomanNumber implements LabelGenerator
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function format(string $label): string
     {
         if (Casing::UPPER === $this->case) {

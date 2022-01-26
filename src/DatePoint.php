@@ -34,7 +34,7 @@ final class DatePoint
     }
 
     /**
-     * @inheritDoc
+     *
      *
      * @param array{date: DateTimeImmutable} $properties
      */

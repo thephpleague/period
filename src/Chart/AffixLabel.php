@@ -32,9 +32,7 @@ final class AffixLabel implements LabelGenerator
         return (string) preg_replace("/[\r\n]/", '', $str);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->labelGenerator->generate($nbLabels) as $key => $label) {
@@ -42,9 +40,7 @@ final class AffixLabel implements LabelGenerator
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function format(string $label): string
     {
         return $this->prefix.$this->labelGenerator->format($label).$this->suffix;

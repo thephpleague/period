@@ -341,7 +341,6 @@ final class GanttChartConfig
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified color palette.
-     *
      */
     public function withColors(string ...$colors): self
     {

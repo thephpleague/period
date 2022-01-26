@@ -511,12 +511,12 @@ final class SequenceTest extends TestCase
 
     public function testGetTotalTimestampInterval(): void
     {
-        self::assertSame(0, (new Sequence())->totalSeconds());
+        self::assertSame(0, (new Sequence())->totalDuration());
 
         $sequence = new Sequence(Period::fromMonth(2017, 1), Period::fromMonth(2018, 1));
         $period = $sequence->length();
         if (null !== $period) {
-            self::assertNotEquals($period->seconds(), $sequence->totalSeconds());
+            self::assertNotEquals($period->toSeconds(), $sequence->totalDuration());
         }
     }
 }

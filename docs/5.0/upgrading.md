@@ -72,6 +72,34 @@ The following classes have their inheritance changed:
 - The `Datepoint` class is renamed `DatePoint` and no longer extends the `DateImmutable` class
 - The `Duration` class no longer extends the `DateInterval` class
 
+## Change in getters
+
+With the introduction of public readonly properties some methods have been dropped in favor 
+of explicit public properties:
+
+| `4.x` method name                    | `5.x` property                             |
+|--------------------------------------|--------------------------------------------|
+| `Period::getStartDate()`             | `Period::startDate`                        |
+| `Period::getEndDate()`               | `Period::endDate`                          |
+| `Period::getBoundaryType()`          | `Period::bounds`                           |
+| `GanttChartConfig::output()`         | `GanttChartConfig::output`                 |
+| `GanttChartConfig::startExcluded()`  | `GanttChartConfig::startExcludedCharacter` |
+| `GanttChartConfig::startIncluded()`  | `GanttChartConfig::startIncludedCharacter` |
+| `GanttChartConfig::endExcluded()`    | `GanttChartConfig::endExcludedCharacter`   |
+| `GanttChartConfig::endIncluded()`    | `GanttChartConfig::endIncludedCharacter`   |
+| `GanttChartConfig::width()`          | `GanttChartConfig::width`                  |
+| `GanttChartConfig::body()`           | `GanttChartConfig::body`                   |
+| `GanttChartConfig::space()`          | `GanttChartConfig::space`                  |
+| `GanttChartConfig::colors()`         | `GanttChartConfig::colors`                 |
+| `GanttChartConfig::gapSize()`        | `GanttChartConfig::gapSize`                |
+| `GanttChartConfig::labelAlign()`     | `GanttChartConfig::labelAlignment`         |
+| `GanttChartConfig::leftMarginSize()` | `GanttChartConfig::leftMarginSize`         |
+| `LatinLetter::startingAt()`          | `LatinLetter::startingAt`                  |
+| `DecimalNumber::startingAt()`        | `DecimalNumber::startingAt`                |
+| `RomanNumber::startingAt()`          | `RomanNumber::startingAt`                  |
+| `AffixLabel::prefix()`               | `AffixLabel::prefix`                       |
+| `AffixLabel::suffix()`               | `AffixLabel::suffix`                       |
+
 ## Change in method name
 
 The following methods were renamed between `4.x` and `5.x`. 
@@ -86,11 +114,8 @@ Most notably:
 | `4.x` method name                     | `5.x` method name                  |
 |---------------------------------------|------------------------------------|
 | `Period::fromDatepoint`               | `Period::fromDate`                 |
-| `Period::getStartDate`                | `Period::startDate`                |
-| `Period::getEndDate`                  | `Period::endDate`                  |
-| `Period::getDateInterval`             | `Period::dateInterval`             |
-| `Period::getTimestampInterval`        | `Period::timestampInterval`        |
-| `Period::getBoundaryType`             | `Period::bounds`                   |
+| `Period::getDateInterval`             | `Period::toDateInterval`           |
+| `Period::getTimestampInterval`        | `Period::toSeconds`                |
 | `Period::withBoundaryType`            | `Period::boundedBy`                |
 | `Period::getDatePeriod`               | `Period::dateRange`                |
 | `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`       |
@@ -111,6 +136,11 @@ Most notably:
 | `Datepoint::getSemester`              | `Datepoint::semester`              |
 | `Datepoint::getYear`                  | `Datepoint::year`                  |
 | `Datepoint::getIsoYear`               | `Datepoint::isoYear`               |
+
+```diff
+- Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();
++ Period::fromDate('2021-05-23',  '2021-05-24', Bounds::INCLUDE_ALL)->startDate;
+```
 
 ## Backward Incompatibility Changes
 
@@ -210,11 +240,11 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 + Period::fromDate('2021-03-21 12:23:56', '2021-03-21 13:23:56', Bounds::EXCLUDE_ALL);
 ```
 
-`Period::timestampInterval` now returns an int instead of a float value.
+`Period::toSeconds` now returns an `int` instead of a `float` value.
 
 ```diff
 - $period->timestampInterval(); //returns float
-+ $period->timestampInterval(); //returns int
++ $period->seconds(); //returns int
 ```
 
 `Period::diff` now returns a `Sequence` object, before it was returning an `array`.
@@ -234,8 +264,6 @@ in `5.x` Closure objects are used instead of the callable pseudo type with the `
 + $res = $sequence->filter(myFilter(...)); // a Closure object MUST be given
 ```
 
-
-
 ## Changes in bounds related methods
 
 With the introduction of the `Bounds` enum, all bound related methods are moved to the Enum.
@@ -245,11 +273,11 @@ With the introduction of the `Bounds` enum, all bound related methods are moved 
 + $period->bounds()->isStartIncluded(); // return true
 ```
 
-| `4.x` method name          | `5.x` method name         |
-|----------------------------|---------------------------|
-| `Period::getBoundaryType`  | `Period::bounds`          |
-| `Period::withBoundaryType` | `Period::boundedBy`       |
-| `Period::isStartIncluded`  | `Bounds::isStartIncluded` |
-| `Period::isStartExcluded`  | `Bounds::isStartIncluded` |
-| `Period::isEndIncluded`    | `Bounds::isEndIncluded`   |
-| `Period::isEndExcluded`    | `Bounds::isEndIncluded`   |
+| `4.x` method name                             | `5.x` method name                             |
+|-----------------------------------------------|-----------------------------------------------|
+| `Period::getBoundaryType`                     | `Period::bounds` (a public readonly property) |
+| `Period::withBoundaryType` (expects a string) | `Period::boundedBy` (expects a Bounds enum)   |
+| `Period::isStartIncluded`                     | `Bounds::isStartIncluded`                     |
+| `Period::isStartExcluded`                     | `Bounds::isStartIncluded`                     |
+| `Period::isEndIncluded`                       | `Bounds::isEndIncluded`                       |
+| `Period::isEndExcluded`                       | `Bounds::isEndIncluded`                       |

@@ -87,7 +87,7 @@ bounds independent.
 use League\Period\Bounds;
 
 public Period::toDateInterval(): DateInterval
-public Period::seconds(): int
+public Period::toSeconds(): int
 ~~~
 
 ~~~php
@@ -95,7 +95,7 @@ use League\Period\Period;
 
 $period = Period::fromDate('2012-04-01 08:30:25', '2013-09-04 12:35:21');
 $period->toDateInterval();  // returns a DateInterval object
-$period->seconds();         // returns the duration in seconds
+$period->toSeconds();         // returns the duration in seconds
 ~~~
 
 ## Period properties

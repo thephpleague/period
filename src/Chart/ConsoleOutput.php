@@ -65,9 +65,7 @@ final class ConsoleOutput implements Output
         $this->stream = $resource;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    
     public function writeln(string $message = '', string $color = self::COLOR_DEFAULT): void
     {
         $line = $this->format($this->colorize($message, $color)).PHP_EOL;

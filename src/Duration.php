@@ -50,7 +50,7 @@ final class Duration
     }
 
     /**
-     * @inheritDoc
+     *
      *
      * @param array{interval: DateInterval} $properties
      */
