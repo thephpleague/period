@@ -40,7 +40,7 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame(60, $this->config->width);
         self::assertSame(1, $this->config->gapSize);
         self::assertSame(['reset'], $this->config->colors);
-        self::assertSame(GanttChartConfig::ALIGN_LEFT, $this->config->labelAlignment);
+        self::assertSame(Alignment::LEFT, $this->config->labelAlignment);
     }
 
     public function testCreateFromRandom(): void
@@ -224,28 +224,31 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @dataProvider providerPaddings
      */
-    public function testPadding(int $padding, int $expected): void
+    public function testPadding(Alignment $padding, Alignment $expected): void
     {
         self::assertSame($expected, $this->config->withLabelAlignment($padding)->labelAlignment);
     }
 
+    public function testAlignmentWillFail(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Alignment::fromPadding(42);
+    }
+
     /**
-     * @return iterable<string, array{padding:int, expected:int}>
+     * @return iterable<string, array{padding:Alignment, expected:Alignment}>
      */
     public function providerPaddings(): iterable
     {
         return [
             'default' => [
-                'padding' => GanttChartConfig::ALIGN_LEFT,
-                'expected' => GanttChartConfig::ALIGN_LEFT,
+                'padding' => Alignment::LEFT,
+                'expected' => Alignment::LEFT,
             ],
             'changing wit a defined config' => [
-                'padding' => GanttChartConfig::ALIGN_RIGHT,
-                'expected' => GanttChartConfig::ALIGN_RIGHT,
-            ],
-            'changing wit a unknown config' => [
-                'padding' => 42,
-                'expected' => GanttChartConfig::ALIGN_LEFT,
+                'padding' => Alignment::RIGHT,
+                'expected' => Alignment::RIGHT,
             ],
         ];
     }

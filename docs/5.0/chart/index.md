@@ -180,7 +180,7 @@ $config = Chart\GanttChartConfig::fromRainbow()
     ->withBody('😊')
     ->withGapSize(2)
     ->withLeftMarginSize(1)
-    ->withLabelAlignment(Chart\GanttChartConfig::ALIGN_RIGHT)
+    ->withLabelAlignment(Chart\Alignment::RIGHT)
 ;
 
 $labelGenerator = new Chart\DecimalNumber(42);

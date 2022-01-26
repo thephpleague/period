@@ -55,7 +55,7 @@ final class GanttChart implements Chart
     public function stroke(Data $dataset): void
     {
         $this->setChartScale($dataset);
-        $padding = $this->config->labelAlignment;
+        $padding = $this->config->labelAlignment->padding();
         $gap = str_repeat(' ', $this->config->gapSize);
         $leftMargin = str_repeat(' ', $this->config->leftMarginSize);
         $lineCharacters = array_fill(0, $this->config->width, $this->config->space);

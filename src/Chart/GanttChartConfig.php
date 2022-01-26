@@ -20,9 +20,6 @@ use function mb_strlen;
 use function preg_match;
 use function preg_replace;
 use const STDOUT;
-use const STR_PAD_BOTH;
-use const STR_PAD_LEFT;
-use const STR_PAD_RIGHT;
 
 /**
  * A class to configure the console output settings.
@@ -30,15 +27,6 @@ use const STR_PAD_RIGHT;
 final class GanttChartConfig
 {
     private const REGEXP_UNICODE = '/\\\\u(?<unicode>[0-9A-F]{1,4})/i';
-
-    public const ALIGN_LEFT = STR_PAD_RIGHT;
-    public const ALIGN_RIGHT = STR_PAD_LEFT;
-    public const ALIGN_CENTER = STR_PAD_BOTH;
-
-    public static function create(Output $output = new ConsoleOutput(STDOUT)): self
-    {
-        return new self($output);
-    }
 
     private function __construct(
         public readonly Output $output,
@@ -51,14 +39,22 @@ final class GanttChartConfig
         public readonly string $space = ' ',
         public readonly int $leftMarginSize = 1,
         public readonly int $gapSize = 1,
-        public readonly int $labelAlignment = self::ALIGN_LEFT,
+        public readonly Alignment $labelAlignment = Alignment::LEFT,
         /** @var array<string> */
         public readonly array $colors = [Output::COLOR_DEFAULT],
     ) {
     }
 
     /**
-     * Create a Cli Renderer to Display the millipede in Rainbow.
+     * Returns a basic Cli Renderer to Display the graph.
+     */
+    public static function create(Output $output = new ConsoleOutput(STDOUT)): self
+    {
+        return new self($output);
+    }
+
+    /**
+     * Returns a Cli Renderer to Display the graph with a random color.
      */
     public static function fromRandom(Output $output = new ConsoleOutput(STDOUT)): self
     {
@@ -66,7 +62,7 @@ final class GanttChartConfig
     }
 
     /**
-     * Create a Cli Renderer to Display the millipede in Rainbow.
+     * Returns a Cli Renderer to Display the graph using the POSIX Rainbow.
      */
     public static function fromRainbow(Output $output = new ConsoleOutput(STDOUT)): self
     {
@@ -74,7 +70,7 @@ final class GanttChartConfig
     }
 
     /**
-     * Return an instance with the start excluded pattern.
+     * Returns an instance with the start excluded pattern.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified start excluded character.
@@ -442,12 +438,8 @@ final class GanttChartConfig
      * This method MUST retain the state of the current instance, and return
      * an instance that set a left padding to the line label.
      */
-    public function withLabelAlignment(int $labelAlignment): self
+    public function withLabelAlignment(Alignment $labelAlignment): self
     {
-        if (!in_array($labelAlignment, [STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH], true)) {
-            $labelAlignment = STR_PAD_RIGHT;
-        }
-
         if ($this->labelAlignment === $labelAlignment) {
             return $this;
         }
