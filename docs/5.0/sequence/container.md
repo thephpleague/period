@@ -98,7 +98,7 @@ $unions = $sequence->unions(); // a new Sequence object
 count($unions); // returns 2
 ~~~
 
-### Sequence total timestamp interval
+### Sequence total duration
 
 Returns the sum of all instances durations as expressed in seconds.
 
@@ -107,10 +107,8 @@ $sequence = new Sequence(
     Period::fromMonth(2017, 1),
     Period::fromMonth(2018, 1)
 );
-$timestamp = $sequence->totalTimestampInterval(); // an integer
+$timestamp = $sequence->totalDuration(); // an integer
 ~~~
-
-<p class="message-notice">The return value will always be lesser or equals to the result of <code>Sequence::length()->timestampInterval()</code>.</p>
 
 ## Container manipulations
 
