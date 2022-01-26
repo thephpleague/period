@@ -40,7 +40,7 @@ $start = $interval->startDate;           //returns a DateTimeImmutable
 $end = $interval->endDate;               //returns a DateTimeImmutable
 $bounds = $interval->bounds;             //returns a Bounds enum
 $duration = $interval->toDateInterval(); //returns a DateInterval object
-$duration2 = $interval->toSeconds();       //returns the duration in seconds
+$duration2 = $interval->toTimeDuration();       //returns the duration in seconds
 echo $interval->toIso8601(); //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
 ~~~
 

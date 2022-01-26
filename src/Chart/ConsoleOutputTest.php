@@ -50,6 +50,7 @@ final class ConsoleOutputTest extends TestCase
         $stream = $this->setStream();
         $output = new ConsoleOutput($stream);
         $output->writeln($message, Color::BLUE);
+        $output->writeln($message);
         rewind($stream);
         /** @var string $data */
         $data = stream_get_contents($stream);

@@ -37,12 +37,8 @@ final class ConsoleOutput implements Output
      */
     public function __construct($resource)
     {
-        if (!is_resource($resource)) {
-            throw new TypeError(sprintf('Argument passed must be a stream resource, %s given', gettype($resource)));
-        }
-
-        if ('stream' !== ($type = get_resource_type($resource))) {
-            throw new TypeError(sprintf('Argument passed must be a stream resource, %s resource given', $type));
+        if (!is_resource($resource) || 'stream' !== get_resource_type($resource)) {
+            throw new TypeError('Argument passed must be a stream resource.');
         }
 
         $this->stream = $resource;
@@ -97,13 +93,12 @@ final class ConsoleOutput implements Output
             return $formatter;
         }
 
-        $mapper = array_combine(
-            array_map(fn (Color $c): string => $c->value, Color::cases()),
-            array_map(fn (Color $c): string => $c->code(), Color::cases())
-        );
+        $to = array_reduce(Color::cases(), function (array $carry, Color $color): array {
+            $carry[$color->value] = $color->code();
+            return $carry;
+        }, []);
 
-
-        $formatter = fn (array $matches): string => chr(27).'['.strtr((string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]), $mapper).'m';
+        $formatter = fn (array $matches): string => chr(27).'['.strtr((string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]), $to).'m';
 
         return $formatter;
     }

@@ -68,10 +68,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function totalDuration(): int
+    public function totalTimeDuration(): int
     {
         /** @var int $res */
-        $res = $this->reduce(fn (int $timestamp, Period $period): int => $timestamp + $period->toSeconds(), 0);
+        $res = $this->reduce(fn (int $timestamp, Period $period): int => $timestamp + $period->toTimeDuration(), 0);
 
         return $res;
     }

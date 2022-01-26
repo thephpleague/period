@@ -111,31 +111,32 @@ Most notably:
 - conversions methods are explicitly named with a `to` or a `from` prefix.
 - methods name have been changed for consistency throughout the package.
 
-| `4.x` method name                     | `5.x` method name            |
-|---------------------------------------|------------------------------|
-| `Period::fromDatepoint`               | `Period::fromDate`           |
-| `Period::getDateInterval`             | `Period::toDateInterval`     |
-| `Period::getTimestampInterval`        | `Period::toSeconds`          |
-| `Period::withBoundaryType`            | `Period::boundedBy`          |
-| `Period::getDatePeriod`               | `Period::dateRange`          |
-| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards` |
-| `Period::__toString`                  | `Period::toIso8601`          |
-| `Period::format`                      | `Period::toNotation`         |
-| `Sequence::getTotalTimestampInterval` | `Sequence::totalDuration`    |
-| `Duration::createFromSeconds`         | `Duration::fromSeconds`      |
-| `Duration::createFromChronoString`    | `Duration::fromChronoString` |
-| `Duration::createFromTimeString`      | `Duration::fromTimeString`   |
-| `Duration::createFromDateString`      | `Duration::fromDateString`   |
-| `Duration::createFromDateInterval`    | `Duration::fromDateInterval` |
-| `Datepoint::getSecond`                | `Datepoint::second`          |
-| `Datepoint::getMinute`                | `Datepoint::minute`          |
-| `Datepoint::getHour`                  | `Datepoint::hour`            |
-| `Datepoint::getIsoWeek`               | `Datepoint::isoWeek`         |
-| `Datepoint::getMonth`                 | `Datepoint::month`           |
-| `Datepoint::getQuarter`               | `Datepoint::quarter`         |
-| `Datepoint::getSemester`              | `Datepoint::semester`        |
-| `Datepoint::getYear`                  | `Datepoint::year`            |
-| `Datepoint::getIsoYear`               | `Datepoint::isoYear`         |
+| `4.x` method name                     | `5.x` method name             |
+|---------------------------------------|-------------------------------|
+| `Period::fromDatepoint`               | `Period::fromDate`            |
+| `Period::getDateInterval`             | `Period::toDateInterval`      |
+| `Period::getTimestampInterval`        | `Period::toTimeDuration`      |
+| `Period::withBoundaryType`            | `Period::boundedBy`           |
+| `Period::getDatePeriod`               | `Period::dateRange`           |
+| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`  |
+| `Period::__toString`                  | `Period::toIso8601`           |
+| `Period::format`                      | `Period::toNotation`          |
+| `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`    |
+| `Sequence::getTotalTimestampInterval` | `Sequence::totalTimeDuration` |
+| `Duration::createFromSeconds`         | `Duration::fromSeconds`       |
+| `Duration::createFromChronoString`    | `Duration::fromChronoString`  |
+| `Duration::createFromTimeString`      | `Duration::fromTimeString`    |
+| `Duration::createFromDateString`      | `Duration::fromDateString`    |
+| `Duration::createFromDateInterval`    | `Duration::fromDateInterval`  |
+| `Datepoint::getSecond`                | `Datepoint::second`           |
+| `Datepoint::getMinute`                | `Datepoint::minute`           |
+| `Datepoint::getHour`                  | `Datepoint::hour`             |
+| `Datepoint::getIsoWeek`               | `Datepoint::isoWeek`          |
+| `Datepoint::getMonth`                 | `Datepoint::month`            |
+| `Datepoint::getQuarter`               | `Datepoint::quarter`          |
+| `Datepoint::getSemester`              | `Datepoint::semester`         |
+| `Datepoint::getYear`                  | `Datepoint::year`             |
+| `Datepoint::getIsoYear`               | `Datepoint::isoYear`          |
 
 ```diff
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();

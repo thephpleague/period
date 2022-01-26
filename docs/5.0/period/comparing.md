@@ -56,7 +56,7 @@ $orig->equals($other);       //return false
 
 ~~~php
 public Period::dateIntervalDiff(Period $interval): DateInterval
-public Period::timestampIntervalDiff(Period $interval): int
+public Period::timeDurationDiff(Period $interval): int
 ~~~
 
 Returns the duration difference between two Period objects using a `DateInterval` object or expressed in seconds.
@@ -70,7 +70,7 @@ $interval = Period::fromSemester(2012, 1);
 $altInterval = Period::fromIsoWeek(2012, 4);
 $diff = $interval->dateIntervalDiff($altInterval);
 // $diff is a DateInterval object
-$diffAsSeconds = $interval->timestampIntervalDiff($altInterval);
+$diffAsSeconds = $interval->timeDurationDiff($altInterval);
 //$diffAsSeconds represents the interval expressed in seconds
 ~~~
 

@@ -250,7 +250,7 @@ final class Period implements JsonSerializable
      * Duration representation
      **************************************************/
 
-    public function toSeconds(): int
+    public function toTimeDuration(): int
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
@@ -609,9 +609,9 @@ final class Period implements JsonSerializable
     /**
      * Returns the difference between two instances expressed in seconds.
      */
-    public function timestampIntervalDiff(self $period): int
+    public function timeDurationDiff(self $period): int
     {
-        return $this->toSeconds() - $period->toSeconds();
+        return $this->toTimeDuration() - $period->toTimeDuration();
     }
 
     /**

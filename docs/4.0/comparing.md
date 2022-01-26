@@ -72,7 +72,7 @@ $interval = Period::fromSemester(2012, 1);
 $alt_interval = Period::fromIsoWeek(2012, 4);
 $diff = $interval->dateIntervalDiff($alt_interval);
 // $diff is a DateInterval object
-$diff_as_seconds = $interval->timestampIntervalDiff($alt_interval);
+$diff_as_seconds = $interval->timeDurationDiff($alt_interval);
 //$diff_as_seconds represents the interval expressed in seconds
 ~~~
 

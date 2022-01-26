@@ -44,7 +44,7 @@ final class PeriodDurationTest extends TestCase
     public function testGetTimestampInterval(): void
     {
         $interval = Period::fromDate(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
-        self::assertSame(86400, $interval->toSeconds());
+        self::assertSame(86400, $interval->toTimeDuration());
     }
 
     /**
@@ -221,7 +221,7 @@ final class PeriodDurationTest extends TestCase
     {
         $orig = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 HOUR'));
         $alt = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('2 HOUR'));
-        self::assertEquals(-3600, $orig->timestampIntervalDiff($alt));
+        self::assertEquals(-3600, $orig->timeDurationDiff($alt));
     }
 
     public function testDateIntervalDiffPositionIrrelevant(): void
@@ -279,7 +279,7 @@ final class PeriodDurationTest extends TestCase
             $last = $innerPeriod;
         }
         self::assertNotNull($last);
-        self::assertSame(14400, $last->toSeconds());
+        self::assertSame(14400, $last->toTimeDuration());
     }
 
     public function testSplitBackwards(): void
@@ -324,7 +324,7 @@ final class PeriodDurationTest extends TestCase
         }
 
         self::assertNotNull($last);
-        self::assertEquals(14400, $last->toSeconds());
+        self::assertEquals(14400, $last->toTimeDuration());
     }
 
     public function testSplitDaylightSavingsDayIntoHoursEndInterval(): void
