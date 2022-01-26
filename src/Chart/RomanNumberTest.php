@@ -23,14 +23,14 @@ final class RomanNumberTest extends TestCase
     /**
      * @dataProvider providerLetter
      */
-    public function testGetLabels(int $nbLabels, int $label, int $lettercase, array $expected): void
+    public function testGetLabels(int $nbLabels, int $label, Casing $lettercase, array $expected): void
     {
         $generator = new RomanNumber(new DecimalNumber($label), $lettercase);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
     /**
-     * @return iterable<string, array{nbLabels:int, label:int, lettercase:int, expected:array<string>}>
+     * @return iterable<string, array{nbLabels:int, label:int, lettercase:Casing, expected:array<string>}>
      */
     public function providerLetter(): iterable
     {
@@ -38,31 +38,31 @@ final class RomanNumberTest extends TestCase
             'empty labels' => [
                 'nbLabels' => 0,
                 'label' => 1,
-                'lettercase' => RomanNumber::UPPER,
+                'lettercase' => Casing::UPPER,
                 'expected' => [],
             ],
             'labels starts at 3' => [
                 'nbLabels' => 1,
                 'label' => 3,
-                'lettercase' => 42,
+                'lettercase' => Casing::UPPER,
                 'expected' => ['III'],
             ],
             'labels starts ends at 4' => [
                 'nbLabels' => 2,
                 'label' => 4,
-                'lettercase' => RomanNumber::UPPER,
+                'lettercase' => Casing::UPPER,
                 'expected' => ['IV', 'V'],
             ],
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'label' => -1,
-                'lettercase' => RomanNumber::LOWER,
+                'lettercase' => Casing::LOWER,
                 'expected' => ['i'],
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
                 'label' => 0,
-                'lettercase' => RomanNumber::LOWER,
+                'lettercase' => Casing::LOWER,
                 'expected' => ['i'],
             ],
         ];
@@ -84,16 +84,16 @@ final class RomanNumberTest extends TestCase
     {
         $generator = new RomanNumber(new DecimalNumber(1));
         self::assertTrue($generator->isUpper());
-        $new = $generator->withLetterCase(RomanNumber::LOWER);
+        $new = $generator->withLetterCase(Casing::LOWER);
         self::assertFalse($new->isUpper());
-        $alt = $new->withLetterCase(RomanNumber::LOWER);
+        $alt = $new->withLetterCase(Casing::LOWER);
         self::assertSame($alt, $new);
     }
 
     public function testFormat(): void
     {
         $generator = new RomanNumber(new DecimalNumber(10));
-        $newGenerator = $generator->withLetterCase(RomanNumber::LOWER);
+        $newGenerator = $generator->withLetterCase(Casing::LOWER);
         self::assertSame('FOOBAR', $generator->format('fOoBaR'));
         self::assertSame('foobar', $newGenerator->format('fOoBaR'));
     }

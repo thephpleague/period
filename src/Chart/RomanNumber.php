@@ -20,8 +20,6 @@ use function strtoupper;
 
 final class RomanNumber implements LabelGenerator
 {
-    public const UPPER = 1;
-    public const LOWER = 2;
     private const CHARACTER_MAP = [
         'M'  => 1000, 'CM' => 900,  'D' => 500,
         'CD' => 400,   'C' => 100, 'XC' => 90,
@@ -30,23 +28,8 @@ final class RomanNumber implements LabelGenerator
         'I'  => 1,
     ];
 
-    private int $case;
-
-    public function __construct(public readonly DecimalNumber $decimalNumber, int $case = self::UPPER)
+    public function __construct(public readonly DecimalNumber $decimalNumber, public readonly Casing $case = Casing::UPPER)
     {
-        $this->case = $this->filterLetterCase($case);
-    }
-
-    /**
-     * filter letter case state.
-     */
-    private function filterLetterCase(int $case): int
-    {
-        if (!in_array($case, [self::UPPER, self::LOWER], true)) {
-            return self::UPPER;
-        }
-
-        return $case;
     }
 
     /**
@@ -64,7 +47,7 @@ final class RomanNumber implements LabelGenerator
      */
     public function format(string $label): string
     {
-        if (self::UPPER === $this->case) {
+        if (Casing::UPPER === $this->case) {
             return strtoupper($label);
         }
 
@@ -90,7 +73,7 @@ final class RomanNumber implements LabelGenerator
             }
         }
 
-        if (self::LOWER === $this->case) {
+        if (Casing::LOWER === $this->case) {
             return strtolower($retVal);
         }
 
@@ -102,7 +85,7 @@ final class RomanNumber implements LabelGenerator
      */
     public function isUpper(): bool
     {
-        return self::UPPER === $this->case;
+        return Casing::UPPER === $this->case;
     }
 
     /**
@@ -127,9 +110,8 @@ final class RomanNumber implements LabelGenerator
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the letter case setting.
      */
-    public function withLetterCase(int $case): self
+    public function withLetterCase(Casing $case): self
     {
-        $case = $this->filterLetterCase($case);
         if ($case === $this->case) {
             return $this;
         }
