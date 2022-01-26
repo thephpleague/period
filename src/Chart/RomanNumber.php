@@ -32,10 +32,7 @@ final class RomanNumber implements LabelGenerator
 
     private int $case;
 
-    /**
-     * @param DecimalNumber $decimalNumber
-     */
-    public function __construct(private DecimalNumber $decimalNumber, int $case = self::UPPER)
+    public function __construct(public readonly DecimalNumber $decimalNumber, int $case = self::UPPER)
     {
         $this->case = $this->filterLetterCase($case);
     }
@@ -101,14 +98,6 @@ final class RomanNumber implements LabelGenerator
     }
 
     /**
-     * Returns the starting Letter.
-     */
-    public function startingAt(): int
-    {
-        return $this->decimalNumber->startingAt();
-    }
-
-    /**
      * Tells whether the roman letter is upper cased.
      */
     public function isUpper(): bool
@@ -117,30 +106,19 @@ final class RomanNumber implements LabelGenerator
     }
 
     /**
-     * Tells whether the roman letter is lower cased.
-     */
-    public function isLower(): bool
-    {
-        return self::LOWER === $this->case;
-    }
-
-    /**
      * Return an instance with the starting Letter.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the starting Letter.
      */
-    public function startsWith(int $int): self
+    public function startsWith(int $startingAt): self
     {
-        $labelGenerator = $this->decimalNumber->startsWith($int);
+        $labelGenerator = $this->decimalNumber->startsWith($startingAt);
         if ($labelGenerator === $this->decimalNumber) {
             return $this;
         }
 
-        $clone = clone $this;
-        $clone->decimalNumber = $labelGenerator;
-
-        return $clone;
+        return new self($labelGenerator, $this->case);
     }
 
     /**
@@ -156,9 +134,6 @@ final class RomanNumber implements LabelGenerator
             return $this;
         }
 
-        $clone = clone $this;
-        $clone->case = $case;
-
-        return $clone;
+        return new self($this->decimalNumber, $case);
     }
 }

@@ -42,11 +42,11 @@ final class PeriodBoundsTest extends TestCase
         bool $endIncluded,
         bool $endExcluded
     ): void {
-        self::assertTrue($rangeType === $interval->bounds());
-        self::assertSame($startIncluded, $interval->bounds()->isStartIncluded());
-        self::assertSame($startExcluded, !$interval->bounds()->isStartIncluded());
-        self::assertSame($endIncluded, $interval->bounds()->isEndIncluded());
-        self::assertSame($endExcluded, !$interval->bounds()->isEndIncluded());
+        self::assertTrue($rangeType === $interval->bounds);
+        self::assertSame($startIncluded, $interval->bounds->isStartIncluded());
+        self::assertSame($startExcluded, !$interval->bounds->isStartIncluded());
+        self::assertSame($endIncluded, $interval->bounds->isEndIncluded());
+        self::assertSame($endExcluded, !$interval->bounds->isEndIncluded());
     }
 
     /**
@@ -94,8 +94,8 @@ final class PeriodBoundsTest extends TestCase
     {
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $altInterval = $interval->boundedBy(Bounds::EXCLUDE_ALL);
-        self::assertEquals($interval->dateInterval(), $interval->dateInterval());
-        self::assertFalse($interval->bounds() === $altInterval->bounds());
+        self::assertEquals($altInterval->toDateInterval(), $interval->toDateInterval());
+        self::assertTrue($interval->bounds !== $altInterval->bounds);
         self::assertSame($interval, $interval->boundedBy(Bounds::INCLUDE_START_EXCLUDE_END));
     }
 

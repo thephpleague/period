@@ -148,7 +148,7 @@ final class SequenceTest extends TestCase
     public function testFilterReturnsNewInstance(): void
     {
         $sequence = new Sequence(Period::fromDay(2012, 6, 23), DatePoint::fromDateString('2012-06-12')->day());
-        $newCollection = $sequence->filter(fn (Period $period): bool => $period->startDate() == new DateTimeImmutable('2012-06-23'));
+        $newCollection = $sequence->filter(fn (Period $period): bool => $period->startDate == new DateTimeImmutable('2012-06-23'));
 
         self::assertNotEquals($newCollection, $sequence);
         self::assertCount(1, $newCollection);
@@ -162,7 +162,7 @@ final class SequenceTest extends TestCase
             DatePoint::fromDateString('2012-06-12')->day()
         );
 
-        self::assertSame($sequence, $sequence->filter(fn (Period $interval): bool => $interval->endDate() >= $interval->startDate()));
+        self::assertSame($sequence, $sequence->filter(fn (Period $interval): bool => $interval->endDate >= $interval->startDate));
     }
 
     public function testSortedReturnsSameInstance(): void
@@ -193,7 +193,7 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence($day1, $day2);
         self::assertSame([0 => $day1, 1 => $day2], $sequence->toArray());
 
-        $sequence->sort(fn (Period $period1, Period $period2): int => $period1->startDate() <=> $period2->startDate());
+        $sequence->sort(fn (Period $period1, Period $period2): int => $period1->startDate <=> $period2->startDate);
         self::assertSame([1 => $day2, 0 => $day1], $sequence->toArray());
     }
 
@@ -476,7 +476,7 @@ final class SequenceTest extends TestCase
     public function testMapperDoesNotReIndexAfterModification(): void
     {
         $sequence = new Sequence(Period::fromDay(2018, 3, 1), Period::fromDay(2018, 1, 1));
-        $sequence->sort(fn (Period $interval1, Period $interval2): int => $interval1->startDate() <=> $interval2->startDate());
+        $sequence->sort(fn (Period $interval1, Period $interval2): int => $interval1->startDate <=> $interval2->startDate);
 
         $retval = $sequence->map(fn (Period $interval): Period => $interval->moveEndDate(Duration::fromDateString('+1 DAY')));
 
@@ -511,12 +511,12 @@ final class SequenceTest extends TestCase
 
     public function testGetTotalTimestampInterval(): void
     {
-        self::assertSame(0, (new Sequence())->totalTimestampInterval());
+        self::assertSame(0, (new Sequence())->totalSeconds());
 
         $sequence = new Sequence(Period::fromMonth(2017, 1), Period::fromMonth(2018, 1));
         $period = $sequence->length();
         if (null !== $period) {
-            self::assertNotEquals($period->timestampInterval(), $sequence->totalTimestampInterval());
+            self::assertNotEquals($period->toSeconds(), $sequence->totalSeconds());
         }
     }
 }

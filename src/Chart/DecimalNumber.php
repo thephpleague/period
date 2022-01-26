@@ -17,15 +17,15 @@ use Iterator;
 
 final class DecimalNumber implements LabelGenerator
 {
-    private int $int;
+    public readonly int $startingAt;
 
-    public function __construct(int $int = 1)
+    public function __construct(int $startingAt = 1)
     {
-        if (0 >= $int) {
-            $int = 1;
+        if (0 >= $startingAt) {
+            $startingAt = 1;
         }
 
-        $this->int = $int;
+        $this->startingAt = $startingAt;
     }
 
     /**
@@ -38,8 +38,8 @@ final class DecimalNumber implements LabelGenerator
         }
 
         $count = 0;
-        $end = $this->int + $nbLabels;
-        $value = $this->int;
+        $end = $this->startingAt + $nbLabels;
+        $value = $this->startingAt;
         while ($value < $end) {
             yield $count => $this->format((string) $value);
 
@@ -57,32 +57,21 @@ final class DecimalNumber implements LabelGenerator
     }
 
     /**
-     * Returns the starting Letter.
-     */
-    public function startingAt(): int
-    {
-        return $this->int;
-    }
-
-    /**
      * Return an instance with the starting Letter.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the starting Letter.
      */
-    public function startsWith(int $int): self
+    public function startsWith(int $startingAt): self
     {
-        if (0 >= $int) {
-            $int = 1;
+        if (0 >= $startingAt) {
+            $startingAt = 1;
         }
 
-        if ($int === $this->int) {
+        if ($startingAt === $this->startingAt) {
             return $this;
         }
 
-        $clone = clone $this;
-        $clone->int = $int;
-
-        return $clone;
+        return new self($startingAt);
     }
 }

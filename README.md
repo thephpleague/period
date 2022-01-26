@@ -47,7 +47,7 @@ require 'path/to/period/repo/autoload.php';
 
 use League\Period\Datepoint;
 
-Datepoint::fromDateString('2012-05-23')->day()->dateInterval();
+Datepoint::fromDateString('2012-05-23')->day()->toDateInterval();
 //returns new DateInterval('P1D');
 ~~~
 

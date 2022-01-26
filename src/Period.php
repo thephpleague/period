@@ -22,7 +22,7 @@ use Generator;
 use JsonSerializable;
 
 /**
- * A immutable value object class to manipulate Time interval.
+ * An immutable value object class to manipulate DateTime interval.
  *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
@@ -34,9 +34,9 @@ final class Period implements JsonSerializable
     private const REGEXP_INTERVAL_NOTATION = '/^(?<lowerbound>\[|\()(?<startdate>[^,\]\)\[\(]*),(?<enddate>[^,\]\)\[\(]*)(?<upperbound>\]|\))$/';
     private const REGEXP_ISO_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
 
-    private DateTimeImmutable $startDate;
-    private DateTimeImmutable $endDate;
-    private Bounds $bounds;
+    public readonly DateTimeImmutable $startDate;
+    public readonly DateTimeImmutable $endDate;
+    public readonly Bounds $bounds;
 
     /**
      * @throws DateRangeInvalid If the instance can not be created
@@ -132,7 +132,7 @@ final class Period implements JsonSerializable
         return match (true) {
             $duration instanceof DateInterval => $duration,
             $duration instanceof Duration => $duration->toDateInterval(),
-            $duration instanceof Period => $duration->dateInterval(),
+            $duration instanceof Period => $duration->toDateInterval(),
             default => Duration::fromDateString($duration)->toDateInterval(),
         };
     }
@@ -204,11 +204,9 @@ final class Period implements JsonSerializable
 
     public static function fromIsoYear(int $year, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
-        return new self(
-            (new DateTimeImmutable())->setTime(0, 0)->setISODate($year, 1),
-            (new DateTimeImmutable())->setTime(0, 0)->setISODate($year + 1, 1),
-            $bounds
-        );
+        $today = (new DateTimeImmutable())->setTime(0, 0);
+
+        return new self($today->setISODate($year, 1), $today->setISODate($year + 1, 1), $bounds);
     }
 
     public static function fromSemester(int $year, int $semester, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
@@ -249,30 +247,15 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * Basic getters
+     * Duration representation
      **************************************************/
 
-    public function startDate(): DateTimeImmutable
-    {
-        return $this->startDate;
-    }
-
-    public function endDate(): DateTimeImmutable
-    {
-        return $this->endDate;
-    }
-
-    public function bounds(): Bounds
-    {
-        return $this->bounds;
-    }
-
-    public function timestampInterval(): int
+    public function toSeconds(): int
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
 
-    public function dateInterval(): DateInterval
+    public function toDateInterval(): DateInterval
     {
         return $this->startDate->diff($this->endDate);
     }
@@ -353,7 +336,7 @@ final class Period implements JsonSerializable
      */
     public function durationCompare(Period|Duration|DateInterval|string $duration): int
     {
-        return $this->startDate->add($this->dateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
+        return $this->startDate->add($this->toDateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
     }
 
     /**
@@ -500,10 +483,10 @@ final class Period implements JsonSerializable
                 => $this->bounds === $period->bounds || $this->bounds === Bounds::INCLUDE_ALL,
             $this->startDate == $period->startDate
                 => ($this->bounds->equalsStart($period->bounds) || $this->bounds->isStartIncluded())
-                    && $this->containsDatePoint($this->startDate->add($period->dateInterval()), $this->bounds),
+                    && $this->containsDatePoint($this->startDate->add($period->toDateInterval()), $this->bounds),
             $this->endDate == $period->endDate
                 => ($this->bounds->equalsEnd($period->bounds) || $this->bounds->isEndIncluded())
-                    && $this->containsDatePoint($this->endDate->sub($period->dateInterval()), $this->bounds),
+                    && $this->containsDatePoint($this->endDate->sub($period->toDateInterval()), $this->bounds),
             default
                 => false,
         };
@@ -628,7 +611,7 @@ final class Period implements JsonSerializable
      */
     public function timestampIntervalDiff(self $period): int
     {
-        return $this->timestampInterval() - $period->timestampInterval();
+        return $this->toSeconds() - $period->toSeconds();
     }
 
     /**
@@ -636,7 +619,7 @@ final class Period implements JsonSerializable
      */
     public function dateIntervalDiff(self $period): DateInterval
     {
-        return $this->endDate->diff($this->startDate->add($period->dateInterval()));
+        return $this->endDate->diff($this->startDate->add($period->toDateInterval()));
     }
 
     /**
@@ -647,7 +630,7 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      */
-    public function dateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
+    public function toDateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDuration($timeDelta), $this->endDate, $option);
     }
@@ -658,7 +641,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<DateTimeImmutable>
      */
-    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator
+    public function toDateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
@@ -690,7 +673,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->dateRange($duration) as $startDate) {
+        foreach ($this->toDateRange($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
@@ -1054,8 +1037,8 @@ final class Period implements JsonSerializable
     public function snapToSecond(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->second()->startDate(),
-            DatePoint::fromDate($this->endDate)->second()->endDate(),
+            DatePoint::fromDate($this->startDate)->second()->startDate,
+            DatePoint::fromDate($this->endDate)->second()->endDate,
             $this->bounds
         );
     }
@@ -1066,8 +1049,8 @@ final class Period implements JsonSerializable
     public function snapToMinute(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->minute()->startDate(),
-            DatePoint::fromDate($this->endDate)->minute()->endDate(),
+            DatePoint::fromDate($this->startDate)->minute()->startDate,
+            DatePoint::fromDate($this->endDate)->minute()->endDate,
             $this->bounds
         );
     }
@@ -1078,8 +1061,8 @@ final class Period implements JsonSerializable
     public function snapToHour(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->hour()->startDate(),
-            DatePoint::fromDate($this->endDate)->hour()->endDate(),
+            DatePoint::fromDate($this->startDate)->hour()->startDate,
+            DatePoint::fromDate($this->endDate)->hour()->endDate,
             $this->bounds
         );
     }
@@ -1090,8 +1073,8 @@ final class Period implements JsonSerializable
     public function snapToDay(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->day()->startDate(),
-            DatePoint::fromDate($this->endDate)->day()->endDate(),
+            DatePoint::fromDate($this->startDate)->day()->startDate,
+            DatePoint::fromDate($this->endDate)->day()->endDate,
             $this->bounds
         );
     }
@@ -1102,8 +1085,8 @@ final class Period implements JsonSerializable
     public function snapToIsoWeek(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->isoWeek()->startDate(),
-            DatePoint::fromDate($this->endDate)->isoWeek()->endDate(),
+            DatePoint::fromDate($this->startDate)->isoWeek()->startDate,
+            DatePoint::fromDate($this->endDate)->isoWeek()->endDate,
             $this->bounds
         );
     }
@@ -1114,8 +1097,8 @@ final class Period implements JsonSerializable
     public function snapToMonth(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->month()->startDate(),
-            DatePoint::fromDate($this->endDate)->month()->endDate(),
+            DatePoint::fromDate($this->startDate)->month()->startDate,
+            DatePoint::fromDate($this->endDate)->month()->endDate,
             $this->bounds
         );
     }
@@ -1126,8 +1109,8 @@ final class Period implements JsonSerializable
     public function snapToQuarter(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->quarter()->startDate(),
-            DatePoint::fromDate($this->endDate)->quarter()->endDate(),
+            DatePoint::fromDate($this->startDate)->quarter()->startDate,
+            DatePoint::fromDate($this->endDate)->quarter()->endDate,
             $this->bounds
         );
     }
@@ -1138,8 +1121,8 @@ final class Period implements JsonSerializable
     public function snapToSemester(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->semester()->startDate(),
-            DatePoint::fromDate($this->endDate)->semester()->endDate(),
+            DatePoint::fromDate($this->startDate)->semester()->startDate,
+            DatePoint::fromDate($this->endDate)->semester()->endDate,
             $this->bounds
         );
     }
@@ -1150,8 +1133,8 @@ final class Period implements JsonSerializable
     public function snapToYear(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->year()->startDate(),
-            DatePoint::fromDate($this->endDate)->year()->endDate(),
+            DatePoint::fromDate($this->startDate)->year()->startDate,
+            DatePoint::fromDate($this->endDate)->year()->endDate,
             $this->bounds
         );
     }
@@ -1162,8 +1145,8 @@ final class Period implements JsonSerializable
     public function snapToIsoYear(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->isoYear()->startDate(),
-            DatePoint::fromDate($this->endDate)->isoYear()->endDate(),
+            DatePoint::fromDate($this->startDate)->isoYear()->startDate,
+            DatePoint::fromDate($this->endDate)->isoYear()->endDate,
             $this->bounds
         );
     }

@@ -71,23 +71,21 @@ final class RomanNumberTest extends TestCase
     public function testStartWith(): void
     {
         $generator = new RomanNumber(new DecimalNumber(42));
-        self::assertSame(42, $generator->startingAt());
+        self::assertSame(42, $generator->decimalNumber->startingAt);
         $new = $generator->startsWith(69);
         self::assertNotSame($new, $generator);
-        self::assertSame(69, $new->startingAt());
+        self::assertSame(69, $new->decimalNumber->startingAt);
         self::assertSame($generator, $generator->startsWith(42));
-        self::assertSame(1, (new DecimalNumber(-3))->startingAt());
-        self::assertSame(1, $generator->startsWith(-3)->startingAt());
+        self::assertSame(1, (new DecimalNumber(-3))->startingAt);
+        self::assertSame(1, $generator->startsWith(-3)->decimalNumber->startingAt);
     }
 
     public function testLetterCase(): void
     {
         $generator = new RomanNumber(new DecimalNumber(1));
         self::assertTrue($generator->isUpper());
-        self::assertFalse($generator->isLower());
         $new = $generator->withLetterCase(RomanNumber::LOWER);
         self::assertFalse($new->isUpper());
-        self::assertTrue($new->isLower());
         $alt = $new->withLetterCase(RomanNumber::LOWER);
         self::assertSame($alt, $new);
     }

@@ -51,10 +51,10 @@ final class PeriodFormattingTest extends TestCase
         /** @var array{startDate:string, endDate:string, startDateIncluded:bool, endDateIncluded:bool} $res */
         $res = json_decode($json, true);
 
-        self::assertEquals($period->startDate(), new DateTimeImmutable($res['startDate']));
-        self::assertEquals($period->endDate(), new DateTimeImmutable($res['endDate']));
-        self::assertSame($period->bounds()->isStartIncluded(), $res['startDateIncluded']);
-        self::assertSame($period->bounds()->isEndIncluded(), $res['endDateIncluded']);
+        self::assertEquals($period->startDate, new DateTimeImmutable($res['startDate']));
+        self::assertEquals($period->endDate, new DateTimeImmutable($res['endDate']));
+        self::assertSame($period->bounds->isStartIncluded(), $res['startDateIncluded']);
+        self::assertSame($period->bounds->isEndIncluded(), $res['endDateIncluded']);
     }
 
     public function testFormat(): void

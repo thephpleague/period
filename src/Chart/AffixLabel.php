@@ -18,8 +18,8 @@ use function preg_replace;
 
 final class AffixLabel implements LabelGenerator
 {
-    private string $prefix = '';
-    private string $suffix = '';
+    public readonly string $prefix;
+    public readonly string $suffix;
 
     public function __construct(private LabelGenerator $labelGenerator, string $prefix = '', string $suffix = '')
     {
@@ -51,22 +51,6 @@ final class AffixLabel implements LabelGenerator
     }
 
     /**
-     * Returns the suffix.
-     */
-    public function suffix(): string
-    {
-        return $this->suffix;
-    }
-
-    /**
-     * Returns the prefix.
-     */
-    public function prefix(): string
-    {
-        return $this->prefix;
-    }
-
-    /**
      * Return an instance with the suffix.
      *
      * This method MUST retain the state of the current instance, and return
@@ -79,10 +63,7 @@ final class AffixLabel implements LabelGenerator
             return $this;
         }
 
-        $clone = clone $this;
-        $clone->suffix = $suffix;
-
-        return $clone;
+        return new self($this->labelGenerator, $this->prefix, $suffix);
     }
 
     /**
@@ -98,9 +79,6 @@ final class AffixLabel implements LabelGenerator
             return $this;
         }
 
-        $clone = clone $this;
-        $clone->prefix = $prefix;
-
-        return $clone;
+        return new self($this->labelGenerator, $prefix, $this->suffix);
     }
 }

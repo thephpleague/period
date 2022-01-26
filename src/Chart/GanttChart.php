@@ -80,8 +80,8 @@ final class GanttChart implements Chart
         $this->unit = 1;
         $bounds = $dataset->length();
         if (null !== $bounds) {
-            $this->start = $bounds->startDate()->getTimestamp();
-            $this->unit = $this->config->width() / $bounds->timestampInterval();
+            $this->start = $bounds->startDate->getTimestamp();
+            $this->unit = $this->config->width() / $bounds->toSeconds();
         }
     }
 
@@ -93,13 +93,13 @@ final class GanttChart implements Chart
     private function drawDataPortion(Sequence $item, array $lineCharacters): string
     {
         $reducer = function (array $lineCharacters, Period $period): array {
-            $startIndex = (int) floor(($period->startDate()->getTimestamp() - $this->start) * $this->unit);
-            $endIndex = (int) ceil(($period->endDate()->getTimestamp() - $this->start) * $this->unit);
+            $startIndex = (int) floor(($period->startDate->getTimestamp() - $this->start) * $this->unit);
+            $endIndex = (int) ceil(($period->endDate->getTimestamp() - $this->start) * $this->unit);
             $periodLength = $endIndex - $startIndex;
 
             array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->body()));
-            $lineCharacters[$startIndex] = $period->bounds()->isStartIncluded() ? $this->config->startIncluded() : $this->config->startExcluded();
-            $lineCharacters[$endIndex - 1] = $period->bounds()->isEndIncluded() ? $this->config->endIncluded() : $this->config->endExcluded();
+            $lineCharacters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncluded() : $this->config->startExcluded();
+            $lineCharacters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncluded() : $this->config->endExcluded();
 
             return $lineCharacters;
         };

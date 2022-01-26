@@ -40,17 +40,17 @@ All notable changes to `Period` will be documented in this file
 - `Period::fromDatepoint` replaced by `Period::fromDate`
 - `Period::getStartDate` replaced by `Period::startDate`
 - `Period::getEndDate` replaced by `Period::endDate`
-- `Period::getDateInterval` replaced by `Period::dateInterval`
-- `Period::getTimestampInterval` replaced by `Period::timestampInterval`
+- `Period::getDateInterval` replaced by `Period::toDateInterval`
+- `Period::getTimestampInterval` replaced by `Period::toSeconds`
 - `Period::getBoundaryType` replaced by `Period::bounds`
 - `Period::withBoundaryType` replaced by `Period::boundedBy`
-- `Period::isStartIncluded` replaced by `Bounds::isStartIncluded`
+- `Period::isStartIncluded` with no replacement use `Bounds::isStartIncluded`
 - `Period::isStartExcluded` with no replacement use `Bounds::isStartIncluded` instead
-- `Period::isEndIncluded` replaced by `Bounds::isEndIncluded`
+- `Period::isEndIncluded` with no replacement use  `Bounds::isEndIncluded`
 - `Period::isEndExcluded` with no replacement use `Bounds::isEndIncluded` instead
 - `Period::fromDatePeriod` replaced by `Period::fromDateRange`
-- `Period::getDatePeriod` replaced by `Period::dateRange`
-- `Period::getDatePeriodBackwards` replaced by `Period::dateRangeBackwards`
+- `Period::getDatePeriod` replaced by `Period::toDateRange`
+- `Period::getDatePeriodBackwards` replaced by `Period::toDateRangeBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
 - `Period::format` replaced by `Period::toNotation`
 - `Period::substract` use `Period::subtract` instead

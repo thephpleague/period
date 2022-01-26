@@ -38,8 +38,8 @@ use League\Period\Period;
 $interval = Period::fromNotation('!Y-m-d', '[2014-10-03 08:12:37,2014-10-03 08:12:37)');
 $start = $interval->startDate();             //returns a DateTimeImmutable
 $end = $interval->endDate();                 //returns a DateTimeImmutable
-$duration = $interval->dateInterval();       //returns a DateInterval object
-$duration2 = $interval->timestampInterval(); //returns the duration in seconds
+$duration = $interval->toDateInterval();       //returns a DateInterval object
+$duration2 = $interval->toSeconds(); //returns the duration in seconds
 echo $interval->toIso8601(); //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
 ~~~
 

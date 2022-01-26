@@ -19,11 +19,11 @@ use function trim;
 
 final class LatinLetter implements LabelGenerator
 {
-    private string $str;
+    public readonly string $startingAt;
 
-    public function __construct(string $str = 'A')
+    public function __construct(string $startingAt = 'A')
     {
-        $this->str = $this->filterLetter($str);
+        $this->startingAt = $this->filterLetter($startingAt);
     }
 
     public function filterLetter(string $str): string
@@ -60,7 +60,7 @@ final class LatinLetter implements LabelGenerator
         }
 
         $count = 0;
-        $letter = $this->str;
+        $letter = $this->startingAt;
         while ($count < $nbLabels) {
             yield $count => $letter++;
 
@@ -69,29 +69,18 @@ final class LatinLetter implements LabelGenerator
     }
 
     /**
-     * Returns the starting Letter.
-     */
-    public function startingAt(): string
-    {
-        return $this->str;
-    }
-
-    /**
      * Return an instance with the starting Letter.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the starting Letter.
      */
-    public function startsWith(string $str): self
+    public function startsWith(string $startingAt): self
     {
-        $str = $this->filterLetter($str);
-        if ($str === $this->str) {
+        $startingAt = $this->filterLetter($startingAt);
+        if ($startingAt === $this->startingAt) {
             return $this;
         }
 
-        $clone = clone $this;
-        $clone->str = $str;
-
-        return $clone;
+        return new self($startingAt);
     }
 }

@@ -39,9 +39,9 @@ final class PeriodEndPointsTest extends TestCase
         $expected = new DateTime('2012-03-02');
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->startingOn($expected);
-        self::assertSame($newInterval->startDate()->getTimestamp(), $expected->getTimestamp());
-        self::assertEquals($interval->startDate(), new DateTimeImmutable('2014-01-13'));
-        self::assertSame($interval->startingOn($interval->startDate()), $interval);
+        self::assertSame($newInterval->startDate->getTimestamp(), $expected->getTimestamp());
+        self::assertEquals($interval->startDate, new DateTimeImmutable('2014-01-13'));
+        self::assertSame($interval->startingOn($interval->startDate), $interval);
     }
 
     public function testStartingOnFailedWithWrongStartDate(): void
@@ -56,9 +56,9 @@ final class PeriodEndPointsTest extends TestCase
         $expected  = new DateTime('2015-03-02');
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->endingOn($expected);
-        self::assertSame($newInterval->endDate()->getTimestamp(), $expected->getTimestamp());
-        self::assertEquals($interval->endDate(), new DateTimeImmutable('2014-01-20'));
-        self::assertSame($interval->endingOn($interval->endDate()), $interval);
+        self::assertSame($newInterval->endDate->getTimestamp(), $expected->getTimestamp());
+        self::assertEquals($interval->endDate, new DateTimeImmutable('2014-01-20'));
+        self::assertSame($interval->endingOn($interval->endDate), $interval);
     }
 
     public function testEndingOnFailedWithWrongEndDate(): void
@@ -71,8 +71,8 @@ final class PeriodEndPointsTest extends TestCase
     public function testExpand(): void
     {
         $interval = (Period::fromDate(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand(new DateInterval('P1D'));
-        self::assertEquals(new DateTimeImmutable('2012-02-01'), $interval->startDate());
-        self::assertEquals(new DateTimeImmutable('2012-02-04'), $interval->endDate());
+        self::assertEquals(new DateTimeImmutable('2012-02-01'), $interval->startDate);
+        self::assertEquals(new DateTimeImmutable('2012-02-04'), $interval->endDate);
     }
 
     public function testExpandRetunsSameInstance(): void
@@ -86,8 +86,8 @@ final class PeriodEndPointsTest extends TestCase
         $dateInterval = new DateInterval('PT12H');
         $dateInterval->invert = 1;
         $interval = (Period::fromDate(new DateTime('2012-02-02'), new DateTime('2012-02-03')))->expand($dateInterval);
-        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->startDate());
-        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->endDate());
+        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->startDate);
+        self::assertEquals(new DateTimeImmutable('2012-02-02 12:00:00'), $interval->endDate);
     }
 
     public function testExpandThrowsException(): void
@@ -184,7 +184,7 @@ final class PeriodEndPointsTest extends TestCase
         $period = $orig->moveEndDate(DateInterval::createFromDateString('-1 MONTH'));
         self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
-        self::assertEquals($orig->startDate(), $period->startDate());
+        self::assertEquals($orig->startDate, $period->startDate);
     }
 
     public function testMoveEndDateThrowsException(): void
@@ -203,8 +203,8 @@ final class PeriodEndPointsTest extends TestCase
         $period = $orig->moveStartDate(DateInterval::createFromDateString('-1 MONTH'));
         self::assertSame(-1, $orig->durationCompare($period));
         self::assertTrue($orig->durationLessThan($period));
-        self::assertEquals($orig->endDate(), $period->endDate());
-        self::assertNotEquals($orig->startDate(), $period->startDate());
+        self::assertEquals($orig->endDate, $period->endDate);
+        self::assertNotEquals($orig->startDate, $period->startDate);
     }
 
     public function testMoveStartDateForward(): void
@@ -213,8 +213,8 @@ final class PeriodEndPointsTest extends TestCase
         $period = $orig->moveStartDate(DateInterval::createFromDateString('2 WEEKS'));
         self::assertSame(1, $orig->durationCompare($period));
         self::assertTrue($orig->durationGreaterThan($period));
-        self::assertEquals($orig->endDate(), $period->endDate());
-        self::assertNotEquals($orig->startDate(), $period->startDate());
+        self::assertEquals($orig->endDate, $period->endDate);
+        self::assertNotEquals($orig->startDate, $period->startDate);
     }
 
     public function testMoveStartDateThrowsException(): void
@@ -233,9 +233,9 @@ final class PeriodEndPointsTest extends TestCase
 
         $snapToSeconds = $period->snapToSecond();
 
-        self::assertSame('2021-07-18 12:12:12.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame('2021-07-23 12:12:13.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame('2021-07-18 12:12:12.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-23 12:12:13.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToMinute(): void
@@ -248,9 +248,9 @@ final class PeriodEndPointsTest extends TestCase
 
         $snapToSeconds = $period->snapToMinute();
 
-        self::assertSame('2021-07-18 12:12:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame('2021-07-23 12:13:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame('2021-07-18 12:12:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-23 12:13:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToHour(): void
@@ -263,9 +263,9 @@ final class PeriodEndPointsTest extends TestCase
 
         $snapToSeconds = $period->snapToHour();
 
-        self::assertSame('2021-07-18 12:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame('2021-07-23 13:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame('2021-07-18 12:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-23 13:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToDay(): void
@@ -278,9 +278,9 @@ final class PeriodEndPointsTest extends TestCase
 
         $snapToSeconds = $period->snapToDay();
 
-        self::assertSame('2021-07-18 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame('2021-07-24 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame('2021-07-18 00:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-07-24 00:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToMonth(): void
@@ -293,9 +293,9 @@ final class PeriodEndPointsTest extends TestCase
 
         $snapToSeconds = $period->snapToMonth();
 
-        self::assertSame('2021-07-01 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame('2021-08-01 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame('2021-07-01 00:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame('2021-08-01 00:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToYear(): void
@@ -308,9 +308,9 @@ final class PeriodEndPointsTest extends TestCase
 
         $snapToSeconds = $period->snapToYear();
 
-        self::assertSame('2021-01-01 00:00:00.000000', $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame('2022-01-01 00:00:00.000000', $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame('2021-01-01 00:00:00.000000', $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame('2022-01-01 00:00:00.000000', $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToQuarter(): void
@@ -322,12 +322,12 @@ final class PeriodEndPointsTest extends TestCase
         );
 
         $snapToSeconds = $period->snapToQuarter();
-        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->quarter()->startDate()->format('Y-m-d H:i:s.u');
-        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->quarter()->endDate()->format('Y-m-d H:i:s.u');
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->quarter()->startDate->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->quarter()->endDate->format('Y-m-d H:i:s.u');
 
-        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame($startDate, $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToSemester(): void
@@ -339,12 +339,12 @@ final class PeriodEndPointsTest extends TestCase
         );
 
         $snapToSeconds = $period->snapToSemester();
-        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->semester()->startDate()->format('Y-m-d H:i:s.u');
-        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->semester()->endDate()->format('Y-m-d H:i:s.u');
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->semester()->startDate->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->semester()->endDate->format('Y-m-d H:i:s.u');
 
-        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame($startDate, $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToIsoWeek(): void
@@ -356,12 +356,12 @@ final class PeriodEndPointsTest extends TestCase
         );
 
         $snapToSeconds = $period->snapToIsoWeek();
-        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoWeek()->startDate()->format('Y-m-d H:i:s.u');
-        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoWeek()->endDate()->format('Y-m-d H:i:s.u');
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoWeek()->startDate->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoWeek()->endDate->format('Y-m-d H:i:s.u');
 
-        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame($startDate, $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 
     public function testSnapToIsoYear(): void
@@ -373,11 +373,11 @@ final class PeriodEndPointsTest extends TestCase
         );
 
         $snapToSeconds = $period->snapToIsoYear();
-        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoYear()->startDate()->format('Y-m-d H:i:s.u');
-        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoYear()->endDate()->format('Y-m-d H:i:s.u');
+        $startDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-18 12:12:12.123456'))->isoYear()->startDate->format('Y-m-d H:i:s.u');
+        $endDate = DatePoint::fromDate(new DateTimeImmutable('2021-07-23 12:12:12.435672'))->isoYear()->endDate->format('Y-m-d H:i:s.u');
 
-        self::assertSame($startDate, $snapToSeconds->startDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($endDate, $snapToSeconds->endDate()->format('Y-m-d H:i:s.u'));
-        self::assertSame($period->bounds(), $snapToSeconds->bounds());
+        self::assertSame($startDate, $snapToSeconds->startDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($endDate, $snapToSeconds->endDate->format('Y-m-d H:i:s.u'));
+        self::assertSame($period->bounds, $snapToSeconds->bounds);
     }
 }
