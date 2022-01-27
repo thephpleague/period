@@ -1032,10 +1032,122 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a time unit.
+     * Returns a new instance which snaps the startDate and endDate to a second interval.
      */
-    public function snapTo(TimeUnit $timeUnit): self
+    public function snapToSecond(): self
     {
-        return $timeUnit->snap($this);
+        return new self(
+            DatePoint::fromDate($this->startDate)->second()->startDate,
+            DatePoint::fromDate($this->endDate)->second()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a minute interval.
+     */
+    public function snapToMinute(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->minute()->startDate,
+            DatePoint::fromDate($this->endDate)->minute()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a hour interval.
+     */
+    public function snapToHour(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->hour()->startDate,
+            DatePoint::fromDate($this->endDate)->hour()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a day interval.
+     */
+    public function snapToDay(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->day()->startDate,
+            DatePoint::fromDate($this->endDate)->day()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a iso week interval.
+     */
+    public function snapToIsoWeek(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->isoWeek()->startDate,
+            DatePoint::fromDate($this->endDate)->isoWeek()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a month interval.
+     */
+    public function snapToMonth(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->month()->startDate,
+            DatePoint::fromDate($this->endDate)->month()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a quarter interval.
+     */
+    public function snapToQuarter(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->quarter()->startDate,
+            DatePoint::fromDate($this->endDate)->quarter()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a semeter interval.
+     */
+    public function snapToSemester(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->semester()->startDate,
+            DatePoint::fromDate($this->endDate)->semester()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a year interval.
+     */
+    public function snapToYear(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->year()->startDate,
+            DatePoint::fromDate($this->endDate)->year()->endDate,
+            $this->bounds
+        );
+    }
+
+    /**
+     * Returns a new instance which snaps the startDate and endDate to a iso year interval.
+     */
+    public function snapToIsoYear(): self
+    {
+        return new self(
+            DatePoint::fromDate($this->startDate)->isoYear()->startDate,
+            DatePoint::fromDate($this->endDate)->isoYear()->endDate,
+            $this->bounds
+        );
     }
 }

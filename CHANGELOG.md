@@ -23,7 +23,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::__construct` is private.
 - `Period` named constructors no longer supports scalar values only objects can be used for instantiation.
 - `Period` named constructors, all parameters are required except for the boundaries.
-- `Period::timestampInterval` now returns an `int` instead of a `float` value.  
+- `Period::timeDuration` now returns an `int` instead of a `float` value.  
 - `Duration` no longer extends a `DateInterval` object.
 - `Duration::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - `Datepoint` class renamed `DatePoint`.
@@ -42,7 +42,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::getEndDate` replaced by accessing readonly property `Period::endDate`
 - `Period::getBoundaryType` replaced by accessing readonly property `Period::bounds`
 - `Period::getDateInterval` replaced by `Period::toDateInterval`
-- `Period::getTimestampInterval` replaced by `Period::seconds`
+- `Period::getTimestampInterval` replaced by `Period::timeDuration`
 - `Period::withBoundaryType` replaced by `Period::boundedBy`
 - `Period::isStartIncluded` with no replacement use `Bounds::isStartIncluded`
 - `Period::isStartExcluded` with no replacement use `Bounds::isStartIncluded` instead
@@ -58,7 +58,7 @@ All notable changes to `Period` will be documented in this file
 - `Sequence::getIntersections` use `Sequence::intersections` instead
 - `Sequence::getGaps` use `Sequence::gaps` instead
 - `Sequence::getBoundaries` use `Sequence::length` instead
-- `Sequence::getTotalTimestampInterval` use `Sequence::totalTimestampInterval` instead  
+- `Sequence::getTotalTimestampInterval` use `Sequence::totalTimeDuration` instead  
 - `Duration::__toString` and `Duration::format` with no replacement
 - `Duration::create` is removed with no replacement
 - `Datepoint::create` is removed with no replacement
