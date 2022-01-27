@@ -8,17 +8,16 @@ title: Period instantiation
 A `Period` instance is a PHP implementation of a bounded datetime interval which consists of:
 
 - two date endpoints hereafter referred to as datepoints. A **datepoint** is a position in time expressed as a `DateTimeImmutable` object. The starting datepoint is always less than or equal to the ending datepoint.
-- the duration between them which correspond to the continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
-- its bounds. An included datepoint means that the boundary datepoint itself is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included in the interval.  
+- its bounds. An included datepoint means that the boundary datepoint itself is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included in the interval. The package supports included and excluded datepoint, thus, the following bounds are supported:
 
-The package supports included and excluded datepoint, thus, the following bounds are supported:
-
-- included starting datepoint and excluded ending datepoint: `[start, end)`;
-- included starting datepoint and included ending datepoint : `[start, end]`;
-- excluded starting datepoint and included ending datepoint : `(start, end]`;
-- excluded starting datepoint and excluded ending datepoint : `(start, end)`;
+  - included starting datepoint and excluded ending datepoint: `[start, end)`;
+  - included starting datepoint and included ending datepoint : `[start, end]`;
+  - excluded starting datepoint and included ending datepoint : `(start, end]`;
+  - excluded starting datepoint and excluded ending datepoint : `(start, end)`;
 
 <p class="message-warning">infinite or unbounded intervals are not supported.</p>
+
+- the duration between them which correspond to the continuous portion of time between two datepoints expressed as a `DateInterval` object. The duration cannot be negative.
 
 ## Instantiation
 
@@ -31,7 +30,7 @@ made private. Whichever instance used, a `Period` instance is always created wit
 
 Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\DateRangeError`.
 
-The `$bounds` is a `Period\Bounds` and only its value are eligible to create a new `Period` instance.
+The `$bounds` is a `League\Period\Bounds` and only its value are eligible to create a new `Period` instance.
 
 <p class="message-info">By default for each named constructor the <code>$bounds</code> is <code>Bounds::INCLUDE_START_EXCLUDE_END</code> when not explicitly provided.</p>
 

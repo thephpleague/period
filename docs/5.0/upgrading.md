@@ -11,7 +11,7 @@ This guide will help you migrate from a 4.x version to 5.0. It will only explain
 
 ## Installation
 
-If you are using composer then you should update the require section of your `composer.json` file.
+If you are using composer then you should update the `require` section of your `composer.json` file.
 
 ~~~
 composer require league/period:^5.0
@@ -140,7 +140,7 @@ Most notably:
 
 ```diff
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();
-+ Period::fromDate('2021-05-23',  '2021-05-24', Bounds::INCLUDE_ALL)->startDate;
++ Period::fromDate('2021-05-23', '2021-05-24', Bounds::INCLUDE_ALL)->startDate;
 ```
 
 ## Backward Incompatibility Changes
@@ -170,7 +170,7 @@ In version `4.x` a method expecting a date accepts the following types:
 
 - a `DateTimeInterface` implementing object
 - an integer that represents a timestamp
-- a string that can be parsed by the DateTimeImmutable construct
+- a string that can be parsed by the `DateTimeImmutable` construct
 - a string like integer that would be converted to a timestamp
 
 In version `5.x` to avoid hard to debug issues and by taking advantage 
@@ -184,9 +184,12 @@ if better or more complex conversion is needed, first convert it using a `DateTi
 or a `DatePoint` named constructor.
 
 ```diff
+use League\Period\Period;
+use Carbon\Carbon;
+
 - Period::fromDatepoint('1635585868', '2021-05-24', Period::INCLUDE_ALL);
 + Period::fromDate(
-+    Datepoint::fromTimestamp(1635585868), 
++    Carbon::createFromTimestamp(1635585868), 
 +    '2021-05-24', 
 +    Bounds::INCLUDE_ALL
 + );
@@ -199,8 +202,8 @@ In version `4.x` a method expecting a duration accepts the following types:
 - a string like float that would be converted to a duration in seconds
 - an object that implements the `__toString` method converted into a string
 - a string in the Chronometer format
-- a string in a specific DateInterval format
-- a string convertible into a DateInterval object via its `createFromDateString` named constructor
+- a string in a specific `DateInterval` format
+- a string convertible into a `DateInterval` object via its `createFromDateString` named constructor
 
 In version `5.x` to avoid hard to debug issues and by taking advantage of union type
 the duration can only accept the following types:
@@ -245,7 +248,7 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 
 ```diff
 - $period->timestampInterval(); //returns float
-+ $period->seconds(); //returns int
++ $period->toTimeDuration();    //returns int
 ```
 
 `Period::diff` now returns a `Sequence` object, before it was returning an `array`.
@@ -258,7 +261,7 @@ $alt = Period::fromDate('2013-01-01', '2014-01-01');
 + $alt->diff($period)->isEmpty(); //return true
 ```
 
-in `5.x` Closure objects are used instead of the callable pseudo type with the `Sequence` methods.
+in `5.x` `Closure` objects are used instead of the callable pseudo type with the `Sequence` methods.
 
 ```diff
 - $res = $sequence->filter('myFilter');    // a callable string can be given
@@ -267,11 +270,11 @@ in `5.x` Closure objects are used instead of the callable pseudo type with the `
 
 ## Changes in bounds related methods
 
-With the introduction of the `Bounds` enum, all bound related methods are moved to the Enum.
+With the introduction of the `Bounds` enum, all bound related methods have been moved to the added Enum.
 
 ```diff
 - $period->isStartDateIncluded();       // return true
-+ $period->bounds()->isStartIncluded(); // return true
++ $period->bounds->isStartIncluded(); // return true
 ```
 
 | `4.x` method name                             | `5.x` method name                             |

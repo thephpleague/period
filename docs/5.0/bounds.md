@@ -3,19 +3,19 @@ layout: default
 title: The Bounds enum
 ---
 
-# The Bounds enum
+# The Bounds Enum
 
 `Period` instances are bounded date endpoint interval. An included datepoint means that the boundary datepoint itself 
 is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included 
 in the interval. `Period` instances supports included and excluded datepoint, thus, the following Enum is provided:
 
 ```php
-enum Bounds: string
+enum Bounds
 {
-    case INCLUDE_START_EXCLUDE_END = '[)';
-    case INCLUDE_ALL = '[]';
-    case EXCLUDE_START_INCLUDE_END = '(]';
-    case EXCLUDE_ALL = '()';
+    case INCLUDE_START_EXCLUDE_END;
+    case INCLUDE_ALL;
+    case EXCLUDE_START_INCLUDE_END;
+    case EXCLUDE_ALL;
 }
 ```
 

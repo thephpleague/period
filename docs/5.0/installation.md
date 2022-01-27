@@ -19,7 +19,7 @@ $ composer require league/period
 
 ## Going Solo
 
-You can also use `Period` without using Composer by downloading the library and:
+`Period` can be use without Composer by downloading the library and:
 
 - using any other [PSR-4](http://www.php-fig.org/psr/psr-4/) compatible autoloader.
 - using the bundle autoloader script as shown below:
@@ -29,7 +29,7 @@ require 'path/to/league/repo/autoload.php';
 
 use League\Period\Datepoint;
 
-Datepoint::fromDateString('2012-05-23')->day()->endDate();
+Datepoint::fromDateString('2012-05-23')->day()->endDate;
 //returns DateTimeImmutable('2012-05-24 00:00:00.000000');
 ~~~
 

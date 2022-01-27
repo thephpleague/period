@@ -131,9 +131,9 @@ final class Period implements JsonSerializable
     {
         return match (true) {
             $duration instanceof DateInterval => $duration,
-            $duration instanceof Duration => $duration->interval,
+            $duration instanceof Duration => $duration->dateInterval,
             $duration instanceof Period => $duration->toDateInterval(),
-            default => Duration::fromDateString($duration)->interval,
+            default => Duration::fromDateString($duration)->dateInterval,
         };
     }
 

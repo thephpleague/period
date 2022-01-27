@@ -7,7 +7,7 @@ title: The Datepoint class
 
 A datepoint is a position in time expressed as a `DateTimeImmutable` object.
 
-The `DatePoint` class is used to ease `DatePoint` manipulation. This class decorates PHP's `DateTimeImmutable` class.
+The `DatePoint` class is used to ease `DateTimeImmutable` manipulation. This class decorates PHP's `DateTimeImmutable` class.
 It provides:
 
 - named constructors to easily get a `DateTimeImmutable` object.
@@ -102,7 +102,8 @@ DatePoint::fromTimestamp(2018)->date;
 Once you've got a `DatePoint` instantiated object, you can access a set of calendar type interval using the following method signature.
 
 ~~~php
-public function method(string $boundaries = Period::INCLUDE_START_EXCLUDE_END): Period;
+use League\Period\Bounds;
+public function method(string $boundaries = Bounds::INCLUDE_START_EXCLUDE_END): Period;
 ~~~
 
 where `method` is one of the following date time span:
@@ -120,7 +121,7 @@ where `method` is one of the following date time span:
 
 For each a these methods a `Period` object is returned with:
 
-- the `Bounds::INCLUDE_LOWER_EXCLUDE_UPPER` bounds type by default unless changed using the `$bounds` argument;
+- the `Bounds::INCLUDE_START_EXCLUDE_END` bounds type by default unless changed using the `$bounds` argument;
 - the starting datepoint represents the beginning of the current datepoint calendar interval;
 - the duration associated with the given calendar interval;
 
@@ -180,8 +181,8 @@ $datepoint->bordersOnStart(
 
 $datepoint->isAfter(
     Period::before(
-        DatePoint::fromDateString('2018-01-13 23:34:28'), 
-        DateInterval::createFromDateString('3 minutes'), 
+        '2018-01-13 23:34:28', 
+        '3 minutes', 
         Bounds::INCLUDE_START_EXCLUDE_END
     )
 );  // true

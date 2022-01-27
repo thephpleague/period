@@ -76,9 +76,9 @@ All these methods converts their inputs into a `Duration` object or throws an ex
 ~~~php
 use League\Period\Duration;
 
+Duration::fromDateInterval(new DateInterval('PT1H'));     // is equivalent to new Duration(new DateInterval('PT1H'))
 Duration::fromDateString('1 DAY');                    // is equivalent to new Duration(DateInterval::createFromDateString('1 DAY'))
 Duration::fromSeconds(2018, 300_000);                 // is equivalent to new Duration(new DateInterval('PT2018.3S'))
-Duration::fromInterval(new DateInterval('PT1H'));     // is equivalent to new Duration(new DateInterval('PT1H'))
 Duration::fromChronoString('12:30');                  // is equivalent to new Duration(new DateInterval('PT12M30S'))
 Duration::fromChronoString('12:30:34.8');             // is equivalent to new Duration(new DateInterval('PT12H30M34.8S'))
 Duration::fromTimeString('12:30');                    // is equivalent to new Duration(new DateInterval('PT12H30M'))
@@ -98,7 +98,6 @@ public readonly DateInterval Duration::interval
 ~~~php
 $dateInterval = Duration::fromChronoString('12:30')->interval; //returns a DateInterval object
 ~~~
-
 
 ## Duration mutation method
 

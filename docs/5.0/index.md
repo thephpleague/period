@@ -10,13 +10,11 @@ title: Examples
 [![Software License](//img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Total Downloads](//img.shields.io/packagist/dt/league/period.svg?style=flat-square)](//packagist.org/packages/league/period)
 
-`Period` is PHP's missing time range API. Based on ideas from [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
+`Period` is PHP's missing time range API. this package cover all basic operations regarding time ranges.
 
-<p class="message-info">In your code, you will always have to typehint against the <code>League\Period\Period</code> class directly because it is a immutable value object class marked as final and the library does not provide an interface.</p>
+<p class="message-info">On usage, always typehint against the <code>League\Period\Period</code> class directly because it is an immutable value object marked as final and no interface is provided by the library.</p>
 
-## Allow multiple ways to instantiate the object dependins on your context
-
-To help easily instantiate your time range and manipulating it, the package comes bundle with [named constructors](/5.0/period/).
+## Provides multiple ways to instantiate depending on your context
 
 ~~~php
 use League\Period\Bounds;
@@ -28,39 +26,40 @@ $period3 = Period::fromNotation('!Y-m-d', '(2014-10-01 , 2014-11-01)');
 $period4 = Period::fromIso8601('!Y-m-d', '2014-10-01/2014-11-01', Bounds::EXCLUDE_ALL);
 ~~~
 
-All the above calls will end up creating `Period` instances that are equals.
+All the above calls will end up creating `Period` instances that are equals. The package comes bundle with even more [named constructors](/5.0/period/).
 
-## Accessing the interval properties
+## Accessing the VO properties
 
 ~~~php
 use League\Period\Period;
 
-$interval = Period::fromNotation('!Y-m-d', '[2014-10-03 08:12:37,2014-10-03 08:12:37)');
-$start = $interval->startDate;           //returns a DateTimeImmutable
-$end = $interval->endDate;               //returns a DateTimeImmutable
-$bounds = $interval->bounds;             //returns a Bounds enum
-$duration = $interval->toDateInterval(); //returns a DateInterval object
-$duration2 = $interval->toTimeDuration();       //returns the duration in seconds
-echo $interval->toIso8601(); //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
+$period = Period::fromNotation('!Y-m-d', '[2014-10-03 08:12:37,2014-10-03 08:12:37)');
+$period->startDate;        //returns a DateTimeImmutable
+$period->endDate;          //returns a DateTimeImmutable
+$period->bounds;           //returns a League\Period\Bounds enum
+$period->toDateInterval(); //returns a DateInterval object
+$period->toTimeDuration(); //returns the duration in seconds
+echo $period->toIso8601(); //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
 ~~~
 
 Learn more about how this all works in the [basic usage](/5.0/period/properties/).
 
 ## Iterate over the interval
 
-You can use a `Period` instance to get all the days from a selected month as `DateTimeImmutable` object.
+Access a range of all days from a selected month as `DateTimeImmutable` objects.
 
 ~~~php
-foreach (Period::fromMonth(2014, 10)->dateRange(new DateInterval('P1D')) as $dateTime) {
-    $dateTime->format('Y-m-d'); //$dateTime is a DateTimeImmutable object
+foreach (Period::fromMonth(2014, 10)->dateRange(new DateInterval('P1D')) as $datepoint) {
+    $datepoint->format('Y-m-d'); //$datepoint is a DateTimeImmutable object
 }
 ~~~
 
-With the same instance you can also get the same days but expresses as `Period` instances 
+Access a range of all days from a selected month as `Period` instances.
 
 ~~~php
-foreach (Period::fromMonth(2014, 10)->split(new DateInterval('P1D')) as $day) {
-    $day->toNotation('Y-m-d'); // $day is a Period instance which covers each days of the month.
+foreach (Period::fromMonth(2014, 10)->split('1 DAY') as $day) {
+    $day->toNotation('Y-m-d'); // $day is a Period instance which covers each day of the month.
+}
 ~~~
 
 ## Comparing intervals
@@ -69,10 +68,10 @@ foreach (Period::fromMonth(2014, 10)->split(new DateInterval('P1D')) as $day) {
 $period = Period::after(new DateTime('2014-01-01'), '1 MONTH', Bounds::INCLUDE_ALL);
 $altPeriod = Period::after(new DateTimeImmutable('2014-01-01'), new DateInterval('P1M'), Bounds::EXCLUDE_ALL);
 $period->durationEquals($altPeriod); //returns true
-$period->equals($altPeriod); //returns false
-$period->contains($altPeriod); //returns true
-$altPeriod->contains($period); //return false
-$period->contains('2014-01-10'); //returns true
+$period->equals($altPeriod);         //returns false
+$period->contains($altPeriod);       //returns true
+$altPeriod->contains($period);       //return false
+$period->contains('2014-01-10');     //returns true
 DatePoint::fromDateString('2014-02-10')->isDuring($period); //returns false
 ~~~
 
