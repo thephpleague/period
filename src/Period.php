@@ -22,7 +22,7 @@ use Generator;
 use JsonSerializable;
 
 /**
- * An immutable value object class to manipulate DateTime interval.
+ * An immutable value object class to manipulate DateTimeInterface interval.
  *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
@@ -899,7 +899,6 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting datepoint.
-     *
      */
     public function startingOn(DatePoint|DateTimeInterface|string $startDate): self
     {
@@ -916,7 +915,6 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending datepoint.
-     *
      */
     public function endingOn(DatePoint|DateTimeInterface|string $endDate): self
     {
@@ -971,7 +969,6 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting datepoint.
-     *
      */
     public function moveStartDate(Period|Duration|DateInterval|string $duration): self
     {
@@ -984,7 +981,6 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending datepoint.
-     *
      */
     public function moveEndDate(Period|Duration|DateInterval|string $duration): self
     {
@@ -997,7 +993,6 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
-     *
      */
     public function move(Period|Duration|DateInterval|string $duration): self
     {
@@ -1018,7 +1013,6 @@ final class Period implements JsonSerializable
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new datepoints.
-     *
      */
     public function expand(Period|Duration|DateInterval|string $duration): self
     {
@@ -1032,7 +1026,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a second interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective second interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToSecond(): self
     {
@@ -1044,7 +1041,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a minute interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective minute interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToMinute(): self
     {
@@ -1056,7 +1056,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a hour interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective hour interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToHour(): self
     {
@@ -1068,7 +1071,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a day interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective day interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToDay(): self
     {
@@ -1080,7 +1086,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a iso week interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective iso week interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToIsoWeek(): self
     {
@@ -1092,7 +1101,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a month interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective month interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToMonth(): self
     {
@@ -1104,7 +1116,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a quarter interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective quarter interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToQuarter(): self
     {
@@ -1116,7 +1131,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a semeter interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective semester interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToSemester(): self
     {
@@ -1128,7 +1146,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a year interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective year interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToYear(): self
     {
@@ -1140,7 +1161,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance which snaps the startDate and endDate to a iso year interval.
+     * Returns a new instance which snaps the startDate and endDate to their respective iso year interval.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new datepoints.
      */
     public function snapToIsoYear(): self
     {
