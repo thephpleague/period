@@ -16,7 +16,7 @@ The current package comes bundle with the following `LabelGenerator` implementin
 
 ## LatinLetter
 
-Generates labels according the the latin alphabet.
+Generate labels according the latin alphabet.
 
 ~~~php
 <?php
@@ -53,7 +53,7 @@ public function LatinLetter::startsWith(): self; //returns a new object with a n
 
 ## DecimalNumber
 
-Generates labels according to the decimal number system.
+Generate labels according to the decimal number system.
 
 ~~~php
 <?php
@@ -217,7 +217,7 @@ use League\Period\Chart;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$samelabel = new class implements Chart\LabelGenerator {
+$sameLabel = new class implements Chart\LabelGenerator {
     public function generate(int $nbLabels): array
     {
         return array_fill(0, $nbLabels, $this->format('foobar'));
@@ -229,7 +229,7 @@ $samelabel = new class implements Chart\LabelGenerator {
     }
 };
 
-$labelGenerator = new Chart\AffixLabel($samelabel, '', '.');
+$labelGenerator = new Chart\AffixLabel($sameLabel, '', '.');
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
         Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'),

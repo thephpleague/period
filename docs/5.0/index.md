@@ -129,5 +129,5 @@ results:
  sequence                            [----)   [----------------------)
 ~~~
 
-The classes under the `Period\Chart` namespace allows drawing all interactions
+The classes under the `League\Period\Chart` namespace allows drawing all interactions
 around `Period` instances. You can learn more by looking at the [drawing documentation](/5.0/chart)
