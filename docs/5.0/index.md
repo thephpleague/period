@@ -102,3 +102,32 @@ count($gaps); // 2
 ~~~
 
 `Sequence` is a `Period` container and collection. The class has more [methods](/5.0/sequence/).
+
+## Drawing the interactions between Period instances
+
+~~~php
+<?php
+
+use League\Period\Chart;
+use League\Period\Period;
+use League\Period\Sequence;
+
+$dataset = new Chart\Dataset([
+    ['period', Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)')],
+    ['sequence', new Sequence(
+       Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-01-18)'),
+       Period::fromNotation('!Y-m-d', '[2018-01-20, 2018-02-01)')
+    )],
+]);
+Chart\GanttChart::create()->stroke($dataset);
+~~~
+
+results:
+
+~~~bash
+ period   [----------------------------------------------------------)
+ sequence                            [----)   [----------------------)
+~~~
+
+The classes under the `Period\Chart` namespace allows drawing all interactions
+around `Period` instances. You can learn more by looking at the [drawing documentation](/5.0/chart)

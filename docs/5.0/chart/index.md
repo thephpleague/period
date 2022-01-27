@@ -17,19 +17,18 @@ To generate a graph you need to give to the `Dataset` constructor a list of pair
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
+use League\Period\Chart;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$dataset = new Dataset([
+$dataset = new Chart\Dataset([
     ['period', Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)')],
     ['sequence', new Sequence(
        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-01-18)'),
        Period::fromNotation('!Y-m-d', '[2018-01-20, 2018-02-01)')
     )],
 ]);
-GanttChart::create()->stroke($dataset);
+Chart\GanttChart::create()->stroke($dataset);
 ~~~
 
 results:
@@ -46,8 +45,7 @@ If you want to display a `Sequence` and some of its operations. You can append t
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
+use League\Period\Chart;
 use League\Period\Period;
 use League\Period\Sequence;
 
@@ -55,11 +53,11 @@ $sequence = new Sequence(
     Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-03-01)'),
     Period::fromNotation('!Y-m-d', '[2018-05-01, 2018-08-01)')
 );
-$dataset = new Dataset();
+$dataset = new Chart\Dataset();
 $dataset->append('A', $sequence[0]);
 $dataset->append('B', $sequence[1]);
 $dataset->append('GAPS', $sequence->gaps());
-GanttChart::create()->stroke($dataset);
+Chart\GanttChart::create()->stroke($dataset);
 ~~~
 
 results:
@@ -95,12 +93,11 @@ If you wish to present the graph on another medium like a web browser or an imag
 ~~~php
 <?php
 
-use League\Period\Chart\Dataset;
-use League\Period\Chart\GanttChart;
+use League\Period\Chart;
 use League\Period\Period;
 
-$graph = new GanttChart();
-$graph->stroke(new Dataset([
+$graph = new Chart\GanttChart();
+$graph->stroke(new Chart\Dataset([
     ['first', Period::fromNotation('Y-m-d H:i:s', '[2018-01-01 08:00:00, 2018-01-01 12:00:00)')],
     ['last', Period::fromNotation('Y-m-d H:i:s', '2018-01-01 10:00:00, 2018-01-01 14:00:00)')],
 ]));
