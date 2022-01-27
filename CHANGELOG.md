@@ -14,6 +14,7 @@ All notable changes to `Period` will be documented in this file
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
 - `Period::snapTo` method to ease period expansion.
 - `Bounds` Enum.
+- `Presence` Enum.
 
 ### Fixed
 

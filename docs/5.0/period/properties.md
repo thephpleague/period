@@ -129,7 +129,9 @@ of smaller `Period` instances.
 ### Period::dateRange
 
 ~~~php
-public Period::dateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
+use League\Period\Presence;
+
+public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, Presence $startDatePresence = Presence::INCLUDED): DatePeriod
 ~~~
 
 Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`.
@@ -138,7 +140,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`
 
 #### Parameters
 
-- `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the start date from the set of recurring dates within the period.
+- `$startDatePresence` Can be set to **`Presence::INCLUDED`** or **`Presence::EXCLUDED`** to exclude the initial date from the set of recurring dates within the period.
 
 #### Examples
 
@@ -146,7 +148,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`
 use League\Period\Duration;
 use League\Period\Period;
 
-foreach (Period::fromYear(2012)->dateRange('1 MONTH') as $datetime) {
+foreach (Period::fromYear(2012)->dateRangeForward('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -154,13 +156,14 @@ foreach (Period::fromYear(2012)->dateRange('1 MONTH') as $datetime) {
 //the last date is 2012-12-01
 ~~~
 
-Using the `$option` parameter
+Using the `$startDatePresence` parameter
 
 ~~~php
+use League\Period\Presence;
 use League\Period\Duration;
 use League\Period\Period;
 
-$dateRange = Period::fromYear(2012)->dateRange('1 MONTH', DatePeriod::EXCLUDE_START_DATE);
+$dateRange = Period::fromYear(2012)->dateRangeForward('1 MONTH', Presence::EXCLUDED);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
@@ -172,19 +175,21 @@ foreach ($dateRange as $datetime) {
 ### Period::dateRangeBackwards
 
 ~~~php
-public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator<DateTimeImmutable>
+use League\Period\Presence;
+
+public Period::dateRangeBackward(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator<DateTimeImmutable>
 ~~~
 
 Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.
 
 #### Parameters
 
-- `$option` Can be set to **`DatePeriod::EXCLUDE_START_DATE`** to exclude the ending datepoint from the set of recurring dates within the interval.
+- `$endDatePresence` Can be set to **`Presence::INCLUDED`** or **`Presence::EXCLUDED`** to exclude the initial date from the set of recurring dates within the period.
 
 #### Examples
 
 ~~~php
-foreach (Period::fromYear(2012)->dateRangeBackwards(new DateInterval('P1M')) as $datetime) {
+foreach (Period::fromYear(2012)->dateRangeBackward(new DateInterval('P1M')) as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -192,11 +197,11 @@ foreach (Period::fromYear(2012)->dateRangeBackwards(new DateInterval('P1M')) as 
 //the last date is 2012-02-01
 ~~~
 
-Using the `$option` parameter
+Using the `$endDatePresence` parameter
 
 ~~~php
 $interval = Period::fromYear('2012-06-05');
-$dateRange = $interval->dateRangeBackwards(new DateInterval('P1M'), DatePeriod::EXCLUDE_START_DATE);
+$dateRange = $interval->dateRangeBackward(new DateInterval('P1M'), Presence::EXCLUDED);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }

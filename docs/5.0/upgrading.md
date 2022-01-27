@@ -117,8 +117,8 @@ Most notably:
 | `Period::getDateInterval`             | `Period::toDateInterval`      |
 | `Period::getTimestampInterval`        | `Period::toTimeDuration`      |
 | `Period::withBoundaryType`            | `Period::boundedBy`           |
-| `Period::getDatePeriod`               | `Period::dateRange`           |
-| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`  |
+| `Period::getDatePeriod`               | `Period::dateRangeForward`    |
+| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackward`   |
 | `Period::__toString`                  | `Period::toIso8601`           |
 | `Period::format`                      | `Period::toNotation`          |
 | `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`    |
@@ -266,6 +266,14 @@ in `5.x` `Closure` objects are used instead of the callable pseudo type with the
 ```diff
 - $res = $sequence->filter('myFilter');    // a callable string can be given
 + $res = $sequence->filter(myFilter(...)); // a Closure object MUST be given
+```
+
+`Period::dateRange` and `Period::dateRangeBackwards` accept a `Presence` Enum as a parameter to control the presence
+or not of the initial date object in their returned values.
+
+```diff
+- $res = $period->getDatePeriod('1 DAY', DatePeriod::EXCLUDE_START_DATE); 
++ $res = $period->dateRangeBackward('1 DAY', Presence::EXCLUDED);
 ```
 
 ## Changes in bounds related methods

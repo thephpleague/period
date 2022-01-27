@@ -12,7 +12,6 @@
 namespace League\Period;
 
 use DateInterval;
-use DatePeriod;
 use DateTime;
 use DateTimeImmutable;
 use Generator;
@@ -51,7 +50,7 @@ final class PeriodDurationTest extends TestCase
      * @dataProvider providerGetDatePeriod
      *
      */
-    public function testGetDatePeriod(DateInterval|int|string $duration, int $option, int $count): void
+    public function testGetDatePeriod(DateInterval|int|string $duration, Presence $option, int $count): void
     {
         if (is_string($duration)) {
             $duration = DateInterval::createFromDateString($duration);
@@ -60,23 +59,23 @@ final class PeriodDurationTest extends TestCase
         }
 
         $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->dateRange($duration, $option);
+        $range = $period->dateRangeForward($duration, $option);
         self::assertCount($count, iterator_to_array($range));
     }
 
     /**
-     * @return array<string, array{0:DateInterval|int|string, 1:int, 2:int}>
+     * @return array<string, array{0:DateInterval|int|string, 1:Presence, 2:int}>
      */
     public function providerGetDatePeriod(): array
     {
         return [
-            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
-            'useString' => ['2 HOUR', 0, 12],
-            'useInt' => [9600, 0, 9],
-            'exclude start date use DateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
-            'exclude start date use String' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
-            'exclude start date use Int' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
-            'exclude start date use Float' => [14400, DatePeriod::EXCLUDE_START_DATE, 5],
+            'useDateInterval' => [new DateInterval('PT1H'), Presence::INCLUDED, 24],
+            'useString' => ['2 HOUR', Presence::INCLUDED, 12],
+            'useInt' => [9600, Presence::INCLUDED, 9],
+            'exclude start date use DateInterval' => [new DateInterval('PT1H'), Presence::EXCLUDED, 23],
+            'exclude start date use String' => ['2 HOUR', Presence::EXCLUDED, 11],
+            'exclude start date use Int' => [9600, Presence::EXCLUDED, 8],
+            'exclude start date use Float' => [14400, Presence::EXCLUDED, 5],
         ];
     }
 
@@ -85,7 +84,7 @@ final class PeriodDurationTest extends TestCase
      *
      * @param DateInterval|int|string $duration
      */
-    public function testGetDatePeriodBackwards($duration, int $option, int $count): void
+    public function testGetDatePeriodBackwards($duration, Presence $option, int $count): void
     {
         if (is_string($duration)) {
             $duration = DateInterval::createFromDateString($duration);
@@ -94,23 +93,23 @@ final class PeriodDurationTest extends TestCase
         }
 
         $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->dateRangeBackwards($duration, $option);
+        $range = $period->dateRangeBackward($duration, $option);
         self::assertCount($count, iterator_to_array($range));
     }
 
     /**
-     * @return array<string,array{0:DateInterval|string|int, 1:int, 2:int}>
+     * @return array<string,array{0:DateInterval|string|int, 1:Presence, 2:int}>
      */
     public function providerGetDatePeriodBackwards(): array
     {
         return [
-            'useDateInterval' => [new DateInterval('PT1H'), 0, 24],
-            'useString' => ['2 HOUR', 0, 12],
-            'useInt' => [9600, 0, 9],
-            'exclude start date useDateInterval' => [new DateInterval('PT1H'), DatePeriod::EXCLUDE_START_DATE, 23],
-            'exclude start date useString' => ['2 HOUR', DatePeriod::EXCLUDE_START_DATE, 11],
-            'exclude start date useInt' => [9600, DatePeriod::EXCLUDE_START_DATE, 8],
-            'exclude start date useFloat' => [14400, DatePeriod::EXCLUDE_START_DATE, 5],
+            'useDateInterval' => [new DateInterval('PT1H'), Presence::INCLUDED, 24],
+            'useString' => ['2 HOUR', Presence::INCLUDED, 12],
+            'useInt' => [9600, Presence::INCLUDED, 9],
+            'exclude start date useDateInterval' => [new DateInterval('PT1H'), Presence::EXCLUDED, 23],
+            'exclude start date useString' => ['2 HOUR', Presence::EXCLUDED, 11],
+            'exclude start date useInt' => [9600, Presence::EXCLUDED, 8],
+            'exclude start date useFloat' => [14400, Presence::EXCLUDED, 5],
         ];
     }
     /**

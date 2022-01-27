@@ -630,9 +630,14 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      */
-    public function dateRange(Period|Duration|DateInterval|string $timeDelta, int $option = 0): DatePeriod
+    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, Presence $startDatePresence = Presence::INCLUDED): DatePeriod
     {
-        return new DatePeriod($this->startDate, self::filterDuration($timeDelta), $this->endDate, $option);
+        return new DatePeriod(
+            $this->startDate,
+            self::filterDuration($timeDelta),
+            $this->endDate,
+            $startDatePresence === Presence::EXCLUDED ? DatePeriod::EXCLUDE_START_DATE : 0
+        );
     }
 
     /**
@@ -641,11 +646,11 @@ final class Period implements JsonSerializable
      *
      * @return Generator<DateTimeImmutable>
      */
-    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, int $option = 0): Generator
+    public function dateRangeBackward(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
-        if (DatePeriod::EXCLUDE_START_DATE === ($option & DatePeriod::EXCLUDE_START_DATE)) {
+        if ($endDatePresence === Presence::EXCLUDED) {
             $date = $this->endDate->sub($timeDelta);
         }
 
@@ -673,7 +678,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->dateRange($duration) as $startDate) {
+        foreach ($this->dateRangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;

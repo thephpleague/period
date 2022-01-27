@@ -49,7 +49,7 @@ Learn more about how this all works in the [basic usage](/5.0/period/properties/
 Access a range of all days from a selected month as `DateTimeImmutable` objects.
 
 ~~~php
-foreach (Period::fromMonth(2014, 10)->dateRange(new DateInterval('P1D')) as $datepoint) {
+foreach (Period::fromMonth(2014, 10)->dateRangeForward(new DateInterval('P1D')) as $datepoint) {
     $datepoint->format('Y-m-d'); //$datepoint is a DateTimeImmutable object
 }
 ~~~
@@ -86,7 +86,7 @@ $period->contains($altPeriod); //return false;
 $altPeriod->durationGreaterThan($period); //return true;
 ~~~
 
-`Period` is an immutable value object. Any changes to the object returns a new object. The class has more [modifying methods](/5.0/modifying/).
+`Period` is an immutable value object. Any changes to the object returns a new object. The class has more [modifying methods](/5.0/period/modifying/).
 
 ## Accessing all gaps between intervals
 
