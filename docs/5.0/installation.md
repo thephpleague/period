@@ -29,7 +29,7 @@ require 'path/to/league/repo/autoload.php';
 
 use League\Period\Datepoint;
 
-Datepoint::fromDateString('2012-05-23')->day()->endDate;
+Datepoint::fromDateString('2012-05-23')->toDay()->endDate;
 //returns DateTimeImmutable('2012-05-24 00:00:00.000000');
 ~~~
 

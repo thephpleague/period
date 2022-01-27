@@ -128,15 +128,15 @@ Most notably:
 | `Duration::createFromTimeString`      | `Duration::fromTimeString`    |
 | `Duration::createFromDateString`      | `Duration::fromDateString`    |
 | `Duration::createFromDateInterval`    | `Duration::fromDateInterval`  |
-| `Datepoint::getSecond`                | `Datepoint::second`           |
-| `Datepoint::getMinute`                | `Datepoint::minute`           |
-| `Datepoint::getHour`                  | `Datepoint::hour`             |
-| `Datepoint::getIsoWeek`               | `Datepoint::isoWeek`          |
-| `Datepoint::getMonth`                 | `Datepoint::month`            |
-| `Datepoint::getQuarter`               | `Datepoint::quarter`          |
-| `Datepoint::getSemester`              | `Datepoint::semester`         |
-| `Datepoint::getYear`                  | `Datepoint::year`             |
-| `Datepoint::getIsoYear`               | `Datepoint::isoYear`          |
+| `Datepoint::getSecond`                | `Datepoint::toSecond`         |
+| `Datepoint::getMinute`                | `Datepoint::toMinute`         |
+| `Datepoint::getHour`                  | `Datepoint::toHour`           |
+| `Datepoint::getIsoWeek`               | `Datepoint::toIsoWeek`        |
+| `Datepoint::getMonth`                 | `Datepoint::toMonth`          |
+| `Datepoint::getQuarter`               | `Datepoint::toQuarter`        |
+| `Datepoint::getSemester`              | `Datepoint::toSemester`       |
+| `Datepoint::getYear`                  | `Datepoint::toYear`           |
+| `Datepoint::getIsoYear`               | `Datepoint::toIsoYear`        |
 
 ```diff
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();

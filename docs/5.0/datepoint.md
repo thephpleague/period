@@ -108,16 +108,16 @@ public function method(string $boundaries = Bounds::INCLUDE_START_EXCLUDE_END): 
 
 where `method` is one of the following date time span:
 
-- `DatePoint::second`
-- `DatePoint::minute`
-- `DatePoint::hour`
-- `DatePoint::day`
-- `DatePoint::isoWeek`
-- `DatePoint::month`
-- `DatePoint::quarter`
-- `DatePoint::semester`
-- `DatePoint::year`
-- `DatePoint::isoYear`
+- `DatePoint::toSecond`
+- `DatePoint::toMinute`
+- `DatePoint::toHour`
+- `DatePoint::toDay`
+- `DatePoint::toIsoWeek`
+- `DatePoint::toMonth`
+- `DatePoint::toQuarter`
+- `DatePoint::toSemester`
+- `DatePoint::toYear`
+- `DatePoint::toIsoYear`
 
 For each a these methods a `Period` object is returned with:
 
@@ -132,9 +132,9 @@ use League\Period\Bounds;
 use League\Period\DatePoint;
 
 $datepoint = Datepoint::fromDateString('2018-06-18 08:35:25');
-$hour = $datepoint->hour();
+$hour = $datepoint->toHour();
 // new Period('2018-06-18 08:00:00', '2018-06-18 09:00:00');
-$month = $datepoint->month(Bounds::INCLUDE_ALL);
+$month = $datepoint->toMonth(Bounds::INCLUDE_ALL);
 echo $month->toNotation('Y-m-d');
 // [2018-06-01, 2018-07-01 00:00:00];
 $month->contains($datepoint); // true
