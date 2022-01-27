@@ -36,7 +36,15 @@ enum Color: string
             self::MAGENTA => '35',
             self::CYAN => '36',
             self::WHITE => '37',
-            self::NONE => '',
+            default => '',
         };
+    }
+
+    /**
+     * @return non-empty-array<int, Color>
+     */
+    public static function rainBow(): array
+    {
+        return [self::BLACK, self::RED, self::GREEN, self::YELLOW, self::BLUE, self::MAGENTA, self::CYAN, self::WHITE];
     }
 }

@@ -56,9 +56,10 @@ final class GanttChartConfig
      */
     public static function fromRandom(Output $output = new ConsoleOutput(STDOUT)): self
     {
-        $cases = Color::cases();
+        $cases = Color::rainBow();
+        $color = $cases[array_rand($cases)];
 
-        return self::create($output)->withColors($cases[array_rand($cases)]);
+        return self::create($output)->withColors($color);
     }
 
     /**
@@ -66,7 +67,9 @@ final class GanttChartConfig
      */
     public static function fromRainbow(Output $output = new ConsoleOutput(STDOUT)): self
     {
-        return self::create($output)->withColors(...Color::cases());
+        $cases = Color::rainBow();
+
+        return self::create($output)->withColors(...$cases);
     }
 
     /**
