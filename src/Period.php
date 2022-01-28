@@ -646,7 +646,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<DateTimeImmutable>
      */
-    public function dateRangeBackward(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator
+    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
@@ -674,7 +674,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<Period>
      */
-    public function split(Period|Duration|DateInterval|string $duration): Generator
+    public function splitForward(Period|Duration|DateInterval|string $duration): Generator
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */

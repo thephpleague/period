@@ -177,7 +177,7 @@ foreach ($dateRange as $datetime) {
 ~~~php
 use League\Period\Presence;
 
-public Period::dateRangeBackward(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator<DateTimeImmutable>
+public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator<DateTimeImmutable>
 ~~~
 
 Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.
@@ -189,7 +189,7 @@ Returns a `Generator` to allow iteration over the instance datepoints, recurring
 #### Examples
 
 ~~~php
-foreach (Period::fromYear(2012)->dateRangeBackward(new DateInterval('P1M')) as $datetime) {
+foreach (Period::fromYear(2012)->dateRangeBackwards(new DateInterval('P1M')) as $datetime) {
     echo $datetime->format('Y-m-d');
 }
 //will iterate 12 times
@@ -201,7 +201,7 @@ Using the `$endDatePresence` parameter
 
 ~~~php
 $interval = Period::fromYear('2012-06-05');
-$dateRange = $interval->dateRangeBackward(new DateInterval('P1M'), Presence::EXCLUDED);
+$dateRange = $interval->dateRangeBackwards(new DateInterval('P1M'), Presence::EXCLUDED);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
@@ -210,10 +210,10 @@ foreach ($dateRange as $datetime) {
 //the last date is 2012-02-01
 ~~~
 
-### Period::split
+### Period::splitForward
 
 ~~~php
-public Period::split(Period|Duration|DateInterval|string $duration): Generator<Period>
+public Period::splitForward(Period|Duration|DateInterval|string $duration): Generator<Period>
 ~~~
 
 This method splits a given `Period` object in smaller `Period` objects according to the given `$duration` starting from the object starting datepoint to its ending datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
@@ -226,7 +226,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 #### Example
 
 ~~~php
-foreach (Period::fromYear(2012)->split(new DateInterval('P1M')) as $period) {
+foreach (Period::fromYear(2012)->splitForward(new DateInterval('P1M')) as $period) {
     echo $period->toNotation('Y-m-d'); //returns Period object whose interval is 1 MONTH
 }
 //will iterate 12 times

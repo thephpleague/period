@@ -53,6 +53,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::getDatePeriodBackwards` replaced by `Period::dateRangeBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
 - `Period::format` replaced by `Period::toNotation`
+- `Period::split` replaced by `Period::splitForward`
 - `Period::substract` use `Period::subtract` instead
 - `Sequence::substract` use `Sequence::subtract` instead
 - `Sequence::getIntersections` use `Sequence::intersections` instead

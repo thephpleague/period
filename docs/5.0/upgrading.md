@@ -118,7 +118,8 @@ Most notably:
 | `Period::getTimestampInterval`        | `Period::toTimeDuration`      |
 | `Period::withBoundaryType`            | `Period::boundedBy`           |
 | `Period::getDatePeriod`               | `Period::dateRangeForward`    |
-| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackward`   |
+| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`  |
+| `Period::split`                       | `Period::splitForward`        |
 | `Period::__toString`                  | `Period::toIso8601`           |
 | `Period::format`                      | `Period::toNotation`          |
 | `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`    |
@@ -272,8 +273,8 @@ in `5.x` `Closure` objects are used instead of the callable pseudo type with the
 or not of the initial date object in their returned values.
 
 ```diff
-- $res = $period->getDatePeriod('1 DAY', DatePeriod::EXCLUDE_START_DATE); 
-+ $res = $period->dateRangeBackward('1 DAY', Presence::EXCLUDED);
+- $res = $period->getDatePeriodBackwards('1 DAY', DatePeriod::EXCLUDE_START_DATE); 
++ $res = $period->dateRangeBackwards('1 DAY', Presence::EXCLUDED);
 ```
 
 ## Changes in bounds related methods
