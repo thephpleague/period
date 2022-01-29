@@ -15,6 +15,9 @@ namespace League\Period\Chart;
 
 use Iterator;
 
+/**
+ * An interface to help generating label for the chart.
+ */
 interface LabelGenerator
 {
     /**

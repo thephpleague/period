@@ -65,194 +65,6 @@ final class DatePoint
     }
 
     /**************************************************
-     * Period constructors
-     **************************************************/
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint second
-     *  - the duration is equal to 1 second
-     */
-    public function toSecond(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date->setTime(
-                (int) $this->date->format('H'),
-                (int) $this->date->format('i'),
-                (int) $this->date->format('s')
-            ),
-            new DateInterval('PT1S'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint minute
-     *  - the duration is equal to 1 minute
-     */
-    public function toMinute(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date->setTime(
-                (int) $this->date->format('H'),
-                (int) $this->date->format('i')
-            ),
-            new DateInterval('PT1M'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint hour
-     *  - the duration is equal to 1 hour
-     */
-    public function toHour(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date->setTime((int) $this->date->format('H'), 0),
-            new DateInterval('PT1H'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint day
-     *  - the duration is equal to 1 day
-     */
-    public function toDay(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date->setTime(0, 0),
-            new DateInterval('P1D'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint iso week
-     *  - the duration is equal to 7 days
-     */
-    public function toIsoWeek(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date
-                ->setTime(0, 0)
-                ->setISODate(
-                    (int) $this->date->format('o'),
-                    (int) $this->date->format('W')
-                ),
-            new DateInterval('P7D'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint month
-     *  - the duration is equal to 1 month
-     */
-    public function toMonth(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date
-                ->setTime(0, 0)
-                ->setDate(
-                    (int) $this->date->format('Y'),
-                    (int) $this->date->format('n'),
-                    1
-                ),
-            new DateInterval('P1M'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint quarter
-     *  - the duration is equal to 3 months
-     */
-    public function toQuarter(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date
-                ->setTime(0, 0)
-                ->setDate(
-                    (int) $this->date->format('Y'),
-                    (intdiv((int) $this->date->format('n'), 3) * 3) + 1,
-                    1
-                ),
-            new DateInterval('P3M'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint semester
-     *  - the duration is equal to 6 months
-     */
-    public function toSemester(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date
-                ->setTime(0, 0)
-                ->setDate(
-                    (int) $this->date->format('Y'),
-                    (intdiv((int) $this->date->format('n'), 6) * 6) + 1,
-                    1
-                ),
-            new DateInterval('P6M'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint year
-     *  - the duration is equal to 1 year
-     */
-    public function toYear(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        return Period::after(
-            $this->date
-                ->setTime(0, 0)
-                ->setDate((int) $this->date->format('Y'), 1, 1),
-            new DateInterval('P1Y'),
-            $bounds
-        );
-    }
-
-    /**
-     * Returns a Period instance that datepoint belongs to.
-     *
-     *  - the starting datepoint represents the beginning of the current datepoint iso year
-     *  - the duration is equal to 1 iso year
-     */
-    public function toIsoYear(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-    {
-        $currentIsoYear = (int) $this->date->format('o');
-
-        return Period::fromDate(
-            $this->date->setTime(0, 0)->setISODate($currentIsoYear, 1),
-            $this->date->setTime(0, 0)->setISODate($currentIsoYear + 1, 1),
-            $bounds
-        );
-    }
-
-    /**************************************************
      * relation methods
      **************************************************/
 
@@ -318,5 +130,193 @@ final class DatePoint
     public function isAfter(Period $timeSlot): bool
     {
         return $timeSlot->isBefore($this->date);
+    }
+
+    /**************************************************
+     * Period constructors
+     **************************************************/
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date second
+     *  - the duration is equal to 1 second
+     */
+    public function toSecond(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date->setTime(
+                (int) $this->date->format('H'),
+                (int) $this->date->format('i'),
+                (int) $this->date->format('s')
+            ),
+            new DateInterval('PT1S'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date minute
+     *  - the duration is equal to 1 minute
+     */
+    public function toMinute(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date->setTime(
+                (int) $this->date->format('H'),
+                (int) $this->date->format('i')
+            ),
+            new DateInterval('PT1M'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date hour
+     *  - the duration is equal to 1 hour
+     */
+    public function toHour(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date->setTime((int) $this->date->format('H'), 0),
+            new DateInterval('PT1H'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date day
+     *  - the duration is equal to 1 day
+     */
+    public function toDay(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date->setTime(0, 0),
+            new DateInterval('P1D'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date iso week day
+     *  - the duration is equal to 7 days
+     */
+    public function toIsoWeek(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date
+                ->setTime(0, 0)
+                ->setISODate(
+                    (int) $this->date->format('o'),
+                    (int) $this->date->format('W')
+                ),
+            new DateInterval('P7D'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date month
+     *  - the duration is equal to 1 month
+     */
+    public function toMonth(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date
+                ->setTime(0, 0)
+                ->setDate(
+                    (int) $this->date->format('Y'),
+                    (int) $this->date->format('n'),
+                    1
+                ),
+            new DateInterval('P1M'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date quarter
+     *  - the duration is equal to 3 months
+     */
+    public function toQuarter(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date
+                ->setTime(0, 0)
+                ->setDate(
+                    (int) $this->date->format('Y'),
+                    (intdiv((int) $this->date->format('n'), 3) * 3) + 1,
+                    1
+                ),
+            new DateInterval('P3M'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date semester
+     *  - the duration is equal to 6 months
+     */
+    public function toSemester(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date
+                ->setTime(0, 0)
+                ->setDate(
+                    (int) $this->date->format('Y'),
+                    (intdiv((int) $this->date->format('n'), 6) * 6) + 1,
+                    1
+                ),
+            new DateInterval('P6M'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date year
+     *  - the duration is equal to 1 year
+     */
+    public function toYear(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        return Period::after(
+            $this->date
+                ->setTime(0, 0)
+                ->setDate((int) $this->date->format('Y'), 1, 1),
+            new DateInterval('P1Y'),
+            $bounds
+        );
+    }
+
+    /**
+     * Returns a Period instance to which the current instance date belongs to.
+     *
+     *  - the starting date endpoint represents the beginning of the current date iso year
+     *  - the duration is equal to 1 iso year
+     */
+    public function toIsoYear(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    {
+        $currentIsoYear = (int) $this->date->format('o');
+
+        return Period::fromDate(
+            $this->date->setTime(0, 0)->setISODate($currentIsoYear, 1),
+            $this->date->setTime(0, 0)->setISODate($currentIsoYear + 1, 1),
+            $bounds
+        );
     }
 }

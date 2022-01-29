@@ -20,7 +20,9 @@ use function preg_replace;
 use const STDOUT;
 
 /**
- * A class to configure the console output settings.
+ * A class to configure the settings to stroke data using the GanttChart.
+ *
+ * @see GanttChart
  */
 final class GanttChartConfig
 {

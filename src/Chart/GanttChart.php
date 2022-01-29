@@ -25,7 +25,7 @@ use function str_pad;
 use function str_repeat;
 
 /**
- * A class to output a Dataset via a Gantt Bar graph.
+ * A class to output a Dataset via a Gantt Bar Graph.
  */
 final class GanttChart implements Chart
 {

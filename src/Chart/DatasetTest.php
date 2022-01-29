@@ -16,11 +16,9 @@ namespace League\Period\Chart;
 use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
-use League\Period\Duration;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 use function iterator_to_array;
 use function json_encode;
 
@@ -113,26 +111,6 @@ final class DatasetTest extends TestCase
         ]);
 
         self::assertCount(2, $dataset);
-    }
-
-    /**
-     * @psalm-suppress InvalidArgument
-     */
-    public function testAppendDatasetThrowWithInvalidLabel(): void
-    {
-        $this->expectException(TypeError::class);
-
-        new Dataset([[new DateTimeImmutable(), Period::around(new DateTimeImmutable('2018-01-15'), Duration::fromDateString('1 DAY'))]]);
-    }
-
-    /**
-     * @psalm-suppress InvalidArgument
-     */
-    public function testAppendDatasetThrowWithInvalidItem(): void
-    {
-        $this->expectException(TypeError::class);
-
-        new Dataset([['foo', 'bar']]);
     }
 
     public function testLabelizeDataset(): void

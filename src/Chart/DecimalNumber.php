@@ -15,6 +15,11 @@ namespace League\Period\Chart;
 
 use Iterator;
 
+/**
+ * A class to attach a decimal number to the generated label.
+ *
+ * @see LabelGenerator
+ */
 final class DecimalNumber implements LabelGenerator
 {
     public readonly int $startingAt;
@@ -28,7 +33,7 @@ final class DecimalNumber implements LabelGenerator
         $this->startingAt = $startingAt;
     }
 
-    
+
     public function generate(int $nbLabels): Iterator
     {
         if (0 >= $nbLabels) {
@@ -46,7 +51,7 @@ final class DecimalNumber implements LabelGenerator
         }
     }
 
-    
+
     public function format(string $label): string
     {
         return $label;

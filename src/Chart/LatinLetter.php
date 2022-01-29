@@ -17,6 +17,11 @@ use Iterator;
 use function preg_match;
 use function trim;
 
+/**
+ * A class to attach a latin letter to the generated label.
+ *
+ * @see LabelGenerator
+ */
 final class LatinLetter implements LabelGenerator
 {
     public readonly string $startingAt;
@@ -40,7 +45,7 @@ final class LatinLetter implements LabelGenerator
         return $str;
     }
 
-    
+
     public function format(string $label): string
     {
         return $label;

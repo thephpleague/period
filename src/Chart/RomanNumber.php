@@ -17,6 +17,11 @@ use Iterator;
 use function strtolower;
 use function strtoupper;
 
+/**
+ * A class to attach a roman number to the generated label.
+ *
+ * @see LabelGenerator
+ */
 final class RomanNumber implements LabelGenerator
 {
     private const CHARACTER_MAP = [
@@ -31,7 +36,7 @@ final class RomanNumber implements LabelGenerator
     {
     }
 
-    
+
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->decimalNumber->generate($nbLabels) as $key => $label) {
@@ -39,7 +44,6 @@ final class RomanNumber implements LabelGenerator
         }
     }
 
-    
     public function format(string $label): string
     {
         if (Casing::UPPER === $this->case) {

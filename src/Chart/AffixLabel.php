@@ -16,6 +16,11 @@ namespace League\Period\Chart;
 use Iterator;
 use function preg_replace;
 
+/**
+ * A class to attach a prefix and/or a suffix string to the generated label.
+ *
+ * @see LabelGenerator
+ */
 final class AffixLabel implements LabelGenerator
 {
     public readonly string $prefix;
@@ -32,7 +37,7 @@ final class AffixLabel implements LabelGenerator
         return (string) preg_replace("/[\r\n]/", '', $str);
     }
 
-    
+
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->labelGenerator->generate($nbLabels) as $key => $label) {
@@ -40,7 +45,7 @@ final class AffixLabel implements LabelGenerator
         }
     }
 
-    
+
     public function format(string $label): string
     {
         return $this->prefix.$this->labelGenerator->format($label).$this->suffix;
