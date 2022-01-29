@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
-use Generator;
 use Iterator;
 use League\Period\Period;
 use League\Period\Sequence;
 use MultipleIterator;
+use TypeError;
 use function array_column;
 use function count;
 use function strlen;
@@ -41,29 +41,23 @@ final class Dataset implements Data
 
     /**
      * Creates a new collection from a countable iterable structure.
-     *
-     * @param array|(\Countable&\Traversable) $items
      */
-    public static function fromItems($items, LabelGenerator $labelGenerator = new LatinLetter()): self
+    public static function fromItems(iterable $items, LabelGenerator $labelGenerator = new LatinLetter()): self
     {
-        $nbItems = count($items);
-        /** @var Generator<int|string, Period|Sequence> $iterableItems */
-        $iterableItems = (function () use ($items): Iterator {
-            /**
-             * @var string|int      $key
-             * @var Period|Sequence $value
-             */
-            foreach ($items as $key => $value) {
-                yield $key => $value;
-            }
-        })();
+        if (!is_countable($items)) {
+            throw new TypeError('The submitted items collection should be countable.');
+        }
 
         /**
          * @template-implements MultipleIterator<array-key, array{0:int|string, 1:Period|Sequence}> $pairs
          */
         $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
-        $pairs->attachIterator($labelGenerator->generate($nbItems), 0);
-        $pairs->attachIterator($iterableItems, 1);
+        $pairs->attachIterator($labelGenerator->generate(count($items)), 0);
+        $pairs->attachIterator((function () use ($items): Iterator {
+            foreach ($items as $key => $value) {
+                yield $key => $value;
+            }
+        })(), 1);
 
         return new self($pairs);
     }

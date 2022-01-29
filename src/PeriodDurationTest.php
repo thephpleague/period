@@ -64,7 +64,7 @@ final class PeriodDurationTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0:DateInterval|int|string, 1:Presence, 2:int}>
+     * @return array<string, array{0:DateInterval|int|string, 1:InitialDatePresence, 2:int}>
      */
     public function providerGetDatePeriod(): array
     {
@@ -98,7 +98,7 @@ final class PeriodDurationTest extends TestCase
     }
 
     /**
-     * @return array<string,array{0:DateInterval|string|int, 1:Presence, 2:int}>
+     * @return array<string,array{0:DateInterval|string|int, 1:InitialDatePresence, 2:int}>
      */
     public function providerGetDatePeriodBackwards(): array
     {

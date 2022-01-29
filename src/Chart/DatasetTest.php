@@ -13,12 +13,16 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use ArrayIterator;
 use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
+use Iterator;
+use IteratorAggregate;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 use function iterator_to_array;
 use function json_encode;
 
@@ -156,5 +160,19 @@ final class DatasetTest extends TestCase
         ]);
 
         self::assertStringContainsString('label', (string) json_encode($dataset));
+    }
+
+    public function testFromItemsFailsWithNonCountableIterator(): void
+    {
+        $items = new class() implements IteratorAggregate {
+            public function getIterator(): Iterator
+            {
+                return new ArrayIterator(['foobar']);
+            }
+        };
+
+        $this->expectException(TypeError::class);
+
+        Dataset::fromItems(new $items());
     }
 }
