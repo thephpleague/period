@@ -28,7 +28,7 @@ $dataset = new Chart\Dataset([
        Period::fromNotation('!Y-m-d', '[2018-01-20, 2018-02-01)')
     )],
 ]);
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -57,7 +57,7 @@ $dataset = new Chart\Dataset();
 $dataset->append('A', $sequence[0]);
 $dataset->append('B', $sequence[1]);
 $dataset->append('GAPS', $sequence->gaps());
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -114,7 +114,7 @@ results:
 
 The `GanttChart` class can be customized by providing a `GanttChartConfig` which defines:
 
-- the output medium via a `Output` implementing class.
+- the output medium via an `Output` implementing class.
 - the graph settings. (How the intervals will be stroked)
     - sets the graph width
     - sets the graph colors
@@ -125,31 +125,32 @@ The `GanttChart` class can be customized by providing a `GanttChartConfig` which
     - sets single characters to represent the body and space
      
 You can easily create a `Output` implementing class with libraries like `League CLImate` or `Symfony Console` 
-to output the resulting graph. If you don't, the package ships with a minimal `ConsoleOutput` class which is used
+to output the resulting graph. If you don't, the package ships with a minimal `StreamOutput` class which is used
  if you do not provide you own implementation.
 
 The `GanttChartConfig` class exposes the following additional constants and methods:
 
 ~~~php
 <?php
-use League\Period\Chart\ConsoleOutput;
+use League\Period\Chart\StreamOutput;
+use League\Period\Chart\Output;
 
-const GanttChartConfig::ALIGN_LEFT = 1;
-const GanttChartConfig::ALIGN_RIGHT = 0;
-const GanttChartConfig::ALIGN_CENTER = 2;
-public static function GanttChartConfig::create(Output $output = new ConsoleOutput(STDOUT));
-public readonly Output GanttChartConfig::output;        //Returns the Output instance.
-public readonly string GanttChartConfig::startExcludedCharacter; //Retrieves the excluded start block character.
-public readonly string GanttChartConfig::startIncludedCharacter; //Retrieves the included start block character.
-public readonly string GanttChartConfig::endExcludedCharacter;   //Retrieves the excluded end block character.
-public readonly string GanttChartConfig::endIncludedCharacter;   //Retrieves the included end block character.
-public readonly int GanttChartConfig::width;            //Retrieves the max size width.
-public readonly string GanttChartConfig::body;          //Retrieves the body block character.
-public readonly string GanttChartConfig::space;         //Retrieves the space block character.
-public readonly array<Chart\Color> GanttChartConfig::colors;      //The selected colors for each row.
-public readonly int GanttChartConfig::gapSize;          //Retrieves the gap sequence between the label and the line.
-public readonly int GanttChartConfig::labelAlignment;       //Returns how label should be aligned.
-public readonly int GanttChartConfig::leftMarginSize;   //Retrieves the margin between the label and the console left side.
+public static function GanttChartConfig::fromStream(resource $stream = STDOUT);
+public static function GanttChartConfig::fromOutput(Output $output = new StreamOutput(STDOUT));
+public static function GanttChartConfig::fromRandomColor(Output $output = new StreamOutput(STDOUT)): self
+public static function GanttChartConfig::fromRainbow(Output $output = new StreamOutput(STDOUT)): self
+public readonly Output GanttChartConfig::output;                 //Returns the Output instance.
+public readonly string GanttChartConfig::startExcludedCharacter; //Returns the excluded start block character.
+public readonly string GanttChartConfig::startIncludedCharacter; //Returns the included start block character.
+public readonly string GanttChartConfig::endExcludedCharacter;   //Returns the excluded end block character.
+public readonly string GanttChartConfig::endIncludedCharacter;   //Returns the included end block character.
+public readonly int GanttChartConfig::width;                     //Returns the max size width.
+public readonly string GanttChartConfig::body;                   //Returns the body block character.
+public readonly string GanttChartConfig::space;                  //Returns the space block character.
+public readonly array<Chart\Color> GanttChartConfig::colors;     //Returns the selected colors for each row.
+public readonly int GanttChartConfig::gapSize;                   //Returns the gap sequence between the label and the line.
+public readonly int GanttChartConfig::labelAlignment;            //Returns how label should be aligned.
+public readonly int GanttChartConfig::leftMarginSize;            //Returns the margin between the label and the console left side.
 ~~~
 
 **`GanttChartConfig` is immutable, modifying its properties returns a new instance with the updated values.**
@@ -166,19 +167,20 @@ use League\Period\Period;
 use League\Period\Sequence;
 use League\Period\Duration;
 
-$config = Chart\GanttChartConfig::fromRainbow()
-    ->withOutput(new Chart\ConsoleOutput(STDOUT))
-    ->withStartExcludedCharacter('🍕')
-    ->withStartIncludedCharacter('🍅')
-    ->withEndExcludedCharacter('🎾')
-    ->withEndIncludedCharacter('🍔')
-    ->withWidth(30)
-    ->withSpace('💩')
-    ->withBody('😊')
-    ->withGapSize(2)
-    ->withLeftMarginSize(1)
-    ->withLabelAlignment(Chart\Alignment::RIGHT)
-;
+$config = new Chart\GanttChartConfig(
+    output: new Chart\StreamOutput(STDOUT),
+    colors: Chart\Color::rainBow(),
+    startExcludedCharacter: '🍕',
+    startIncludedCharacter: '🍅',
+    endExcludedCharacter: '🎾',
+    endIncludedCharacter: '🍔',
+    bodyCharacter: '😊',
+    spaceCharacter: '💩',
+    width: 30,
+    gapSize: 2,
+    leftMarginSize: 1,
+    labelAlignment: Chart\Alignment::RIGHT,
+);
 
 $labelGenerator = new Chart\DecimalNumber(42);
 $labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\Casing::UPPER);

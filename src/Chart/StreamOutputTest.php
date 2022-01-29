@@ -21,9 +21,9 @@ use function rewind;
 use function stream_get_contents;
 
 /**
- * @coversDefaultClass \League\Period\Chart\ConsoleOutput
+ * @coversDefaultClass \League\Period\Chart\StreamOutput
  */
-final class ConsoleOutputTest extends TestCase
+final class StreamOutputTest extends TestCase
 {
     /**
      * @return resource
@@ -39,7 +39,7 @@ final class ConsoleOutputTest extends TestCase
     public function testCreateStreamWithInvalidParameter(): void
     {
         $this->expectException(TypeError::class);
-        new ConsoleOutput(__DIR__.'/data/foo.csv');
+        new StreamOutput(__DIR__.'/data/foo.csv');
     }
 
     /**
@@ -48,7 +48,7 @@ final class ConsoleOutputTest extends TestCase
     public function testWriteln(string $message, string $expected): void
     {
         $stream = $this->setStream();
-        $output = new ConsoleOutput($stream);
+        $output = new StreamOutput($stream);
         $output->writeln($message, Color::BLUE);
         $output->writeln($message);
         rewind($stream);

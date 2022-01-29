@@ -32,7 +32,7 @@ $dataset = Chart\Dataset::fromItems(
     ),
     new Chart\LatinLetter('aa')
 );
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -69,7 +69,7 @@ $dataset = Chart\Dataset::fromItems(
     ),
     new Chart\DecimalNumber(42)
 );
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -108,7 +108,7 @@ $dataset = Chart\Dataset::fromItems(
     ),
     $labelGenerator
 );
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -152,7 +152,7 @@ $dataset = Chart\Dataset::fromItems(
     ),
     $labelGenerator
 );
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -196,7 +196,7 @@ $dataset = Chart\Dataset::fromItems(
     ),
     $labelGenerator
 );
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:
@@ -237,7 +237,7 @@ $dataset = Chart\Dataset::fromItems(
     ),
     $labelGenerator
 );
-Chart\GanttChart::create()->stroke($dataset);
+(new Chart\GanttChart())->stroke($dataset);
 ~~~
 
 results:

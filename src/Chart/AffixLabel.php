@@ -56,7 +56,7 @@ final class AffixLabel implements LabelGenerator
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the suffix.
      */
-    public function withSuffix(string $suffix): self
+    public function suffix(string $suffix): self
     {
         $suffix = $this->filterString($suffix);
         if ($suffix === $this->suffix) {
@@ -72,7 +72,7 @@ final class AffixLabel implements LabelGenerator
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the prefix.
      */
-    public function withPrefix(string $prefix): self
+    public function prefix(string $prefix): self
     {
         $prefix = $this->filterString($prefix);
         if ($prefix === $this->prefix) {

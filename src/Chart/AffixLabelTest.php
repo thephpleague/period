@@ -33,7 +33,7 @@ final class AffixLabelTest extends TestCase
         $generator = new AffixLabel(new LatinLetter($letter), $prefix, $suffix);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
 
-        $generator = (new AffixLabel(new LatinLetter($letter)))->withPrefix($prefix)->withSuffix($suffix);
+        $generator = (new AffixLabel(new LatinLetter($letter)))->prefix($prefix)->suffix($suffix);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
@@ -93,7 +93,7 @@ final class AffixLabelTest extends TestCase
         $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)));
         self::assertSame('', $generator->suffix);
         self::assertSame('', $generator->prefix);
-        $new = $generator->withPrefix('o')->withSuffix('');
+        $new = $generator->prefix('o')->suffix('');
         self::assertNotSame($new, $generator);
         self::assertSame('o', $new->prefix);
         self::assertSame('', $new->suffix);

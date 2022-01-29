@@ -31,14 +31,12 @@ final class GanttChart implements Chart
 {
     private float $start = 0;
     private float $unit = 1;
+    /** @var array<string>  */
+    private array $emptyLineCharacters;
 
-    public function __construct(public readonly GanttChartConfig $config)
+    public function __construct(public readonly GanttChartConfig $config = new GanttChartConfig())
     {
-    }
-
-    public static function create(GanttChartConfig|null $config = null): self
-    {
-        return new self($config ?? GanttChartConfig::create());
+        $this->emptyLineCharacters = array_fill(0, $this->config->width, $this->config->spaceCharacter);
     }
 
     /**
@@ -58,16 +56,18 @@ final class GanttChart implements Chart
         $padding = $this->config->labelAlignment->toPadding();
         $gap = str_repeat(' ', $this->config->gapSize);
         $leftMargin = str_repeat(' ', $this->config->leftMarginSize);
-        $lineCharacters = array_fill(0, $this->config->width, $this->config->space);
         $labelMaxLength = $dataset->labelMaxLength();
         $colorCodeIndexes = $this->config->colors;
         $colorCodeCount = count($colorCodeIndexes);
         $output = $this->config->output;
-        foreach ($dataset as $offset => [$label, $item]) {
-            $colorIndex = $colorCodeIndexes[$offset % $colorCodeCount];
-            $labelPortion = str_pad((string) $label, $labelMaxLength, ' ', $padding);
-            $dataPortion = $this->drawDataPortion($item, $lineCharacters);
-            $output->writeln($leftMargin.$labelPortion.$gap.$dataPortion, $colorIndex);
+        foreach ($dataset as $offset => [$label, $sequence]) {
+            $output->writeln(
+                $leftMargin
+                .str_pad((string) $label, $labelMaxLength, ' ', $padding)
+                .$gap
+                .$this->sequenceToLine($sequence),
+                $colorCodeIndexes[$offset % $colorCodeCount]
+            );
         }
     }
 
@@ -86,27 +86,33 @@ final class GanttChart implements Chart
     }
 
     /**
-     * Convert a Dataset item into a graph data portion.
+     * Convert a Dataset item into a graph line.
      *
-     * @param array<string> $lineCharacters
+     * The empty line get filled by characters to create something like this  [--------)
      */
-    private function drawDataPortion(Sequence $item, array $lineCharacters): string
+    private function sequenceToLine(Sequence $item): string
     {
-        $reducer = function (array $lineCharacters, Period $period): array {
-            $startIndex = (int) floor(($period->startDate->getTimestamp() - $this->start) * $this->unit);
-            $endIndex = (int) ceil(($period->endDate->getTimestamp() - $this->start) * $this->unit);
-            $periodLength = $endIndex - $startIndex;
+        /** @var array<string> $characters */
+        $characters = $item->reduce($this->periodToCharacters(...), $this->emptyLineCharacters);
 
-            array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->body));
-            $lineCharacters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncludedCharacter : $this->config->startExcludedCharacter;
-            $lineCharacters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncludedCharacter : $this->config->endExcludedCharacter;
+        return implode('', $characters);
+    }
 
-            return $lineCharacters;
-        };
+    /**
+     * @param array<string> $lineCharacters
+     *
+     * @return array<string>
+     */
+    private function periodToCharacters(array $lineCharacters, Period $period): array
+    {
+        $startIndex = (int) floor(($period->startDate->getTimestamp() - $this->start) * $this->unit);
+        $endIndex = (int) ceil(($period->endDate->getTimestamp() - $this->start) * $this->unit);
+        $periodLength = $endIndex - $startIndex;
 
-        /** @var array<string> $lineCharacters */
-        $lineCharacters = $item->reduce($reducer, $lineCharacters);
+        array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->bodyCharacter));
+        $lineCharacters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncludedCharacter : $this->config->startExcludedCharacter;
+        $lineCharacters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncludedCharacter : $this->config->endExcludedCharacter;
 
-        return implode('', $lineCharacters);
+        return $lineCharacters;
     }
 }

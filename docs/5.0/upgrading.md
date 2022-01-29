@@ -72,7 +72,7 @@ The following classes have their inheritance changed:
 - The `Datepoint` class is renamed `DatePoint` and no longer extends the `DateImmutable` class
 - The `Duration` class no longer extends the `DateInterval` class
 
-## Change in getters
+## Change in getters and setters
 
 With the introduction of public readonly properties some methods have been dropped in favor 
 of explicit public properties:
@@ -88,8 +88,8 @@ of explicit public properties:
 | `GanttChartConfig::endExcluded()`    | `GanttChartConfig::endExcludedCharacter`   |
 | `GanttChartConfig::endIncluded()`    | `GanttChartConfig::endIncludedCharacter`   |
 | `GanttChartConfig::width()`          | `GanttChartConfig::width`                  |
-| `GanttChartConfig::body()`           | `GanttChartConfig::body`                   |
-| `GanttChartConfig::space()`          | `GanttChartConfig::space`                  |
+| `GanttChartConfig::body()`           | `GanttChartConfig::bodyCharacter`          |
+| `GanttChartConfig::space()`          | `GanttChartConfig::spaceCharacter`         |
 | `GanttChartConfig::colors()`         | `GanttChartConfig::colors`                 |
 | `GanttChartConfig::gapSize()`        | `GanttChartConfig::gapSize`                |
 | `GanttChartConfig::labelAlign()`     | `GanttChartConfig::labelAlignment`         |
@@ -99,6 +99,34 @@ of explicit public properties:
 | `RomanNumber::startingAt()`          | `RomanNumber::startingAt`                  |
 | `AffixLabel::prefix()`               | `AffixLabel::prefix`                       |
 | `AffixLabel::suffix()`               | `AffixLabel::suffix`                       |
+
+Conversely the old getter are now used for setter purposes and the `with` prefix is dropped
+where it does no longer have meaning.
+
+| `4.x` method name                        | `5.x` method name                            |
+|------------------------------------------|----------------------------------------------|
+| `GanttChartConfig::withOutput()`         | `GanttChartConfig::output()`                 |
+| `GanttChartConfig::withStartExcluded()`  | `GanttChartConfig::startExcludedCharacter()` |
+| `GanttChartConfig::withStartIncluded()`  | `GanttChartConfig::startIncludedCharacter()` |
+| `GanttChartConfig::withEndExcluded()`    | `GanttChartConfig::endExcludedCharacter()`   |
+| `GanttChartConfig::withEndIncluded()`    | `GanttChartConfig::endIncludedCharacter()`   |
+| `GanttChartConfig::withWidth()`          | `GanttChartConfig::width()`                  |
+| `GanttChartConfig::withBody()`           | `GanttChartConfig::bodyCharacter()`          |
+| `GanttChartConfig::withSpace()`          | `GanttChartConfig::spaceCharacter()`         |
+| `GanttChartConfig::withColors()`         | `GanttChartConfig::colors()`                 |
+| `GanttChartConfig::withGapSize()`        | `GanttChartConfig::gapSize()`                |
+| `GanttChartConfig::withLabelAlign()`     | `GanttChartConfig::labelAlignment()`         |
+| `GanttChartConfig::withLeftMarginSize()` | `GanttChartConfig::leftMarginSize()`         |
+| `LatinLetter::withStartingAt()`          | `LatinLetter::startingAt()`                  |
+| `DecimalNumber::withStartingAt()`        | `DecimalNumber::startingAt()`                |
+| `RomanNumber::withStartingAt()`          | `RomanNumber::startingAt()`                  |
+| `AffixLabel::withPrefix()`               | `AffixLabel::prefix()`                       |
+| `AffixLabel::withSuffix()`               | `AffixLabel::suffix()`                       |
+
+```diff
+- GanttChartConfig::fromRainbow()->withGapSize(3)->gapSize(); // returns 3
++ GanttChartConfig::fromRainbow()->gapSize(3)->gapSize; // returns 3
+```
 
 ## Change in method name
 

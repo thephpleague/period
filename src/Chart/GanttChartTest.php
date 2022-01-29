@@ -29,16 +29,13 @@ final class GanttChartTest extends TestCase
 {
     private GanttChart $graph;
 
-    /**
-     * @var resource
-     */
+    /** @var resource */
     private $stream;
 
     protected function setUp(): void
     {
         $this->stream = $this->setStream();
-        $config = GanttChartConfig::create(new ConsoleOutput($this->stream))->withColors(Color::RED);
-        $this->graph = GanttChart::create($config);
+        $this->graph = new GanttChart(new GanttChartConfig(output: new StreamOutput($this->stream), colors: [Color::RED]));
     }
 
     /**
@@ -50,15 +47,6 @@ final class GanttChartTest extends TestCase
         $stream = fopen('php://memory', 'r+');
 
         return $stream;
-    }
-
-    /**
-     * @covers ::__construct
-     * @covers ::create
-     */
-    public function testConstructor(): void
-    {
-        self::assertNotEquals($this->graph, GanttChart::create());
     }
 
     /**
@@ -77,8 +65,9 @@ final class GanttChartTest extends TestCase
     /**
      * @covers ::stroke
      * @covers ::setChartScale
-     * @covers ::drawDataPortion
-     * @covers \League\Period\Chart\ConsoleOutput
+     * @covers ::sequenceToLine
+     * @covers ::periodToCharacters
+     * @covers \League\Period\Chart\StreamOutput
      */
     public function testDisplayPeriods(): void
     {
@@ -98,7 +87,8 @@ final class GanttChartTest extends TestCase
     /**
      * @covers ::stroke
      * @covers ::setChartScale
-     * @covers ::drawDataPortion
+     * @covers ::sequenceToLine
+     * @covers ::periodToCharacters
      */
     public function testDisplaySequence(): void
     {
@@ -120,7 +110,8 @@ final class GanttChartTest extends TestCase
     /**
      * @covers ::stroke
      * @covers ::setChartScale
-     * @covers ::drawDataPortion
+     * @covers ::sequenceToLine
+     * @covers ::periodToCharacters
      */
     public function testDisplayEmptySequence(): void
     {
@@ -135,5 +126,12 @@ final class GanttChartTest extends TestCase
 
         self::assertStringContainsString('sequenceA                                  ', $data);
         self::assertStringContainsString('sequenceB                                  ', $data);
+    }
+
+    public function testConstructor(): void
+    {
+        $graph = new GanttChart(new GanttChartConfig(new StreamOutput(STDOUT)));
+
+        self::assertSame([Color::RESET], $graph->config->colors);
     }
 }

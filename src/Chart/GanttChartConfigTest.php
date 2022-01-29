@@ -26,7 +26,7 @@ final class GanttChartConfigTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = GanttChartConfig::create();
+        $this->config = GanttChartConfig::fromStream(STDOUT);
     }
 
     public function testNewInstance(): void
@@ -35,8 +35,8 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame('(', $this->config->startExcludedCharacter);
         self::assertSame(']', $this->config->endIncludedCharacter);
         self::assertSame(')', $this->config->endExcludedCharacter);
-        self::assertSame('-', $this->config->body);
-        self::assertSame(' ', $this->config->space);
+        self::assertSame('-', $this->config->bodyCharacter);
+        self::assertSame(' ', $this->config->spaceCharacter);
         self::assertSame(60, $this->config->width);
         self::assertSame(1, $this->config->gapSize);
         self::assertSame([Color::RESET], $this->config->colors);
@@ -45,7 +45,7 @@ final class GanttChartConfigTest extends TestCase
 
     public function testCreateFromRandom(): void
     {
-        $config1 = GanttChartConfig::fromRandom();
+        $config1 = GanttChartConfig::fromRandomColor();
         $config2 = GanttChartConfig::fromRainbow();
         self::assertContains($config1->colors[0], $config2->colors);
     }
@@ -55,7 +55,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testWidth(int $size, int $expected): void
     {
-        self::assertSame($expected, $this->config->withWidth($size)->width);
+        self::assertSame($expected, $this->config->width($size)->width);
     }
 
     /**
@@ -76,7 +76,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testBody(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withBody($char)->body);
+        self::assertSame($expected, $this->config->bodyCharacter($char)->bodyCharacter);
     }
 
     /**
@@ -84,7 +84,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testEndExcluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withEndExcludedCharacter($char)->endExcludedCharacter);
+        self::assertSame($expected, $this->config->endExcludedCharacter($char)->endExcludedCharacter);
     }
 
     /**
@@ -92,7 +92,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testEndIncluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withEndIncludedCharacter($char)->endIncludedCharacter);
+        self::assertSame($expected, $this->config->endIncludedCharacter($char)->endIncludedCharacter);
     }
 
     /**
@@ -100,7 +100,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testStartExcluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withStartExcludedCharacter($char)->startExcludedCharacter);
+        self::assertSame($expected, $this->config->startExcludedCharacter($char)->startExcludedCharacter);
     }
 
     /**
@@ -108,7 +108,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testStartIncluded(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withStartIncludedCharacter($char)->startIncludedCharacter);
+        self::assertSame($expected, $this->config->startIncludedCharacter($char)->startIncludedCharacter);
     }
 
     /**
@@ -116,7 +116,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testSpace(string $char, string $expected): void
     {
-        self::assertSame($expected, $this->config->withSpace($char)->space);
+        self::assertSame($expected, $this->config->spaceCharacter($char)->spaceCharacter);
     }
 
     /**
@@ -146,7 +146,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testColors(Color $char, Color $expected): void
     {
-        self::assertSame($expected, $this->config->withColors($char)->colors[0]);
+        self::assertSame($expected, $this->config->colors($char)->colors[0]);
     }
 
     /**
@@ -162,7 +162,7 @@ final class GanttChartConfigTest extends TestCase
 
     public function testWithColorsReturnSameInstance(): void
     {
-        self::assertSame($this->config, $this->config->withColors());
+        self::assertSame($this->config, $this->config->colors());
     }
 
     /**
@@ -182,14 +182,14 @@ final class GanttChartConfigTest extends TestCase
     public function testWithHeadBlockThrowsInvalidArgumentException(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->config->withBody($input);
+        $this->config->bodyCharacter($input);
     }
     /**
      * @dataProvider providerGaps
      */
     public function testLeftMargin(int $gap, int $expected): void
     {
-        self::assertSame($expected, $this->config->withLeftMarginSize($gap)->leftMarginSize);
+        self::assertSame($expected, $this->config->leftMarginSize($gap)->leftMarginSize);
     }
 
     /**
@@ -197,7 +197,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testGap(int $gap, int $expected): void
     {
-        self::assertSame($expected, $this->config->withGapSize($gap)->gapSize);
+        self::assertSame($expected, $this->config->gapSize($gap)->gapSize);
     }
 
     /**
@@ -226,7 +226,7 @@ final class GanttChartConfigTest extends TestCase
      */
     public function testPadding(Alignment $padding, Alignment $expected): void
     {
-        self::assertSame($expected, $this->config->withLabelAlignment($padding)->labelAlignment);
+        self::assertSame($expected, $this->config->labelAlignment($padding)->labelAlignment);
     }
 
     public function testAlignmentWillFail(): void
@@ -255,8 +255,16 @@ final class GanttChartConfigTest extends TestCase
 
     public function testWithOutputAlwaysReturnsANewInstance(): void
     {
-        $newConfig = $this->config->withOutput(new ConsoleOutput(STDOUT));
+        $newConfig = $this->config->output(new StreamOutput(STDOUT));
         self::assertNotSame($this->config, $newConfig);
         self::assertEquals($newConfig->output, $this->config->output);
+    }
+
+    public function testConstructors(): void
+    {
+        self::assertEquals(
+            GanttChartConfig::fromOutput(new StreamOutput(STDERR)),
+            GanttChartConfig::fromStream(STDERR)
+        );
     }
 }

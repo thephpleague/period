@@ -109,7 +109,7 @@ final class RomanNumber implements LabelGenerator
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the letter case setting.
      */
-    public function withLetterCase(Casing $case): self
+    public function case(Casing $case): self
     {
         if ($case === $this->case) {
             return $this;

@@ -599,8 +599,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @param mixed|null $carry Optional initial carry value.
      *
-     * @return mixed The carry value of the final iteration, or the initial
-     *               value if the sequence was empty.
+     * @return mixed The carry value of the final iteration, or the initial value if the sequence was empty.
      */
     public function reduce(Closure $func, mixed $carry = null): mixed
     {

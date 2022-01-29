@@ -17,6 +17,7 @@ All notable changes to `Period` will be documented in this file
 - `InitialDatePresence` Enum.
 - `Chart\Casing` Enum.
 - `Chart\Alignment` Enum.
+- `Chart\StreamOutput` class to replace `Chart\ConsoleOutput` class.
 
 ### Fixed
 
@@ -38,7 +39,7 @@ All notable changes to `Period` will be documented in this file
 
 ### Removed
 
-- Support for PHP7
+- Support for PHP7 and PHP8.0
 - `Period::fromDatepoint` replaced by `Period::fromDate`
 - `Period::getStartDate` replaced by accessing readonly property `Period::startDate`
 - `Period::getEndDate` replaced by accessing readonly property `Period::endDate`
@@ -65,6 +66,7 @@ All notable changes to `Period` will be documented in this file
 - `Duration::__toString` and `Duration::format` with no replacement
 - `Duration::create` is removed with no replacement
 - `Datepoint::create` is removed with no replacement
+- `Chart\ConsoleOutput` replaced by `Chart\StreamOutput` class.
 - The `create` prefix is removed from the `Duration` and `Datepoint` named constructors.
 - All charts related classes have their properties exposed as public readonly. All their getters are removed except if they are part of an interface.
 

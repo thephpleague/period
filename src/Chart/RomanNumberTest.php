@@ -84,16 +84,16 @@ final class RomanNumberTest extends TestCase
     {
         $generator = new RomanNumber(new DecimalNumber(1));
         self::assertTrue($generator->isUpper());
-        $new = $generator->withLetterCase(Casing::LOWER);
+        $new = $generator->case(Casing::LOWER);
         self::assertFalse($new->isUpper());
-        $alt = $new->withLetterCase(Casing::LOWER);
+        $alt = $new->case(Casing::LOWER);
         self::assertSame($alt, $new);
     }
 
     public function testFormat(): void
     {
         $generator = new RomanNumber(new DecimalNumber(10));
-        $newGenerator = $generator->withLetterCase(Casing::LOWER);
+        $newGenerator = $generator->case(Casing::LOWER);
         self::assertSame('FOOBAR', $generator->format('fOoBaR'));
         self::assertSame('foobar', $newGenerator->format('fOoBaR'));
     }

@@ -25,7 +25,7 @@ use function strtolower;
 use const PHP_EOL;
 use const PHP_OS;
 
-final class ConsoleOutput implements Output
+final class StreamOutput implements Output
 {
     private const REGEXP_POSIX_PLACEHOLDER = '/(\s+)/msi';
 
@@ -33,15 +33,15 @@ final class ConsoleOutput implements Output
     private $stream;
 
     /**
-     * @param resource|mixed $resource
+     * @param resource|mixed $stream
      */
-    public function __construct($resource)
+    public function __construct($stream)
     {
-        if (!is_resource($resource) || 'stream' !== get_resource_type($resource)) {
+        if (!is_resource($stream) || 'stream' !== get_resource_type($stream)) {
             throw new TypeError('Argument passed must be a stream resource.');
         }
 
-        $this->stream = $resource;
+        $this->stream = $stream;
     }
 
     public function writeln(string $message = '', Color $color = Color::NONE): void
