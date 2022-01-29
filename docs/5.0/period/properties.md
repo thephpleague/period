@@ -250,7 +250,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 ~~~php
 date_default_timezone_set('Africa/Kinshasa');
 
-$collection = iterator_to_array(Period::fromYear(2012)->splitBackwards(Duration::fromDateString('5 MONTH')), false);
+$collection = iterator_to_array(Period::fromYear(2012)->splitBackwards('5 MONTH'), false);
 echo $collection[0]->toIso8601(); // 2012-07-31T23:00:00Z/2012-12-31T23:00:00Z (5 months interval)
 echo $collection[1]->toIso8601(); // 2012-02-29T23:00:00Z/2012-07-31T23:00:00Z (5 months interval)
 echo $collection[2]->toIso8601(); // 2011-12-31T23:00:00Z/2012-02-29T23:00:00Z (2 months interval)

@@ -49,8 +49,5 @@ jobs:
       - name: Run PHPStan static analysis
         run: composer phpstan
 
-      - name: Run Psalm static analysis
-        run: composer psalm
-
       - name: Run coding style check
         run: composer phpcs

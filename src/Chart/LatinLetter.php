@@ -51,11 +51,6 @@ final class LatinLetter implements LabelGenerator
         return $label;
     }
 
-    /**
-     *
-     *
-     * @psalm-suppress StringIncrement
-     */
     public function generate(int $nbLabels): Iterator
     {
         if (0 >= $nbLabels) {

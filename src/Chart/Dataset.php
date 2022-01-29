@@ -43,7 +43,6 @@ final class Dataset implements Data
      * Creates a new collection from a countable iterable structure.
      *
      * @param array|(\Countable&\Traversable) $items
-     * @psalm-suppress MixedArgumentTypeCoercion
      */
     public static function fromItems($items, LabelGenerator $labelGenerator = new LatinLetter()): self
     {

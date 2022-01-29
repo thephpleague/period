@@ -51,9 +51,7 @@
         "phpstan/phpstan": "^1.4.0",
         "phpstan/phpstan-phpunit": "^1.0.0",
         "phpstan/phpstan-strict-rules": "^1.1.0",
-        "phpunit/phpunit": "^9.5.11",
-        "psalm/plugin-phpunit": "^0.15.2",
-        "vimeo/psalm": "^4.18.1"
+        "phpunit/phpunit": "^9.5.11"
     },
     "autoload": {
         "psr-4": {
@@ -66,19 +64,16 @@
     "scripts": {
         "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
-        "psalm": "psalm --show-info=true",
         "phpstan": "phpstan analyse -c phpstan.neon --ansi --memory-limit 192M",
         "phpunit": "phpunit --coverage-text",
         "test": [
             "@phpunit",
-            "@psalm",
             "@phpstan",
             "@phpcs"
         ]
     },
     "scripts-descriptions": {
         "phpstan": "Runs complete codebase static analysis",
-        "psalm": "Runs complete codebase static analysis",
         "phpunit": "Runs unit and functional testing",
         "phpcs": "Runs coding style testing",
         "phpcs:fix": "Fix coding style issues",

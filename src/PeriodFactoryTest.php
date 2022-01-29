@@ -253,7 +253,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testDay(): void
     {
-        $extendedDate = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $extendedDate = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
 
         $period = DatePoint::fromDate($extendedDate)->toDay();
@@ -272,7 +272,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testHour(): void
     {
-        $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $today = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
         $period = DatePoint::fromDate($today)->toHour();
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->startDate);
@@ -292,7 +292,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testMonthWithDateTimeInterface(): void
     {
-        $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $today = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
         $period = DatePoint::fromDate($today)->toMonth();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->startDate);
@@ -303,7 +303,7 @@ final class PeriodFactoryTest extends TestCase
 
     public function testYearWithDateTimeInterface(): void
     {
-        $today = new /** @psalm-immutable */ class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $today = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
         $period = DatePoint::fromDate($today)->toYear();
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->startDate);
