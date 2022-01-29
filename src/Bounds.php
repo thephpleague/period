@@ -11,6 +11,13 @@
 
 namespace League\Period;
 
+/*
+ * Bounds Enum
+ *
+ * @package League.period
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @since   5.0.0
+ */
 enum Bounds
 {
     case INCLUDE_START_EXCLUDE_END;

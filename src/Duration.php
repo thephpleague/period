@@ -50,8 +50,6 @@ final class Duration
     }
 
     /**
-     *
-     *
      * @param array{dateInterval: DateInterval} $properties
      */
     public static function __set_state(array $properties): self
@@ -134,6 +132,11 @@ final class Duration
         return self::fromUnits($units);
     }
 
+    /**
+     * Creates a new instance from a time string representation.
+     *
+     * @throws InvalidArgumentException
+     */
     public static function fromTimeString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
@@ -143,6 +146,11 @@ final class Duration
         return self::fromUnits($units);
     }
 
+    /**
+     * Creates a new instance from a date time string like representation.
+     *
+     * @throws InvalidArgumentException
+     */
     public static function fromDateString(string $duration): self
     {
         return new self(DateInterval::createFromDateString($duration));
@@ -173,7 +181,9 @@ final class Duration
      */
     public function adjustedTo(DateTimeInterface $date): self
     {
-        $date = DateTimeImmutable::createFromInterface($date);
+        if (!$date instanceof DateTimeImmutable) {
+            $date = DateTimeImmutable::createFromInterface($date);
+        }
 
         return new self($date->diff($date->add($this->dateInterval)));
     }

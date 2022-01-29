@@ -138,7 +138,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance from a starting datepoint and a duration.
+     * Creates new instance from a starting date endpoint and a duration.
      */
     public static function after(
         DatePoint|DateTimeInterface|string $startDate,
@@ -166,7 +166,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance from a ending datepoint and a duration.
+     * Creates new instance from a ending date endpoint and a duration.
      */
     public static function before(
         DatePoint|DateTimeInterface|string $endDate,
@@ -630,13 +630,13 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      */
-    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, Presence $startDatePresence = Presence::INCLUDED): DatePeriod
+    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::INCLUDED): DatePeriod
     {
         return new DatePeriod(
             $this->startDate,
             self::filterDuration($timeDelta),
             $this->endDate,
-            $startDatePresence === Presence::EXCLUDED ? DatePeriod::EXCLUDE_START_DATE : 0
+            $startDatePresence === InitialDatePresence::EXCLUDED ? DatePeriod::EXCLUDE_START_DATE : 0
         );
     }
 
@@ -646,11 +646,11 @@ final class Period implements JsonSerializable
      *
      * @return Generator<DateTimeImmutable>
      */
-    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = Presence::INCLUDED): Generator
+    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::INCLUDED): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
-        if ($endDatePresence === Presence::EXCLUDED) {
+        if ($endDatePresence === InitialDatePresence::EXCLUDED) {
             $date = $this->endDate->sub($timeDelta);
         }
 
@@ -665,12 +665,11 @@ final class Period implements JsonSerializable
      *
      * The returned iterable Interval set is ordered so that:
      * <ul>
-     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The first returned object MUST share the starting date endpoint of the parent object.</li>
+     * <li>The last returned object MUST share the ending date endpoint of the parent object.</li>
      * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
-     *
      *
      * @return Generator<Period>
      */
@@ -693,12 +692,11 @@ final class Period implements JsonSerializable
      *
      * The returned iterable Period set is ordered so that:
      * <ul>
-     * <li>The first returned object MUST share the ending datepoint of the parent object.</li>
-     * <li>The last returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The first returned object MUST share the ending date endpoint of the parent object.</li>
+     * <li>The last returned object MUST share the starting date endpoint of the parent object.</li>
      * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
-     *
      *
      * @return Generator<Period>
      */
@@ -866,9 +864,6 @@ final class Period implements JsonSerializable
      *                 [----------)
      *          =
      * [--------------------------)
-     *
-     *
-     * @param Period ...$periods
      */
     public function merge(self ...$periods): self
     {
@@ -900,10 +895,10 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * Returns an instance with the specified starting datepoint.
+     * Returns an instance with the specified starting date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
+     * an instance that contains the specified starting date endpoint.
      */
     public function startingOn(DatePoint|DateTimeInterface|string $startDate): self
     {
@@ -916,10 +911,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns an instance with the specified ending datepoint.
+     * Returns an instance with the specified ending date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
+     * an instance that contains the specified ending date endpoint.
      */
     public function endingOn(DatePoint|DateTimeInterface|string $endDate): self
     {
@@ -947,10 +942,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new ending datepoint.
+     * Returns a new instance with a new ending date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
+     * an instance that contains the specified ending date endpoint.
      */
     public function withDurationAfterStart(Period|Duration|DateInterval|string $duration): self
     {
@@ -958,10 +953,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new starting datepoint.
+     * Returns a new instance with a new starting date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
+     * an instance that contains the specified starting date endpoint.
      */
     public function withDurationBeforeEnd(Period|Duration|DateInterval|string $duration): self
     {
@@ -969,11 +964,11 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new starting datepoint
+     * Returns a new instance with a new starting date endpoint
      * moved forward or backward by the given interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
+     * an instance that contains the specified starting date endpoint.
      */
     public function moveStartDate(Period|Duration|DateInterval|string $duration): self
     {
@@ -981,11 +976,11 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new ending datepoint
+     * Returns a new instance with a new ending date endpoint
      * moved forward or backward by the given interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
+     * an instance that contains the specified ending date endpoint.
      */
     public function moveEndDate(Period|Duration|DateInterval|string $duration): self
     {
@@ -993,7 +988,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance where the datepoints
+     * Returns a new instance where the date endpoints
      * are moved forwards or backward simultaneously by the given DateInterval.
      *
      * This method MUST retain the state of the current instance, and return
@@ -1012,7 +1007,7 @@ final class Period implements JsonSerializable
 
     /**
      * Returns an instance where the given DateInterval is simultaneously
-     * subtracted from the starting datepoint and added to the ending datepoint.
+     * subtracted from the starting date endpoint and added to the ending date endpoint.
      *
      * Depending on the duration value, the resulting instance duration will be expanded or shrunken.
      *

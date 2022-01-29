@@ -45,14 +45,13 @@ final class AffixLabel implements LabelGenerator
         }
     }
 
-
     public function format(string $label): string
     {
         return $this->prefix.$this->labelGenerator->format($label).$this->suffix;
     }
 
     /**
-     * Return an instance with the suffix.
+     * Returns an instance with the suffix.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the suffix.

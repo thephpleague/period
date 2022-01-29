@@ -269,12 +269,12 @@ in `5.x` `Closure` objects are used instead of the callable pseudo type with the
 + $res = $sequence->filter(myFilter(...)); // a Closure object MUST be given
 ```
 
-`Period::dateRange` and `Period::dateRangeBackwards` accept a `Presence` Enum as a parameter to control the presence
+`Period::dateRange` and `Period::dateRangeBackwards` accept a `InitialDatePresence` Enum as a parameter to control the presence
 or not of the initial date object in their returned values.
 
 ```diff
 - $res = $period->getDatePeriodBackwards('1 DAY', DatePeriod::EXCLUDE_START_DATE); 
-+ $res = $period->dateRangeBackwards('1 DAY', Presence::EXCLUDED);
++ $res = $period->dateRangeBackwards('1 DAY', InitialDatePresence::EXCLUDED);
 ```
 
 ## Changes in bounds related methods

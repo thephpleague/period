@@ -12,9 +12,11 @@ All notable changes to `Period` will be documented in this file
 - `Duration::fromSeconds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
 - `Period::fromNotation` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
-- `Period::snapTo` method to ease period expansion.
+- `Period::snapTo*` methods to ease period expansion.
 - `Bounds` Enum.
-- `Presence` Enum.
+- `InitialDatePresence` Enum.
+- `Chart\Casing` Enum.
+- `Chart\Alignment` Enum.
 
 ### Fixed
 

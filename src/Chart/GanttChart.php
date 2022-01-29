@@ -32,7 +32,7 @@ final class GanttChart implements Chart
     private float $start = 0;
     private float $unit = 1;
 
-    public function __construct(private GanttChartConfig $config)
+    public function __construct(public readonly GanttChartConfig $config)
     {
     }
 
@@ -55,7 +55,7 @@ final class GanttChart implements Chart
     public function stroke(Data $dataset): void
     {
         $this->setChartScale($dataset);
-        $padding = $this->config->labelAlignment->padding();
+        $padding = $this->config->labelAlignment->toPadding();
         $gap = str_repeat(' ', $this->config->gapSize);
         $leftMargin = str_repeat(' ', $this->config->leftMarginSize);
         $lineCharacters = array_fill(0, $this->config->width, $this->config->space);

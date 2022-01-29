@@ -23,7 +23,7 @@ final class DateRangeInvalid extends InvalidArgumentException implements DateRan
 
     public static function dueToDatePointMismatch(): self
     {
-        return new self('The ending datepoint must be greater or equal to the starting datepoint');
+        return new self('The ending date endpoint must be greater or equal to the starting date endpoint.');
     }
 
     public static function dueToInvalidDateFormat(string $format, string $date): self

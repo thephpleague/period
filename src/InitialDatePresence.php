@@ -11,7 +11,14 @@
 
 namespace League\Period;
 
-enum Presence
+/*
+ * Presence Enum
+ *
+ * @package League.period
+ * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @since   5.0.0
+ */
+enum InitialDatePresence
 {
     case EXCLUDED;
     case INCLUDED;

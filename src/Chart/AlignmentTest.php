@@ -32,8 +32,8 @@ final class AlignmentTest extends TestCase
 
     public function testItCanBeConvertedToPadding(): void
     {
-        self::assertSame(STR_PAD_LEFT, Alignment::LEFT->padding());
-        self::assertSame(STR_PAD_RIGHT, Alignment::RIGHT->padding());
-        self::assertSame(STR_PAD_BOTH, Alignment::CENTER->padding());
+        self::assertSame(STR_PAD_LEFT, Alignment::LEFT->toPadding());
+        self::assertSame(STR_PAD_RIGHT, Alignment::RIGHT->toPadding());
+        self::assertSame(STR_PAD_BOTH, Alignment::CENTER->toPadding());
     }
 }

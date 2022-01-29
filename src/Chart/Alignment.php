@@ -32,7 +32,7 @@ enum Alignment
         };
     }
 
-    public function padding(): int
+    public function toPadding(): int
     {
         return match ($this) {
             self::CENTER => STR_PAD_BOTH,

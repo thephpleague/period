@@ -34,8 +34,6 @@ final class DatePoint
     }
 
     /**
-     *
-     *
      * @param array{date: DateTimeImmutable} $properties
      */
     public static function __set_state(array $properties): self
@@ -77,7 +75,7 @@ final class DatePoint
     }
 
     /**
-     * Tell whether the instance borders on start the timeslot.
+     * Tells whether the instance borders on start the timeslot.
      */
     public function bordersOnStart(Period $timeSlot): bool
     {
