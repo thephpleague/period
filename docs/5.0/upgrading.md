@@ -29,7 +29,7 @@ This will edit (or create) your `composer.json` file.
 
 All namespaced functions are removed from the package:
 
-- `League\Period\datepoint`
+- `League\Period\DatePoint`
 - `League\Period\duration`
 - `League\Period\year`
 - `League\Period\semester`

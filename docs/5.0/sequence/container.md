@@ -18,7 +18,7 @@ Returns the first offset of the a `Period` object who's equals to the submitted 
 ~~~php
 $sequence = new Sequence(Period::after('2018-01-01', '30 DAYS'));
 $sequence->indexOf(Period::after('2018-01-01', '30 DAYS')); // 0
-$sequence->indexOf(Datepoint::fromDateString('2012-06-03')->day()); // false
+$sequence->indexOf(DatePoint::fromDateString('2012-06-03')->day()); // false
 ~~~
 
 ### Sequence::contains

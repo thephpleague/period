@@ -112,7 +112,7 @@ Returns a new instance with recalculate duration according to the given datepoin
 ~~~php
 $duration = Duration::create('29 days');                              // is equivalent to new Duration(DateInterval::createFromDateString('29 days'))
 $duration->adjustedTo(new DateTime('2019-02-01'));                    // is equivalent to new DateInterval('P1M1D') using a non leap year
-$duration->adjustedTo(Datepoint::fromDateString('2020-02-01')->date); // is equivalent to new DateInterval('P1M') using a leap year
+$duration->adjustedTo(DatePoint::fromDateString('2020-02-01')->date); // is equivalent to new DateInterval('P1M') using a leap year
 // in both cases the interval `days` property stays at 29 days
 ~~~
 

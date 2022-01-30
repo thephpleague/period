@@ -163,25 +163,23 @@ Here's a complex example which highlights most of the features introduces along 
 
 use League\Period\Bounds;
 use League\Period\Chart;
-use League\Period\Datepoint;
+use League\Period\DatePoint;
+use League\Period\Duration;
 use League\Period\Period;
 use League\Period\Sequence;
-use League\Period\Duration;
 
-$config = new Chart\GanttChartConfig(
-    output: new Chart\StreamOutput(STDOUT),
-    colors: Chart\Color::rainBow(),
-    startExcludedCharacter: '🍕',
-    startIncludedCharacter: '🍅',
-    endExcludedCharacter: '🎾',
-    endIncludedCharacter: '🍔',
-    bodyCharacter: '😊',
-    spaceCharacter: '💩',
-    width: 30,
-    gapSize: 2,
-    leftMarginSize: 1,
-    labelAlignment: Chart\Alignment::RIGHT,
-);
+$config = Chart\GanttChartConfig::fromStream(STDOUT)
+    ->colors(...Chart\Color::rainBow())
+    ->startExcludedCharacter('🍕')
+    ->startIncludedCharacter('🍅')
+    ->endExcludedCharacter('🎾')
+    ->endIncludedCharacter('🍔')
+    ->bodyCharacter('😊')
+    ->spaceCharacter('💩')
+    ->width(30)
+    ->gapSize(2)
+    ->leftMarginSize(1)
+    ->labelAlignment(Chart\Alignment::RIGHT);
 
 $labelGenerator = new Chart\DecimalNumber(42);
 $labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\Casing::UPPER);
@@ -189,9 +187,9 @@ $labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 
 $sequence = new Sequence(
-    Datepoint::fromDateString('2018-11-29')->toYearPeriod(Bounds::EXCLUDE_START_INCLUDE_END),
-    Datepoint::fromDateString('2018-05-29')->toMonthPeriod()->expand('3 MONTH'),
-    Datepoint::fromDateString('2017-01-13')->toQuarterPeriod(Bounds::EXCLUDE_ALL),
+    DatePoint::fromDateString('2018-11-29')->toYearPeriod(Bounds::EXCLUDE_START_INCLUDE_END),
+    DatePoint::fromDateString('2018-05-29')->toMonthPeriod()->expand('3 MONTH'),
+    DatePoint::fromDateString('2017-01-13')->toQuarterPeriod(Bounds::EXCLUDE_ALL),
     Period::around(new DateTime('2016-06-01'), Duration::fromDateString('3 MONTHS'), Bounds::INCLUDE_ALL)
 );
 $dataset = Chart\Dataset::fromItems($sequence, $labelGenerator);

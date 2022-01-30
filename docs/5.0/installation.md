@@ -27,9 +27,9 @@ $ composer require league/period
 ~~~php
 require 'path/to/league/repo/autoload.php';
 
-use League\Period\Datepoint;
+use League\Period\DatePoint;
 
-Datepoint::fromDateString('2012-05-23')->toDayPeriod()->endDate;
+DatePoint::fromDateString('2012-05-23')->toDayPeriod()->endDate;
 //returns DateTimeImmutable('2012-05-24 00:00:00.000000');
 ~~~
 

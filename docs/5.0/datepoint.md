@@ -1,6 +1,6 @@
 ---
 layout: default
-title: The Datepoint class
+title: The DatePoint class
 ---
 
 # The DatePoint class
