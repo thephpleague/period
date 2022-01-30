@@ -37,7 +37,6 @@ final class AffixLabel implements LabelGenerator
         return (string) preg_replace("/[\r\n]/", '', $str);
     }
 
-
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->labelGenerator->generate($nbLabels) as $key => $label) {

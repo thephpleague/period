@@ -92,10 +92,7 @@ final class GanttChart implements Chart
      */
     private function sequenceToLine(Sequence $item): string
     {
-        /** @var array<string> $characters */
-        $characters = $item->reduce($this->periodToCharacters(...), $this->emptyLineCharacters);
-
-        return implode('', $characters);
+        return implode('', $item->reduce($this->periodToCharacters(...), $this->emptyLineCharacters));
     }
 
     /**

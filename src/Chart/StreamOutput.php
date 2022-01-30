@@ -33,9 +33,9 @@ final class StreamOutput implements Output
     private $stream;
 
     /**
-     * @param resource|mixed $stream
+     * @param mixed $stream stream resource
      */
-    public function __construct($stream)
+    public function __construct(mixed $stream)
     {
         if (!is_resource($stream) || 'stream' !== get_resource_type($stream)) {
             throw new TypeError('Argument passed must be a stream resource.');

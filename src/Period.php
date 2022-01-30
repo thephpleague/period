@@ -526,10 +526,9 @@ final class Period implements JsonSerializable
      * [--------------------)
      * [--------------------)
      */
-    public function equals(mixed $timeSlot): bool
+    public function equals(self $timeSlot): bool
     {
-        return $timeSlot instanceof self
-            && $this->startDate == $timeSlot->startDate
+        return $this->startDate == $timeSlot->startDate
             && $this->endDate == $timeSlot->endDate
             && $this->bounds === $timeSlot->bounds;
     }

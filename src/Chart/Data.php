@@ -51,7 +51,7 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
     /**
      * Returns all items as a collection of Sequences.
      *
-     * @return Sequence[]
+     * @return array<Sequence>
      */
     public function items(): iterable;
 
