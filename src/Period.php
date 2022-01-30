@@ -34,22 +34,17 @@ final class Period implements JsonSerializable
     private const REGEXP_INTERVAL_NOTATION = '/^(?<lowerbound>\[|\()(?<startdate>[^,\]\)\[\(]*),(?<enddate>[^,\]\)\[\(]*)(?<upperbound>\]|\))$/';
     private const REGEXP_ISO_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
 
-    public readonly DateTimeImmutable $startDate;
-    public readonly DateTimeImmutable $endDate;
-    public readonly Bounds $bounds;
-
     /**
      * @throws DateRangeInvalid If the instance can not be created
      */
-    private function __construct(DateTimeImmutable $startDate, DateTimeImmutable $endDate, Bounds $bounds)
-    {
-        if ($startDate > $endDate) {
+    private function __construct(
+        public readonly DateTimeImmutable $startDate,
+        public readonly DateTimeImmutable $endDate,
+        public readonly Bounds $bounds
+    ) {
+        if ($this->startDate > $this->endDate) {
             throw DateRangeInvalid::dueToDatePointMismatch();
         }
-
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
-        $this->bounds = $bounds;
     }
 
     /**************************************************
