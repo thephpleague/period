@@ -108,21 +108,21 @@ public function method(string $boundaries = Bounds::INCLUDE_START_EXCLUDE_END): 
 
 where `method` is one of the following date time span:
 
-- `DatePoint::toSecond`
-- `DatePoint::toMinute`
-- `DatePoint::toHour`
-- `DatePoint::toDay`
-- `DatePoint::toIsoWeek`
-- `DatePoint::toMonth`
-- `DatePoint::toQuarter`
-- `DatePoint::toSemester`
-- `DatePoint::toYear`
-- `DatePoint::toIsoYear`
+- `DatePoint::toSecondPeriod`
+- `DatePoint::toMinutePeriod`
+- `DatePoint::toHourPeriod`
+- `DatePoint::toDayPeriod`
+- `DatePoint::toIsoWeekPeriod`
+- `DatePoint::toMonthPeriod`
+- `DatePoint::toQuarterPeriod`
+- `DatePoint::toSemesterPeriod`
+- `DatePoint::toYearPeriod`
+- `DatePoint::toIsoYearPeriod`
 
 For each a these methods a `Period` object is returned with:
 
 - the `Bounds::INCLUDE_START_EXCLUDE_END` bounds type by default unless changed using the `$bounds` argument;
-- the starting datepoint represents the beginning of the current datepoint calendar interval;
+- the starting date endpoint represents the beginning of the current date endpoint calendar interval;
 - the duration associated with the given calendar interval;
 
 #### Examples
@@ -132,9 +132,9 @@ use League\Period\Bounds;
 use League\Period\DatePoint;
 
 $datepoint = Datepoint::fromDateString('2018-06-18 08:35:25');
-$hour = $datepoint->toHour();
+$hour = $datepoint->toHourPeriod();
 // new Period('2018-06-18 08:00:00', '2018-06-18 09:00:00');
-$month = $datepoint->toMonth(Bounds::INCLUDE_ALL);
+$month = $datepoint->toMonthPeriod(Bounds::INCLUDE_ALL);
 echo $month->toNotation('Y-m-d');
 // [2018-06-01, 2018-07-01 00:00:00];
 $month->contains($datepoint); // true

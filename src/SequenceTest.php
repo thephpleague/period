@@ -96,58 +96,58 @@ final class SequenceTest extends TestCase
     public function testGetThrowsExceptionWithInvalidPositiveIndex(): void
     {
         $this->expectException(DateRangeInaccessible::class);
-        (new Sequence(DatePoint::fromDateString('2011-06-23')->toDay()))->get(3);
+        (new Sequence(DatePoint::fromDateString('2011-06-23')->toDayPeriod()))->get(3);
     }
 
 
     public function testGetThrowsExceptionWithInvalidNegativeIndex(): void
     {
         $this->expectException(DateRangeInaccessible::class);
-        (new Sequence(DatePoint::fromDateString('2011-06-23')->toDay()))->get(-3);
+        (new Sequence(DatePoint::fromDateString('2011-06-23')->toDayPeriod()))->get(-3);
     }
 
     public function testNegativeOffsetWithASequenceWithASingleItem(): void
     {
-        $sequence = new Sequence(DatePoint::fromDateString('today')->toDay());
+        $sequence = new Sequence(DatePoint::fromDateString('today')->toDayPeriod());
         self::assertSame($sequence[-1], $sequence[0]);
     }
 
     public function testSetter(): void
     {
-        $sequence = new Sequence(DatePoint::fromDateString('2011-06-23')->toDay(), DatePoint::fromDateString('2011-06-23')->toDay());
-        $sequence->set(0, DatePoint::fromDateString('2011-06-23')->toDay());
-        self::assertEquals(DatePoint::fromDateString('2011-06-23')->toDay(), $sequence->get(0));
+        $sequence = new Sequence(DatePoint::fromDateString('2011-06-23')->toDayPeriod(), DatePoint::fromDateString('2011-06-23')->toDayPeriod());
+        $sequence->set(0, DatePoint::fromDateString('2011-06-23')->toDayPeriod());
+        self::assertEquals(DatePoint::fromDateString('2011-06-23')->toDayPeriod(), $sequence->get(0));
         $sequence->set(1, Period::fromDay(2012, 6, 23));
-        $sequence->set(0, DatePoint::fromDateString('2013-06-23')->toDay());
+        $sequence->set(0, DatePoint::fromDateString('2013-06-23')->toDayPeriod());
         self::assertEquals(Period::fromDay(2012, 6, 23), $sequence->get(1));
-        self::assertEquals(DatePoint::fromDateString('2013-06-23')->toDay(), $sequence->get(0));
+        self::assertEquals(DatePoint::fromDateString('2013-06-23')->toDayPeriod(), $sequence->get(0));
         $this->expectException(DateRangeInaccessible::class);
-        $sequence->set(3, DatePoint::fromDateString('2013-06-23')->toDay());
+        $sequence->set(3, DatePoint::fromDateString('2013-06-23')->toDayPeriod());
     }
 
     public function testInsert(): void
     {
         $sequence = new Sequence();
-        $sequence->insert(0, DatePoint::fromDateString('2010-06-23')->toDay());
+        $sequence->insert(0, DatePoint::fromDateString('2010-06-23')->toDayPeriod());
         self::assertCount(1, $sequence);
-        $sequence->insert(1, DatePoint::fromDateString('2011-06-24')->toDay());
+        $sequence->insert(1, DatePoint::fromDateString('2011-06-24')->toDayPeriod());
         self::assertCount(2, $sequence);
-        $sequence->insert(-1, DatePoint::fromDateString('2012-06-25')->toDay());
+        $sequence->insert(-1, DatePoint::fromDateString('2012-06-25')->toDayPeriod());
         self::assertCount(3, $sequence);
-        self::assertTrue(DatePoint::fromDateString('2012-06-25')->toDay()->equals($sequence->get(1)));
+        self::assertTrue(DatePoint::fromDateString('2012-06-25')->toDayPeriod()->equals($sequence->get(1)));
         $this->expectException(DateRangeInaccessible::class);
-        $sequence->insert(42, DatePoint::fromDateString('2011-06-23')->toDay());
+        $sequence->insert(42, DatePoint::fromDateString('2011-06-23')->toDayPeriod());
     }
 
     public function testJsonSerialize(): void
     {
-        $day = DatePoint::fromDateString('2010-06-23')->toDay();
+        $day = DatePoint::fromDateString('2010-06-23')->toDayPeriod();
         self::assertSame('['.json_encode($day).']', json_encode(new Sequence($day)));
     }
 
     public function testFilterReturnsNewInstance(): void
     {
-        $sequence = new Sequence(Period::fromDay(2012, 6, 23), DatePoint::fromDateString('2012-06-12')->toDay());
+        $sequence = new Sequence(Period::fromDay(2012, 6, 23), DatePoint::fromDateString('2012-06-12')->toDayPeriod());
         $newCollection = $sequence->filter(fn (Period $period): bool => $period->startDate == new DateTimeImmutable('2012-06-23'));
 
         self::assertNotEquals($newCollection, $sequence);
@@ -159,7 +159,7 @@ final class SequenceTest extends TestCase
     {
         $sequence = new Sequence(
             Period::fromDay(2012, 6, 23),
-            DatePoint::fromDateString('2012-06-12')->toDay()
+            DatePoint::fromDateString('2012-06-12')->toDayPeriod()
         );
 
         self::assertSame($sequence, $sequence->filter(fn (Period $interval): bool => $interval->endDate >= $interval->startDate));
@@ -169,7 +169,7 @@ final class SequenceTest extends TestCase
     {
         $sequence = new Sequence(
             Period::fromDay(2012, 6, 23),
-            DatePoint::fromDateString('2012-06-12')->toDay()
+            DatePoint::fromDateString('2012-06-12')->toDayPeriod()
         );
 
         self::assertSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => strlen(get_class($event1)) - strlen(get_class($event2))));
@@ -189,7 +189,7 @@ final class SequenceTest extends TestCase
     public function testSort(): void
     {
         $day1 = Period::fromDay(2012, 6, 23);
-        $day2 = DatePoint::fromDateString('2012-06-12')->toDay();
+        $day2 = DatePoint::fromDateString('2012-06-12')->toDayPeriod();
         $sequence = new Sequence($day1, $day2);
         self::assertSame([0 => $day1, 1 => $day2], $sequence->toArray());
 
@@ -203,9 +203,9 @@ final class SequenceTest extends TestCase
         $predicate = fn (Period $event): bool => $interval->overlaps($event);
 
         $sequence = new Sequence(
-            DatePoint::fromDateString('2012-02-01')->toDay(),
-            DatePoint::fromDateString('2013-02-01')->toDay(),
-            DatePoint::fromDateString('2014-02-01')->toDay()
+            DatePoint::fromDateString('2012-02-01')->toDayPeriod(),
+            DatePoint::fromDateString('2013-02-01')->toDayPeriod(),
+            DatePoint::fromDateString('2014-02-01')->toDayPeriod()
         );
 
         self::assertTrue($sequence->some($predicate));
@@ -215,9 +215,9 @@ final class SequenceTest extends TestCase
     public function testEvery(): void
     {
         $sequence = new Sequence(
-            DatePoint::fromDateString('2012-02-01')->toDay(),
-            DatePoint::fromDateString('2013-02-01')->toDay(),
-            DatePoint::fromDateString('2014-02-01')->toDay()
+            DatePoint::fromDateString('2012-02-01')->toDayPeriod(),
+            DatePoint::fromDateString('2013-02-01')->toDayPeriod(),
+            DatePoint::fromDateString('2014-02-01')->toDayPeriod()
         );
 
         $interval = Period::after(new DateTime('2012-01-01'), Duration::fromDateString('5 YEARS'));
@@ -225,7 +225,7 @@ final class SequenceTest extends TestCase
 
         self::assertTrue($sequence->every($predicate));
         self::assertFalse((new Sequence())->every($predicate));
-        self::assertFalse((new Sequence(DatePoint::fromDateString('1988-02-01')->toDay()))->every($predicate));
+        self::assertFalse((new Sequence(DatePoint::fromDateString('1988-02-01')->toDayPeriod()))->every($predicate));
     }
 
     /**
@@ -391,7 +391,7 @@ final class SequenceTest extends TestCase
     public function testGaps1(): void
     {
         $sequence = new Sequence(
-            DatePoint::fromDateString('2018-11-29')->toDay(),
+            DatePoint::fromDateString('2018-11-29')->toDayPeriod(),
             Period::after(new DateTimeImmutable('2018-11-29 + 7 DAYS'), DateInterval::createFromDateString('1 DAY')),
             Period::around(new DateTimeImmutable('2018-11-29'), DateInterval::createFromDateString('4 DAYS'))
         );
@@ -412,7 +412,7 @@ final class SequenceTest extends TestCase
     public function testGaps2(): void
     {
         $sequence = new Sequence(
-            DatePoint::fromDateString('2018-11-29')->toDay(),
+            DatePoint::fromDateString('2018-11-29')->toDayPeriod(),
             Period::around(new DateTime('2018-11-29'), Duration::fromDateString('4 DAYS'))
         );
 
@@ -422,15 +422,15 @@ final class SequenceTest extends TestCase
 
     public function testUnionReturnsSameInstance(): void
     {
-        $sequence = new Sequence(DatePoint::fromDateString('2018-11-29')->toDay());
+        $sequence = new Sequence(DatePoint::fromDateString('2018-11-29')->toDayPeriod());
         self::assertSame($sequence, $sequence->unions());
     }
 
     public function testUnion(): void
     {
         $sequence = new Sequence(
-            DatePoint::fromDateString('2018-11-29')->toYear(),
-            DatePoint::fromDateString('2018-11-29')->toMonth(),
+            DatePoint::fromDateString('2018-11-29')->toYearPeriod(),
+            DatePoint::fromDateString('2018-11-29')->toMonthPeriod(),
             Period::around(new DateTimeImmutable('2016-06-01'), Duration::fromDateString('3 MONTHS'))
         );
 
@@ -439,7 +439,7 @@ final class SequenceTest extends TestCase
         self::assertTrue($unions->intersections()->isEmpty());
         self::assertEquals($sequence->gaps(), $unions->gaps());
         self::assertTrue(Period::around(new DateTimeImmutable('2016-06-01'), Duration::fromDateString('3 MONTHS'))->equals($unions->get(0)));
-        self::assertTrue(DatePoint::fromDateString('2018-11-29')->toYear()->equals($unions->get(1)));
+        self::assertTrue(DatePoint::fromDateString('2018-11-29')->toYearPeriod()->equals($unions->get(1)));
     }
 
     public function testMap(): void

@@ -5,7 +5,7 @@ version:
           Installation: '/5.0/installation/'
           Upgrading from 4.x: '/5.0/upgrading/'
         Building Blocks:
-          Datepoint: '/5.0/datepoint/'
+          DatePoint: '/5.0/datepoint/'
           Duration: '/5.0/duration/'
           Bounds: '/5.0/bounds/'
         Period:

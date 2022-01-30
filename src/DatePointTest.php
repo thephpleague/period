@@ -43,7 +43,7 @@ final class DatePointTest extends TestCase
     public function testInstantiationFromMinute(): void
     {
         $datePoint = DatePoint::fromDateString('2021-07-08 13:23:58');
-        $minutePeriod = $datePoint->toMinute();
+        $minutePeriod = $datePoint->toMinutePeriod();
 
         self::assertEquals('2021-07-08 13:23:00', $minutePeriod->startDate->format('Y-m-d H:i:s'));
         self::assertEquals('2021-07-08 13:24:00', $minutePeriod->endDate->format('Y-m-d H:i:s'));
@@ -52,7 +52,7 @@ final class DatePointTest extends TestCase
     public function testInstantiationFromSeconds(): void
     {
         $datePoint = DatePoint::fromDateString('2021-07-08 13:23:58');
-        $secondPeriod = $datePoint->toSecond();
+        $secondPeriod = $datePoint->toSecondPeriod();
 
         self::assertEquals('2021-07-08 13:23:58', $secondPeriod->startDate->format('Y-m-d H:i:s'));
         self::assertEquals('2021-07-08 13:23:59', $secondPeriod->endDate->format('Y-m-d H:i:s'));
