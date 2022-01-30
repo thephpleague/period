@@ -74,7 +74,8 @@ The `Dataset` implements the `Countable` and the `IteratorAggregate` interface. 
 <?php
 public function Dataset::fromItems($items, ?LabelGenerator $labelGenerator = null): self; //Creates a new Dataset from a collection of Sequence/Periods and a LabelGenerator.
 public function Dataset::fromIterable(iterable $iterable): self; //Creates a new Dataset from a generic iterable structure of Sequence/Periods.
-public function Dataset::appendAll(iterable $pairs): void; //adds multiple pairs at once.
+public function Dataset::append(string|int $label, Period|Sequence $item): self; //adds multiple pairs at once.
+public function Dataset::appendAll(iterable $pairs): self; //adds multiple pairs at once.
 public function Dataset::isEmpty(): bool; //Tells whether the collection is empty.
 public function Dataset::labels(): array<string>; //the current labels used
 public function Dataset::items(): array<Sequence>; //the current objects inside the Dataset

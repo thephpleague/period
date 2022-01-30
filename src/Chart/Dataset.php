@@ -80,14 +80,16 @@ final class Dataset implements Data
     /**
      * @param iterable<array{0:string|int, 1:Period|Sequence}> $pairs
      */
-    public function appendAll(iterable $pairs): void
+    public function appendAll(iterable $pairs): self
     {
         foreach ($pairs as [$label, $item]) {
             $this->append($label, $item);
         }
+
+        return $this;
     }
 
-    public function append(string|int $label, Period|Sequence $item): void
+    public function append(string|int $label, Period|Sequence $item): self
     {
         if ($item instanceof Period) {
             $item = new Sequence($item);
@@ -97,6 +99,8 @@ final class Dataset implements Data
         $this->setLength($item);
 
         $this->pairs[] = [$label, $item];
+
+        return $this;
     }
 
     /**

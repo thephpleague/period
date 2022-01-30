@@ -42,11 +42,15 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
     public function isEmpty(): bool;
 
     /**
+     * Returns the labels associated to all items.
+     *
      * @return array<string|int>
      */
     public function labels(): iterable;
 
     /**
+     * Returns all items as a collection of Sequences.
+     *
      * @return Sequence[]
      */
     public function items(): iterable;
@@ -64,12 +68,12 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
     /**
      * Add a new pair to the collection.
      */
-    public function append(string|int $label, Period|Sequence $item): void;
+    public function append(string|int $label, Period|Sequence $item): self;
 
     /**
      * Add a collection of pairs to the collection.
      *
      * @param iterable<array{0:string|int, 1:Period|Sequence}> $pairs
      */
-    public function appendAll(iterable $pairs): void;
+    public function appendAll(iterable $pairs): self;
 }

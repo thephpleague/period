@@ -99,20 +99,20 @@ final class GanttChart implements Chart
     }
 
     /**
-     * @param array<string> $lineCharacters
+     * @param array<string> $characters
      *
      * @return array<string>
      */
-    private function periodToCharacters(array $lineCharacters, Period $period): array
+    private function periodToCharacters(array $characters, Period $period): array
     {
         $startIndex = (int) floor(($period->startDate->getTimestamp() - $this->start) * $this->unit);
         $endIndex = (int) ceil(($period->endDate->getTimestamp() - $this->start) * $this->unit);
         $periodLength = $endIndex - $startIndex;
 
-        array_splice($lineCharacters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->bodyCharacter));
-        $lineCharacters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncludedCharacter : $this->config->startExcludedCharacter;
-        $lineCharacters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncludedCharacter : $this->config->endExcludedCharacter;
+        array_splice($characters, $startIndex, $periodLength, array_fill(0, $periodLength, $this->config->bodyCharacter));
+        $characters[$startIndex] = $period->bounds->isStartIncluded() ? $this->config->startIncludedCharacter : $this->config->startExcludedCharacter;
+        $characters[$endIndex - 1] = $period->bounds->isEndIncluded() ? $this->config->endIncludedCharacter : $this->config->endExcludedCharacter;
 
-        return $lineCharacters;
+        return $characters;
     }
 }

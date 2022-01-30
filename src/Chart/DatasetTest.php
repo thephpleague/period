@@ -173,6 +173,6 @@ final class DatasetTest extends TestCase
 
         $this->expectException(TypeError::class);
 
-        Dataset::fromItems(new $items());
+        Dataset::fromItems(new $items(), new LatinLetter());
     }
 }
