@@ -131,7 +131,7 @@ of smaller `Period` instances.
 ~~~php
 use League\Period\InitialDatePresence;
 
-public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, Presence $startDatePresence = InitialDatePresence::INCLUDED): DatePeriod
+public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::INCLUDED): DatePeriod
 ~~~
 
 Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`.
@@ -177,7 +177,7 @@ foreach ($dateRange as $datetime) {
 ~~~php
 use League\Period\InitialDatePresence;
 
-public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, Presence $endDatePresence = InitialDatePresence::INCLUDED): Generator<DateTimeImmutable>
+public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::INCLUDED): Generator<DateTimeImmutable>
 ~~~
 
 Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.
