@@ -116,7 +116,7 @@ class PeriodRelationTest extends TestCase
      * @dataProvider isAfterProvider
      *
      */
-    public function testIsAfer(Period $interval, DateTimeInterface|Period $input, bool $expected): void
+    public function testIsAfter(Period $interval, DateTimeInterface|Period $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isAfter($input));
     }
@@ -1094,5 +1094,66 @@ class PeriodRelationTest extends TestCase
 
         self::assertCount(0, $diff);
         self::assertEquals($diff, $periodA->subtract($periodA));
+    }
+
+    /**
+     * @dataProvider meetsProvider
+     */
+    public function testMeets(Period $period1, Period $period2, bool $meets, bool $meetsOnStart, bool $meetsOnEnd): void
+    {
+        self::assertSame($meets, $period1->meets($period2));
+        self::assertSame($meetsOnStart, $period1->meetsOnStart($period2));
+        self::assertSame($meetsOnEnd, $period1->meetsOnEnd($period2));
+    }
+
+    public function meetsProvider(): iterable
+    {
+        yield [
+            'period1' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::INCLUDE_ALL),
+            'period2' => Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_ALL),
+            'meets' => true,
+            'meetsOnStart' => true,
+            'meetsOnEnd' => false,
+        ];
+
+        yield [
+            'period1' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_ALL),
+            'period2' => Period::fromDate('2022-02-01', '2022-03-01', Bounds::EXCLUDE_ALL),
+            'meets' => false,
+            'meetsOnStart' => false,
+            'meetsOnEnd' => false,
+        ];
+
+        yield [
+            'period1' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::INCLUDE_ALL),
+            'period2' => Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
+            'meets' => true,
+            'meetsOnStart' => true,
+            'meetsOnEnd' => false,
+        ];
+
+        yield [
+            'period1' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+            'period2' => Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
+            'meets' => true,
+            'meetsOnStart' => true,
+            'meetsOnEnd' => false,
+        ];
+
+        yield [
+            'period1' => Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
+            'period2' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+            'meets' => true,
+            'meetsOnStart' => false,
+            'meetsOnEnd' => true,
+        ];
+
+        yield [
+            'period1' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+            'period2' => Period::fromDate('2022-02-01', '2022-03-01', Bounds::EXCLUDE_START_INCLUDE_END),
+            'meets' => false,
+            'meetsOnStart' => false,
+            'meetsOnEnd' => false,
+        ];
     }
 }

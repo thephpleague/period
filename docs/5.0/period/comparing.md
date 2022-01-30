@@ -205,6 +205,76 @@ $period->abuts($alt); //return true
 //in this case $period->getEndDate() == $alt->getStartDate();
 ~~~
 
+### Periods::meetsOnStart
+
+~~~php
+public Period::meetsOnStart(Period $interval): bool
+~~~
+
+A `Period` meets on the starting datepoint of another instance if its ending datepoint equals the submitted `Period` starting datepoint and 
+theirs respective bounds are inclusive.
+
+#### Example
+
+~~~php
+use League\Period\Bounds;
+use League\Period\Period;
+
+$period = Period::fromMonth(2014, 3, Bounds::INCLUDE_ALL);
+$alt = Period::fromMonth(2014, 4, Bounds::INCLUDE_START_EXCLUDE_END);
+$period->meetsOnStart($alt); //return true
+//in this case
+// $period->endDate == $alt->startDate
+// $period->bounds->isEndIncluded() returns true
+// $alt->bounds->isStartIncluded() returns true
+~~~
+
+### Periods::meetsOnEnd
+
+~~~php
+public Period::meetsOnEnd(Period $interval): bool
+~~~
+
+A `Period` meets on the ending datepoint of another instance if its start datepoint equals the submitted `Period` ending datepoint and
+theirs respective bounds are inclusive.
+
+#### Examples
+
+~~~php
+use League\Period\Bounds;
+use League\Period\Period;
+
+$period = Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
+$alt = Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+$period->meetsOnEnd($period); //return true
+//in this case
+// $period->startDate == $alt->endDate;
+// $period->bounds->isStartIncluded() returns true
+// $alt->bounds->isEndIncluded() returns true
+~~~
+
+
+### Periods::meets
+
+~~~php
+public Period::meets(Period $interval): bool
+~~~
+
+A `Period` meets on the ending datepoint or on the starting datepoint of another instance and their bounds
+are incluse when they meet. This method returns `true` if both period returns true on `meetsOnStart` **or** `meetsOnEnd`. 
+
+#### Examples
+
+~~~php
+use League\Period\Bounds;
+use League\Period\Period;
+
+$period = Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
+$alt = Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+$period->meets($period); //return true
+~~~
+
+
 ### Period::overlaps
 
 ~~~php

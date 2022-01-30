@@ -409,7 +409,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether the current instance end date meets the interval start date.
+     * Tells whether the current instance end date abuts the interval start date.
      *
      * [--------------------)
      *                      [--------------------)
@@ -418,6 +418,19 @@ final class Period implements JsonSerializable
     {
         return $this->endDate == $timeSlot->startDate
             && !($this->bounds->isEndIncluded() && $timeSlot->bounds->isStartIncluded());
+    }
+
+    /**
+     * Tells whether the current instance end date meets the interval start date.
+     *
+     * (--------------------]
+     *                      [--------------------)
+     */
+    public function meetsOnStart(self $timeSlot): bool
+    {
+        return $this->endDate == $timeSlot->startDate
+            && $this->bounds->isEndIncluded()
+            && $timeSlot->bounds->isStartIncluded();
     }
 
     /**
@@ -548,6 +561,19 @@ final class Period implements JsonSerializable
      * Tells whether the current instance start date meets the interval end date.
      *
      *                      [--------------------)
+     * (--------------------]
+     */
+    public function meetsOnEnd(self $timeSlot): bool
+    {
+        return $this->startDate == $timeSlot->endDate
+            && $this->bounds->isStartIncluded()
+            && $timeSlot->bounds->isEndIncluded();
+    }
+
+    /**
+     * Tells whether the current instance start date abuts the interval end date.
+     *
+     *                      [--------------------)
      * [--------------------)
      */
     public function bordersOnEnd(self $timeSlot): bool
@@ -587,6 +613,20 @@ final class Period implements JsonSerializable
     public function abuts(self $timeSlot): bool
     {
         return $this->bordersOnStart($timeSlot) || $this->bordersOnEnd($timeSlot);
+    }
+
+    /**
+     * Tells whether two intervals meets.
+     *
+     * (--------------------]
+     *                      [--------------------)
+     * or
+     *                      [--------------------)
+     * (--------------------]
+     */
+    public function meets(self $timeSlot): bool
+    {
+        return $this->meetsOnEnd($timeSlot) || $this->meetsOnStart($timeSlot);
     }
 
     /**
