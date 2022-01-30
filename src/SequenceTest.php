@@ -509,7 +509,7 @@ final class SequenceTest extends TestCase
         unset($sequence[0]);
     }
 
-    public function testGetTotalTimestampInterval(): void
+    public function testTotalTimeDuration(): void
     {
         self::assertSame(0, (new Sequence())->totalTimeDuration());
 
@@ -518,5 +518,29 @@ final class SequenceTest extends TestCase
         if (null !== $period) {
             self::assertNotEquals($period->toTimeDuration(), $sequence->totalTimeDuration());
         }
+    }
+
+    public function testOverlapsAllCanReturnsAPeriod(): void
+    {
+        $sequence = new Sequence(
+            Period::fromDate(new DateTime('2000-02-01'), new DateTime('2000-02-28')),
+            Period::fromDate(new DateTime('2000-01-12'), new DateTime('2000-02-10')),
+            Period::fromDate(new DateTime('2000-01-14'), new DateTime('2000-02-03')),
+        );
+        /** @var Period $overlaps */
+        $overlaps = $sequence->intersectAll();
+        foreach ($sequence as $period) {
+            self::assertTrue($period->overlaps($overlaps));
+        }
+    }
+
+    public function testOverlapsAllCanReturnNull(): void
+    {
+        $sequence = new Sequence(
+            Period::fromDate(new DateTime('2000-02-01'), new DateTime('2000-02-28')),
+            Period::fromDate(new DateTime('2000-01-14'), new DateTime('2000-01-23')),
+        );
+
+        self::assertNull($sequence->intersectAll());
     }
 }
