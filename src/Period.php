@@ -1021,7 +1021,7 @@ final class Period implements JsonSerializable
      * are moved forwards or backward simultaneously by the given DateInterval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function move(Period|Duration|DateInterval|string $duration): self
     {
@@ -1041,7 +1041,7 @@ final class Period implements JsonSerializable
      * Depending on the duration value, the resulting instance duration will be expanded or shrunken.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function expand(Period|Duration|DateInterval|string $duration): self
     {
@@ -1058,13 +1058,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective second interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToSecond(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toSecondPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toSecondPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->second()->startDate,
+            DatePoint::fromDate($this->endDate)->second()->endDate,
             $this->bounds
         );
     }
@@ -1073,13 +1073,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective minute interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToMinute(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toMinutePeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toMinutePeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->minute()->startDate,
+            DatePoint::fromDate($this->endDate)->minute()->endDate,
             $this->bounds
         );
     }
@@ -1088,13 +1088,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective hour interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToHour(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toHourPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toHourPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->hour()->startDate,
+            DatePoint::fromDate($this->endDate)->hour()->endDate,
             $this->bounds
         );
     }
@@ -1103,13 +1103,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective day interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToDay(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toDayPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toDayPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->day()->startDate,
+            DatePoint::fromDate($this->endDate)->day()->endDate,
             $this->bounds
         );
     }
@@ -1118,13 +1118,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective iso week interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToIsoWeek(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toIsoWeekPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toIsoWeekPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->isoWeek()->startDate,
+            DatePoint::fromDate($this->endDate)->isoWeek()->endDate,
             $this->bounds
         );
     }
@@ -1133,13 +1133,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective month interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToMonth(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toMonthPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toMonthPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->month()->startDate,
+            DatePoint::fromDate($this->endDate)->month()->endDate,
             $this->bounds
         );
     }
@@ -1148,13 +1148,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective quarter interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToQuarter(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toQuarterPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toQuarterPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->quarter()->startDate,
+            DatePoint::fromDate($this->endDate)->quarter()->endDate,
             $this->bounds
         );
     }
@@ -1163,13 +1163,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective semester interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToSemester(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toSemesterPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toSemesterPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->semester()->startDate,
+            DatePoint::fromDate($this->endDate)->semester()->endDate,
             $this->bounds
         );
     }
@@ -1178,13 +1178,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective year interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToYear(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toYearPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toYearPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->year()->startDate,
+            DatePoint::fromDate($this->endDate)->year()->endDate,
             $this->bounds
         );
     }
@@ -1193,13 +1193,13 @@ final class Period implements JsonSerializable
      * Returns a new instance which snaps the startDate and endDate to their respective iso year interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      */
     public function snapToIsoYear(): self
     {
         return new self(
-            DatePoint::fromDate($this->startDate)->toIsoYearPeriod()->startDate,
-            DatePoint::fromDate($this->endDate)->toIsoYearPeriod()->endDate,
+            DatePoint::fromDate($this->startDate)->isoYear()->startDate,
+            DatePoint::fromDate($this->endDate)->isoYear()->endDate,
             $this->bounds
         );
     }

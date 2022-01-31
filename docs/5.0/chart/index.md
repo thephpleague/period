@@ -187,9 +187,9 @@ $labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 
 $sequence = new Sequence(
-    DatePoint::fromDateString('2018-11-29')->toYearPeriod(Bounds::EXCLUDE_START_INCLUDE_END),
-    DatePoint::fromDateString('2018-05-29')->toMonthPeriod()->expand('3 MONTH'),
-    DatePoint::fromDateString('2017-01-13')->toQuarterPeriod(Bounds::EXCLUDE_ALL),
+    DatePoint::fromDateString('2018-11-29')->year(Bounds::EXCLUDE_START_INCLUDE_END),
+    DatePoint::fromDateString('2018-05-29')->month()->expand('3 MONTH'),
+    DatePoint::fromDateString('2017-01-13')->quarter(Bounds::EXCLUDE_ALL),
     Period::around(new DateTime('2016-06-01'), Duration::fromDateString('3 MONTHS'), Bounds::INCLUDE_ALL)
 );
 $dataset = Chart\Dataset::fromItems($sequence, $labelGenerator);

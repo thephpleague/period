@@ -157,22 +157,22 @@ Most notably:
 | `Duration::createFromTimeString`      | `Duration::fromTimeString`    |
 | `Duration::createFromDateString`      | `Duration::fromDateString`    |
 | `Duration::createFromDateInterval`    | `Duration::fromDateInterval`  |
-| `Datepoint::getSecond`                | `Datepoint::toSecondPeriod`   |
-| `Datepoint::getMinute`                | `Datepoint::toMinutePeriod`   |
-| `Datepoint::getHour`                  | `Datepoint::toHourPeriod`     |
-| `Datepoint::getIsoWeek`               | `Datepoint::toIsoWeekPeriod`  |
-| `Datepoint::getMonth`                 | `Datepoint::toMonthPeriod`    |
-| `Datepoint::getQuarter`               | `Datepoint::toQuarterPeriod`  |
-| `Datepoint::getSemester`              | `Datepoint::toSemesterPeriod` |
-| `Datepoint::getYear`                  | `Datepoint::toYearPeriod`     |
-| `Datepoint::getIsoYear`               | `Datepoint::toIsoYearPeriod`  |
+| `Datepoint::getSecond`                | `Datepoint::second`           |
+| `Datepoint::getMinute`                | `Datepoint::minute`           |
+| `Datepoint::getHour`                  | `Datepoint::hour`             |
+| `Datepoint::getIsoWeek`               | `Datepoint::isoWeek`          |
+| `Datepoint::getMonth`                 | `Datepoint::month`            |
+| `Datepoint::getQuarter`               | `Datepoint::quarter`          |
+| `Datepoint::getSemester`              | `Datepoint::semester`         |
+| `Datepoint::getYear`                  | `Datepoint::year`             |
+| `Datepoint::getIsoYear`               | `Datepoint::isoYear`          |
 
 ```diff
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();
 + Period::fromDate('2021-05-23', '2021-05-24', Bounds::INCLUDE_ALL)->startDate;
 
 - (new Datepoint('NOW'))->getHour()->format('Y-m-d H:i:s');
-+ DatePoint::fromDateString('NOW')->toHourPeriod()->toNotation('Y-m-d H:i:s');
++ DatePoint::fromDateString('NOW')->hour()->toNotation('Y-m-d H:i:s');
 ```
 
 ## Backward Incompatibility Changes
