@@ -270,11 +270,7 @@ final class Period implements JsonSerializable
      */
     public function toNotation(string $format): string
     {
-        return ($this->bounds->isStartIncluded() ? '[' : '(')
-            .$this->startDate->format($format)
-            .', '
-            .$this->endDate->format($format)
-            .($this->bounds->isEndIncluded() ? ']' : ')');
+        return $this->bounds->format($this->startDate->format($format).', '.$this->endDate->format($format));
     }
 
     /**
@@ -287,8 +283,7 @@ final class Period implements JsonSerializable
         $utc = new DateTimeZone('UTC');
 
         return $this->startDate->setTimezone($utc)->format($format)
-            .'/'
-            .$this->endDate->setTimezone($utc)->format($format);
+            .'/'.$this->endDate->setTimezone($utc)->format($format);
     }
 
     /**

@@ -12,7 +12,7 @@
 namespace League\Period;
 
 /*
- * Bounds Enum
+ * An Enum to handle interval bounds.
  *
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
@@ -29,10 +29,20 @@ enum Bounds
     {
         return match ($bounds) {
             '[]' => self::INCLUDE_ALL,
-            '[)', '[[' => self::INCLUDE_START_EXCLUDE_END,
-            '()', '][' => self::EXCLUDE_ALL,
-            '(]', ']]' => self::EXCLUDE_START_INCLUDE_END,
+            '[)' => self::INCLUDE_START_EXCLUDE_END,
+            '()' => self::EXCLUDE_ALL,
+            '(]' => self::EXCLUDE_START_INCLUDE_END,
             default => throw DateRangeInvalid::dueToUnknownBounds($bounds),
+        };
+    }
+
+    public function format(string $interval): string
+    {
+        return match ($this) {
+            self::INCLUDE_ALL => '['.$interval.']',
+            self::INCLUDE_START_EXCLUDE_END => '['.$interval.')',
+            self::EXCLUDE_ALL => '('.$interval.')',
+            self::EXCLUDE_START_INCLUDE_END => '('.$interval.']',
         };
     }
 
