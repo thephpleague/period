@@ -32,6 +32,7 @@ final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
     private const REGEXP_INTERVAL_NOTATION = '/^(?<lowerbound>\[|\()(?<startdate>[^,\]\)\[\(]*),(?<enddate>[^,\]\)\[\(]*)(?<upperbound>\]|\))$/';
+    private const REGEXP_BOURBAKI_NOTATION = '/^(?<lowerbound>\[|\])(?<startdate>[^,\]\[]*),(?<enddate>[^,\]\[]*)(?<upperbound>\[|\])$/';
     private const REGEXP_ISO_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
 
     /**
@@ -72,11 +73,14 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * @see https://en.wikipedia.org/wiki/ISO_31-11
      * @throws DateRangeInvalid If the notation is not supported or not known
      */
     public static function fromNotation(string $format, string $notation): self
     {
-        if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
+        if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found) &&
+            1 !== preg_match(self::REGEXP_BOURBAKI_NOTATION, $notation, $found)
+        ) {
             throw DateRangeInvalid::dueToUnknownNotation($notation);
         }
 
@@ -265,12 +269,13 @@ final class Period implements JsonSerializable
      * @see https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals
      * @see https://php.net/manual/en/function.date.php
      * @see https://www.postgresql.org/docs/9.3/static/rangetypes.html
+     * @see https://en.wikipedia.org/wiki/ISO_31-11
      *
      * @param string $format the format of the outputted date string
      */
     public function toNotation(string $format): string
     {
-        return $this->bounds->format($this->startDate->format($format).', '.$this->endDate->format($format));
+        return $this->bounds->toIso80000($this->startDate->format($format).', '.$this->endDate->format($format));
     }
 
     /**
@@ -658,6 +663,8 @@ final class Period implements JsonSerializable
      * The returned DatePeriod object contains only DateTimeImmutable objects.
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
+     *
+     * @return DatePeriod<DateTimeImmutable>
      */
     public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::INCLUDED): DatePeriod
     {

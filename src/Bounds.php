@@ -29,20 +29,30 @@ enum Bounds
     {
         return match ($bounds) {
             '[]' => self::INCLUDE_ALL,
-            '[)' => self::INCLUDE_START_EXCLUDE_END,
-            '()' => self::EXCLUDE_ALL,
-            '(]' => self::EXCLUDE_START_INCLUDE_END,
+            '[)', '[[' => self::INCLUDE_START_EXCLUDE_END,
+            '()', '][' => self::EXCLUDE_ALL,
+            '(]', ']]' => self::EXCLUDE_START_INCLUDE_END,
             default => throw DateRangeInvalid::dueToUnknownBounds($bounds),
         };
     }
 
-    public function format(string $interval): string
+    public function toIso80000(string $interval): string
     {
         return match ($this) {
             self::INCLUDE_ALL => '['.$interval.']',
             self::INCLUDE_START_EXCLUDE_END => '['.$interval.')',
             self::EXCLUDE_ALL => '('.$interval.')',
             self::EXCLUDE_START_INCLUDE_END => '('.$interval.']',
+        };
+    }
+
+    public function toBourbaki(string $interval): string
+    {
+        return match ($this) {
+            self::INCLUDE_ALL => '['.$interval.']',
+            self::INCLUDE_START_EXCLUDE_END => '['.$interval.'[',
+            self::EXCLUDE_ALL => ']'.$interval.'[',
+            self::EXCLUDE_START_INCLUDE_END => ']'.$interval.']',
         };
     }
 

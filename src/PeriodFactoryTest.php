@@ -352,6 +352,12 @@ final class PeriodFactoryTest extends TestCase
             'format' => DateTimeInterface::ATOM,
             'expected' =>   '['.$now.', '.$tomorrow.']',
         ];
+
+        yield 'date string with bourbaki notation' => [
+            'notation' => ']2021-01-03,2021-01-04[',
+            'format' => 'Y-m-d',
+            'expected' =>   '(2021-01-03, 2021-01-04)',
+        ];
     }
 
     /**
@@ -377,6 +383,7 @@ final class PeriodFactoryTest extends TestCase
             'too many separator' => ['[2021-01-02,2021-,01-03]', 'Y-m-d'],
             'missing dates' => ['[2021-01-02,  ]', 'Y-m-d'],
             'wrong format' => ['[2021-01-02,  ]', 'Ymd'],
+            'wrong bourbaki' => [']2021-01-02,2021-01-03)', 'Y-m-d'],
         ];
     }
 

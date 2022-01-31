@@ -113,8 +113,8 @@ public static Period::fromIsoYear(int $year, Bounds $bounds = Bounds::INCLUDE_ST
 $day = Period::fromDay(2012, 1, 3);
 $daybis = Period::fromDate('2012-01-03', '2012-01-04');
 $day->equals($daybis); //return true;
-$day->startDate()->format('Y-m-d H:i:s'); //return 2012-01-03 00:00:00
-$day->endDate()->format('Y-m-d H:i:s'); //return 2012-01-04 00:00:00
+$day->startDate->format('Y-m-d H:i:s'); //return 2012-01-03 00:00:00
+$day->endDate->format('Y-m-d H:i:s'); //return 2012-01-04 00:00:00
 ~~~
 
 ### Using standardized notation

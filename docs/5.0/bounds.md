@@ -21,6 +21,45 @@ enum Bounds
 
 Apart from the regular methods exposed by PHP enums the `Period\Bounds`  exposes extra features.
 
+## Instantiating Bounds from notation
+
+Bounds string notation comes in two flavour. They can use the ISO format based on `[, ], (, )` usage or
+use the Boubarki notation that only rely on `[, ]`. 
+
+The `Bounds` Enum supports both notation when using the `fromNotation` named constructor.
+
+#### Examples
+
+~~~php
+use League\Period\Bounds;
+
+Bounds::EXCLUDE_ALL === Bounds::fromNotation('()'); // ISO notation
+Bounds::EXCLUDE_ALL === Bounds::fromNotation(']['); // Boubarki notation
+~~~
+
+## Formatting interval from Bounds
+
+~~~php
+use League\Period\Bounds;
+
+Bounds::toIso80000(string $interval): string;
+Bounds::toBourbaki(string $interval): string;
+~~~
+
+On the opposite, the `Bounds` enum can format an interval by decorating the interval string representation.
+You can specify which format you want to use, the ISO or the Boubarki one throught the dedicated method.
+
+#### Examples
+
+~~~php
+use League\Period\Bounds;
+
+Bounds::EXCLUDE_ALL->toBourbaki('foobar'); // returns ']foobar['
+Bounds::EXCLUDE_ALL->toIso80000('foobar'); // returns '(foobar)'
+~~~
+
+<p class="message-notice">The formatting does not try to validate or sanitize its input format as long as it is a string.</p>
+
 ## Expose bounds inclusion in the interval
 
 It will return the state of each bound if whether it is included or not.
