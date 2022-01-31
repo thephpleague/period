@@ -712,7 +712,6 @@ final class Period implements JsonSerializable
     public function splitForward(Period|Duration|DateInterval|string $duration): Generator
     {
         $duration = self::filterDuration($duration);
-        /** @var DateTimeImmutable $startDate */
         foreach ($this->dateRangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {

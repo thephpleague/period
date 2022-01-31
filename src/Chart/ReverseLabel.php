@@ -34,7 +34,7 @@ final class ReverseLabel implements LabelGenerator
         $data = iterator_to_array($iterable, false);
 
         for (end($data); null !== ($key = key($data)); prev($data)) {
-            yield $key => current($data);
+            yield $key => (string) current($data);
         }
     }
 

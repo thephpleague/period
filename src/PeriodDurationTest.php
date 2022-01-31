@@ -149,63 +149,24 @@ final class PeriodDurationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider durationCompareInnerMethodsDataProvider
-     */
-    public function testDurationCompareInnerMethods(Period $period1, Period $period2, string $method, bool $expected): void
+    public function testDurationCompareInnerMethods(): void
     {
-        self::assertSame($expected, $period1->$method($period2));
-    }
+        $period1 = Period::fromDate('2012-01-01', '2012-01-07');
+        $period2 = Period::fromDate('2013-01-01', '2013-02-01');
 
-    /**
-     * @return array<string,array{0:Period, 1:Period, 2:string, 3:bool}>
-     */
-    public function durationCompareInnerMethodsDataProvider(): array
-    {
-        return [
-            'test Duration Less Than' => [
-                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
-                Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01')),
-                'durationLessThan',
-                true,
-            ],
-            'test Duration Less Than Or Equals' => [
-                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
-                Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01')),
-                'durationLessThanOrEquals',
-                true,
-            ],
-            'test Duration Greater Than Returns True' => [
-                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-02-01')),
-                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
-                'durationGreaterThan',
-                true,
-            ],
-            'test Duration Greater Than Or Equals Returns True' => [
-                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-02-01')),
-                Period::fromDate(new DateTimeImmutable('2012-01-01'), new DateTime('2012-01-07')),
-                'durationGreaterThanOrEquals',
-                true,
-            ],
-            'test Duratio Greater Than Or Equals Returns True Wit hMicroseconds' => [
-                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
-                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
-                'durationEquals',
-                true,
-            ],
-            'test Duration Greater Than Or Equals Returns True With Microseconds' => [
-                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
-                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
-                'durationGreaterThanOrEquals',
-                true,
-            ],
-            'test Duration Less Than Equals Returns True With Microseconds' => [
-                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00')),
-                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00')),
-                'durationLessThanOrEquals',
-                true,
-            ],
-        ];
+        self::assertTrue($period1->durationLessThan($period2));
+        self::assertTrue($period1->durationLessThanOrEquals($period2));
+
+        $period3 = Period::fromDate('2012-01-01', '2012-02-01');
+        $period4 = Period::fromDate('2012-01-01', '2012-01-07');
+
+        self::assertTrue($period3->durationGreaterThan($period4));
+
+        $period5 = Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00'));
+        $period6 = Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00'));
+        self::assertTrue($period5->durationEquals($period6));
+        self::assertTrue($period5->durationGreaterThanOrEquals($period6));
+        self::assertTrue($period5->durationLessThanOrEquals($period6));
     }
 
     public function testDateIntervalDiff(): void
