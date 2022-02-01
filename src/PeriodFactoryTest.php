@@ -324,7 +324,7 @@ final class PeriodFactoryTest extends TestCase
      */
     public function testCreateNewInstanceFromNotation(string $notation, string $format, string $expected): void
     {
-        self::assertSame($expected, Period::fromNotation($format, $notation)->toNotation($format));
+        self::assertSame($expected, Period::fromNotation($format, $notation)->toIso80000($format));
     }
 
     /**

@@ -46,8 +46,8 @@ foreach ($sequence as $interval) {
 	//$interval is a League\Period\Period object
 }
 
-$sequence[3]->toNotation('Y-m-d');  //returns [2018-01-20, 2018-03-10)
-$sequence[-1]->toNotation('Y-m-d'); //returns [2018-01-20, 2018-03-10)
+$sequence[3]->toIso80000('Y-m-d');  //returns [2018-01-20, 2018-03-10)
+$sequence[-1]->toIso80000('Y-m-d'); //returns [2018-01-20, 2018-03-10)
 ~~~
 
 ### Sequence::get
@@ -90,9 +90,9 @@ $sequence->push(
     Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
     Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
-$sequence->get(0)->toNotation('Y-m-d'); // [2018-01-01, 2018-01-31)
+$sequence->get(0)->toIso80000('Y-m-d'); // [2018-01-01, 2018-01-31)
 $sequence[] = Period::fromIso8601('!Y-m-d', '2018-12-20/2018-12-21');
-$sequence[4]->toNotation('Y-m-d'); // [2018-12-20, 2018-12-21)
+$sequence[4]->toIso80000('Y-m-d'); // [2018-12-20, 2018-12-21)
 ~~~
 
 ### Sequence::unshift
@@ -109,7 +109,7 @@ $sequence->unshift(
     Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
     Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
-$sequence->get(0)->toNotation('Y-m-d'); // [2018-02-10, 2018-02-20)
+$sequence->get(0)->toIso80000('Y-m-d'); // [2018-02-10, 2018-02-20)
 ~~~
 
 ### Sequence::insert
@@ -123,13 +123,13 @@ $sequence = new Sequence(
     Period::fromDate(new DateTimeImmutable('2018-01-01'), new DateTime('2018-02-01')),
     Period::fromDate(new DateTime('2018-04-01'), new DateTimeImmutable('2018-05-01')),
 );
-$sequence->get(1)->toNotation('Y-m-d'); // [2018-04-01, 2018-05-01)
+$sequence->get(1)->toIso80000('Y-m-d'); // [2018-04-01, 2018-05-01)
 $sequence->insert(1,
     Period::fromDate('2018-02-01', '2018-03-01'),
     Period::fromDate('2018-03-01', '2018-04-01')
 );
 count($sequence); // 4
-$sequence->get(1)->toNotation('Y-m-d'), PHP_EOL; // [2018-02-01, 2018-03-01)
+$sequence->get(1)->toIso80000('Y-m-d'), PHP_EOL; // [2018-02-01, 2018-03-01)
 ~~~
 
 ### Sequence::set
@@ -317,12 +317,12 @@ $sequence = new Sequence(
 );
 
 foreach ($sequence as $offset => $interval) {
-    echo $offset, ' -> ', $interval->toNotation('Y-m-d'), PHP_EOL; //0 -> [2018-01-01, 2018-01-31)...
+    echo $offset, ' -> ', $interval->toIso80000('Y-m-d'), PHP_EOL; //0 -> [2018-01-01, 2018-01-31)...
 }
 
 $sequence->sort(fn (Period $interval1, Period $interval2): int => $interval1->endDate() <=> $interval2->endDate());
 foreach ($sequence as $offset => $interval) {
-    echo $offset, ' -> ', $interval->toNotation('Y-m-d'), PHP_EOL; //1 -> [2017-01-01, 2017-01-31)...
+    echo $offset, ' -> ', $interval->toIso80000('Y-m-d'), PHP_EOL; //1 -> [2017-01-01, 2017-01-31)...
 }
 ~~~
 
@@ -409,7 +409,7 @@ $sequence = new Sequence(
 $newSequence = $sequence->map(fn (Period $interval): Period => $interval->moveEndDate('+ 1 DAY'));
 count($sequence); // 3
 count($newSequence); //3
-$newSequence->get(2)->toNotation('Y-m-d'); // [2020-01-01, 2020-02-01)
+$newSequence->get(2)->toIso80000('Y-m-d'); // [2020-01-01, 2020-02-01)
 ~~~
 
 ### Sequence::reduce
@@ -436,5 +436,5 @@ $sequence = new Sequence(
 );
 
 $mergePeriod = $sequence->reduce(fn ($carry, Period $interval): Period => null === $carry ? $interval : $carry->merge($interval));
-$mergePeriod->toNotation('Y-m-d'); // [2018-01-01, 2020-01-31)
+$mergePeriod->toIso80000('Y-m-d'); // [2018-01-01, 2020-01-31)
 ~~~

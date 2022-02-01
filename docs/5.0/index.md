@@ -58,7 +58,7 @@ Access a range of all days from a selected month as `Period` instances.
 
 ~~~php
 foreach (Period::fromMonth(2014, 10)->splitForward('1 DAY') as $day) {
-    $day->toNotation('Y-m-d'); // $day is a Period instance which covers each day of the month.
+    $day->toIso80000('Y-m-d'); // $day is a Period instance which covers each day of the month.
 }
 ~~~
 

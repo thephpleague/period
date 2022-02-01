@@ -135,7 +135,7 @@ $datepoint = Datepoint::fromDateString('2018-06-18 08:35:25');
 $hour = $datepoint->hour();
 // new Period('2018-06-18 08:00:00', '2018-06-18 09:00:00');
 $month = $datepoint->month(Bounds::INCLUDE_ALL);
-echo $month->toNotation('Y-m-d');
+echo $month->toIso80000('Y-m-d');
 // [2018-06-01, 2018-07-01 00:00:00];
 $month->contains($datepoint); // true
 $hour->contains($datepoint);  // true

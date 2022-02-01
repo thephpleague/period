@@ -273,9 +273,21 @@ final class Period implements JsonSerializable
      *
      * @param string $format the format of the outputted date string
      */
-    public function toNotation(string $format): string
+    public function toIso80000(string $format): string
     {
         return $this->bounds->toIso80000($this->startDate->format($format), $this->endDate->format($format));
+    }
+
+    /**
+     * Returns the mathematical representation of an instance as a left close, right open interval.
+     *
+     * @see https://en.wikipedia.org/wiki/ISO_31-11
+     *
+     * @param string $format the format of the outputted date string
+     */
+    public function toBourbaki(string $format): string
+    {
+        return $this->bounds->toBourbaki($this->startDate->format($format), $this->endDate->format($format));
     }
 
     /**

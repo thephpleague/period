@@ -16,6 +16,8 @@ All notable changes to `Period` will be documented in this file
 - `Period::meets`
 - `Period::meetsOnStart`
 - `Period::meetsOnEnd`
+- `Period::toBourbaki`
+- `Period::toIso80000`
 - `Sequence::overlapAll`
 - `Bounds` Enum.
 - `InitialDatePresence` Enum.
@@ -59,7 +61,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::getDatePeriod` replaced by `Period::dateRange`
 - `Period::getDatePeriodBackwards` replaced by `Period::dateRangeBackwards`
 - `Period::__string` replaced by `Period::toIso8601`
-- `Period::format` replaced by `Period::toNotation`
+- `Period::format` replaced by `Period::toIso80000`
 - `Period::split` replaced by `Period::splitForward`
 - `Period::substract` use `Period::subtract` instead
 - `Sequence::substract` use `Sequence::subtract` instead

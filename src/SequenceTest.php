@@ -250,8 +250,8 @@ final class SequenceTest extends TestCase
         $diff = $sequenceA->subtract($sequenceB);
 
         self::assertCount(2, $diff);
-        self::assertSame('[2000-01-01, 2000-01-05)', $diff->get(0)->toNotation('Y-m-d'));
-        self::assertSame('[2000-01-08, 2000-01-10)', $diff->get(1)->toNotation('Y-m-d'));
+        self::assertSame('[2000-01-01, 2000-01-05)', $diff->get(0)->toIso80000('Y-m-d'));
+        self::assertSame('[2000-01-08, 2000-01-10)', $diff->get(1)->toIso80000('Y-m-d'));
         self::assertEquals($diff, $sequenceA->subtract($sequenceB));
     }
 
@@ -292,8 +292,8 @@ final class SequenceTest extends TestCase
 
         $diff1 = $sequenceA->subtract($sequenceB);
         self::assertCount(2, $diff1);
-        self::assertSame('[2000-01-01, 2000-01-10)', $diff1->get(0)->toNotation('Y-m-d'));
-        self::assertSame('[2000-01-12, 2000-01-20)', $diff1->get(1)->toNotation('Y-m-d'));
+        self::assertSame('[2000-01-01, 2000-01-10)', $diff1->get(0)->toIso80000('Y-m-d'));
+        self::assertSame('[2000-01-12, 2000-01-20)', $diff1->get(1)->toIso80000('Y-m-d'));
 
         $diff2 = $sequenceB->subtract($sequenceA);
         self::assertCount(0, $diff2);
@@ -346,8 +346,8 @@ final class SequenceTest extends TestCase
         $intersections = $sequence->intersections();
 
         self::assertCount(2, $intersections);
-        self::assertSame('[2018-01-10, 2018-01-15)', $intersections->get(0)->toNotation('Y-m-d'));
-        self::assertSame('[2018-01-10, 2018-01-31)', $intersections->get(1)->toNotation('Y-m-d'));
+        self::assertSame('[2018-01-10, 2018-01-15)', $intersections->get(0)->toIso80000('Y-m-d'));
+        self::assertSame('[2018-01-10, 2018-01-31)', $intersections->get(1)->toIso80000('Y-m-d'));
     }
 
     /**
@@ -372,9 +372,9 @@ final class SequenceTest extends TestCase
         );
         $intersections = $sequence->intersections();
         self::assertCount(3, $intersections);
-        self::assertSame('[2018-01-20, 2018-01-31)', $intersections->get(0)->toNotation('Y-m-d'));
-        self::assertSame('[2018-02-10, 2018-02-20)', $intersections->get(1)->toNotation('Y-m-d'));
-        self::assertSame('[2018-03-01, 2018-03-10)', $intersections->get(2)->toNotation('Y-m-d'));
+        self::assertSame('[2018-01-20, 2018-01-31)', $intersections->get(0)->toIso80000('Y-m-d'));
+        self::assertSame('[2018-02-10, 2018-02-20)', $intersections->get(1)->toIso80000('Y-m-d'));
+        self::assertSame('[2018-03-01, 2018-03-10)', $intersections->get(2)->toIso80000('Y-m-d'));
     }
 
     /**
@@ -398,7 +398,7 @@ final class SequenceTest extends TestCase
 
         $gaps = $sequence->gaps();
         self::assertCount(1, $gaps);
-        self::assertSame('[2018-12-03, 2018-12-06)', $gaps->get(0)->toNotation('Y-m-d'));
+        self::assertSame('[2018-12-03, 2018-12-06)', $gaps->get(0)->toIso80000('Y-m-d'));
     }
 
     /**
@@ -458,7 +458,7 @@ final class SequenceTest extends TestCase
         });
 
         self::assertSame($newSequence->get(1), $sequence->get(1));
-        self::assertSame('[2018-01-15, 2018-02-01)', $newSequence->get(0)->toNotation('Y-m-d'));
+        self::assertSame('[2018-01-15, 2018-02-01)', $newSequence->get(0)->toIso80000('Y-m-d'));
     }
 
     public function testMapReturnsSameInstance(): void

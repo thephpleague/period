@@ -39,8 +39,8 @@ Returns a new `Period` object with a different bounds.
 ~~~php
 $interval = Period::fromMonth(2014, 3);
 $newInterval = $interval->boundedBy(Bounds::INCLUDE_ALL);
-$interval->toNotation('Y-m-d');    // '[2014-03-01, 2014-04-01)'
-$newInterval->toNotation('Y-m-d'); // '[2014-03-01, 2014-04-01]'
+$interval->toIso80000('Y-m-d');    // '[2014-03-01, 2014-04-01)'
+$newInterval->toIso80000('Y-m-d'); // '[2014-03-01, 2014-04-01]'
 ~~~
 
 ## Using datepoints
@@ -251,17 +251,17 @@ public Period::snapToIsoYear(): Period
 
 ~~~php
 $period = Period::fromDate('2022-01-08 09:44:38', '2022-01-08 09:45:01');
-echo 'Period::toNotation '.$period->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToSecond: '.$period->snapToSecond()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToMinute: '.$period->snapToMinute()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToHour: '.$period->snapToHour()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToDay: '.$period->snapToDay()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToIsoWeek: '.$period->snapToIsoWeek()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToMonth: '.$period->snapToMonth()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToQuarter: '.$period->snapToQuarter()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToSemester: '.$period->snapToSemester()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToYear: '.$period->snapToYear()->toNotation('Y-m-d H:i:s');
-echo 'Period::snapToIsoYear: '.$period->snapToIsoYear()->toNotation('Y-m-d H:i:s');
+echo 'Period::toIso80000 '.$period->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToSecond: '.$period->snapToSecond()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToMinute: '.$period->snapToMinute()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToHour: '.$period->snapToHour()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToDay: '.$period->snapToDay()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToIsoWeek: '.$period->snapToIsoWeek()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToMonth: '.$period->snapToMonth()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToQuarter: '.$period->snapToQuarter()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToSemester: '.$period->snapToSemester()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToYear: '.$period->snapToYear()->toIso80000('Y-m-d H:i:s');
+echo 'Period::snapToIsoYear: '.$period->snapToIsoYear()->toIso80000('Y-m-d H:i:s');
 ~~~
 
 Here's The results of each line:
@@ -269,7 +269,7 @@ Here's The results of each line:
 
 | Period methods           | Results                                      |
 |--------------------------|----------------------------------------------|
-| `Period::toNotation`     | `[2022-01-08 09:44:38, 2022-01-08 09:45:01)` |
+| `Period::toIso80000`     | `[2022-01-08 09:44:38, 2022-01-08 09:45:01)` |
 | `Period::snapToSecond`   | `[2022-01-08 09:44:38, 2022-01-08 09:45:02)` | 
 | `Period::snapToMinute`   | `[2022-01-08 09:44:00, 2022-01-08 09:46:00)` |
 | `Period::snapToHour`     | `[2022-01-08 09:00:00, 2022-01-08 10:00:00)` |

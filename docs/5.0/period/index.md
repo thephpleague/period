@@ -48,7 +48,7 @@ If the timezone is important use a `DateTimeInterface` object instead of a strin
 
 ~~~php
 $day = Period::fromDate('2012-01-03', Datepoint::fromDateString('2012-02-03'), Bounds::EXCLUDE_ALL);
-$day->toNotation('Y-m-d'); //return (2012-01-03, 2012-02-03)
+$day->toIso80000('Y-m-d'); //return (2012-01-03, 2012-02-03)
 ~~~
 
 ### Using a datepoint and a duration
@@ -140,7 +140,7 @@ The `$notation` should follow the `{startDate}/{endDate}` pattern where `/` serv
 
 ~~~php
 $day = Period::fromIso8601('Y-m-d', '2012-01-03/2012-02-03');
-echo $day->toNotation('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
+echo $day->toIso80000('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
 ~~~
 
 #### Using mathematical notation
@@ -154,7 +154,7 @@ The possible bound values are:
 
 ~~~php
 $day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 ]');
-echo $day->toNotation('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00]
+echo $day->toIso80000('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00]
 $day->bounds() === Bounds::INCLUDE_ALL;
 ~~~
 

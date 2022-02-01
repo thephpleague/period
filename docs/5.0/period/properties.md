@@ -63,7 +63,8 @@ $res = json_decode(json_encode($period), true);
 ### Mathematical representation
 
 ~~~php
-public Period::toNotation(string $format): string
+public Period::toIso80000(string $format): string
+public Period::toBourbaki(string $format): string
 ~~~
 
 You can use the `format` method to represent a `Period` object in its [mathematical representation](https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals) as shown below.
@@ -73,7 +74,8 @@ You can use the `format` method to represent a `Period` object in its [mathemati
 
 ~~~php
 $period = Period::fromNotation('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
-echo $period->format('Y-m-d'); // [2014-05-01, 2014-05-08)
+echo $period->toIso80000('Y-m-d'); // [2014-05-01, 2014-05-08)
+echo $period->toBourbaki('Y-m-d'); // [2014-05-01, 2014-05-08[
 ~~~
 
 This representation can be used, for instance, in a PostgreSQL query against a [DateRange field](https://www.postgresql.org/docs/9.3/static/rangetypes.html).
@@ -227,7 +229,7 @@ This method splits a given `Period` object in smaller `Period` objects according
 
 ~~~php
 foreach (Period::fromYear(2012)->splitForward(new DateInterval('P1M')) as $period) {
-    echo $period->toNotation('Y-m-d'); //returns Period object whose interval is 1 MONTH
+    echo $period->toIso80000('Y-m-d'); //returns Period object whose interval is 1 MONTH
 }
 //will iterate 12 times
 ~~~

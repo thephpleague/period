@@ -58,7 +58,7 @@ final class DatePointTest extends TestCase
         $datePoint = DatePoint::fromDateString('2021-07-08 13:23:58');
         $minutePeriod = $datePoint->minute();
 
-        self::assertSame('[2021-07-08 13:23:00, 2021-07-08 13:24:00)', $minutePeriod->toNotation('Y-m-d H:i:s'));
+        self::assertSame('[2021-07-08 13:23:00, 2021-07-08 13:24:00)', $minutePeriod->toIso80000('Y-m-d H:i:s'));
     }
 
     public function testInstantiationFromSeconds(): void
@@ -66,7 +66,7 @@ final class DatePointTest extends TestCase
         $datePoint = DatePoint::fromDateString('2021-07-08 13:23:58');
         $secondPeriod = $datePoint->second();
 
-        self::assertSame('[2021-07-08 13:23:58, 2021-07-08 13:23:59)', $secondPeriod->toNotation('Y-m-d H:i:s'));
+        self::assertSame('[2021-07-08 13:23:58, 2021-07-08 13:23:59)', $secondPeriod->toIso80000('Y-m-d H:i:s'));
     }
 
     /**

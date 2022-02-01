@@ -149,7 +149,7 @@ Most notably:
 | `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`  |
 | `Period::split`                       | `Period::splitForward`        |
 | `Period::__toString`                  | `Period::toIso8601`           |
-| `Period::format`                      | `Period::toNotation`          |
+| `Period::format`                      | `Period::toIso80000`          |
 | `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`    |
 | `Sequence::getTotalTimestampInterval` | `Sequence::totalTimeDuration` |
 | `Duration::createFromSeconds`         | `Duration::fromSeconds`       |
@@ -172,7 +172,7 @@ Most notably:
 + Period::fromDate('2021-05-23', '2021-05-24', Bounds::INCLUDE_ALL)->startDate;
 
 - (new Datepoint('NOW'))->getHour()->format('Y-m-d H:i:s');
-+ DatePoint::fromDateString('NOW')->hour()->toNotation('Y-m-d H:i:s');
++ DatePoint::fromDateString('NOW')->hour()->toIso80000('Y-m-d H:i:s');
 ```
 
 ## Backward Incompatibility Changes

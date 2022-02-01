@@ -50,7 +50,7 @@ $sequence = new Sequence(
     Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31)'),
     Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10)')
 );
-$sequence->length()->toNotation('Y-m-d'); // [2018-01-01, 2018-03-31)
+$sequence->length()->toIso80000('Y-m-d'); // [2018-01-01, 2018-03-31)
 (new Sequence())->length();               // null
 ~~~
 
@@ -166,8 +166,8 @@ $absence = new Sequence(
 );
 
 $diff = $presence->subtract($absence);
-$diff[0]->toNotation('Y-m-d'); //[2000-01-01, 2000-01-08)
-$diff[1]->toNotation('Y-m-d'); //[2000-01-15, 2000-01-20)
+$diff[0]->toIso80000('Y-m-d'); //[2000-01-01, 2000-01-08)
+$diff[1]->toIso80000('Y-m-d'); //[2000-01-15, 2000-01-20)
 
 $diff = $absence->subtract($presence);
 $diff->isEmpty(); // true
