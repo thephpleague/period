@@ -18,73 +18,87 @@ final class BoundsTest extends TestCase
     /**
      * @dataProvider boundsIso80000Provider
      */
-    public function testIso80000(string $notation, Period $period): void
+    public function testIso80000(string $notation, Bounds $bounds, string|int|float $start, string|int|float $end): void
     {
-        self::assertSame(
-            $notation,
-            $period->bounds->toIso80000($period->startDate->format('Y-m-d'), $period->endDate->format('Y-m-d'))
-        );
+        self::assertSame($notation, $bounds->toIso80000($start, $end));
     }
 
     /**
-     * @return iterable<array{notation:string, period:Period}>
+     * @return iterable<array{notation:string, bounds:Bounds, start:float|int|string, end:float|int|string}>
      */
     public function boundsIso80000Provider(): iterable
     {
         yield 'include all' => [
-            'notation' => '[2022-03-01, 2022-04-01]',
-            'period' => Period::fromMonth(2022, 3, Bounds::INCLUDE_ALL),
+            'notation' => '[3, 4]',
+            'bounds' => Bounds::INCLUDE_ALL,
+            'start' => 3,
+            'end' => 4,
         ];
 
         yield 'exclude all' => [
-            'notation' => '(2022-03-01, 2022-04-01)',
-            'period' => Period::fromMonth(2022, 3, Bounds::EXCLUDE_ALL),
+            'notation' => '(3, 4)',
+            'bounds' => Bounds::EXCLUDE_ALL,
+            'start' => '3',
+            'end' => '4',
         ];
 
         yield 'exclude start include end' => [
-            'notation' => '(2022-03-01, 2022-04-01]',
-            'period' => Period::fromMonth(2022, 3, Bounds::EXCLUDE_START_INCLUDE_END),
+            'notation' => '(3.01, 4.01]',
+            'bounds' => Bounds::EXCLUDE_START_INCLUDE_END,
+            'start' => 3.01,
+            'end' => 4.01,
         ];
 
+        $period = Period::fromMonth(2022, 3);
+
         yield 'include start exclude end' => [
-            'notation' => '[2022-03-01, 2022-04-01)',
-            'period' => Period::fromMonth(2022, 3),
+            'notation' => '[2022-03-01, 2022-04)',
+            'bounds' => Bounds::INCLUDE_START_EXCLUDE_END,
+            'start' => $period->startDate->format('Y-m-d'),
+            'end' => $period->endDate->format('Y-m'),
         ];
     }
     /**
      * @dataProvider boundsBourbakiProvider
      */
-    public function testBourbaki(string $notation, Period $period): void
+    public function testBourbaki(string $notation, Bounds $bounds, string|int|float $start, string|int|float $end): void
     {
-        self::assertSame(
-            $notation,
-            $period->bounds->toBourbaki($period->startDate->format('Y-m-d'), $period->endDate->format('Y-m-d'))
-        );
+        self::assertSame($notation, $bounds->toBourbaki($start, $end));
     }
 
     /**
-     * @return iterable<array{notation:string, period:Period}>
+     * @return iterable<array{notation:string, bounds:Bounds, start:float|int|string, end:float|int|string}>
      */
     public function boundsBourbakiProvider(): iterable
     {
         yield 'include all' => [
-            'notation' => '[2022-03-01, 2022-04-01]',
-            'period' => Period::fromMonth(2022, 3, Bounds::INCLUDE_ALL),
+            'notation' => '[3, 4]',
+            'bounds' => Bounds::INCLUDE_ALL,
+            'start' => 3,
+            'end' => 4,
         ];
 
         yield 'exclude all' => [
-            'notation' => ']2022-03-01, 2022-04-01[',
-            'period' => Period::fromMonth(2022, 3, Bounds::EXCLUDE_ALL),
+            'notation' => ']3, 4[',
+            'bounds' => Bounds::EXCLUDE_ALL,
+            'start' => '3',
+            'end' => '4',
         ];
 
         yield 'exclude start include end' => [
-            'notation' => ']2022-03-01, 2022-04-01]',
-            'period' => Period::fromMonth(2022, 3, Bounds::EXCLUDE_START_INCLUDE_END),
+            'notation' => ']3.01, 4.01]',
+            'bounds' => Bounds::EXCLUDE_START_INCLUDE_END,
+            'start' => 3.01,
+            'end' => 4.01,
         ];
 
+        $period = Period::fromMonth(2022, 3);
+
         yield 'include start exclude end' => [
-            'notation' => '[2022-03-01, 2022-04-01[',
-            'period' => Period::fromMonth(2022, 3),
+            'notation' => '[2022-03-01, 2022-04[',
+            'bounds' => Bounds::INCLUDE_START_EXCLUDE_END,
+            'start' => $period->startDate->format('Y-m-d'),
+            'end' => $period->endDate->format('Y-m'),
         ];
     }
 
