@@ -275,7 +275,7 @@ final class Period implements JsonSerializable
      */
     public function toNotation(string $format): string
     {
-        return $this->bounds->toIso80000($this->startDate->format($format).', '.$this->endDate->format($format));
+        return $this->bounds->toIso80000($this->startDate->format($format), $this->endDate->format($format));
     }
 
     /**

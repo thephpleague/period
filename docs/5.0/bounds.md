@@ -42,20 +42,20 @@ Bounds::EXCLUDE_ALL === Bounds::fromNotation(']['); // Boubarki notation
 ~~~php
 use League\Period\Bounds;
 
-Bounds::toIso80000(string $interval): string;
-Bounds::toBourbaki(string $interval): string;
+Bounds::toIso80000(string|float|int $lowerBound, string|float|int $upperBound): string;
+Bounds::toBourbaki(string|float|int $lowerBound, string|float|int $upperBound): string;
 ~~~
 
 On the opposite, the `Bounds` enum can format an interval by decorating the interval string representation.
-You can specify which format you want to use, the ISO or the Boubarki one throught the dedicated method.
+You can specify which format you want to use, the ISO or the Boubarki one through the dedicated method.
 
 #### Examples
 
 ~~~php
 use League\Period\Bounds;
 
-Bounds::EXCLUDE_ALL->toBourbaki('foobar'); // returns ']foobar['
-Bounds::EXCLUDE_ALL->toIso80000('foobar'); // returns '(foobar)'
+Bounds::EXCLUDE_ALL->toBourbaki(3, 4); // returns ']3, 4['
+Bounds::EXCLUDE_ALL->toIso80000(3, 4); // returns '(3, 4)'
 ~~~
 
 <p class="message-notice">The formatting does not try to validate or sanitize its input format as long as it is a string.</p>

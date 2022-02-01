@@ -22,7 +22,7 @@ final class BoundsTest extends TestCase
     {
         self::assertSame(
             $notation,
-            $period->bounds->toIso80000($period->startDate->format('Y-m-d').', '.$period->endDate->format('Y-m-d'))
+            $period->bounds->toIso80000($period->startDate->format('Y-m-d'), $period->endDate->format('Y-m-d'))
         );
     }
 
@@ -58,7 +58,7 @@ final class BoundsTest extends TestCase
     {
         self::assertSame(
             $notation,
-            $period->bounds->toBourbaki($period->startDate->format('Y-m-d').', '.$period->endDate->format('Y-m-d'))
+            $period->bounds->toBourbaki($period->startDate->format('Y-m-d'), $period->endDate->format('Y-m-d'))
         );
     }
 

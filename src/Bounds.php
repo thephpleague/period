@@ -36,23 +36,23 @@ enum Bounds
         };
     }
 
-    public function toIso80000(string $interval): string
+    public function toIso80000(string|int|float $lowerBound, string|int|float $upperBound): string
     {
         return match ($this) {
-            self::INCLUDE_ALL => '['.$interval.']',
-            self::INCLUDE_START_EXCLUDE_END => '['.$interval.')',
-            self::EXCLUDE_ALL => '('.$interval.')',
-            self::EXCLUDE_START_INCLUDE_END => '('.$interval.']',
+            self::INCLUDE_ALL => "[$lowerBound, $upperBound]",
+            self::INCLUDE_START_EXCLUDE_END => "[$lowerBound, $upperBound)",
+            self::EXCLUDE_ALL => "($lowerBound, $upperBound)",
+            self::EXCLUDE_START_INCLUDE_END => "($lowerBound, $upperBound]",
         };
     }
 
-    public function toBourbaki(string $interval): string
+    public function toBourbaki(string|int|float $lowerBound, string|int|float $upperBound): string
     {
         return match ($this) {
-            self::INCLUDE_ALL => '['.$interval.']',
-            self::INCLUDE_START_EXCLUDE_END => '['.$interval.'[',
-            self::EXCLUDE_ALL => ']'.$interval.'[',
-            self::EXCLUDE_START_INCLUDE_END => ']'.$interval.']',
+            self::INCLUDE_ALL => "[$lowerBound, $upperBound]",
+            self::INCLUDE_START_EXCLUDE_END => "[$lowerBound, {$upperBound}[",
+            self::EXCLUDE_ALL => "]$lowerBound, {$upperBound}[",
+            self::EXCLUDE_START_INCLUDE_END => "]$lowerBound, $upperBound]",
         };
     }
 
