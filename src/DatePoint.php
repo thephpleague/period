@@ -50,9 +50,15 @@ final class DatePoint
         return new self($date);
     }
 
-    public static function fromDateString(string $dateString, DateTimeZone $timezone = null): self
+    public static function fromDateString(string $dateString, DateTimeZone|string $timezone = null): self
     {
-        $timezone = $timezone ?? new DateTimeZone(date_default_timezone_get());
+        if (null === $timezone) {
+            $timezone = date_default_timezone_get();
+        }
+
+        if (!$timezone instanceof DateTimeZone) {
+            $timezone = new DateTimeZone($timezone);
+        }
 
         return new self(new DateTimeImmutable($dateString, $timezone));
     }

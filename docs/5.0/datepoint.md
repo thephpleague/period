@@ -38,7 +38,7 @@ $datepoint1 == $datepoint2; // returns true
 ### DatePoint::fromDateString
 
 ~~~php
-public DatePoint::fromDateString(string $dateString): self;
+public DatePoint::fromDateString(string $dateString, DateTimeZone|string $timezone = null): self;
 ~~~
 
 Returns a `DatePoint` from a string parsable by the `DateTimeImmutable` constructor.
@@ -51,9 +51,9 @@ Returns a `DatePoint` from a string parsable by the `DateTimeImmutable` construc
 ~~~php
 use League\Period\DatePoint;
 
-DatePoint::fromDateString('yesterday'); 
+DatePoint::fromDateString('yesterday', 'Africa/Nairobi'); 
 //is equivalent to
-DatePoint::fromDate(new DateTimeImmutable('yesterday')); 
+DatePoint::fromDate(new DateTimeImmutable('yesterday', new DateTimeZone('Africa/Nairobi'))); 
 
 DatePoint::fromDateString('2018')
 //is equivalent to

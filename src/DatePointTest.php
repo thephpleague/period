@@ -15,6 +15,7 @@ use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 
 final class DatePointTest extends TestCase
@@ -40,13 +41,24 @@ final class DatePointTest extends TestCase
         self::assertEquals($datePoint, $generatedDatePoint);
     }
 
+    public function testUsingDateTimeZone(): void
+    {
+        $datePointA = DatePoint::fromDateString('TOMORROW', 'Africa/Nairobi');
+        $datePointB = DatePoint::fromDateString('TOMORROW', new DateTimeZone('Africa/Nairobi'));
+
+        self::assertEquals($datePointA, $datePointB);
+
+        $timeZone = DatePoint::fromDateString('TOMORROW')->date->getTimezone();
+
+        self::assertEquals(new DateTimeZone($this->timezone), $timeZone);
+    }
+
     public function testInstantiationFromMinute(): void
     {
         $datePoint = DatePoint::fromDateString('2021-07-08 13:23:58');
         $minutePeriod = $datePoint->minute();
 
-        self::assertEquals('2021-07-08 13:23:00', $minutePeriod->startDate->format('Y-m-d H:i:s'));
-        self::assertEquals('2021-07-08 13:24:00', $minutePeriod->endDate->format('Y-m-d H:i:s'));
+        self::assertSame('[2021-07-08 13:23:00, 2021-07-08 13:24:00)', $minutePeriod->toNotation('Y-m-d H:i:s'));
     }
 
     public function testInstantiationFromSeconds(): void
@@ -54,9 +66,9 @@ final class DatePointTest extends TestCase
         $datePoint = DatePoint::fromDateString('2021-07-08 13:23:58');
         $secondPeriod = $datePoint->second();
 
-        self::assertEquals('2021-07-08 13:23:58', $secondPeriod->startDate->format('Y-m-d H:i:s'));
-        self::assertEquals('2021-07-08 13:23:59', $secondPeriod->endDate->format('Y-m-d H:i:s'));
+        self::assertSame('[2021-07-08 13:23:58, 2021-07-08 13:23:59)', $secondPeriod->toNotation('Y-m-d H:i:s'));
     }
+
     /**
      * @dataProvider isAfterProvider
      */
