@@ -25,6 +25,10 @@ enum Bounds
     case EXCLUDE_START_INCLUDE_END;
     case EXCLUDE_ALL;
 
+    /**
+     * Return an Enum from a Math notation
+     * It supports ISO-80000 and the Bourbaki notation.
+     */
     public static function fromNotation(string $bounds): self
     {
         return match ($bounds) {
@@ -36,6 +40,9 @@ enum Bounds
         };
     }
 
+    /**
+     * Returns the ISO 80000 string representation of an interval.
+     */
     public function toIso80000(string|int|float $start, string|int|float $end): string
     {
         return match ($this) {
@@ -46,6 +53,9 @@ enum Bounds
         };
     }
 
+    /**
+     * Returns the Bourbaki string representation of an interval.
+     */
     public function toBourbaki(string|int|float $start, string|int|float $end): string
     {
         return match ($this) {
