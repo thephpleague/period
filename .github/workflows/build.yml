@@ -24,5 +24,3 @@ jobs:
       - run: composer phpunit
       - run: composer phpstan
         if: ${{ matrix.php == '8.0' }}
-      - run: composer phpcs
-        if: ${{ matrix.php == '8.0' }}
