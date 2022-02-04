@@ -41,7 +41,7 @@ final class Datepoint extends DateTimeImmutable
      * <li>a string parsable by DateTime::__construct
      * </ul>
      *
-     * @param mixed $datepoint a position in time
+     * @param DateTimeInterface|Datepoint|int|string $datepoint a position in time
      */
     public static function create($datepoint): self
     {
@@ -49,7 +49,8 @@ final class Datepoint extends DateTimeImmutable
             return new self($datepoint->format('Y-m-d H:i:s.u'), $datepoint->getTimezone());
         }
 
-        if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
+        $timestamp = $datepoint;
+        if (is_int($timestamp) && false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
             return new self('@'.$timestamp);
         }
 
@@ -65,7 +66,8 @@ final class Datepoint extends DateTimeImmutable
      *
      * @return static|false
      */
-    public static function createFromFormat($format, $datetime, DateTimeZone $timezone = null)
+    #[\ReturnTypeWillChange]
+    public static function createFromFormat($format, $datetime, ?DateTimeZone $timezone = null)
     {
         $datepoint = parent::createFromFormat($format, $datetime, $timezone);
         if (false !== $datepoint) {
@@ -418,7 +420,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function bordersOnStart(Period $interval): bool
     {
-        return $this == $interval->startDate() && !$interval->isStartDateIncluded();
+        return $this == $interval->getStartDate() && !$interval->isStartIncluded();
     }
 
     /**
@@ -450,7 +452,7 @@ final class Datepoint extends DateTimeImmutable
      */
     public function bordersOnEnd(Period $interval): bool
     {
-        return $this == $interval->endDate() && !$interval->isEndDateIncluded();
+        return $this == $interval->getEndDate() && !$interval->isEndIncluded();
     }
 
     /**

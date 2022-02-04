@@ -116,11 +116,13 @@ final class Duration extends DateInterval
             return self::createFromSeconds($seconds);
         }
 
-        if (!is_string($duration) && !method_exists($duration, '__toString')) {
-            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
+        if (is_object($duration) && method_exists($duration, '__toString')) {
+            $duration = (string) $duration;
         }
 
-        $duration = (string) $duration;
+        if (!is_string($duration)) {
+            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
+        }
 
         if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
             return self::createFromChronoString($duration);
@@ -252,10 +254,11 @@ final class Duration extends DateInterval
     /**
      * @inheritDoc
      *
-     * @param mixed $duration a date with relative parts
+     * @param string $duration a date with relative parts
      *
      * @return self|false
      */
+    #[\ReturnTypeWillChange]
     public static function createFromDateString($duration)
     {
         $duration = parent::createFromDateString($duration);
@@ -337,7 +340,7 @@ final class Duration extends DateInterval
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
+     * @param \DateTimeInterface|string|int $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
      */
     public function withoutCarryOver($reference_date): self
     {
@@ -351,7 +354,7 @@ final class Duration extends DateInterval
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
+     * @param \DateTimeInterface|string|int $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
      */
     public function adjustedTo($reference_date): self
     {

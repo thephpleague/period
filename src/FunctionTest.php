@@ -79,10 +79,9 @@ final class FunctionTest extends TestCase
     /**
      * @dataProvider durationProvider
      *
-     * @param mixed                   $expected DateInterval object
      * @param int|DateInterval|string $duration
      */
-    public function testDuration($expected, $duration): void
+    public function testDuration(DateInterval $expected, $duration): void
     {
         self::assertEquals(get_object_vars($expected), get_object_vars(duration($duration)));
     }

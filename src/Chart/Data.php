@@ -31,7 +31,7 @@ interface Data extends \Countable, \IteratorAggregate, \JsonSerializable
     public function getIterator(): \Iterator;
 
     /**
-     * @var array<int, array{label:string, item:Sequence}>.
+     * @return array<int, array{label:string, item:Sequence}>.
      */
     public function jsonSerialize(): array;
 

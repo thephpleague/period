@@ -48,7 +48,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * new instance.
      *
-     * @param Period ...$intervals
      */
     public function __construct(Period ...$intervals)
     {
@@ -119,7 +118,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function sortByStartDate(Period $interval1, Period $interval2): int
     {
-        return $interval1->startDate() <=> $interval2->startDate();
+        return $interval1->getStartDate() <=> $interval2->getStartDate();
     }
 
     /**
@@ -295,11 +294,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function totalTimestampInterval(): float
+    public function totalTimeDuration(): float
     {
         $retval = 0.0;
         foreach ($this->intervals as $interval) {
-            $retval += $interval->timestampInterval();
+            $retval += $interval->toTimeDuration();
         }
 
         return $retval;
@@ -309,13 +308,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
      * @deprecated deprecated since version 4.12
-     * @see Sequence::totalTimestampInterval()
+     * @see Sequence::totalTimeDuration()
      *
      * Returns the sum of all instances durations as expressed in seconds.
      */
     public function getTotalTimestampInterval(): float
     {
-        return $this->totalTimestampInterval();
+        return $this->totalTimeDuration();
     }
 
     /**
@@ -389,6 +388,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetExists($offset): bool
     {
+        if (!is_int($offset)) {
+            throw new \TypeError('Argument #1 ($offset) must be of type integer, '.gettype($offset).' given.');
+        }
+
         return null !== $this->filterOffset($offset);
     }
 
@@ -431,6 +434,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetGet($offset): Period
     {
+        if (!is_int($offset)) {
+            throw new \TypeError('Argument #1 ($offset) must be of type integer, '.gettype($offset).' given.');
+        }
+
         return $this->get($offset);
     }
 
@@ -444,6 +451,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetUnset($offset): void
     {
+        if (!is_int($offset)) {
+            throw new \TypeError('Argument #1 ($offset) must be of type integer, '.gettype($offset).' given.');
+        }
+
         $this->remove($offset);
     }
 
@@ -454,11 +465,19 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence
      *
-     * @see ::push
-     * @see ::set
+     * @see Sequence::push
+     * @see Sequence::set
      */
     public function offsetSet($offset, $interval): void
     {
+        if (!is_int($offset) && !is_null($offset)) {
+            throw new \TypeError('Argument #1 ($offset) must be of type integer, '.gettype($interval).' given.');
+        }
+
+        if (!$interval instanceof Period) {
+            throw new \TypeError('Argument #2 ($interval) must be of type Period, '.gettype($interval).' given.');
+        }
+
         if (null !== $offset) {
             $this->set($offset, $interval);
             return;
@@ -478,7 +497,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Tells whether the given interval is present in the sequence.
      *
-     * @param Period ...$intervals
      */
     public function contains(Period ...$intervals): bool
     {
@@ -540,7 +558,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * The sequence is re-indexed after addition
      *
-     * @param Period ...$intervals
      */
     public function unshift(Period ...$intervals): void
     {
@@ -550,7 +567,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Adds new intervals at the end of the sequence.
      *
-     * @param Period ...$intervals
      */
     public function push(Period ...$intervals): void
     {
@@ -562,7 +578,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * The sequence is re-indexed after addition
      *
-     * @param Period ...$intervals
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence.
      */
@@ -695,13 +710,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Iteratively reduces the sequence to a single value using a callback.
      *
-     * @param callable $func Accepts the carry, the current value and the current offset, and
-     *                       returns an updated carry value.
+     * @template TReduceInitial
+     * @template TReduceReturnType
      *
-     * @param mixed|null $carry Optional initial carry value.
+     * @param callable(TReduceInitial|TReduceReturnType, Period, array-key=): TReduceReturnType $func
+     * @param TReduceInitial $carry
      *
-     * @return mixed The carry value of the final iteration, or the initial
-     *               value if the sequence was empty.
+     * @return TReduceInitial|TReduceReturnType
      */
     public function reduce(callable $func, $carry = null)
     {

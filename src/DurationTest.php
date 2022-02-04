@@ -287,7 +287,8 @@ final class DurationTest extends TestCase
     /**
      * @dataProvider withoutCarryOverDataProvider
      *
-     * @param mixed $reference_date a valid datepoint
+     * @param \DateTimeInterface|int|string $reference_date a valid datepoint
+     * @requires PHP < 8.1.0
      */
     public function testWithoutCarryOver(string $input, $reference_date, string $expected): void
     {
