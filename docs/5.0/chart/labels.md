@@ -27,8 +27,8 @@ use League\Period\Sequence;
 
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
-        Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'), 
-        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-02-01)')
+        Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)'), 
+        Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-02-01)')
     ),
     new Chart\LatinLetter('aa')
 );
@@ -64,8 +64,8 @@ use League\Period\Sequence;
 
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
-        Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'), 
-        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-02-01)')
+        Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)'), 
+        Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-02-01)')
     ),
     new Chart\DecimalNumber(42)
 );
@@ -103,8 +103,8 @@ $labelGenerator = new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\Casing
 
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
-        Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'),
-        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-02-01)')
+        Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)'),
+        Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-02-01)')
     ),
     $labelGenerator
 );
@@ -147,8 +147,8 @@ $labelGenerator = new Chart\AffixLabel(
 );
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
-        Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'),
-        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-02-01)')
+        Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)'),
+        Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-02-01)')
     ),
     $labelGenerator
 );
@@ -191,8 +191,8 @@ $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
-        Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'),
-        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-02-01)')
+        Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)'),
+        Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-02-01)')
     ),
     $labelGenerator
 );
@@ -232,8 +232,8 @@ $sameLabel = new class implements Chart\LabelGenerator {
 $labelGenerator = new Chart\AffixLabel($sameLabel, '', '.');
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
-        Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)'),
-        Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-02-01)')
+        Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)'),
+        Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-02-01)')
     ),
     $labelGenerator
 );

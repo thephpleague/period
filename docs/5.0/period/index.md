@@ -121,7 +121,8 @@ $day->endDate->format('Y-m-d H:i:s'); //return 2012-01-04 00:00:00
 
 ~~~php
 public static Period::fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromNotation(string $format, string $notation): Period
+public static Period::fromIso80000(string $format, string $notation): Period
+public static Period::fromBourbaki(string $format, string $notation): Period
 ~~~
 
 - The `$format` string describes how the date are presented should be a valid string accepted by `DateTimeImmutable::createFromFormat` first argument.
@@ -143,7 +144,7 @@ $day = Period::fromIso8601('Y-m-d', '2012-01-03/2012-02-03');
 echo $day->toIso80000('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
 ~~~
 
-#### Using mathematical notation
+#### Using ISO 80000 notation
 
 The `$notation` should follow the `{lowerbound}{startDate},{endDate}{upperbound}` where `,` serves as delimiter. 
 Each endpoint should be formatted following the `$format` input.
@@ -156,6 +157,21 @@ The possible bound values are:
 $day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 ]');
 echo $day->toIso80000('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00]
 $day->bounds() === Bounds::INCLUDE_ALL;
+~~~
+
+#### Using Bourbaki notation
+
+The `$notation` should follow the `{lowerbound}{startDate},{endDate}{upperbound}` where `,` serves as delimiter.
+Each endpoint should be formatted following the `$format` input.
+The possible bound values are:
+
+- `{lowerbound}` can be `[` or `[`;
+- `{upperbound}` can be `]` or `]`;
+
+~~~php
+$day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 [');
+echo $day->toBourbaki('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00[
+$day->bounds() === Bounds::INCLUDE_START_EXCLUDE_END;
 ~~~
 
 ### Using a DatePeriod object

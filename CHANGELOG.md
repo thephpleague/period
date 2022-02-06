@@ -10,7 +10,8 @@ All notable changes to `Period` will be documented in this file
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `DateRangeInvalid` exception for anything regarding creating an object.
 - `Duration::fromSeconds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
-- `Period::fromNotation` to instantiate a time range object from a mathematical representation and a date format.
+- `Period::fromIso80000` to instantiate a time range object from a mathematical representation and a date format.
+- `Period::fromBourbaki` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
 - `Period::snapTo*` methods to ease period expansion.
 - `Period::meets`
@@ -18,6 +19,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::meetsOnEnd`
 - `Period::toBourbaki`
 - `Period::toIso80000`
+- `Period::toBourbaki`
 - `Sequence::overlapAll`
 - `Bounds` Enum.
 - `InitialDatePresence` Enum.

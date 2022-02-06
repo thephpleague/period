@@ -320,17 +320,17 @@ final class PeriodFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideValidIntervalNotation
+     * @dataProvider provideValidIntervalIso80000
      */
     public function testCreateNewInstanceFromNotation(string $notation, string $format, string $expected): void
     {
-        self::assertSame($expected, Period::fromNotation($format, $notation)->toIso80000($format));
+        self::assertSame($expected, Period::fromIso80000($format, $notation)->toIso80000($format));
     }
 
     /**
      * @return iterable<string, array{notation:string, format:string, expected:string}>
      */
-    public function provideValidIntervalNotation(): iterable
+    public function provideValidIntervalIso80000(): iterable
     {
         yield 'date string' => [
           'notation' => '[2021-01-03,2021-01-04)',
@@ -352,22 +352,16 @@ final class PeriodFactoryTest extends TestCase
             'format' => DateTimeInterface::ATOM,
             'expected' =>   '['.$now.', '.$tomorrow.']',
         ];
-
-        yield 'date string with bourbaki notation' => [
-            'notation' => ']2021-01-03,2021-01-04[',
-            'format' => 'Y-m-d',
-            'expected' =>   '(2021-01-03, 2021-01-04)',
-        ];
     }
 
     /**
      * @dataProvider provideInvalidIntervalNotation
      */
-    public function testFailsToCreateNewInstanceFromNotation(string $notation, string $format): void
+    public function testFailsToCreateNewInstanceFromIso80000(string $notation, string $format): void
     {
         $this->expectException(DateRangeInvalid::class);
 
-        Period::fromNotation($format, $notation);
+        Period::fromIso80000($format, $notation);
     }
 
     /**
@@ -382,8 +376,70 @@ final class PeriodFactoryTest extends TestCase
             'too many bounds' => ['[2021-01-02,2021-)01-03]', 'Y-m-d'],
             'too many separator' => ['[2021-01-02,2021-,01-03]', 'Y-m-d'],
             'missing dates' => ['[2021-01-02,  ]', 'Y-m-d'],
-            'wrong format' => ['[2021-01-02,  ]', 'Ymd'],
+            'wrong format' => ['[2021-01-02, 2021-01-03]', 'Ymd'],
             'wrong bourbaki' => [']2021-01-02,2021-01-03)', 'Y-m-d'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideValidIntervalBourbaki
+     */
+    public function testCreateNewInstanceFromBourbaki(string $notation, string $format, string $expected): void
+    {
+        self::assertSame($expected, Period::fromBourbaki($format, $notation)->toBourbaki($format));
+    }
+
+    /**
+     * @return iterable<string, array{notation:string, format:string, expected:string}>
+     */
+    public function provideValidIntervalBourbaki(): iterable
+    {
+        yield 'date string' => [
+            'notation' => '[2021-01-03,2021-01-04[',
+            'format' => 'Y-m-d',
+            'expected' =>   '[2021-01-03, 2021-01-04[',
+        ];
+
+        yield 'date string with spaces' => [
+            'notation' => ']   2021-01-03  ,  2021-01-04  ]',
+            'format' => 'Y-m-d',
+            'expected' =>   ']2021-01-03, 2021-01-04]',
+        ];
+
+        $now = (new DateTimeImmutable('now'))->format(DateTimeInterface::ATOM);
+        $tomorrow = (new DateTimeImmutable('tomorrow'))->format(DateTimeInterface::ATOM);
+
+        yield 'date string with dynamic names' => [
+            'notation' => '[    '.$now.'   , '.$tomorrow.'   ]',
+            'format' => DateTimeInterface::ATOM,
+            'expected' =>   '['.$now.', '.$tomorrow.']',
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidIntervalBourbaki
+     */
+    public function testFailsToCreateNewInstanceFromBourbaki(string $notation, string $format): void
+    {
+        $this->expectException(DateRangeInvalid::class);
+
+        Period::fromBourbaki($format, $notation);
+    }
+
+    /**
+     * @return iterable<string, array<string>>
+     */
+    public function provideInvalidIntervalBourbaki(): iterable
+    {
+        return [
+            'empty string' => ['', 'Y-m-d'],
+            'missing separator' => ['[2021-01-02 2021-01-03]', 'Y-m-d'],
+            'missing bounds' => ['2021-01-02,2021-01-03', 'Y-m-d'],
+            'too many bounds' => ['[2021-01-02,2021-[01-03]', 'Y-m-d'],
+            'too many separator' => ['[2021-01-02,2021-,01-03]', 'Y-m-d'],
+            'missing dates' => ['[2021-01-02,  ]', 'Y-m-d'],
+            'wrong format' => ['[2021-01-02, 2021-01-03]', 'Ymd'],
+            'wrong bourbaki' => ['[2021-01-02,2021-01-03)', 'Y-m-d'],
         ];
     }
 

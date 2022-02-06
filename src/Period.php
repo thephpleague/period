@@ -76,11 +76,27 @@ final class Period implements JsonSerializable
      * @see https://en.wikipedia.org/wiki/ISO_31-11
      * @throws DateRangeInvalid If the notation is not supported or not known
      */
-    public static function fromNotation(string $format, string $notation): self
+    public static function fromBourbaki(string $format, string $notation): self
     {
-        if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found) &&
-            1 !== preg_match(self::REGEXP_BOURBAKI_NOTATION, $notation, $found)
-        ) {
+        if (1 !== preg_match(self::REGEXP_BOURBAKI_NOTATION, $notation, $found)) {
+            throw DateRangeInvalid::dueToUnknownNotation($notation);
+        }
+
+        return self::fromDateString(
+            $format,
+            trim($found['startdate']),
+            trim($found['enddate']),
+            Bounds::fromNotation($found['lowerbound'].$found['upperbound'])
+        );
+    }
+
+    /**
+     * @see https://en.wikipedia.org/wiki/ISO_31-11
+     * @throws DateRangeInvalid If the notation is not supported or not known
+     */
+    public static function fromIso80000(string $format, string $notation): self
+    {
+        if (1 !== preg_match(self::REGEXP_INTERVAL_NOTATION, $notation, $found)) {
             throw DateRangeInvalid::dueToUnknownNotation($notation);
         }
 

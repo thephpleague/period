@@ -12,7 +12,7 @@ To improve visualizing multiple `Period` or `Sequence` instances you can use the
 To generate a graph you need to give to the `Dataset` constructor a list of pairs. Each pair is an `array` containing 2 values:
 
 - the value at key `0` represents the label
-- the value at key `1` is a `League\Period\Period` or a `League\Period\Sequence` object 
+- the value at key `1` is a `League\Period\Period` or a `League\Period\Sequence` object
 
 ~~~php
 <?php
@@ -22,10 +22,10 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $dataset = new Chart\Dataset([
-    ['period', Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)')],
+    ['period', Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)')],
     ['sequence', new Sequence(
-       Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-01-18)'),
-       Period::fromNotation('!Y-m-d', '[2018-01-20, 2018-02-01)')
+       Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-01-18)'),
+       Period::fromIso80000('!Y-m-d', '[2018-01-20, 2018-02-01)')
     )],
 ]);
 (new Chart\GanttChart())->stroke($dataset);
@@ -50,8 +50,8 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-03-01)'),
-    Period::fromNotation('!Y-m-d', '[2018-05-01, 2018-08-01)')
+    Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-03-01)'),
+    Period::fromIso80000('!Y-m-d', '[2018-05-01, 2018-08-01)')
 );
 $dataset = new Chart\Dataset();
 $dataset->append('A', $sequence[0]);
@@ -99,8 +99,8 @@ use League\Period\Period;
 
 $graph = new Chart\GanttChart();
 $graph->stroke(new Chart\Dataset([
-    ['first', Period::fromNotation('Y-m-d H:i:s', '[2018-01-01 08:00:00, 2018-01-01 12:00:00)')],
-    ['last', Period::fromNotation('Y-m-d H:i:s', '2018-01-01 10:00:00, 2018-01-01 14:00:00)')],
+    ['first', Period::fromIso80000('Y-m-d H:i:s', '[2018-01-01 08:00:00, 2018-01-01 12:00:00)')],
+    ['last', Period::fromIso80000('Y-m-d H:i:s', '2018-01-01 10:00:00, 2018-01-01 14:00:00)')],
 ]));
 ~~~
 

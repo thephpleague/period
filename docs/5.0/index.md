@@ -22,7 +22,7 @@ use League\Period\Period;
 
 $period1 = Period::fromMonth(2014, 10, Bounds::EXCLUDE_ALL);
 $period2 = Period::after('2014-10-01', new DateInterval('P1M'), Bounds::EXCLUDE_ALL);
-$period3 = Period::fromNotation('!Y-m-d', '(2014-10-01 , 2014-11-01)');
+$period3 = Period::fromIso80000('!Y-m-d', '(2014-10-01 , 2014-11-01)');
 $period4 = Period::fromIso8601('!Y-m-d', '2014-10-01/2014-11-01', Bounds::EXCLUDE_ALL);
 ~~~
 
@@ -33,7 +33,7 @@ All the above calls will end up creating `Period` instances that are equals. The
 ~~~php
 use League\Period\Period;
 
-$period = Period::fromNotation('!Y-m-d', '[2014-10-03 08:12:37,2014-10-03 08:12:37)');
+$period = Period::fromIso80000('!Y-m-d', '[2014-10-03 08:12:37,2014-10-03 08:12:37)');
 $period->startDate;        //returns a DateTimeImmutable
 $period->endDate;          //returns a DateTimeImmutable
 $period->bounds;           //returns a League\Period\Bounds enum
@@ -112,10 +112,10 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $dataset = new Chart\Dataset([
-    ['period', Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-02-01)')],
+    ['period', Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-02-01)')],
     ['sequence', new Sequence(
-       Period::fromNotation('!Y-m-d', '[2018-01-15, 2018-01-18)'),
-       Period::fromNotation('!Y-m-d', '[2018-01-20, 2018-02-01)')
+       Period::fromIso80000('!Y-m-d', '[2018-01-15, 2018-01-18)'),
+       Period::fromIso80000('!Y-m-d', '[2018-01-20, 2018-02-01)')
     )],
 ]);
 Chart\GanttChart::create()->stroke($dataset);
