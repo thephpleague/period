@@ -14,16 +14,16 @@ namespace League\Period;
 use DatePeriod;
 use InvalidArgumentException;
 
-final class DateRangeInvalid extends InvalidArgumentException implements DateRangeError
+final class InvalidInterval extends InvalidArgumentException implements IntervalError
 {
     private function __construct(string $message)
     {
         parent::__construct($message);
     }
 
-    public static function dueToDatePointMismatch(): self
+    public static function dueToEndPointMismatch(): self
     {
-        return new self('The ending date endpoint must be greater or equal to the starting date endpoint.');
+        return new self('The ending endpoint must be greater or equal to the starting endpoint.');
     }
 
     public static function dueToInvalidDateFormat(string $format, string $date): self
@@ -33,16 +33,11 @@ final class DateRangeInvalid extends InvalidArgumentException implements DateRan
 
     public static function dueToInvalidDatePeriod(): self
     {
-        return new self('The '.DatePeriod::class.' should contain an end date to be instantiate a '.Period::class.' class.');
+        return new self('The '.DatePeriod::class.' should contain an end date to instantiate a '.Period::class.' class.');
     }
 
-    public static function dueToUnknownBounds(string $bounds): self
+    public static function dueToUnknownNotation(string $expectedFormat, string $notation): self
     {
-        return new self('Unknown or unsupported interval bounds `'.$bounds.'`.');
-    }
-
-    public static function dueToUnknownNotation(string $notation): self
-    {
-        return new self('Unknown or unsupported interval notation `'.$notation.'`.');
+        return new self('Unknown or unsupported interval notation `'.$notation.'` for `'.$expectedFormat.'`.');
     }
 }

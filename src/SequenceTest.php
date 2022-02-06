@@ -65,7 +65,7 @@ final class SequenceTest extends TestCase
         self::assertSame($event2, $sequence->remove(0));
         self::assertCount(0, $sequence);
         self::assertFalse($sequence->contains($event2));
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         $sequence->remove(1);
     }
 
@@ -95,14 +95,14 @@ final class SequenceTest extends TestCase
 
     public function testGetThrowsExceptionWithInvalidPositiveIndex(): void
     {
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         (new Sequence(DatePoint::fromDateString('2011-06-23')->day()))->get(3);
     }
 
 
     public function testGetThrowsExceptionWithInvalidNegativeIndex(): void
     {
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         (new Sequence(DatePoint::fromDateString('2011-06-23')->day()))->get(-3);
     }
 
@@ -121,7 +121,7 @@ final class SequenceTest extends TestCase
         $sequence->set(0, DatePoint::fromDateString('2013-06-23')->day());
         self::assertEquals(Period::fromDay(2012, 6, 23), $sequence->get(1));
         self::assertEquals(DatePoint::fromDateString('2013-06-23')->day(), $sequence->get(0));
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         $sequence->set(3, DatePoint::fromDateString('2013-06-23')->day());
     }
 
@@ -135,7 +135,7 @@ final class SequenceTest extends TestCase
         $sequence->insert(-1, DatePoint::fromDateString('2012-06-25')->day());
         self::assertCount(3, $sequence);
         self::assertTrue(DatePoint::fromDateString('2012-06-25')->day()->equals($sequence->get(1)));
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         $sequence->insert(42, DatePoint::fromDateString('2011-06-23')->day());
     }
 
@@ -497,14 +497,14 @@ final class SequenceTest extends TestCase
 
     public function testArrayAccessThrowsInvalidIndex(): void
     {
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         $sequence = new Sequence();
         $sequence[0] = Period::fromMonth(2017, 1);
     }
 
     public function testArrayAccessThrowsInvalidIndex2(): void
     {
-        $this->expectException(DateRangeInaccessible::class);
+        $this->expectException(InaccessibleInterval::class);
         $sequence = new Sequence();
         unset($sequence[0]);
     }

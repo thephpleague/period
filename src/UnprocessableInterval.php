@@ -15,7 +15,7 @@ namespace League\Period;
 
 use RuntimeException;
 
-final class DateRangeUnprocessable extends RuntimeException implements DateRangeError
+final class UnprocessableInterval extends RuntimeException implements IntervalError
 {
     private function __construct(string $message)
     {
@@ -27,7 +27,7 @@ final class DateRangeUnprocessable extends RuntimeException implements DateRange
         return new self('Both '.Period::class.' objects must overlaps.');
     }
 
-    public static function dueToMissingGaps(): DateRangeUnprocessable
+    public static function dueToMissingGaps(): UnprocessableInterval
     {
         return new self('Both '.Period::class.' objects must have at least one gap.');
     }

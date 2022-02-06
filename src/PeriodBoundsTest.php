@@ -98,11 +98,4 @@ final class PeriodBoundsTest extends TestCase
         self::assertTrue($interval->bounds !== $altInterval->bounds);
         self::assertSame($interval, $interval->boundedBy(Bounds::INCLUDE_START_EXCLUDE_END));
     }
-
-    public function testCreateBoundsFails(): void
-    {
-        $this->expectException(DateRangeInvalid::class);
-
-        Bounds::fromNotation('foobar');
-    }
 }

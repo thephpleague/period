@@ -28,7 +28,7 @@ made private. Whichever instance used, a `Period` instance is always created wit
 - The `$endDate` represents **the ending datepoint**.
 - The `$bounds` represents **the interval bounds**. 
 
-Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\DateRangeError`.
+Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be** greater or equal to `$startDate` or the instantiation will throw a `Period\IntervalError`.
 
 The `$bounds` is a `League\Period\Bounds` and only its value are eligible to create a new `Period` instance.
 

@@ -582,7 +582,7 @@ class PeriodRelationTest extends TestCase
 
     public function testIntersectThrowsExceptionWithNoOverlappingTimeRange(): void
     {
-        $this->expectException(DateRangeUnprocessable::class);
+        $this->expectException(UnprocessableInterval::class);
         $orig = Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-02-01'));
         $alt = Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-03-01'));
         $orig->intersect($alt);
@@ -700,7 +700,7 @@ class PeriodRelationTest extends TestCase
 
     public function testGapThrowsExceptionWithOverlapsInterval(): void
     {
-        $this->expectException(DateRangeUnprocessable::class);
+        $this->expectException(UnprocessableInterval::class);
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2011-12-10'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -708,7 +708,7 @@ class PeriodRelationTest extends TestCase
 
     public function testGapWithSameStartingInterval(): void
     {
-        $this->expectException(DateRangeUnprocessable::class);
+        $this->expectException(UnprocessableInterval::class);
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2011-12-15'));
         $orig->gap($alt);
@@ -716,7 +716,7 @@ class PeriodRelationTest extends TestCase
 
     public function testGapWithSameEndingInterval(): void
     {
-        $this->expectException(DateRangeUnprocessable::class);
+        $this->expectException(UnprocessableInterval::class);
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2012-01-15'), new DateTime('2012-02-01'));
         $orig->gap($alt);
@@ -833,7 +833,7 @@ class PeriodRelationTest extends TestCase
         $interval1 = Period::fromDate(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
         $interval2 = Period::fromDate(new DateTimeImmutable('2013-01-01'), new DateTimeImmutable('2014-01-01'));
 
-        $this->expectException(DateRangeUnprocessable::class);
+        $this->expectException(UnprocessableInterval::class);
         $interval1->diff($interval2);
     }
 
@@ -1011,10 +1011,10 @@ class PeriodRelationTest extends TestCase
 
     public function testDiffAndIntersect(): void
     {
-        foreach (['[]', '[)', '()', '(]'] as $bound1) {
-            foreach (['[]', '[)', '()', '(]'] as $bound2) {
-                $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), Bounds::fromNotation($bound1));
-                $interval1 = Period::fromDate(new DateTime('2014-05-01'), new DateTime('2014-08-01'), Bounds::fromNotation($bound2));
+        foreach (['[2014-03-01,2014-06-01]', '[2014-03-01,2014-06-01)', '(2014-03-01,2014-06-01)', '(2014-03-01,2014-06-01]'] as $bound1) {
+            foreach (['[2014-05-01,2014-08-01]', '[2014-05-01,2014-08-01)', '(2014-05-01,2014-08-01)', '(2014-05-01,2014-08-01]'] as $bound2) {
+                $interval0 = Period::fromIso80000('Y-m-d', $bound1);
+                $interval1 = Period::fromIso80000('Y-m-d', $bound2);
                 $sequence = $interval0->diff($interval1);
                 $intersect = $interval0->intersect($interval1);
 

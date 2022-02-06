@@ -3,7 +3,7 @@ layout: default
 title: The Bounds enum
 ---
 
-# The Bounds Enum
+# The Bounds Enumeration
 
 `Period` instances are bounded date endpoint interval. An included datepoint means that the boundary datepoint itself 
 is included in the interval as well, while an excluded datepoint means that the boundary datepoint is not included 
@@ -21,20 +21,27 @@ enum Bounds
 
 Apart from the regular methods exposed by PHP enums the `Period\Bounds`  exposes extra features.
 
-## Instantiating Bounds from notation
+## Parsing interval notation
 
-Bounds string notation comes in two flavour. They can use the ISO format based on `[, ], (, )` usage or
+Bounds string notation comes in two flavours. They can use the ISO format based on `[, ], (, )` usage or
 use the Boubarki notation that only rely on `[, ]`. 
 
-The `Bounds` Enum supports both notation when using the `fromNotation` named constructor.
+The `Bounds` Enumeration supports both notation through 2 parsing methods `parseIso80000` and  `parseBourbaki`.
+The parsers return the same array representation of the interval with the following keys:
+
+- `start`: the start or lower bound as a string
+- `end`: the end or upper bound as a string
+- `bounds`: the end or upper bound as a `Bounds` Enumeration
 
 #### Examples
 
 ~~~php
 use League\Period\Bounds;
 
-Bounds::EXCLUDE_ALL === Bounds::fromNotation('()'); // ISO notation
-Bounds::EXCLUDE_ALL === Bounds::fromNotation(']['); // Boubarki notation
+Bounds::parseIso80000('(3, 5)'); 
+// returns [ 'start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_ALL]
+Bounds::parseBourbaki(']2022-03-05,2022-03-09[');
+// returns [ 'start' => '2022-03-05', 'end' => '2022-03-09', 'bounds' => Bounds::EXCLUDE_ALL]
 ~~~
 
 ## Formatting interval from Bounds
@@ -42,8 +49,8 @@ Bounds::EXCLUDE_ALL === Bounds::fromNotation(']['); // Boubarki notation
 ~~~php
 use League\Period\Bounds;
 
-Bounds::toIso80000(string|float|int $lowerBound, string|float|int $upperBound): string;
-Bounds::toBourbaki(string|float|int $lowerBound, string|float|int $upperBound): string;
+Bounds::buildIso80000(string $lowerBound, string $upperBound): string;
+Bounds::buildBourbaki(string $lowerBound, string $upperBound): string;
 ~~~
 
 On the opposite, the `Bounds` enum can format an interval by decorating the interval string representation.
@@ -54,8 +61,8 @@ You can specify which format you want to use, the ISO or the Boubarki one throug
 ~~~php
 use League\Period\Bounds;
 
-Bounds::EXCLUDE_ALL->toBourbaki(3, 4); // returns ']3, 4['
-Bounds::EXCLUDE_ALL->toIso80000(3, 4); // returns '(3, 4)'
+Bounds::EXCLUDE_ALL->buildBourbaki('3', '4'); // returns ']3, 4['
+Bounds::EXCLUDE_ALL->buildIso80000('3', '4'); // returns '(3, 4)'
 ~~~
 
 <p class="message-notice">The formatting does not try to validate or sanitize its input format as long as it is a string.</p>

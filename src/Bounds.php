@@ -25,25 +25,63 @@ enum Bounds
     case EXCLUDE_START_INCLUDE_END;
     case EXCLUDE_ALL;
 
+    private const REGEXP_ISO80000_NOTATION = '/^(?<lowerbound>\[|\()(?<start>[^,\]\)\[\(]*),(?<end>[^,\]\)\[\(]*)(?<upperbound>\]|\))$/';
+    private const REGEXP_BOURBAKI_NOTATION = '/^(?<lowerbound>\[|\])(?<start>[^,\]\[]*),(?<end>[^,\]\[]*)(?<upperbound>\[|\])$/';
+
     /**
-     * Return an Enum from a Math notation
-     * It supports ISO-80000 and the Bourbaki notation.
+     * Parse an ISO-80000 interval representation.
+     *
+     * @throws InvalidInterval
+     *
+     * @return array{start:string, end:string, bounds:Bounds}
      */
-    public static function fromNotation(string $bounds): self
+    public static function parseIso80000(string $notation): array
     {
-        return match ($bounds) {
-            '[]' => self::INCLUDE_ALL,
-            '[)', '[[' => self::INCLUDE_START_EXCLUDE_END,
-            '()', '][' => self::EXCLUDE_ALL,
-            '(]', ']]' => self::EXCLUDE_START_INCLUDE_END,
-            default => throw DateRangeInvalid::dueToUnknownBounds($bounds),
-        };
+        if (1 !== preg_match(self::REGEXP_ISO80000_NOTATION, $notation, $found)) {
+            throw InvalidInterval::dueToUnknownNotation('ISO-80000', $notation);
+        }
+
+        return [
+            'start' => trim($found['start']),
+            'end' => trim($found['end']),
+            'bounds' => match ($found['lowerbound'].$found['upperbound']) {
+                '[]' => self::INCLUDE_ALL,
+                '[)' => self::INCLUDE_START_EXCLUDE_END,
+                '()' => self::EXCLUDE_ALL,
+                default => self::EXCLUDE_START_INCLUDE_END,
+            },
+        ];
+    }
+
+    /**
+     * Parse an interval in a bourbaki representation.
+     *
+     * @throws InvalidInterval
+     *
+     * @return array{start:string, end:string, bounds:Bounds}
+     */
+    public static function parseBourbaki(string $notation): array
+    {
+        if (1 !== preg_match(self::REGEXP_BOURBAKI_NOTATION, $notation, $found)) {
+            throw InvalidInterval::dueToUnknownNotation('Bourbaki', $notation);
+        }
+
+        return [
+            'start' => trim($found['start']),
+            'end' => trim($found['end']),
+            'bounds' => match ($found['lowerbound'].$found['upperbound']) {
+                '[]' => self::INCLUDE_ALL,
+                '[[' => self::INCLUDE_START_EXCLUDE_END,
+                '][' => self::EXCLUDE_ALL,
+                default => self::EXCLUDE_START_INCLUDE_END,
+            },
+        ];
     }
 
     /**
      * Returns the ISO 80000 string representation of an interval.
      */
-    public function toIso80000(string|int|float $start, string|int|float $end): string
+    public function buildIso80000(string $start, string $end): string
     {
         return match ($this) {
             self::INCLUDE_ALL => "[$start, $end]",
@@ -56,7 +94,7 @@ enum Bounds
     /**
      * Returns the Bourbaki string representation of an interval.
      */
-    public function toBourbaki(string|int|float $start, string|int|float $end): string
+    public function buildBourbaki(string $start, string $end): string
     {
         return match ($this) {
             self::INCLUDE_ALL => "[$start, $end]",

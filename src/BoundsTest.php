@@ -18,35 +18,21 @@ final class BoundsTest extends TestCase
     /**
      * @dataProvider boundsIso80000Provider
      */
-    public function testIso80000(string $notation, Bounds $bounds, string|int|float $start, string|int|float $end): void
+    public function testIso80000(string $notation, Bounds $bounds, string $start, string $end): void
     {
-        self::assertSame($notation, $bounds->toIso80000($start, $end));
+        self::assertSame($notation, $bounds->buildIso80000($start, $end));
     }
 
     /**
-     * @return iterable<array{notation:string, bounds:Bounds, start:float|int|string, end:float|int|string}>
+     * @return iterable<array{notation:string, bounds:Bounds, start:string, end:string}>
      */
     public function boundsIso80000Provider(): iterable
     {
-        yield 'include all' => [
-            'notation' => '[3, 4]',
-            'bounds' => Bounds::INCLUDE_ALL,
-            'start' => 3,
-            'end' => 4,
-        ];
-
         yield 'exclude all' => [
             'notation' => '(3, 4)',
             'bounds' => Bounds::EXCLUDE_ALL,
             'start' => '3',
             'end' => '4',
-        ];
-
-        yield 'exclude start include end' => [
-            'notation' => '(3.01, 4.01]',
-            'bounds' => Bounds::EXCLUDE_START_INCLUDE_END,
-            'start' => 3.01,
-            'end' => 4.01,
         ];
 
         $period = Period::fromMonth(2022, 3);
@@ -61,35 +47,21 @@ final class BoundsTest extends TestCase
     /**
      * @dataProvider boundsBourbakiProvider
      */
-    public function testBourbaki(string $notation, Bounds $bounds, string|int|float $start, string|int|float $end): void
+    public function testBourbaki(string $notation, Bounds $bounds, string $start, string $end): void
     {
-        self::assertSame($notation, $bounds->toBourbaki($start, $end));
+        self::assertSame($notation, $bounds->buildBourbaki($start, $end));
     }
 
     /**
-     * @return iterable<array{notation:string, bounds:Bounds, start:float|int|string, end:float|int|string}>
+     * @return iterable<array{notation:string, bounds:Bounds, start:string, end:string}>
      */
     public function boundsBourbakiProvider(): iterable
     {
-        yield 'include all' => [
-            'notation' => '[3, 4]',
-            'bounds' => Bounds::INCLUDE_ALL,
-            'start' => 3,
-            'end' => 4,
-        ];
-
         yield 'exclude all' => [
             'notation' => ']3, 4[',
             'bounds' => Bounds::EXCLUDE_ALL,
             'start' => '3',
             'end' => '4',
-        ];
-
-        yield 'exclude start include end' => [
-            'notation' => ']3.01, 4.01]',
-            'bounds' => Bounds::EXCLUDE_START_INCLUDE_END,
-            'start' => 3.01,
-            'end' => 4.01,
         ];
 
         $period = Period::fromMonth(2022, 3);
@@ -102,15 +74,20 @@ final class BoundsTest extends TestCase
         ];
     }
 
-    public function testFromNotationSucceeds(): void
+    public function testFromIso80000Succeeds(): void
     {
-        self::assertSame(Bounds::INCLUDE_ALL, Bounds::fromNotation('[]'));
-        self::assertSame(Bounds::EXCLUDE_ALL, Bounds::fromNotation(']['));
-        self::assertSame(Bounds::EXCLUDE_ALL, Bounds::fromNotation('()'));
-        self::assertSame(Bounds::EXCLUDE_START_INCLUDE_END, Bounds::fromNotation(']]'));
-        self::assertSame(Bounds::EXCLUDE_START_INCLUDE_END, Bounds::fromNotation('(]'));
-        self::assertSame(Bounds::INCLUDE_START_EXCLUDE_END, Bounds::fromNotation('[['));
-        self::assertSame(Bounds::INCLUDE_START_EXCLUDE_END, Bounds::fromNotation('[)'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_ALL], Bounds::parseIso80000('[3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_ALL], Bounds::parseIso80000('(3,5)'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_START_INCLUDE_END], Bounds::parseIso80000('(3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_START_EXCLUDE_END], Bounds::parseIso80000('[3,5)'));
+    }
+
+    public function testFromBourbakiSucceeds(): void
+    {
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_ALL], Bounds::parseBourbaki('[3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_ALL], Bounds::parseBourbaki(']3,5['));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_START_INCLUDE_END], Bounds::parseBourbaki(']3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_START_EXCLUDE_END], Bounds::parseBourbaki('[3,5['));
     }
 
     /**
@@ -118,15 +95,15 @@ final class BoundsTest extends TestCase
      */
     public function testFromNotationFails(string $notation): void
     {
-        $this->expectException(DateRangeInvalid::class);
+        $this->expectException(InvalidInterval::class);
 
-        Bounds::fromNotation($notation);
+        Bounds::parseIso80000($notation);
     }
 
     public function fromNotationFailsProvider(): iterable
     {
         yield 'invalid notation' => ['notation' => 'foobar'];
-        yield 'mixed notation 1' => ['notation' => '])'];
-        yield 'mixed notation 2' => ['notation' => '(['];
+        yield 'mixed notation 1' => ['notation' => ']3,5)'];
+        yield 'mixed notation 2' => ['notation' => '([3,5'];
     }
 }

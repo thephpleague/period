@@ -22,7 +22,7 @@ Unless explicitly restricted, whenever a datepoint is expected the following typ
 - `DatePoint`
 - a `string` parsable by `DateTimeImmutable::__construct`
 
-<p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>Period\DateRangeError</code> exception.</p>
+<p class="message-warning">If no <code>Period</code> object can be created the modifying methods throw a <code>Period\IntervalError</code> exception.</p>
 
 ## Using the bounds information
 

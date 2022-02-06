@@ -15,6 +15,6 @@ namespace League\Period;
 
 use Throwable;
 
-interface DateRangeError extends Throwable
+interface IntervalError extends Throwable
 {
 }
