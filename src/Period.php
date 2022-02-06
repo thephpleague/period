@@ -30,9 +30,6 @@ use JsonSerializable;
  */
 final class Period implements JsonSerializable
 {
-    private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
-    private const REGEXP_ISO8601_NOTATION = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
-
     /**
      * @throws InvalidInterval If the instance can not be created
      */
@@ -63,7 +60,8 @@ final class Period implements JsonSerializable
      */
     public static function fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
-        if (1 !== preg_match(self::REGEXP_ISO8601_NOTATION, $notation, $found)) {
+        static $regexp = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
+        if (1 !== preg_match($regexp, $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('ISO-8601', $notation);
         }
 
@@ -76,9 +74,9 @@ final class Period implements JsonSerializable
      */
     public static function fromBourbaki(string $format, string $notation): self
     {
-        $res = Bounds::parseBourbaki($notation);
+        $interval = Bounds::parseBourbaki($notation);
 
-        return self::fromDateString($format, $res['start'], $res['end'], $res['bounds']);
+        return self::fromDateString($format, $interval['start'], $interval['end'], $interval['bounds']);
     }
 
     /**
@@ -87,9 +85,9 @@ final class Period implements JsonSerializable
      */
     public static function fromIso80000(string $format, string $notation): self
     {
-        $res = Bounds::parseIso80000($notation);
+        $interval = Bounds::parseIso80000($notation);
 
-        return self::fromDateString($format, $res['start'], $res['end'], $res['bounds']);
+        return self::fromDateString($format, $interval['start'], $interval['end'], $interval['bounds']);
     }
 
     /**
@@ -295,8 +293,9 @@ final class Period implements JsonSerializable
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      */
-    public function toIso8601(string $format = self::ISO8601_FORMAT): string
+    public function toIso8601(string|null $format = null): string
     {
+        $format = $format ?? 'Y-m-d\TH:i:s.u\Z';
         $utc = new DateTimeZone('UTC');
 
         return $this->startDate->setTimezone($utc)->format($format)
@@ -316,11 +315,11 @@ final class Period implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        $utc = new DateTimeZone('UTC');
+        [$startDate, $endDate] = explode('/', $this->toIso8601(), 2);
 
         return [
-            'startDate' => $this->startDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
-            'endDate' => $this->endDate->setTimezone($utc)->format(self::ISO8601_FORMAT),
+            'startDate' => $startDate,
+            'endDate' => $endDate,
             'startDateIncluded' => $this->bounds->isStartIncluded(),
             'endDateIncluded' => $this->bounds->isEndIncluded(),
         ];
