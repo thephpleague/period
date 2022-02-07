@@ -273,6 +273,9 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         return $this->periods;
     }
 
+    /**
+     * @return array<Period>
+     */
     public function jsonSerialize(): array
     {
         return $this->periods;
@@ -318,6 +321,16 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             0 > $offset => $max + $offset,
             default => $offset,
         };
+    }
+
+    private function getOffset(int $offset): int
+    {
+        $index = $this->filterOffset($offset);
+        if (null === $index) {
+            throw InaccessibleInterval::dueToInvalidIndex($offset);
+        }
+
+        return $index;
     }
 
     /**
@@ -412,12 +425,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function get(int $offset): Period
     {
-        $index = $this->filterOffset($offset);
-        if (null === $index) {
-            throw InaccessibleInterval::dueToInvalidIndex($offset);
-        }
-
-        return $this->periods[$index];
+        return $this->periods[$this->getOffset($offset)];
     }
 
     /**
@@ -470,13 +478,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             return;
         }
 
-        $index = $this->filterOffset($offset);
-        if (null === $index) {
-            throw InaccessibleInterval::dueToInvalidIndex($offset);
-        }
-
         array_unshift($intervals, $interval);
-        array_splice($this->periods, $index, 0, $intervals);
+        array_splice($this->periods, $this->getOffset($offset), 0, $intervals);
     }
 
     /**
@@ -486,12 +489,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function set(int $offset, Period $interval): void
     {
-        $index = $this->filterOffset($offset);
-        if (null === $index) {
-            throw InaccessibleInterval::dueToInvalidIndex($offset);
-        }
-
-        $this->periods[$index] = $interval;
+        $this->periods[$this->getOffset($offset)] = $interval;
     }
 
     /**
@@ -503,10 +501,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function remove(int $offset): Period
     {
-        $index = $this->filterOffset($offset);
-        if (null === $index) {
-            throw InaccessibleInterval::dueToInvalidIndex($offset);
-        }
+        $index = $this->getOffset($offset);
 
         $interval = $this->periods[$index];
         unset($this->periods[$index]);

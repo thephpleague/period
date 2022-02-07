@@ -165,9 +165,12 @@ final class DatasetTest extends TestCase
     public function testFromItemsFailsWithNonCountableIterator(): void
     {
         $items = new class() implements IteratorAggregate {
+            /**
+             * @return ArrayIterator<array-key, Period>
+             */
             public function getIterator(): Iterator
             {
-                return new ArrayIterator(['foobar']);
+                return new ArrayIterator([Period::fromIso80000('!Y-m-d', '[2021-01-23, 2022-02-03]')]);
             }
         };
 

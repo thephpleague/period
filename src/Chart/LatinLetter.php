@@ -60,7 +60,9 @@ final class LatinLetter implements LabelGenerator
         $count = 0;
         $letter = $this->startingAt;
         while ($count < $nbLabels) {
-            yield $count => $letter++;
+            yield $count => $letter;
+
+            $letter = self::increment($letter);
 
             ++$count;
         }
@@ -80,5 +82,43 @@ final class LatinLetter implements LabelGenerator
         }
 
         return new self($startingAt);
+    }
+
+    /**
+     * Increments Letters like numbers in PHP.
+     *
+     * @see https://stackoverflow.com/questions/3567180/how-to-increment-letters-like-numbers-in-php/3567218
+     */
+    private static function increment(string $previous): string
+    {
+        static $asciiUpperCaseInterval = [65, 91];
+        static $asciiLowerCaseInterval = [97, 123];
+
+        $next = '';
+        $increase = true;
+        $letters = str_split($previous);
+
+        while ([] !== $letters) {
+            $letter = array_pop($letters);
+
+            if ($increase) {
+                $letterAscii = ord($letter) + 1;
+
+                [$letterAscii, $increase] = match ($letterAscii) {
+                    $asciiUpperCaseInterval[1] => [$asciiUpperCaseInterval[0], true],
+                    $asciiLowerCaseInterval[1] => [$asciiLowerCaseInterval[0], true],
+                    default => [$letterAscii, false],
+                };
+
+                $letter = chr($letterAscii);
+                if ($increase && [] === $letters) {
+                    $letter .= $letter;
+                }
+            }
+
+            $next = $letter.$next;
+        }
+
+        return $next;
     }
 }

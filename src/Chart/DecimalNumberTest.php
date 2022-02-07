@@ -22,6 +22,8 @@ final class DecimalNumberTest extends TestCase
 {
     /**
      * @dataProvider providerLetter
+     *
+     * @param array<string> $expected
      */
     public function testGetLabels(int $nbLabels, int $label, array $expected): void
     {

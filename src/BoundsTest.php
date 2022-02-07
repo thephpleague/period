@@ -100,6 +100,9 @@ final class BoundsTest extends TestCase
         Bounds::parseIso80000($notation);
     }
 
+    /**
+     * @return iterable<string, array{notation:string}>
+     */
     public function fromNotationFailsProvider(): iterable
     {
         yield 'invalid notation' => ['notation' => 'foobar'];

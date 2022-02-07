@@ -52,10 +52,7 @@ final class DatePoint
 
     public static function fromDateString(string $dateString, DateTimeZone|string $timezone = null): self
     {
-        if (null === $timezone) {
-            $timezone = date_default_timezone_get();
-        }
-
+        $timezone ??= date_default_timezone_get();
         if (!$timezone instanceof DateTimeZone) {
             $timezone = new DateTimeZone($timezone);
         }

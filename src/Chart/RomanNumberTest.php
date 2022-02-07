@@ -22,6 +22,8 @@ final class RomanNumberTest extends TestCase
 {
     /**
      * @dataProvider providerLetter
+     *
+     * @param array<string> $expected
      */
     public function testGetLabels(int $nbLabels, int $label, Casing $lettercase, array $expected): void
     {

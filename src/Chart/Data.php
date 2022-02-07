@@ -20,6 +20,9 @@ use JsonSerializable;
 use League\Period\Period;
 use League\Period\Sequence;
 
+/**
+ * @extends IteratorAggregate<array-key, array{0:array-key, 1:Sequence}>
+ */
 interface Data extends Countable, IteratorAggregate, JsonSerializable
 {
     /**
@@ -34,6 +37,9 @@ interface Data extends Countable, IteratorAggregate, JsonSerializable
      */
     public function getIterator(): Iterator;
 
+    /**
+     * @return array<array{label:string|int, item:Sequence}>
+     */
     public function jsonSerialize(): array;
 
     /**

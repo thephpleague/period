@@ -196,7 +196,7 @@ final class PeriodDurationTest extends TestCase
     public function testSplit(): void
     {
         $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        /** @var Generator $range */
+        /** @var Generator<Period> $range */
         $range = $period->splitForward(new DateInterval('PT1H'));
 
         self::assertSame(24, iterator_count($range));
@@ -291,7 +291,7 @@ final class PeriodDurationTest extends TestCase
     {
         date_default_timezone_set('Canada/Central');
         $period = Period::fromDate(new DateTime('2018-11-04 00:00:00.000000'), new DateTime('2018-11-04 05:00:00.000000'));
-        /** @var Generator $splits */
+        /** @var Generator<Period> $splits */
         $splits = $period->splitForward(new DateInterval('PT30M'));
         self::assertSame(10, iterator_count($splits));
     }
@@ -300,7 +300,7 @@ final class PeriodDurationTest extends TestCase
     {
         date_default_timezone_set('Canada/Central');
         $period = Period::fromDate(new DateTime('2018-04-11 00:00:00.000000'), new DateTime('2018-04-11 05:00:00.000000'));
-        /** @var Generator $splits */
+        /** @var Generator<Period> $splits */
         $splits = $period->splitBackwards(new DateInterval('PT30M'));
         self::assertSame(10, iterator_count($splits));
     }

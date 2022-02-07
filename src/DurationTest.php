@@ -37,19 +37,30 @@ final class DurationTest extends TestCase
     {
         $interval = $duration->dateInterval;
 
-        $date = 'P';
-        foreach (['Y' => 'y', 'M' => 'm', 'D' => 'd'] as $key => $value) {
-            if (0 !== $interval->$value) {
-                $date .= '%'.$value.$key;
-            }
+        $date = ['P'];
+        if (0 !== $interval->y) {
+            $date[] = '%yY';
         }
 
-        $time = 'T';
-        foreach (['H' => 'h', 'M' => 'i'] as $key => $value) {
-            if (0 !== $interval->$value) {
-                $time .= '%'.$value.$key;
-            }
+        if (0 !== $interval->m) {
+            $date[] = '%mM';
         }
+
+        if (0 !== $interval->d) {
+            $date[] = '%dD';
+        }
+
+        $time = ['T'];
+        if (0 !== $interval->h) {
+            $time[] = '%hH';
+        }
+
+        if (0 !== $interval->i) {
+            $time[] = '%iM';
+        }
+
+        $dateFormat = implode('', $date);
+        $timeFormat = 1 === count($time) ? '' : implode('', $time);
 
         if (0.0 !== $interval->f) {
             $second = $interval->s + $interval->f;
@@ -57,24 +68,19 @@ final class DurationTest extends TestCase
                 $second = $interval->s - $interval->f;
             }
 
-            $second = rtrim(sprintf('%f', $second), '0');
-
-            return $interval->format($date.$time).$second.'S';
+            return $interval->format($dateFormat.('' === $timeFormat ? 'T' : $timeFormat))
+                .rtrim(sprintf('%f', $second), '0').'S';
         }
 
         if (0 !== $interval->s) {
-            return $interval->format($date.$time.'%sS');
+            return $interval->format($dateFormat.$timeFormat.'%sS');
         }
 
-        if ('T' !== $time) {
-            return $interval->format($date.$time);
+        if (1 === count($time) && 1 === count($date)) {
+            return 'PT0S';
         }
 
-        if ('P' !== $date) {
-            return $interval->format($date);
-        }
-
-        return 'PT0S';
+        return $interval->format($dateFormat.$timeFormat);
     }
 
     public function testInstantiationFromSetState(): void

@@ -25,11 +25,8 @@ enum Bounds
     case EXCLUDE_START_INCLUDE_END;
     case EXCLUDE_ALL;
 
-    private const REGEXP_ISO80000_NOTATION = '/^(?<lowerbound>\[|\()(?<start>[^,\]\)\[\(]*),(?<end>[^,\]\)\[\(]*)(?<upperbound>\]|\))$/';
-    private const REGEXP_BOURBAKI_NOTATION = '/^(?<lowerbound>\[|\])(?<start>[^,\]\[]*),(?<end>[^,\]\[]*)(?<upperbound>\[|\])$/';
-
     /**
-     * Parse an ISO-80000 interval representation.
+     * Parse the ISO 80000 string representation of an interval.
      *
      * @throws InvalidInterval
      *
@@ -37,14 +34,15 @@ enum Bounds
      */
     public static function parseIso80000(string $notation): array
     {
-        if (1 !== preg_match(self::REGEXP_ISO80000_NOTATION, $notation, $found)) {
+        static $regexp = '/^(?<lower>\[|\()(?<start>[^,\]\)\[\(]*),(?<end>[^,\]\)\[\(]*)(?<upper>\]|\))$/';
+        if (1 !== preg_match($regexp, $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('ISO-80000', $notation);
         }
 
         return [
             'start' => trim($found['start']),
             'end' => trim($found['end']),
-            'bounds' => match ($found['lowerbound'].$found['upperbound']) {
+            'bounds' => match ($found['lower'].$found['upper']) {
                 '[]' => self::INCLUDE_ALL,
                 '[)' => self::INCLUDE_START_EXCLUDE_END,
                 '()' => self::EXCLUDE_ALL,
@@ -54,7 +52,7 @@ enum Bounds
     }
 
     /**
-     * Parse an interval in a bourbaki representation.
+     * Parse the Bourbaki string representation of an interval.
      *
      * @throws InvalidInterval
      *
@@ -62,14 +60,15 @@ enum Bounds
      */
     public static function parseBourbaki(string $notation): array
     {
-        if (1 !== preg_match(self::REGEXP_BOURBAKI_NOTATION, $notation, $found)) {
+        static $regexp = '/^(?<lower>\[|\])(?<start>[^,\]\[]*),(?<end>[^,\]\[]*)(?<upper>\[|\])$/';
+        if (1 !== preg_match($regexp, $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('Bourbaki', $notation);
         }
 
         return [
             'start' => trim($found['start']),
             'end' => trim($found['end']),
-            'bounds' => match ($found['lowerbound'].$found['upperbound']) {
+            'bounds' => match ($found['lower'].$found['upper']) {
                 '[]' => self::INCLUDE_ALL,
                 '[[' => self::INCLUDE_START_EXCLUDE_END,
                 '][' => self::EXCLUDE_ALL,

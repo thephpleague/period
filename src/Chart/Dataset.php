@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use Iterator;
+use IteratorAggregate;
 use League\Period\Period;
 use League\Period\Sequence;
 use MultipleIterator;
@@ -24,23 +25,23 @@ use function strlen;
 
 final class Dataset implements Data
 {
-    /**
-     * @var array<array{0:int|string, 1:Sequence}>
-     */
+    /** @var array<array{0:int|string, 1:Sequence}> */
     private array $pairs = [];
     private int $labelMaxLength = 0;
     private Period|null $length = null;
 
     /**
-     * @param iterable<array-key, array{0:string|int, 1:Period|Sequence}> $pairs
+     * @param array<array{0:string|int, 1:Period|Sequence}>|Iterator<array{0:string|int, 1:Period|Sequence}>|IteratorAggregate<array{0:string|int, 1:Period|Sequence}> $pairs
      */
-    public function __construct(iterable $pairs = [])
+    public function __construct(array|Iterator|IteratorAggregate $pairs = [])
     {
         $this->appendAll($pairs);
     }
 
     /**
      * Creates a new collection from a countable iterable structure.
+     *
+     * @param iterable<array-key, Period|Sequence> $items
      */
     public static function fromItems(iterable $items, LabelGenerator $labelGenerator = new LatinLetter()): self
     {
@@ -48,9 +49,6 @@ final class Dataset implements Data
             throw new TypeError('The submitted items collection should be countable.');
         }
 
-        /**
-         * @template-implements MultipleIterator<array-key, array{0:int|string, 1:Period|Sequence}> $pairs
-         */
         $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
         $pairs->attachIterator($labelGenerator->generate(count($items)), 0);
         $pairs->attachIterator((function () use ($items): Iterator {
@@ -140,6 +138,9 @@ final class Dataset implements Data
         }
     }
 
+    /**
+     * @return array<array{label:string|int, item:Sequence}>
+     */
     public function jsonSerialize(): array
     {
         return array_map(

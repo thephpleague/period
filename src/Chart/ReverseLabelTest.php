@@ -22,6 +22,8 @@ final class ReverseLabelTest extends TestCase
 {
     /**
      * @dataProvider providerLetter
+     *
+     * @param array<string> $expected
      */
     public function testGetLabels(int $nbLabels, string $letter, array $expected): void
     {

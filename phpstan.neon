@@ -6,13 +6,5 @@ parameters:
     level: max
     paths:
         - src
-    checkGenericClassInNonGenericObjectType: false
-    checkMissingIterableValueType: false
     ignoreErrors:
-        - message: '#^Variable property access on DateInterval.#'
-          path: src/DurationTest.php
-        - message: '#Only numeric types are allowed in post-increment, string given.#'
-          path: src/Chart/LatinLetter.php
-        - message: '#^Parameter \#1 \$pairs of class League\\Period\\Chart\\Dataset constructor expects#'
-          path: src/Chart/Dataset.php
     reportUnmatchedIgnoredErrors: true

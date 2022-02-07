@@ -1106,6 +1106,9 @@ class PeriodRelationTest extends TestCase
         self::assertSame($meetsOnEnd, $period1->meetsOnEnd($period2));
     }
 
+    /**
+     * @return iterable<array{period1:Period, period2:Period, meets:bool, meetsOnStart:bool, meetsOnEnd:bool}>
+     */
     public function meetsProvider(): iterable
     {
         yield [

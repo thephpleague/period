@@ -117,19 +117,19 @@ final class Period implements JsonSerializable
     private static function filterDatePoint(DatePoint|DateTimeInterface|string $datepoint): DateTimeImmutable
     {
         return match (true) {
+            $datepoint instanceof DatePoint => $datepoint->date,
             $datepoint instanceof DateTimeImmutable => $datepoint,
             $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
-            $datepoint instanceof DatePoint => $datepoint->date,
-            default => new DateTimeImmutable($datepoint),
+            default => DatePoint::fromDateString($datepoint)->date,
         };
     }
 
     private static function filterDuration(Period|Duration|DateInterval|string $duration): DateInterval
     {
         return match (true) {
-            $duration instanceof DateInterval => $duration,
             $duration instanceof Duration => $duration->dateInterval,
             $duration instanceof Period => $duration->toDateInterval(),
+            $duration instanceof DateInterval => $duration,
             default => Duration::fromDateString($duration)->dateInterval,
         };
     }

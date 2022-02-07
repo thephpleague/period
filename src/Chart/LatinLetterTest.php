@@ -22,6 +22,8 @@ final class LatinLetterTest extends TestCase
 {
     /**
      * @dataProvider providerLetter
+     *
+     * @param array<string> $expected
      */
     public function testGetLabels(int $nbLabels, string $letter, array $expected): void
     {
@@ -49,6 +51,11 @@ final class LatinLetterTest extends TestCase
                 'nbLabels' => 2,
                 'letter' => 'aa',
                 'expected' => ['aa', 'ab'],
+            ],
+            'labels starts ends at z' => [
+                'nbLabels' => 3,
+                'letter' => 'z',
+                'expected' => ['z', 'aa', 'ab'],
             ],
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
