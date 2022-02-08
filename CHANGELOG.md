@@ -32,15 +32,14 @@ All notable changes to `Period` will be documented in this file
 - Switch from using `Closure` object instead of the `callable` pseudo type with the `Sequence` methods.
 - `Period::diff` returns a `Sequence` instance instead of an array.
 - `Period::__construct` is private.
-- `Period` named constructors no longer supports scalar values only objects can be used for instantiation.
 - `Period` named constructors, all parameters are required except for the boundaries.
-- `Period::timeDuration` now returns an `int` instead of a `float` value.  
+- `Period::toTimeDuration` now returns an `int` instead of a `float` value.  
 - `Duration` no longer extends a `DateInterval` object.
 - `Duration::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - `Datepoint` class renamed `DatePoint`.
 - `DatePoint` no longer extends a `DateTimeImmutable` object.
 - Argument names are normalized throughout the package. (PHP8 BC break)
-- `Chart\LatinLetter` in case of wrong value it will always fall back to `A` instead of using `0` which is not a letter.
+- `Chart\LatinLetter` in case of wrong value will always fall back to `A` instead of using `0` which is not a letter.
 
 ### Deprecated
 
