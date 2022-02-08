@@ -40,6 +40,7 @@ All notable changes to `Period` will be documented in this file
 - `Datepoint` class renamed `DatePoint`.
 - `DatePoint` no longer extends a `DateTimeImmutable` object.
 - Argument names are normalized throughout the package. (PHP8 BC break)
+- `Chart\LatinLetter` in case of wrong value it will always fall back to `A` instead of using `0` which is not a letter.
 
 ### Deprecated
 

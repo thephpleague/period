@@ -14,7 +14,11 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use Iterator;
+use function array_pop;
+use function chr;
+use function implode;
 use function preg_match;
+use function str_split;
 use function trim;
 
 /**
@@ -31,13 +35,9 @@ final class LatinLetter implements LabelGenerator
         $this->startingAt = $this->filterLetter($startingAt);
     }
 
-    public function filterLetter(string $str): string
+    private function filterLetter(string $str): string
     {
         $str = trim($str);
-        if ('' === $str) {
-            return '0';
-        }
-
         if (1 !== preg_match('/^[A-Za-z]+$/', $str)) {
             return 'A';
         }
@@ -85,40 +85,40 @@ final class LatinLetter implements LabelGenerator
     }
 
     /**
-     * Increments Letters like numbers in PHP.
+     * Increments ASCII Letters like numbers in PHP.
      *
      * @see https://stackoverflow.com/questions/3567180/how-to-increment-letters-like-numbers-in-php/3567218
      */
     private static function increment(string $previous): string
     {
-        static $asciiUpperCaseInterval = [65, 91];
-        static $asciiLowerCaseInterval = [97, 123];
+        static $asciiUpperCaseBounds = ['start' => 65, 'end' => 91];
+        static $asciiLowerCaseBounds = ['start' => 97, 'end' => 123];
 
-        $next = '';
         $increase = true;
         $letters = str_split($previous);
+        $nextLetters = [];
 
         while ([] !== $letters) {
-            $letter = array_pop($letters);
+            $nextLetter = array_pop($letters);
 
             if ($increase) {
-                $letterAscii = ord($letter) + 1;
+                $letterAscii = ord($nextLetter) + 1;
 
-                [$letterAscii, $increase] = match ($letterAscii) {
-                    $asciiUpperCaseInterval[1] => [$asciiUpperCaseInterval[0], true],
-                    $asciiLowerCaseInterval[1] => [$asciiLowerCaseInterval[0], true],
+                [$nextLetterAscii, $increase] = match ($letterAscii) {
+                    $asciiUpperCaseBounds['end'] => [$asciiUpperCaseBounds['start'], true],
+                    $asciiLowerCaseBounds['end'] => [$asciiLowerCaseBounds['start'], true],
                     default => [$letterAscii, false],
                 };
 
-                $letter = chr($letterAscii);
+                $nextLetter = chr($nextLetterAscii);
                 if ($increase && [] === $letters) {
-                    $letter .= $letter;
+                    $nextLetter .= $nextLetter;
                 }
             }
 
-            $next = $letter.$next;
+            $nextLetters = [$nextLetter, ...$nextLetters];
         }
 
-        return $next;
+        return implode('', $nextLetters);
     }
 }

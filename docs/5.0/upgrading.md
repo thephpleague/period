@@ -325,3 +325,12 @@ With the introduction of the `Bounds` enum, all bound related methods have been 
 | `Period::isStartExcluded`                     | `Bounds::isStartIncluded`                     |
 | `Period::isEndIncluded`                       | `Bounds::isEndIncluded`                       |
 | `Period::isEndExcluded`                       | `Bounds::isEndIncluded`                       |
+
+## Changes in Charts LabelGenerator
+
+the `LatinLetter` label generator no longer fall back to using the `0` value. Only ASCII letters will be used.
+
+```diff
+- var_export(iterator_to_array((new LatinLetter(''))->generate(1), false)); // [0 => '0']
++ var_export(iterator_to_array((new LatinLetter(''))->generate(1), false)); // [0 => 'A']
+```

@@ -60,12 +60,12 @@ final class LatinLetterTest extends TestCase
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'letter' => '        ',
-                'expected' => ['0'],
+                'expected' => ['A'],
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
                 'letter' => '',
-                'expected' => ['0'],
+                'expected' => ['A'],
             ],
             'labels with an integer' => [
                 'nbLabels' => 1,

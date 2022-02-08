@@ -71,14 +71,14 @@ final class AffixLabelTest extends TestCase
                 'letter' => '        ',
                 'prefix' => '.',
                 'suffix' => '.',
-                'expected' => ['.0.'],
+                'expected' => ['.A.'],
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
                 'letter' => '',
                 'prefix' => '.'.PHP_EOL,
                 'suffix' => PHP_EOL.'.',
-                'expected' => ['.0.'],
+                'expected' => ['.A.'],
             ],
             'labels with an integer' => [
                 'nbLabels' => 1,
