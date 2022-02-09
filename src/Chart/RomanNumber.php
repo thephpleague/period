@@ -32,10 +32,11 @@ final class RomanNumber implements LabelGenerator
         'I'  => 1,
     ];
 
-    public function __construct(public readonly DecimalNumber $decimalNumber, public readonly Casing $case = Casing::UPPER)
-    {
+    public function __construct(
+        public readonly DecimalNumber $decimalNumber,
+        public readonly LetterCase $letterCase = LetterCase::UPPER
+    ) {
     }
-
 
     public function generate(int $nbLabels): Iterator
     {
@@ -46,7 +47,7 @@ final class RomanNumber implements LabelGenerator
 
     public function format(string $label): string
     {
-        if (Casing::UPPER === $this->case) {
+        if (LetterCase::UPPER === $this->letterCase) {
             return strtoupper($label);
         }
 
@@ -72,49 +73,10 @@ final class RomanNumber implements LabelGenerator
             }
         }
 
-        if (Casing::LOWER === $this->case) {
+        if (LetterCase::LOWER === $this->letterCase) {
             return strtolower($retVal);
         }
 
         return $retVal;
-    }
-
-    /**
-     * Tells whether the roman letter is upper cased.
-     */
-    public function isUpper(): bool
-    {
-        return Casing::UPPER === $this->case;
-    }
-
-    /**
-     * Return an instance with the starting Letter.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the starting Letter.
-     */
-    public function startsWith(int $startingAt): self
-    {
-        $labelGenerator = $this->decimalNumber->startsWith($startingAt);
-        if ($labelGenerator === $this->decimalNumber) {
-            return $this;
-        }
-
-        return new self($labelGenerator, $this->case);
-    }
-
-    /**
-     * Return an instance with the new letter case setting.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the letter case setting.
-     */
-    public function case(Casing $case): self
-    {
-        if ($case === $this->case) {
-            return $this;
-        }
-
-        return new self($this->decimalNumber, $case);
     }
 }

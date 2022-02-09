@@ -99,7 +99,7 @@ use League\Period\Chart;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$labelGenerator = new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\Casing::LOWER);
+$labelGenerator = new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\LetterCase::LOWER);
 
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
@@ -123,10 +123,10 @@ The `RomanNumber` also exposes the following methods:
 ~~~php
 <?php
 use League\Period\Chart
-public readonly DecimalNumber RomanNumber::decimalNumber; //returns the first decimal number to be used
-public function RomanNumber::startsWith(): self;  //returns a new object with a new starting decimal number
-public function RomanNumber::withLetterCase(Chart\Casing $lettercase): self;  //returns a new object with a new letter casing
-public function RomanNumber::isUpper(): bool;  //Tells whether the roman letter is uppercase.
+public readonly DecimalNumber RomanNumber::decimalNumber; //returns the decimal number generator
+public readonly LetterCase RomanNumber::letterCase; //returns the letter casing used
+public function RomanNumber::letterCase(LetterCase $lettercase): self;  //returns a new object with a new letter casing
+public function RomanNumber::decimalNumber(DecimalNumber $decimalNumber): self;  //returns a new object with a new decimal number
 ~~~
 
 ## AffixLabel
@@ -141,7 +141,7 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $labelGenerator = new Chart\AffixLabel(
-    new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\Casing::LOWER),
+    new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\LetterCase::LOWER),
     '*', //prefix
     '.)'    //suffix
 );
@@ -185,7 +185,7 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $labelGenerator = new Chart\DecimalNumber(5);
-$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\Casing::LOWER);
+$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\LetterCase::LOWER);
 $labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 

@@ -20,10 +20,10 @@ All notable changes to `Period` will be documented in this file
 - `Period::toBourbaki`
 - `Period::toIso80000`
 - `Period::toBourbaki`
-- `Sequence::overlapAll`
+- `Sequence::intersectAll`
 - `Bounds` Enumeration.
 - `InitialDatePresence` Enumeration.
-- `Chart\Casing` Enumeration.
+- `Chart\LetterCase` Enumeration.
 - `Chart\Alignment` Enumeration.
 - `Chart\StreamOutput` class to replace `Chart\ConsoleOutput` class.
 
@@ -39,7 +39,7 @@ All notable changes to `Period` will be documented in this file
 - `Datepoint` class renamed `DatePoint`.
 - `DatePoint` no longer extends a `DateTimeImmutable` object.
 - Argument names are normalized throughout the package. (PHP8 BC break)
-- `Chart\LatinLetter` in case of wrong value will always fall back to `A` instead of using `0` which is not a letter.
+- `Chart\LatinLetter` in case of wrong value will fall back to `A` instead of `0` which is not a letter.
 
 ### Deprecated
 
@@ -75,6 +75,10 @@ All notable changes to `Period` will be documented in this file
 - `Duration::create` is removed with no replacement
 - `Datepoint::create` is removed with no replacement
 - `Chart\ConsoleOutput` replaced by `Chart\StreamOutput` class.
+- `Chart\RomanNumber::isLower` use `Chart\LetterCase::isUpper` instead.
+- `Chart\RomanNumber::startingAt` use `Chart\DecimalNumber::startingAt`
+- `Chart\RomanNumber::startsWith` is removed with no replacement
+- `Chart\RomanNumber::withLetterCase` is removed with no replacement
 - The `create` prefix is removed from the `Duration` and `Datepoint` named constructors.
 - All charts related classes have their properties exposed as public readonly. All their getters are removed except if they are part of an interface.
 

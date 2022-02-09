@@ -328,9 +328,11 @@ With the introduction of the `Bounds` enum, all bound related methods have been 
 
 ## Changes in Charts LabelGenerator
 
-the `LatinLetter` label generator no longer fall back to using the `0` value. Only ASCII letters will be used.
+The `LatinLetter` label generator no longer fall back to using the `0` value. Only ASCII letters will be used.
 
 ```diff
 - var_export(iterator_to_array((new LatinLetter(''))->generate(1), false)); // [0 => '0']
 + var_export(iterator_to_array((new LatinLetter(''))->generate(1), false)); // [0 => 'A']
 ```
+
+The `RomanNumber` label generator no longer allows changes. You need to create a new `RomanNumber` object instead.

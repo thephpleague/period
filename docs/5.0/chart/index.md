@@ -182,7 +182,7 @@ $config = Chart\GanttChartConfig::fromStream(STDOUT)
     ->labelAlignment(Chart\Alignment::RIGHT);
 
 $labelGenerator = new Chart\DecimalNumber(42);
-$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\Casing::UPPER);
+$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\LetterCase::UPPER);
 $labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 

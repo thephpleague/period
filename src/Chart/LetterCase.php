@@ -13,8 +13,13 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
-enum Casing
+enum LetterCase
 {
     case UPPER;
     case LOWER;
+
+    public function isUpper(): bool
+    {
+        return $this === self::UPPER;
+    }
 }
