@@ -25,10 +25,11 @@ final class RomanNumberTest extends TestCase
      *
      * @param array<string> $expected
      */
-    public function testGetLabels(int $nbLabels, int $label, LetterCase $lettercase, array $expected): void
+    public function testGetLabels(int $nbLabels, int $label, LetterCase $lettercase, array $expected, bool $isUpper): void
     {
         $generator = new RomanNumber(new DecimalNumber($label), $lettercase);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
+        self::assertSame($isUpper, $lettercase->isUpper());
     }
 
     /**
@@ -42,30 +43,35 @@ final class RomanNumberTest extends TestCase
                 'label' => 1,
                 'lettercase' => LetterCase::UPPER,
                 'expected' => [],
+                'isUpper' => true,
             ],
             'labels starts at 3' => [
                 'nbLabels' => 1,
                 'label' => 3,
                 'lettercase' => LetterCase::UPPER,
                 'expected' => ['III'],
+                'isUpper' => true,
             ],
             'labels starts ends at 4' => [
                 'nbLabels' => 2,
                 'label' => 4,
                 'lettercase' => LetterCase::UPPER,
                 'expected' => ['IV', 'V'],
+                'isUpper' => true,
             ],
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'label' => -1,
                 'lettercase' => LetterCase::LOWER,
                 'expected' => ['i'],
+                'isUpper' => false,
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
                 'label' => 0,
                 'lettercase' => LetterCase::LOWER,
                 'expected' => ['i'],
+                'isUpper' => false,
             ],
         ];
     }

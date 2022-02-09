@@ -328,16 +328,16 @@ With the introduction of the `Bounds` enum, all bound related methods have been 
 
 ## Changes in Charts LabelGenerator
 
-| `4.x` method name                  | `5.x` method name                                       |
-|------------------------------------|---------------------------------------------------------|
-| `LatinLetter::startsWith`          | `LatinLetter::startingAt` method                        |
-| `LatinLetter::startingAt` method   | `LatinLetter::startingLabel` public readonly property   |
-| `DecimalNumber::startsWith`        | `DecimalNumber::startingAt` method                      |
-| `DecimalNumber::startingAt` method | `DecimalNumber::startingLabel` public readonly property |
-| `AffixLabel::suffix` method        | `AffixLabel::suffix` public readonly property           |
-| `AffixLabel::prefix` method        | `AffixLabel::prefix` public readonly property           |
-| `AffixLabel::withPrefix`           | `AffixLabel::suffix` method                             |
-| `AffixLabel::withSuffix`           | `AffixLabel::prefix` method                             |
+| `4.x` method name                  | `5.x` method name                                    |
+|------------------------------------|------------------------------------------------------|
+| `LatinLetter::startsWith`          | `LatinLetter::startingOn`                            |
+| `LatinLetter::startingAt` method   | `LatinLetter::startLabel` public readonly property   |
+| `DecimalNumber::startsWith`        | `DecimalNumber::startingOn`                          |
+| `DecimalNumber::startingAt` method | `DecimalNumber::startLabel` public readonly property |
+| `AffixLabel::suffix` method        | `AffixLabel::suffix` public readonly property        |
+| `AffixLabel::prefix` method        | `AffixLabel::prefix` public readonly property        |
+| `AffixLabel::withPrefix`           | `AffixLabel::suffix` method                          |
+| `AffixLabel::withSuffix`           | `AffixLabel::prefix` method                          |
 
 The `LatinLetter` label generator no longer fall back to using the `0` value. Only ASCII letters will be used.
 

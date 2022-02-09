@@ -28,11 +28,11 @@ use function trim;
  */
 final class LatinLetter implements LabelGenerator
 {
-    public readonly string $startingLabel;
+    public readonly string $startLabel;
 
-    public function __construct(string $startingLabel)
+    public function __construct(string $startLabel)
     {
-        $this->startingLabel = $this->filterLabel($startingLabel);
+        $this->startLabel = $this->filterLabel($startLabel);
     }
 
     private function filterLabel(string $str): string
@@ -57,7 +57,7 @@ final class LatinLetter implements LabelGenerator
         }
 
         $count = 0;
-        $label = $this->startingLabel;
+        $label = $this->startLabel;
         while ($count < $nbLabels) {
             yield $count => $label;
 
@@ -73,14 +73,14 @@ final class LatinLetter implements LabelGenerator
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the starting Letter.
      */
-    public function startingAt(string $startingLabel): self
+    public function startingOn(string $startLabel): self
     {
-        $startingLabel = $this->filterLabel($startingLabel);
-        if ($startingLabel === $this->startingLabel) {
+        $startLabel = $this->filterLabel($startLabel);
+        if ($startLabel === $this->startLabel) {
             return $this;
         }
 
-        return new self($startingLabel);
+        return new self($startLabel);
     }
 
     /**

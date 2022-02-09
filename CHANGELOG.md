@@ -80,12 +80,12 @@ All notable changes to `Period` will be documented in this file
 - All charts related classes have their properties exposed as public readonly. All their getters are removed except if they are part of an interface.
 - `Chart\ConsoleOutput` replaced by `Chart\StreamOutput` class.
 - `Chart\RomanNumber::isLower` use `Chart\LetterCase::isUpper` instead.
-- `Chart\RomanNumber::startingAt` use `Chart\DecimalNumber::startingLabel` public readonly property
+- `Chart\RomanNumber::startingAt` use `Chart\DecimalNumber::startLabel` public readonly property
 - `Chart\RomanNumber::startsWith` is removed with no replacement
 - `Chart\RomanNumber::withLetterCase` is removed with no replacement
-- `Chart\DecimalNumber::startsWith` use `Chart\DecimalNumber::startingAt` instead
-- `Chart\LatinNumber::startsWith` use `Chart\LatinNumber::startingAt` instead
-- `Chart\LatinNumber::startingAt` use `Chart\LatinNumber::startingLabel` public readonly property
+- `Chart\DecimalNumber::startsWith` use `Chart\DecimalNumber::startingOn` instead
+- `Chart\LatinNumber::startsWith` use `Chart\LatinNumber::startingOn` instead
+- `Chart\LatinNumber::startingAt` use `Chart\LatinNumber::startLabel` public readonly property
 
 Removed all the following namespaced functions from the package: 
 

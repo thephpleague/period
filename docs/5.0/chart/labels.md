@@ -47,8 +47,8 @@ The `LatinLetter` also exposes the following methods:
 ~~~php
 <?php
 
-public readonly string LatinLetter::startingLabel;  //returns the first letter to be used
-public function LatinLetter::startingAt(string $startingLabel): self; //returns a new object with a new starting letter
+public readonly string LatinLetter::startLabel;  //returns the first letter to be used
+public function LatinLetter::startingOn(string $startLabel): self; //returns a new object with a new starting letter
 ~~~
 
 ## DecimalNumber
@@ -84,8 +84,8 @@ The `DecimalNumber` also exposes the following methods:
 ~~~php
 <?php
 
-public readonly string DecimalNumber::startingLabel; //returns the first decimal number to be used
-public function DecimalNumber::startingAt(string $startingLabel): self; //returns a new object with a new starting decimal number
+public readonly string DecimalNumber::startLabel; //returns the first decimal number to be used
+public function DecimalNumber::startingOn(string $startLabel): self; //returns a new object with a new starting decimal number
 ~~~
 
 ## RomanNumber
