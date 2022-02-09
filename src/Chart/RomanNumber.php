@@ -34,7 +34,7 @@ final class RomanNumber implements LabelGenerator
 
     public function __construct(
         public readonly DecimalNumber $decimalNumber,
-        public readonly LetterCase $letterCase = LetterCase::UPPER
+        public readonly LetterCase $letterCase
     ) {
     }
 

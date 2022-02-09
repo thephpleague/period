@@ -68,13 +68,13 @@ final class DecimalNumberTest extends TestCase
     public function testStartWith(): void
     {
         $generator = new DecimalNumber(42);
-        self::assertSame(42, $generator->startingAt);
-        $new = $generator->startsWith(69);
+        self::assertSame(42, $generator->startingLabel);
+        $new = $generator->startingAt(69);
         self::assertNotSame($new, $generator);
-        self::assertSame(69, $new->startingAt);
-        self::assertSame($generator, $generator->startsWith(42));
-        self::assertSame(1, (new DecimalNumber(-3))->startingAt);
-        self::assertSame(1, $generator->startsWith(-3)->startingAt);
+        self::assertSame(69, $new->startingLabel);
+        self::assertSame($generator, $generator->startingAt(42));
+        self::assertSame(1, (new DecimalNumber(-3))->startingLabel);
+        self::assertSame(1, $generator->startingAt(-3)->startingLabel);
     }
 
     public function testFormat(): void

@@ -28,14 +28,14 @@ use function trim;
  */
 final class LatinLetter implements LabelGenerator
 {
-    public readonly string $startingAt;
+    public readonly string $startingLabel;
 
-    public function __construct(string $startingAt = 'A')
+    public function __construct(string $startingLabel)
     {
-        $this->startingAt = $this->filterLetter($startingAt);
+        $this->startingLabel = $this->filterLabel($startingLabel);
     }
 
-    private function filterLetter(string $str): string
+    private function filterLabel(string $str): string
     {
         $str = trim($str);
         if (1 !== preg_match('/^[A-Za-z]+$/', $str)) {
@@ -44,7 +44,6 @@ final class LatinLetter implements LabelGenerator
 
         return $str;
     }
-
 
     public function format(string $label): string
     {
@@ -58,11 +57,11 @@ final class LatinLetter implements LabelGenerator
         }
 
         $count = 0;
-        $letter = $this->startingAt;
+        $label = $this->startingLabel;
         while ($count < $nbLabels) {
-            yield $count => $letter;
+            yield $count => $label;
 
-            $letter = self::increment($letter);
+            $label = self::increment($label);
 
             ++$count;
         }
@@ -74,14 +73,14 @@ final class LatinLetter implements LabelGenerator
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the starting Letter.
      */
-    public function startsWith(string $startingAt): self
+    public function startingAt(string $startingLabel): self
     {
-        $startingAt = $this->filterLetter($startingAt);
-        if ($startingAt === $this->startingAt) {
+        $startingLabel = $this->filterLabel($startingLabel);
+        if ($startingLabel === $this->startingLabel) {
             return $this;
         }
 
-        return new self($startingAt);
+        return new self($startingLabel);
     }
 
     /**
@@ -89,13 +88,13 @@ final class LatinLetter implements LabelGenerator
      *
      * @see https://stackoverflow.com/questions/3567180/how-to-increment-letters-like-numbers-in-php/3567218
      */
-    private static function increment(string $previous): string
+    private static function increment(string $current): string
     {
         static $asciiUpperCaseBounds = ['start' => 65, 'end' => 91];
         static $asciiLowerCaseBounds = ['start' => 97, 'end' => 123];
 
         $increase = true;
-        $letters = str_split($previous);
+        $letters = str_split($current);
         $nextLetters = [];
 
         while ([] !== $letters) {

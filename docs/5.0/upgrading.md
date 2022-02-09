@@ -328,6 +328,17 @@ With the introduction of the `Bounds` enum, all bound related methods have been 
 
 ## Changes in Charts LabelGenerator
 
+| `4.x` method name                  | `5.x` method name                                       |
+|------------------------------------|---------------------------------------------------------|
+| `LatinLetter::startsWith`          | `LatinLetter::startingAt` method                        |
+| `LatinLetter::startingAt` method   | `LatinLetter::startingLabel` public readonly property   |
+| `DecimalNumber::startsWith`        | `DecimalNumber::startingAt` method                      |
+| `DecimalNumber::startingAt` method | `DecimalNumber::startingLabel` public readonly property |
+| `AffixLabel::suffix` method        | `AffixLabel::suffix` public readonly property           |
+| `AffixLabel::prefix` method        | `AffixLabel::prefix` public readonly property           |
+| `AffixLabel::withPrefix`           | `AffixLabel::suffix` method                             |
+| `AffixLabel::withSuffix`           | `AffixLabel::prefix` method                             |
+
 The `LatinLetter` label generator no longer fall back to using the `0` value. Only ASCII letters will be used.
 
 ```diff
@@ -335,4 +346,5 @@ The `LatinLetter` label generator no longer fall back to using the `0` value. On
 + var_export(iterator_to_array((new LatinLetter(''))->generate(1), false)); // [0 => 'A']
 ```
 
-The `RomanNumber` label generator no longer allows changes. You need to create a new `RomanNumber` object instead.
+The `RomanNumber` label generator no longer allows changes. 
+You need to create a new `RomanNumber` object instead with its two arguments explicitly set.

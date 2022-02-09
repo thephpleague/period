@@ -26,13 +26,13 @@ final class AffixLabel implements LabelGenerator
     public readonly string $prefix;
     public readonly string $suffix;
 
-    public function __construct(private LabelGenerator $labelGenerator, string $prefix = '', string $suffix = '')
+    public function __construct(public readonly LabelGenerator $labelGenerator, string $prefix = '', string $suffix = '')
     {
-        $this->prefix = $this->filterString($prefix);
-        $this->suffix = $this->filterString($suffix);
+        $this->prefix = $this->filterAffix($prefix);
+        $this->suffix = $this->filterAffix($suffix);
     }
 
-    private function filterString(string $str): string
+    private function filterAffix(string $str): string
     {
         return (string) preg_replace("/[\r\n]/", '', $str);
     }
@@ -57,7 +57,7 @@ final class AffixLabel implements LabelGenerator
      */
     public function suffix(string $suffix): self
     {
-        $suffix = $this->filterString($suffix);
+        $suffix = $this->filterAffix($suffix);
         if ($suffix === $this->suffix) {
             return $this;
         }
@@ -73,7 +73,7 @@ final class AffixLabel implements LabelGenerator
      */
     public function prefix(string $prefix): self
     {
-        $prefix = $this->filterString($prefix);
+        $prefix = $this->filterAffix($prefix);
         if ($prefix === $this->prefix) {
             return $this;
         }

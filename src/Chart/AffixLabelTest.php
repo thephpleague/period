@@ -92,7 +92,7 @@ final class AffixLabelTest extends TestCase
 
     public function testGetter(): void
     {
-        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)));
+        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::UPPER));
         self::assertSame('', $generator->suffix);
         self::assertSame('', $generator->prefix);
         $new = $generator->prefix('o')->suffix('');
@@ -103,7 +103,7 @@ final class AffixLabelTest extends TestCase
 
     public function testFormat(): void
     {
-        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10)), ':', '.');
+        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::UPPER), ':', '.');
         self::assertSame(':FOOBAR.', $generator->format('foobar'));
     }
 }

@@ -47,8 +47,8 @@ The `LatinLetter` also exposes the following methods:
 ~~~php
 <?php
 
-public readonly string LatinLetter::startingAt;  //returns the first letter to be used
-public function LatinLetter::startsWith(): self; //returns a new object with a new starting letter
+public readonly string LatinLetter::startingLabel;  //returns the first letter to be used
+public function LatinLetter::startingAt(string $startingLabel): self; //returns a new object with a new starting letter
 ~~~
 
 ## DecimalNumber
@@ -84,8 +84,8 @@ The `DecimalNumber` also exposes the following methods:
 ~~~php
 <?php
 
-public readonly string DecimalNumber::startingAt; //returns the first decimal number to be used
-public function DecimalNumber::startsWith(): self;  //returns a new object with a new starting decimal number
+public readonly string DecimalNumber::startingLabel; //returns the first decimal number to be used
+public function DecimalNumber::startingAt(string $startingLabel): self; //returns a new object with a new starting decimal number
 ~~~
 
 ## RomanNumber
@@ -125,8 +125,6 @@ The `RomanNumber` also exposes the following methods:
 use League\Period\Chart
 public readonly DecimalNumber RomanNumber::decimalNumber; //returns the decimal number generator
 public readonly LetterCase RomanNumber::letterCase; //returns the letter casing used
-public function RomanNumber::letterCase(LetterCase $lettercase): self;  //returns a new object with a new letter casing
-public function RomanNumber::decimalNumber(DecimalNumber $decimalNumber): self;  //returns a new object with a new decimal number
 ~~~
 
 ## AffixLabel
@@ -169,8 +167,8 @@ The `AffixLabel` also exposes the following methods:
 
 public readonly string AffixLabel::prefix; //returns the current prefix
 public readonly string AffixLabel::suffix; //returns the current suffix
-public function AffixLabel::withPrefix(string $prefix): self;  //returns a new object with a new prefix
-public function AffixLabel::withSuffix(string $suffix): self;  //returns a new object with a new suffix
+public function AffixLabel::prefix(string $prefix): self;  //returns a new object with a new prefix
+public function AffixLabel::suffix(string $suffix): self;  //returns a new object with a new suffix
 ~~~
 
 ## ReverseLabel

@@ -139,7 +139,7 @@ final class DatasetTest extends TestCase
             ['B', new Sequence(Period::fromDate(new DateTimeImmutable('2018-01-15'), new DateTimeImmutable('2018-02-01')))],
         ]);
 
-        self::assertEquals($dataset, Dataset::fromItems($dataset->items(), new LatinLetter()));
+        self::assertEquals($dataset, Dataset::fromItems($dataset->items(), new LatinLetter('A')));
         self::assertEquals(new Dataset(), Dataset::fromItems((new Dataset())->items(), new DecimalNumber(42)));
     }
 
@@ -176,6 +176,6 @@ final class DatasetTest extends TestCase
 
         $this->expectException(TypeError::class);
 
-        Dataset::fromItems(new $items(), new LatinLetter());
+        Dataset::fromItems(new $items(), new LatinLetter('A'));
     }
 }

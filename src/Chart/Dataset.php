@@ -43,7 +43,7 @@ final class Dataset implements Data
      *
      * @param iterable<array-key, Period|Sequence> $items
      */
-    public static function fromItems(iterable $items, LabelGenerator $labelGenerator = new LatinLetter()): self
+    public static function fromItems(iterable $items, LabelGenerator $labelGenerator = new LatinLetter('A')): self
     {
         if (!is_countable($items)) {
             throw new TypeError('The submitted items collection should be countable.');

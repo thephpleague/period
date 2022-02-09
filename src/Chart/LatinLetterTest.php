@@ -78,11 +78,11 @@ final class LatinLetterTest extends TestCase
     public function testStartWith(): void
     {
         $generator = new LatinLetter('i');
-        self::assertSame('i', $generator->startingAt);
-        $new = $generator->startsWith('o');
+        self::assertSame('i', $generator->startingLabel);
+        $new = $generator->startingAt('o');
         self::assertNotSame($new, $generator);
-        self::assertSame('o', $new->startingAt);
-        self::assertSame($generator, $generator->startsWith('i'));
+        self::assertSame('o', $new->startingLabel);
+        self::assertSame($generator, $generator->startingAt('i'));
     }
 
     public function testFormat(): void

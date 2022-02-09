@@ -23,10 +23,9 @@ use function iterator_to_array;
  */
 final class ReverseLabel implements LabelGenerator
 {
-    public function __construct(private LabelGenerator $labelGenerator)
+    public function __construct(public readonly LabelGenerator $labelGenerator)
     {
     }
-
 
     public function generate(int $nbLabels): Iterator
     {
@@ -37,7 +36,6 @@ final class ReverseLabel implements LabelGenerator
             yield $key => (string) current($data);
         }
     }
-
 
     public function format(string $label): string
     {
