@@ -1,10 +1,9 @@
 vendor
 build
-composer.lock
 .idea
 docs/_site
 docs/.jekyll-cache
 docs/node_modules
-.php_cs.cache
+composer.lock
 .php-cs-fixer.cache
 .phpunit.result.cache

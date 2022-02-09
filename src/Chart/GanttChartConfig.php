@@ -50,7 +50,7 @@ final class GanttChartConfig
      *
      * @param resource $stream
      */
-    public static function fromStream($stream = STDOUT): self
+    public static function fromStream($stream): self
     {
         return new self(new StreamOutput($stream));
     }

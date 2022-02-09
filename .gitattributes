@@ -8,8 +8,6 @@
 /.php-cs-fixer.php  export-ignore
 /phpstan.neon       export-ignore
 /CHANGELOG.md       export-ignore
-/CONDUCT.md         export-ignore
 /README.md          export-ignore
 /phpunit.xml        export-ignore
-/psalm.xml          export-ignore
 /**/*Test.php       export-ignore
