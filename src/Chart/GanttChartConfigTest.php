@@ -255,7 +255,7 @@ final class GanttChartConfigTest extends TestCase
 
     public function testWithOutputAlwaysReturnsANewInstance(): void
     {
-        $newConfig = $this->config->output(new StreamOutput(STDOUT));
+        $newConfig = $this->config->output(new StreamOutput(STDOUT, Terminal::POSIX));
         self::assertNotSame($this->config, $newConfig);
         self::assertEquals($newConfig->output, $this->config->output);
     }
@@ -263,7 +263,7 @@ final class GanttChartConfigTest extends TestCase
     public function testConstructors(): void
     {
         self::assertEquals(
-            GanttChartConfig::fromOutput(new StreamOutput(STDERR)),
+            GanttChartConfig::fromOutput(new StreamOutput(STDERR, Terminal::POSIX)),
             GanttChartConfig::fromStream(STDERR)
         );
     }

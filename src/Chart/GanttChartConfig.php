@@ -29,7 +29,7 @@ final class GanttChartConfig
     private const REGEXP_UNICODE = '/\\\\u(?<unicode>[0-9A-F]{1,4})/i';
 
     public function __construct(
-        public readonly Output $output = new StreamOutput(STDOUT),
+        public readonly Output $output = new StreamOutput(STDOUT, Terminal::POSIX),
         /** @var array<Color> */
         public readonly array $colors = [Color::RESET],
         public readonly string $startExcludedCharacter = '(',
@@ -50,9 +50,9 @@ final class GanttChartConfig
      *
      * @param resource $stream
      */
-    public static function fromStream($stream): self
+    public static function fromStream($stream, Terminal $terminal = Terminal::POSIX): self
     {
-        return new self(new StreamOutput($stream));
+        return new self(new StreamOutput($stream, $terminal));
     }
 
     /**

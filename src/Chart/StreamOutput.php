@@ -21,9 +21,7 @@ use function fwrite;
 use function implode;
 use function preg_replace;
 use function preg_replace_callback;
-use function strtolower;
 use const PHP_EOL;
-use const PHP_OS;
 
 final class StreamOutput implements Output
 {
@@ -35,7 +33,7 @@ final class StreamOutput implements Output
     /**
      * @param mixed $stream stream resource
      */
-    public function __construct(mixed $stream)
+    public function __construct(mixed $stream, public readonly Terminal $terminal)
     {
         if (!is_resource($stream) || 'stream' !== get_resource_type($stream)) {
             throw new TypeError('Argument passed must be a stream resource.');
@@ -55,7 +53,7 @@ final class StreamOutput implements Output
      */
     private function colorize(string $characters, Color $color): string
     {
-        if (Color::NONE === $color) {
+        if (Color::NONE === $color || Terminal::UNKNOWN === $this->terminal) {
             return $characters;
         }
 
@@ -83,12 +81,6 @@ final class StreamOutput implements Output
     {
         static $formatter;
         if ($formatter instanceof Closure) {
-            return $formatter;
-        }
-
-        if (str_starts_with(strtolower(PHP_OS), 'win')) {
-            $formatter = fn (array $matches): string => (string)$matches[0];
-
             return $formatter;
         }
 

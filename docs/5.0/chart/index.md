@@ -133,13 +133,12 @@ The `GanttChartConfig` class exposes the following additional constants and meth
 
 ~~~php
 <?php
-use League\Period\Chart\StreamOutput;
-use League\Period\Chart\Output;
+use League\Period\Chart;
 
-public static function GanttChartConfig::fromStream(resource $stream = STDOUT);
-public static function GanttChartConfig::fromOutput(Output $output = new StreamOutput(STDOUT));
-public static function GanttChartConfig::fromRandomColor(Output $output = new StreamOutput(STDOUT)): self
-public static function GanttChartConfig::fromRainbow(Output $output = new StreamOutput(STDOUT)): self
+public static function GanttChartConfig::fromStream(resource $stream = STDOUT, Chart\Terminal $terminal = Chart\Terminal::POSIX);
+public static function GanttChartConfig::fromOutput(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::POSIX));
+public static function GanttChartConfig::fromRandomColor(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::POSIX)): self
+public static function GanttChartConfig::fromRainbow(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::POSIX)): self
 public readonly Output GanttChartConfig::output;                 //Returns the Output instance.
 public readonly string GanttChartConfig::startExcludedCharacter; //Returns the excluded start block character.
 public readonly string GanttChartConfig::startIncludedCharacter; //Returns the included start block character.
@@ -168,7 +167,7 @@ use League\Period\Duration;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$config = Chart\GanttChartConfig::fromStream(STDOUT)
+$config = Chart\GanttChartConfig::fromStream(STDOUT, Chart\Terminal::POSIX)
     ->colors(...Chart\Color::rainBow())
     ->startExcludedCharacter('🍕')
     ->startIncludedCharacter('🍅')

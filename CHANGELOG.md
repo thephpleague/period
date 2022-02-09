@@ -26,6 +26,7 @@ All notable changes to `Period` will be documented in this file
 - `Chart\LetterCase` Enumeration.
 - `Chart\Alignment` Enumeration.
 - `Chart\StreamOutput` class to replace `Chart\ConsoleOutput` class.
+- `Chart\Terminal` Enumeration.
 
 ### Fixed
 

@@ -39,16 +39,16 @@ final class StreamOutputTest extends TestCase
     public function testCreateStreamWithInvalidParameter(): void
     {
         $this->expectException(TypeError::class);
-        new StreamOutput(__DIR__.'/data/foo.csv');
+        new StreamOutput(__DIR__.'/data/foo.csv', Terminal::POSIX);
     }
 
     /**
-     * @dataProvider providesWritelnTexts
+     * @dataProvider providesWritelnTextsPosix
      */
     public function testWriteln(string $message, string $expected): void
     {
         $stream = $this->setStream();
-        $output = new StreamOutput($stream);
+        $output = new StreamOutput($stream, Terminal::POSIX);
         $output->writeln($message, Color::BLUE);
         $output->writeln($message);
         rewind($stream);
@@ -61,7 +61,7 @@ final class StreamOutputTest extends TestCase
     /**
      * @return iterable<string, array{message:string, expected:string}>
      */
-    public function providesWritelnTexts(): iterable
+    public function providesWritelnTextsPosix(): iterable
     {
         return [
             'empty message' => [
@@ -71,6 +71,39 @@ final class StreamOutputTest extends TestCase
             'simple message' => [
                 'message' => "I'm the king of the world",
                 'expected' => chr(27).'[34m'."I'm the king of the world".chr(27).'[0m'.PHP_EOL,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providesWritelnTextsUnknown
+     */
+    public function testWritelnUnknown(string $message, string $expected): void
+    {
+        $stream = $this->setStream();
+        $output = new StreamOutput($stream, Terminal::UNKNOWN);
+        $output->writeln($message, Color::BLUE);
+        $output->writeln($message);
+        rewind($stream);
+        /** @var string $data */
+        $data = stream_get_contents($stream);
+
+        self::assertStringContainsString($expected, $data);
+    }
+
+    /**
+     * @return iterable<string, array{message:string, expected:string}>
+     */
+    public function providesWritelnTextsUnknown(): iterable
+    {
+        return [
+            'empty message' => [
+                'message' => '',
+                'expected' => '',
+            ],
+            'simple message' => [
+                'message' => "I'm the king of the world",
+                'expected' => "I'm the king of the world".PHP_EOL,
             ],
         ];
     }
