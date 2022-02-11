@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use Iterator;
-use function preg_replace;
+use function preg_match;
 
 /**
  * A class to attach a prefix and/or a suffix string to the generated label.
@@ -23,61 +23,31 @@ use function preg_replace;
  */
 final class AffixLabel implements LabelGenerator
 {
-    public readonly string $prefix;
-    public readonly string $suffix;
-
-    public function __construct(public readonly LabelGenerator $labelGenerator, string $prefix = '', string $suffix = '')
-    {
-        $this->prefix = $this->filterAffix($prefix);
-        $this->suffix = $this->filterAffix($suffix);
+    public function __construct(
+        public readonly LabelGenerator $labelGenerator,
+        public readonly string $labelPrefix = '',
+        public readonly string $labelSuffix = ''
+    ) {
+        $this->filterAffix($this->labelPrefix);
+        $this->filterAffix($this->labelSuffix);
     }
 
-    private function filterAffix(string $str): string
+    private function filterAffix(string $str): void
     {
-        return (string) preg_replace("/[\r\n]/", '', $str);
+        if (1 === preg_match("/[\r\n]/", $str)) {
+            throw UnableToDrawChart::dueToInvalidLabel($str, $this);
+        }
     }
 
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->labelGenerator->generate($nbLabels) as $key => $label) {
-            yield $key => $this->prefix.$label.$this->suffix;
+            yield $key => $this->labelPrefix.$label.$this->labelSuffix;
         }
     }
 
     public function format(string $label): string
     {
-        return $this->prefix.$this->labelGenerator->format($label).$this->suffix;
-    }
-
-    /**
-     * Returns an instance with the suffix.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the suffix.
-     */
-    public function suffix(string $suffix): self
-    {
-        $suffix = $this->filterAffix($suffix);
-        if ($suffix === $this->suffix) {
-            return $this;
-        }
-
-        return new self($this->labelGenerator, $this->prefix, $suffix);
-    }
-
-    /**
-     * Return an instance with the prefix.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the prefix.
-     */
-    public function prefix(string $prefix): self
-    {
-        $prefix = $this->filterAffix($prefix);
-        if ($prefix === $this->prefix) {
-            return $this;
-        }
-
-        return new self($this->labelGenerator, $prefix, $this->suffix);
+        return $this->labelPrefix.$this->labelGenerator->format($label).$this->labelSuffix;
     }
 }

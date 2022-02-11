@@ -37,12 +37,12 @@ final class LatinLetter implements LabelGenerator
 
     private function filterLabel(string $str): string
     {
-        $str = trim($str);
-        if (1 !== preg_match('/^[A-Za-z]+$/', $str)) {
-            return 'A';
+        $label = trim($str);
+        if (1 !== preg_match('/^[A-Za-z]+$/', $label)) {
+            throw UnableToDrawChart::dueToInvalidLabel($str, $this);
         }
 
-        return $str;
+        return $label;
     }
 
     public function format(string $label): string
@@ -65,22 +65,6 @@ final class LatinLetter implements LabelGenerator
 
             ++$count;
         }
-    }
-
-    /**
-     * Return an instance with the starting Letter.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the starting Letter.
-     */
-    public function startingOn(string $startLabel): self
-    {
-        $startLabel = $this->filterLabel($startLabel);
-        if ($startLabel === $this->startLabel) {
-            return $this;
-        }
-
-        return new self($startLabel);
     }
 
     /**

@@ -84,9 +84,13 @@ All notable changes to `Period` will be documented in this file
 - `Chart\RomanNumber::startingAt` use `Chart\DecimalNumber::startLabel` public readonly property
 - `Chart\RomanNumber::startsWith` is removed with no replacement
 - `Chart\RomanNumber::withLetterCase` is removed with no replacement
-- `Chart\DecimalNumber::startsWith` use `Chart\DecimalNumber::startingOn` instead
-- `Chart\LatinNumber::startsWith` use `Chart\LatinNumber::startingOn` instead
+- `Chart\DecimalNumber::startsWith` is removed with no replacement
+- `Chart\LatinNumber::startsWith` is removed with no replacement
 - `Chart\LatinNumber::startingAt` use `Chart\LatinNumber::startLabel` public readonly property
+- `Chart\AffixLabel::withPrefix` is removed with no replacement
+- `Chart\AffixLabel::withSuffix` is removed with no replacement
+- `Chart\AffixLabel::prefix` method use `Chart\AffixLabel::labelPrefix` public readonly property
+- `Chart\AffixLabel::suffix` method use `Chart\AffixLabel::labelSuffix` public readonly property
 
 Removed all the following namespaced functions from the package: 
 

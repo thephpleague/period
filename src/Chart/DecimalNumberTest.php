@@ -55,26 +55,14 @@ final class DecimalNumberTest extends TestCase
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
                 'label' => -1,
-                'expected' => ['1'],
+                'expected' => ['-1'],
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
                 'label' => 0,
-                'expected' => ['1'],
+                'expected' => ['0'],
             ],
         ];
-    }
-
-    public function testStartWith(): void
-    {
-        $generator = new DecimalNumber(42);
-        self::assertSame(42, $generator->startLabel);
-        $new = $generator->startingOn(69);
-        self::assertNotSame($new, $generator);
-        self::assertSame(69, $new->startLabel);
-        self::assertSame($generator, $generator->startingOn(42));
-        self::assertSame(1, (new DecimalNumber(-3))->startLabel);
-        self::assertSame(1, $generator->startingOn(-3)->startLabel);
     }
 
     public function testFormat(): void

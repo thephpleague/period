@@ -36,6 +36,9 @@ final class RomanNumber implements LabelGenerator
         public readonly DecimalNumber $decimalNumber,
         public readonly LetterCase $letterCase
     ) {
+        if ($this->decimalNumber->startLabel < 1) {
+            throw UnableToDrawChart::dueToInvalidLabel($this->decimalNumber->startLabel, $this);
+        }
     }
 
     public function generate(int $nbLabels): Iterator

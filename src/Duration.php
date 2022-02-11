@@ -19,6 +19,8 @@ use DateTimeInterface;
 use InvalidArgumentException;
 use function preg_match;
 use function str_pad;
+use function strlen;
+use function substr;
 
 /**
  * League Period Duration.

@@ -11,6 +11,9 @@
 
 namespace League\Period;
 
+use function preg_match;
+use function trim;
+
 /*
  * An Enum to handle interval bounds.
  *

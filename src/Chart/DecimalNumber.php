@@ -22,11 +22,13 @@ use Iterator;
  */
 final class DecimalNumber implements LabelGenerator
 {
-    public readonly int $startLabel;
-
-    public function __construct(int $startLabel)
+    public function __construct(public readonly int $startLabel)
     {
-        $this->startLabel = $this->filterStart($startLabel);
+    }
+
+    public function format(string $label): string
+    {
+        return $label;
     }
 
     public function generate(int $nbLabels): Iterator
@@ -44,36 +46,5 @@ final class DecimalNumber implements LabelGenerator
             ++$count;
             ++$label;
         }
-    }
-
-    public function format(string $label): string
-    {
-        return $label;
-    }
-
-    /**
-     * Return an instance with the starting Letter.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the starting Letter.
-     */
-    public function startingOn(int $startLabel): self
-    {
-        $startLabel = $this->filterStart($startLabel);
-
-        if ($startLabel === $this->startLabel) {
-            return $this;
-        }
-
-        return new self($startLabel);
-    }
-
-    private function filterStart(int $start): int
-    {
-        if (0 >= $start) {
-            return 1;
-        }
-
-        return $start;
     }
 }

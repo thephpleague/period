@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use Iterator;
+use function array_reverse;
 use function iterator_to_array;
 
 /**
@@ -29,11 +30,10 @@ final class ReverseLabel implements LabelGenerator
 
     public function generate(int $nbLabels): Iterator
     {
-        $iterable = $this->labelGenerator->generate($nbLabels);
-        $data = iterator_to_array($iterable, false);
+        $data = iterator_to_array($this->labelGenerator->generate($nbLabels), false);
 
-        for (end($data); null !== ($key = key($data)); prev($data)) {
-            yield $key => (string) current($data);
+        foreach (array_reverse($data, false) as $offset => $value) {
+            yield $offset => $value;
         }
     }
 

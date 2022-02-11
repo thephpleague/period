@@ -34,9 +34,6 @@ final class AffixLabelTest extends TestCase
     ): void {
         $generator = new AffixLabel(new LatinLetter($letter), $prefix, $suffix);
         self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
-
-        $generator = (new AffixLabel(new LatinLetter($letter)))->prefix($prefix)->suffix($suffix);
-        self::assertSame($expected, iterator_to_array($generator->generate($nbLabels), false));
     }
 
     /**
@@ -68,37 +65,26 @@ final class AffixLabelTest extends TestCase
             ],
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
-                'letter' => '        ',
+                'letter' => '   A     ',
                 'prefix' => '.',
                 'suffix' => '.',
                 'expected' => ['.A.'],
             ],
-            'labels starts at 0 (2)' => [
-                'nbLabels' => 1,
-                'letter' => '',
-                'prefix' => '.'.PHP_EOL,
-                'suffix' => PHP_EOL.'.',
-                'expected' => ['.A.'],
-            ],
-            'labels with an integer' => [
-                'nbLabels' => 1,
-                'letter' => '1',
-                'prefix' => '.'.PHP_EOL,
-                'suffix' => PHP_EOL,
-                'expected' => ['.A'],
-            ],
         ];
+    }
+
+    public function testFailsToInstantiateNewInstanceWithCarriageReturnCharacter(): void
+    {
+        $this->expectException(UnableToDrawChart::class);
+
+        new AffixLabel(labelGenerator: new LatinLetter('foobar'), labelPrefix: 'toto', labelSuffix: 'toto'.PHP_EOL);
     }
 
     public function testGetter(): void
     {
         $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::UPPER));
-        self::assertSame('', $generator->suffix);
-        self::assertSame('', $generator->prefix);
-        $new = $generator->prefix('o')->suffix('');
-        self::assertNotSame($new, $generator);
-        self::assertSame('o', $new->prefix);
-        self::assertSame('', $new->suffix);
+        self::assertSame('', $generator->labelSuffix);
+        self::assertSame('', $generator->labelPrefix);
     }
 
     public function testFormat(): void

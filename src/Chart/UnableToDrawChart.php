@@ -31,4 +31,9 @@ final class UnableToDrawChart extends InvalidArgumentException
     {
         return new self('The given string `'.$character.'` is not a valid unicode string');
     }
+
+    public static function dueToInvalidLabel(string|int|float $character, LabelGenerator $labelGenerator): self
+    {
+        return new self('The given string `'.$character.'` can not be used to generate labels with `'.$labelGenerator::class.'`.');
+    }
 }

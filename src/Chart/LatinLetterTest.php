@@ -20,6 +20,20 @@ use PHPUnit\Framework\TestCase;
  */
 final class LatinLetterTest extends TestCase
 {
+    public function testFailsToCreateNewInstanceWithEmptyString(): void
+    {
+        $this->expectException(UnableToDrawChart::class);
+
+        new LatinLetter('');
+    }
+
+    public function testFailsToCreateNewInstanceWithInvalidString(): void
+    {
+        $this->expectException(UnableToDrawChart::class);
+
+        new LatinLetter('F0obar');
+    }
+
     /**
      * @dataProvider providerLetter
      *
@@ -59,30 +73,15 @@ final class LatinLetterTest extends TestCase
             ],
             'labels starts at 0 (1)' => [
                 'nbLabels' => 1,
-                'letter' => '        ',
+                'letter' => '   A     ',
                 'expected' => ['A'],
             ],
             'labels starts at 0 (2)' => [
                 'nbLabels' => 1,
-                'letter' => '',
-                'expected' => ['A'],
-            ],
-            'labels with an integer' => [
-                'nbLabels' => 1,
-                'letter' => '1',
+                'letter' => 'A',
                 'expected' => ['A'],
             ],
         ];
-    }
-
-    public function testStartWith(): void
-    {
-        $generator = new LatinLetter('i');
-        self::assertSame('i', $generator->startLabel);
-        $new = $generator->startingOn('o');
-        self::assertNotSame($new, $generator);
-        self::assertSame('o', $new->startLabel);
-        self::assertSame($generator, $generator->startingOn('i'));
     }
 
     public function testFormat(): void

@@ -24,7 +24,7 @@ enum Color: string
     case WHITE = 'white';
     case NONE = 'none';
 
-    public function code(): string
+    public function posix(): string
     {
         return match ($this) {
             self::RESET => '0',

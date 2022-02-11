@@ -48,7 +48,6 @@ The `LatinLetter` also exposes the following methods:
 <?php
 
 public readonly string LatinLetter::startLabel;  //returns the first letter to be used
-public function LatinLetter::startingOn(string $startLabel): self; //returns a new object with a new starting letter
 ~~~
 
 ## DecimalNumber
@@ -85,7 +84,6 @@ The `DecimalNumber` also exposes the following methods:
 <?php
 
 public readonly string DecimalNumber::startLabel; //returns the first decimal number to be used
-public function DecimalNumber::startingOn(string $startLabel): self; //returns a new object with a new starting decimal number
 ~~~
 
 ## RomanNumber
@@ -165,10 +163,9 @@ The `AffixLabel` also exposes the following methods:
 ~~~php
 <?php
 
-public readonly string AffixLabel::prefix; //returns the current prefix
-public readonly string AffixLabel::suffix; //returns the current suffix
-public function AffixLabel::prefix(string $prefix): self;  //returns a new object with a new prefix
-public function AffixLabel::suffix(string $suffix): self;  //returns a new object with a new suffix
+public readonly LabelGenerator ReverseLabel::labelGenerator; //returns the decorated LabelGenerator
+public readonly string AffixLabel::labelPrefix; //returns the current prefix
+public readonly string AffixLabel::labelSuffix; //returns the current suffix
 ~~~
 
 ## ReverseLabel
@@ -202,6 +199,14 @@ results:
 ~~~bash
  vi. [-----------------------------------)
  v.  [----------)
+~~~
+
+The `ReverseLabel` also exposes the following methods:
+
+~~~php
+<?php
+
+public readonly LabelGenerator ReverseLabel::labelGenerator; //returns the decorated LabelGenerator
 ~~~
 
 ## Custom LabelGenerator

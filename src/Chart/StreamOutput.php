@@ -42,7 +42,7 @@ final class StreamOutput implements Output
         $this->stream = $stream;
     }
 
-    public function writeln(string $message = '', Color $color = Color::NONE): void
+    public function writeln(string $message, Color $color = Color::NONE): void
     {
         fwrite($this->stream, $this->format($this->colorize($message, $color)).PHP_EOL);
         fflush($this->stream);
@@ -53,7 +53,7 @@ final class StreamOutput implements Output
      */
     private function colorize(string $characters, Color $color): string
     {
-        if (Color::NONE === $color || Terminal::UNKNOWN === $this->terminal) {
+        if (Color::NONE === $color || Terminal::POSIX !== $this->terminal) {
             return $characters;
         }
 
@@ -65,6 +65,10 @@ final class StreamOutput implements Output
      */
     private function format(string $str): string
     {
+        if (Terminal::POSIX !== $this->terminal) {
+            return $str;
+        }
+
         /** @var string|null $regexp */
         static $regexp;
         if (null === $regexp) {
@@ -80,14 +84,12 @@ final class StreamOutput implements Output
     private function formatter(): Closure
     {
         static $formatter;
-        if ($formatter instanceof Closure) {
-            return $formatter;
+        if (!$formatter instanceof Closure) {
+            $formatter = fn (array $matches): string => chr(27).'['.strtr(
+                (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]),
+                array_reduce(Color::cases(), fn (array $carry, Color $color): array => [...$carry, ...[$color->value => $color->posix()]], [])
+            ).'m';
         }
-
-        $formatter = fn (array $matches): string => chr(27).'['.strtr(
-            (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]),
-            array_reduce(Color::cases(), fn (array $carry, Color $color): array => [...$carry, ...[$color->value => $color->code()]], [])
-        ).'m';
 
         return $formatter;
     }

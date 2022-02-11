@@ -328,16 +328,28 @@ With the introduction of the `Bounds` enum, all bound related methods have been 
 
 ## Changes in Charts LabelGenerator
 
+The label generators provided by the package no longer allows changes.
+Instead of modifying the label generator, create a new instance instead with new explicitly set arguments.
+
+```diff
+- $labelGenerator = new LatinLetter('A');
+- $labelGenerator->startingAt(); // returns 'A'
+- $labelGenerator->startsWith('a')->startingAt(); // returns 'a'
++ (new LatinLetter('A'))->startLabel; // returns 'A'
++ (new LatinLetter('a'))->startLabel; // returns 'a'
+```
+
+
 | `4.x` method name                  | `5.x` method name                                    |
 |------------------------------------|------------------------------------------------------|
-| `LatinLetter::startsWith`          | `LatinLetter::startingOn`                            |
+| `LatinLetter::startsWith`          | removed with no replacement                          |
 | `LatinLetter::startingAt` method   | `LatinLetter::startLabel` public readonly property   |
-| `DecimalNumber::startsWith`        | `DecimalNumber::startingOn`                          |
+| `DecimalNumber::startsWith`        | removed with no replacement                          |
 | `DecimalNumber::startingAt` method | `DecimalNumber::startLabel` public readonly property |
-| `AffixLabel::suffix` method        | `AffixLabel::suffix` public readonly property        |
-| `AffixLabel::prefix` method        | `AffixLabel::prefix` public readonly property        |
-| `AffixLabel::withPrefix`           | `AffixLabel::suffix` method                          |
-| `AffixLabel::withSuffix`           | `AffixLabel::prefix` method                          |
+| `AffixLabel::suffix` method        | `AffixLabel::labelSuffix` public readonly property   |
+| `AffixLabel::prefix` method        | `AffixLabel::labelPrefix` public readonly property   |
+| `AffixLabel::withPrefix`           | removed with no replacement                          |
+| `AffixLabel::withSuffix`           | removed with no replacement                          |
 
 The `LatinLetter` label generator no longer fall back to using the `0` value. Only ASCII letters will be used.
 
@@ -346,5 +358,18 @@ The `LatinLetter` label generator no longer fall back to using the `0` value. On
 + var_export(iterator_to_array((new LatinLetter(''))->generate(1), false)); // [0 => 'A']
 ```
 
-The `RomanNumber` label generator no longer allows changes. 
-You need to create a new `RomanNumber` object instead with its two arguments explicitly set.
+The `DecimalNumber` label generator allows negative integer and `O`. Previously they would be silently converted to `1`. 
+
+```diff
+- (new DecimalNumber(-3))->startingAt(); // returns '1'
+- (new DecimalNumber(-3))->startLabel; // returns '-3'
+```
+
+The `RomanNumber` label generator constructor will throw if the `DecimalNumber::startLabel` is lower than `1`.
+
+```diff
+-  $labelGenerator = new RomanNumber(new DecimalNumber(5), RomanNumber::LOWER);
+-  $labelGenerator->startingAt(); //returns 'v'
++  $labelGenerator = new RomanNumber(new DecimalNumber(-3), LetterCase::LOWER);
+// will throw UnableToDrawChart exception
+```

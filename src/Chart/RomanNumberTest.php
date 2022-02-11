@@ -55,25 +55,18 @@ final class RomanNumberTest extends TestCase
             'labels starts ends at 4' => [
                 'nbLabels' => 2,
                 'label' => 4,
-                'lettercase' => LetterCase::UPPER,
-                'expected' => ['IV', 'V'],
-                'isUpper' => true,
-            ],
-            'labels starts at 0 (1)' => [
-                'nbLabels' => 1,
-                'label' => -1,
                 'lettercase' => LetterCase::LOWER,
-                'expected' => ['i'],
-                'isUpper' => false,
-            ],
-            'labels starts at 0 (2)' => [
-                'nbLabels' => 1,
-                'label' => 0,
-                'lettercase' => LetterCase::LOWER,
-                'expected' => ['i'],
+                'expected' => ['iv', 'v'],
                 'isUpper' => false,
             ],
         ];
+    }
+
+    public function testFailsToCreateRomanLabelGenerator(): void
+    {
+        $this->expectException(UnableToDrawChart::class);
+
+        new RomanNumber(new DecimalNumber(0), LetterCase::LOWER);
     }
 
     public function testFormat(): void
