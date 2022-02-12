@@ -36,7 +36,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::diff` returns a `Sequence` instance instead of an array.
 - `Period::__construct` is private.
 - `Period` named constructors, all parameters are required except for the boundaries.
-- `Period::toTimeDuration` now returns an `int` instead of a `float` value.  
+- `Period::timeDuration` now returns an `int` instead of a `float` value.  
 - `Duration` no longer extends a `DateInterval` object.
 - `Duration::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - `Datepoint` class renamed `DatePoint`.
@@ -57,7 +57,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::getStartDate` replaced by accessing readonly property `Period::startDate`
 - `Period::getEndDate` replaced by accessing readonly property `Period::endDate`
 - `Period::getBoundaryType` replaced by accessing readonly property `Period::bounds`
-- `Period::getDateInterval` replaced by `Period::toDateInterval`
+- `Period::getDateInterval` replaced by `Period::dateInterval`
 - `Period::getTimestampInterval` replaced by `Period::timeDuration`
 - `Period::withBoundaryType` replaced by `Period::boundedBy`
 - `Period::isStartIncluded` with no replacement use `Bounds::isStartIncluded`

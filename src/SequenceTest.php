@@ -516,7 +516,7 @@ final class SequenceTest extends TestCase
         $sequence = new Sequence(Period::fromMonth(2017, 1), Period::fromMonth(2018, 1));
         $period = $sequence->length();
         if (null !== $period) {
-            self::assertNotEquals($period->toTimeDuration(), $sequence->totalTimeDuration());
+            self::assertNotEquals($period->timeDuration(), $sequence->totalTimeDuration());
         }
     }
 

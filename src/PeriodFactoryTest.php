@@ -71,7 +71,7 @@ final class PeriodFactoryTest extends TestCase
     public function testInstantiationPrecision(): void
     {
         $date = new DateTimeImmutable('2014-05-01 00:00:00');
-        self::assertEquals(new DateInterval('PT0S'), Period::fromDate($date, $date)->toDateInterval());
+        self::assertEquals(new DateInterval('PT0S'), Period::fromDate($date, $date)->dateInterval());
     }
 
     public function testInstantiationThrowExceptionIfTimeZoneIsWronglyUsed(): void
@@ -91,7 +91,7 @@ final class PeriodFactoryTest extends TestCase
     {
         $start = new DateTimeImmutable($startDate);
         $period = match (true) {
-            $duration instanceof Period => Period::after($start, $duration->toDateInterval()),
+            $duration instanceof Period => Period::after($start, $duration->dateInterval()),
             is_string($duration) => Period::after($start, DateInterval::createFromDateString($duration)),
             !$duration instanceof DateInterval => Period::after($start, Duration::fromSeconds($duration)),
             default => Period::after($start, $duration),

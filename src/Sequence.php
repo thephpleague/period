@@ -69,7 +69,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function totalTimeDuration(): int
     {
-        return $this->reduce(fn (int $timestamp, Period $period): int => $timestamp + $period->toTimeDuration(), 0);
+        return $this->reduce(fn (int $timestamp, Period $period): int => $timestamp + $period->timeDuration(), 0);
     }
 
     /**

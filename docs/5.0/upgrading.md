@@ -142,8 +142,8 @@ Most notably:
 | `4.x` method name                     | `5.x` method name             |
 |---------------------------------------|-------------------------------|
 | `Period::fromDatepoint`               | `Period::fromDate`            |
-| `Period::getDateInterval`             | `Period::toDateInterval`      |
-| `Period::getTimestampInterval`        | `Period::toTimeDuration`      |
+| `Period::getDateInterval`             | `Period::dateInterval`      |
+| `Period::getTimestampInterval`        | `Period::timeDuration`      |
 | `Period::withBoundaryType`            | `Period::boundedBy`           |
 | `Period::getDatePeriod`               | `Period::dateRangeForward`    |
 | `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`  |
@@ -276,11 +276,11 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 + Period::fromDate('2021-03-21 12:23:56', '2021-03-21 13:23:56', Bounds::EXCLUDE_ALL);
 ```
 
-`Period::toTimeDuration` now returns an `int` instead of a `float` value.
+`Period::timeDuration` now returns an `int` instead of a `float` value.
 
 ```diff
 - $period->timestampInterval(); //returns float
-+ $period->toTimeDuration();    //returns int
++ $period->timeDuration();    //returns int
 ```
 
 `Period::diff` now returns a `Sequence` object, before it was returning an `array`.

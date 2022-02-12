@@ -128,7 +128,7 @@ final class Period implements JsonSerializable
     {
         return match (true) {
             $duration instanceof Duration => $duration->dateInterval,
-            $duration instanceof Period => $duration->toDateInterval(),
+            $duration instanceof Period => $duration->dateInterval(),
             $duration instanceof DateInterval => $duration,
             default => Duration::fromDateString($duration)->dateInterval,
         };
@@ -259,15 +259,15 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * Duration representation
+     * Duration properties
      **************************************************/
 
-    public function toTimeDuration(): int
+    public function timeDuration(): int
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
 
-    public function toDateInterval(): DateInterval
+    public function dateInterval(): DateInterval
     {
         return $this->startDate->diff($this->endDate);
     }
@@ -357,7 +357,7 @@ final class Period implements JsonSerializable
      */
     public function durationCompare(Period|Duration|DateInterval|string $duration): int
     {
-        return $this->startDate->add($this->toDateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
+        return $this->startDate->add($this->dateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
     }
 
     /**
@@ -517,10 +517,10 @@ final class Period implements JsonSerializable
                 => $this->bounds === $period->bounds || $this->bounds === Bounds::INCLUDE_ALL,
             $this->startDate == $period->startDate
                 => ($this->bounds->equalsStart($period->bounds) || $this->bounds->isStartIncluded())
-                    && $this->containsDatePoint($this->startDate->add($period->toDateInterval()), $this->bounds),
+                    && $this->containsDatePoint($this->startDate->add($period->dateInterval()), $this->bounds),
             $this->endDate == $period->endDate
                 => ($this->bounds->equalsEnd($period->bounds) || $this->bounds->isEndIncluded())
-                    && $this->containsDatePoint($this->endDate->sub($period->toDateInterval()), $this->bounds),
+                    && $this->containsDatePoint($this->endDate->sub($period->dateInterval()), $this->bounds),
             default
                 => false,
         };
@@ -671,7 +671,7 @@ final class Period implements JsonSerializable
      */
     public function timeDurationDiff(self $period): int
     {
-        return $this->toTimeDuration() - $period->toTimeDuration();
+        return $this->timeDuration() - $period->timeDuration();
     }
 
     /**
@@ -679,7 +679,7 @@ final class Period implements JsonSerializable
      */
     public function dateIntervalDiff(self $period): DateInterval
     {
-        return $this->endDate->diff($this->startDate->add($period->toDateInterval()));
+        return $this->endDate->diff($this->startDate->add($period->dateInterval()));
     }
 
     /**

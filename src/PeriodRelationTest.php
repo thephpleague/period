@@ -726,7 +726,7 @@ class PeriodRelationTest extends TestCase
     {
         $orig = Period::fromDate(new DateTime('2011-12-01'), new DateTime('2012-02-01'));
         $alt = Period::fromDate(new DateTime('2012-02-01'), new DateTime('2012-02-02'));
-        self::assertEquals(0, $orig->gap($alt)->toTimeDuration());
+        self::assertEquals(0, $orig->gap($alt)->timeDuration());
     }
 
     /**
@@ -877,8 +877,8 @@ class PeriodRelationTest extends TestCase
         $sequence = $alt->diff($period);
 
         self::assertCount(2, $sequence);
-        self::assertSame(3600, $sequence[0]->toTimeDuration());
-        self::assertSame(3600, $sequence[1]->toTimeDuration());
+        self::assertSame(3600, $sequence[0]->timeDuration());
+        self::assertSame(3600, $sequence[1]->timeDuration());
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 

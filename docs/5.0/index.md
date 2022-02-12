@@ -37,8 +37,8 @@ $period = Period::fromIso80000('!Y-m-d', '[2014-10-03 08:12:37,2014-10-03 08:12:
 $period->startDate;        //returns a DateTimeImmutable
 $period->endDate;          //returns a DateTimeImmutable
 $period->bounds;           //returns a League\Period\Bounds enum
-$period->toDateInterval(); //returns a DateInterval object
-$period->toTimeDuration(); //returns the duration in seconds
+$period->dateInterval(); //returns a DateInterval object
+$period->timeDuration(); //returns the duration in seconds
 echo $period->toIso8601(); //displays '2014-10-03T08:12:37Z/2014-10-03T09:12:37Z'
 ~~~
 

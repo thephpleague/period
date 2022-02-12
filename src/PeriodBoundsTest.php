@@ -94,7 +94,7 @@ final class PeriodBoundsTest extends TestCase
     {
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $altInterval = $interval->boundedBy(Bounds::EXCLUDE_ALL);
-        self::assertEquals($altInterval->toDateInterval(), $interval->toDateInterval());
+        self::assertEquals($altInterval->dateInterval(), $interval->dateInterval());
         self::assertTrue($interval->bounds !== $altInterval->bounds);
         self::assertSame($interval, $interval->boundedBy(Bounds::INCLUDE_START_EXCLUDE_END));
     }
