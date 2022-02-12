@@ -15,7 +15,7 @@ namespace League\Period\Chart;
 
 use InvalidArgumentException;
 
-final class UnableToDrawChart extends InvalidArgumentException
+final class UnableToDrawChart extends InvalidArgumentException implements ChartError
 {
     private function __construct(string $message)
     {

@@ -8,7 +8,6 @@ All notable changes to `Period` will be documented in this file
 
 - `IntervalError` used as the error interface marker.
 - `InvalidInterval` exception for anything regarding creating an object.
-- `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `Duration::fromSeconds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
 - `Period::fromTimestamp` to instantiate a time range object from two timestamps.
 - `Period::fromIso80000` to instantiate a time range object from a mathematical representation and a date format.
@@ -28,6 +27,8 @@ All notable changes to `Period` will be documented in this file
 - `Chart\Alignment` Enumeration.
 - `Chart\StreamOutput` class to replace `Chart\ConsoleOutput` class.
 - `Chart\Terminal` Enumeration.
+- `Chart\ChartError` used as the chart error interface marker.
+- `Chart\UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 
 ### Fixed
 
