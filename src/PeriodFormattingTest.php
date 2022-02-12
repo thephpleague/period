@@ -12,29 +12,16 @@
 namespace League\Period;
 
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class PeriodFormattingTest extends TestCase
+final class PeriodFormattingTest extends PeriodTest
 {
-    private string $timezone;
-
-    protected function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    protected function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testToString(): void
     {
         date_default_timezone_set('Africa/Nairobi');
-        $period = Period::fromDate(new DateTimeImmutable('2014-05-01'), new DateTimeImmutable('2014-05-08'));
+        $period = Period::fromDate('2014-05-01', '2014-05-08');
         $format = 'Y-m-d\TH:i:s';
 
         self::assertSame($period->toIso8601($format), '2014-04-30T21:00:00/2014-05-07T21:00:00');
@@ -64,7 +51,7 @@ final class PeriodFormattingTest extends TestCase
         self::assertSame('[2015-04, 2015-05)', Period::fromMonth(2015, 4)->toIso80000('Y-m'));
         self::assertSame(
             '[2015-04-01 Africa/Nairobi, 2015-04-01 Africa/Nairobi)',
-            (Period::fromDate(new DateTimeImmutable('2015-04-01'), new DateTimeImmutable('2015-04-01')))->toIso80000('Y-m-d e')
+            (Period::fromDate('2015-04-01', '2015-04-01'))->toIso80000('Y-m-d e')
         );
     }
 }

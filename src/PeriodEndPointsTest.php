@@ -14,31 +14,18 @@ namespace League\Period;
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class PeriodEndPointsTest extends TestCase
+final class PeriodEndPointsTest extends PeriodTest
 {
-    /** @var string **/
-    private $timezone;
-
-    protected function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    protected function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testStartingOn(): void
     {
         $expected = new DateTime('2012-03-02');
         $interval = Period::fromDate(new DateTime('2014-01-13'), new DateTime('2014-01-20'));
         $newInterval = $interval->startingOn($expected);
+
         self::assertSame($newInterval->startDate->getTimestamp(), $expected->getTimestamp());
         self::assertEquals($interval->startDate, new DateTimeImmutable('2014-01-13'));
         self::assertSame($interval->startingOn($interval->startDate), $interval);

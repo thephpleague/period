@@ -12,38 +12,21 @@
 namespace League\Period;
 
 use DateInterval;
-use DateTime;
-use DateTimeImmutable;
 use Generator;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class PeriodDurationTest extends TestCase
+final class PeriodDurationTest extends PeriodTest
 {
-    private string $timezone;
-
-    protected function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    protected function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testGetDateInterval(): void
     {
-        $interval = Period::fromDate(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
-        self::assertSame(1, $interval->dateInterval()->days);
+        self::assertSame(1, Period::fromDate('2012-02-01', '2012-02-02')->dateInterval()->days);
     }
 
     public function testGetTimestampInterval(): void
     {
-        $interval = Period::fromDate(new DateTimeImmutable('2012-02-01'), new DateTimeImmutable('2012-02-02'));
-        self::assertSame(86400, $interval->timeDuration());
+        self::assertSame(86400, Period::fromDate('2012-02-01', '2012-02-02')->timeDuration());
     }
 
     /**
@@ -58,9 +41,8 @@ final class PeriodDurationTest extends TestCase
             $duration = Duration::fromSeconds($duration);
         }
 
-        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->dateRangeForward($duration, $option);
-        self::assertCount($count, iterator_to_array($range));
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
+        self::assertCount($count, iterator_to_array($period->dateRangeForward($duration, $option)));
     }
 
     /**
@@ -81,20 +63,16 @@ final class PeriodDurationTest extends TestCase
 
     /**
      * @dataProvider providerGetDatePeriodBackwards
-     *
-     * @param DateInterval|int|string $duration
      */
-    public function testGetDatePeriodBackwards($duration, InitialDatePresence $option, int $count): void
+    public function testGetDatePeriodBackwards(DateInterval|int|string $duration, InitialDatePresence $option, int $count): void
     {
-        if (is_string($duration)) {
-            $duration = DateInterval::createFromDateString($duration);
-        } elseif (!$duration instanceof DateInterval) {
+        if (is_int($duration)) {
             $duration = Duration::fromSeconds($duration);
         }
 
-        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
-        $range = $period->dateRangeBackwards($duration, $option);
-        self::assertCount($count, iterator_to_array($range));
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
+
+        self::assertCount($count, iterator_to_array($period->dateRangeBackwards($duration, $option)));
     }
 
     /**
@@ -127,23 +105,23 @@ final class PeriodDurationTest extends TestCase
     {
         return [
             'duration less than' => [
-                Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                Period::fromDate(new DateTime('2013-01-01'), new DateTime('2013-01-16')),
+                Period::fromDate('2012-01-01', '2012-01-15'),
+                Period::fromDate('2013-01-01', '2013-01-16'),
                 -1,
             ],
             'duration greater than' => [
-                Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-01-15')),
-                Period::fromDate(new DateTime('2012-01-01'), new DateTime('2012-01-07')),
+                Period::fromDate('2012-01-01', '2012-01-15'),
+                Period::fromDate('2012-01-01', '2012-01-07'),
                 1,
             ],
             'duration equals with microsecond' => [
-                Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00.123456')),
-                Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00.123456')),
+                Period::fromDate('2012-01-01 00:00:00', '2012-01-03 00:00:00.123456'),
+                Period::fromDate('2012-02-02 00:00:00', '2012-02-04 00:00:00.123456'),
                 0,
             ],
             'duration with DST' => [
-                Period::fromDate(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
-                Period::fromDate(new DateTimeImmutable('2014-03-01'), new DateTimeImmutable('2014-04-01')),
+                Period::fromDate('2014-03-01', '2014-04-01'),
+                Period::fromDate('2014-03-01', '2014-04-01'),
                 0,
             ],
         ];
@@ -162,8 +140,9 @@ final class PeriodDurationTest extends TestCase
 
         self::assertTrue($period3->durationGreaterThan($period4));
 
-        $period5 = Period::fromDate(new DateTime('2012-01-01 00:00:00'), new DateTime('2012-01-03 00:00:00'));
-        $period6 = Period::fromDate(new DateTime('2012-02-02 00:00:00'), new DateTime('2012-02-04 00:00:00'));
+        $period5 = Period::fromDate('2012-01-01 00:00:00', '2012-01-03 00:00:00');
+        $period6 = Period::fromDate('2012-02-02 00:00:00', '2012-02-04 00:00:00');
+
         self::assertTrue($period5->durationEquals($period6));
         self::assertTrue($period5->durationGreaterThanOrEquals($period6));
         self::assertTrue($period5->durationLessThanOrEquals($period6));
@@ -171,31 +150,34 @@ final class PeriodDurationTest extends TestCase
 
     public function testDateIntervalDiff(): void
     {
-        $orig = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 HOUR'));
-        $alt = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('2 HOUR'));
+        $orig = Period::after('2012-01-01', '1 HOUR');
+        $alt = Period::after('2012-01-01', '2 HOUR');
+
         self::assertSame(1, $orig->dateIntervalDiff($alt)->h);
         self::assertSame(0, $orig->dateIntervalDiff($alt)->days);
     }
 
     public function testTimestampIntervalDiff(): void
     {
-        $orig = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 HOUR'));
-        $alt = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('2 HOUR'));
+        $orig = Period::after('2012-01-01', '1 HOUR');
+        $alt = Period::after('2012-01-01', '2 HOUR');
+
         self::assertEquals(-3600, $orig->timeDurationDiff($alt));
     }
 
     public function testDateIntervalDiffPositionIrrelevant(): void
     {
-        $orig = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('1 HOUR'));
-        $alt = Period::after(new DateTimeImmutable('2012-01-01'), DateInterval::createFromDateString('2 HOUR'));
+        $orig = Period::after('2012-01-01', '1 HOUR');
+        $alt = Period::after('2012-01-01', '2 HOUR');
         $fromOrig = $orig->dateIntervalDiff($alt);
         $fromOrig->invert = 1;
+
         self::assertEquals($fromOrig, $alt->dateIntervalDiff($orig));
     }
 
     public function testSplit(): void
     {
-        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
         /** @var Generator<Period> $range */
         $range = $period->splitForward(new DateInterval('PT1H'));
 
@@ -204,7 +186,7 @@ final class PeriodDurationTest extends TestCase
 
     public function testSplitMustRecreateParentObject(): void
     {
-        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
         $range = $period->splitForward(new DateInterval('PT1H'));
         /** @var Period|null $total */
         $total = null;
@@ -221,7 +203,7 @@ final class PeriodDurationTest extends TestCase
 
     public function testSplitWithLargeInterval(): void
     {
-        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
         $range = [];
         foreach ($period->splitForward(new DateInterval('P1Y')) as $innerPeriod) {
             $range[] = $innerPeriod;
@@ -233,9 +215,9 @@ final class PeriodDurationTest extends TestCase
     public function testSplitWithInconsistentInterval(): void
     {
         $last = null;
-        $period = Period::fromDate(new DateTime('2012-01-12'), new DateTime('2012-01-13'));
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
 
-        foreach ($period->splitForward(new DateInterval('PT10H')) as $innerPeriod) {
+        foreach ($period->splitForward('10 HOURS') as $innerPeriod) {
             $last = $innerPeriod;
         }
         self::assertNotNull($last);
@@ -244,8 +226,8 @@ final class PeriodDurationTest extends TestCase
 
     public function testSplitBackwards(): void
     {
-        $period = Period::fromDate(new DateTime('2015-01-01'), new DateTime('2015-01-04'));
-        $range = $period->splitBackwards(new DateInterval('P1D'));
+        $period = Period::fromDate('2015-01-01', '2015-01-04');
+        $range = $period->splitBackwards('1 DAY');
         $list = [];
         foreach ($range as $innerPeriod) {
             $list[] = $innerPeriod;
@@ -277,7 +259,7 @@ final class PeriodDurationTest extends TestCase
 
     public function testSplitBackwardsWithInconsistentInterval(): void
     {
-        $period = Period::fromDate(new DateTime('2010-01-01'), new DateTime('2010-01-02'));
+        $period = Period::fromDate('2010-01-01', '2010-01-02');
         $last = null;
         foreach ($period->splitBackwards(new DateInterval('PT10H')) as $innerPeriod) {
             $last = $innerPeriod;
@@ -290,18 +272,20 @@ final class PeriodDurationTest extends TestCase
     public function testSplitDaylightSavingsDayIntoHoursEndInterval(): void
     {
         date_default_timezone_set('Canada/Central');
-        $period = Period::fromDate(new DateTime('2018-11-04 00:00:00.000000'), new DateTime('2018-11-04 05:00:00.000000'));
+        $period = Period::fromDate('2018-11-04 00:00:00.000000', '2018-11-04 05:00:00.000000');
         /** @var Generator<Period> $splits */
-        $splits = $period->splitForward(new DateInterval('PT30M'));
+        $splits = $period->splitForward('30 MINUTES');
+
         self::assertSame(10, iterator_count($splits));
     }
 
     public function testSplitBackwardsDaylightSavingsDayIntoHoursStartInterval(): void
     {
         date_default_timezone_set('Canada/Central');
-        $period = Period::fromDate(new DateTime('2018-04-11 00:00:00.000000'), new DateTime('2018-04-11 05:00:00.000000'));
+        $period = Period::fromDate('2018-04-11 00:00:00.000000', '2018-04-11 05:00:00.000000');
         /** @var Generator<Period> $splits */
         $splits = $period->splitBackwards(new DateInterval('PT30M'));
+
         self::assertSame(10, iterator_count($splits));
     }
 }

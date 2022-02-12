@@ -17,25 +17,12 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \League\Period\Period
  */
-final class PeriodFactoryTest extends TestCase
+final class PeriodFactoryTest extends PeriodTest
 {
-    private string $timezone;
-
-    protected function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    protected function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testInstantiationFromDatePointInstance(): void
     {
         self::assertEquals(
