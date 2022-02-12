@@ -103,25 +103,25 @@ of explicit public properties:
 Conversely the old getter are now used for setter purposes and the `with` prefix is dropped
 where it does no longer have meaning.
 
-| `4.x` method name                        | `5.x` method name                            |
-|------------------------------------------|----------------------------------------------|
-| `GanttChartConfig::withOutput()`         | `GanttChartConfig::output()`                 |
-| `GanttChartConfig::withStartExcluded()`  | `GanttChartConfig::startExcludedCharacter()` |
-| `GanttChartConfig::withStartIncluded()`  | `GanttChartConfig::startIncludedCharacter()` |
-| `GanttChartConfig::withEndExcluded()`    | `GanttChartConfig::endExcludedCharacter()`   |
-| `GanttChartConfig::withEndIncluded()`    | `GanttChartConfig::endIncludedCharacter()`   |
-| `GanttChartConfig::withWidth()`          | `GanttChartConfig::width()`                  |
-| `GanttChartConfig::withBody()`           | `GanttChartConfig::bodyCharacter()`          |
-| `GanttChartConfig::withSpace()`          | `GanttChartConfig::spaceCharacter()`         |
-| `GanttChartConfig::withColors()`         | `GanttChartConfig::colors()`                 |
-| `GanttChartConfig::withGapSize()`        | `GanttChartConfig::gapSize()`                |
-| `GanttChartConfig::withLabelAlign()`     | `GanttChartConfig::labelAlignment()`         |
-| `GanttChartConfig::withLeftMarginSize()` | `GanttChartConfig::leftMarginSize()`         |
-| `LatinLetter::withStartingAt()`          | `LatinLetter::startingAt()`                  |
-| `DecimalNumber::withStartingAt()`        | `DecimalNumber::startingAt()`                |
-| `RomanNumber::withStartingAt()`          | `RomanNumber::startingAt()`                  |
-| `AffixLabel::withPrefix()`               | `AffixLabel::prefix()`                       |
-| `AffixLabel::withSuffix()`               | `AffixLabel::suffix()`                       |
+| `4.x` method name                        | `5.x` method name                              |
+|------------------------------------------|------------------------------------------------|
+| `GanttChartConfig::withOutput()`         | `GanttChartConfig::output()`                   |
+| `GanttChartConfig::withStartExcluded()`  | `GanttChartConfig::startExcludedCharacter()`   |
+| `GanttChartConfig::withStartIncluded()`  | `GanttChartConfig::startIncludedCharacter()`   |
+| `GanttChartConfig::withEndExcluded()`    | `GanttChartConfig::endExcludedCharacter()`     |
+| `GanttChartConfig::withEndIncluded()`    | `GanttChartConfig::endIncludedCharacter()`     |
+| `GanttChartConfig::withWidth()`          | `GanttChartConfig::width()`                    |
+| `GanttChartConfig::withBody()`           | `GanttChartConfig::bodyCharacter()`            |
+| `GanttChartConfig::withSpace()`          | `GanttChartConfig::spaceCharacter()`           |
+| `GanttChartConfig::withColors()`         | `GanttChartConfig::colors()`                   |
+| `GanttChartConfig::withGapSize()`        | `GanttChartConfig::gapSize()`                  |
+| `GanttChartConfig::withLabelAlign()`     | `GanttChartConfig::labelAlignment()`           |
+| `GanttChartConfig::withLeftMarginSize()` | `GanttChartConfig::leftMarginSize()`           |
+| `LatinLetter::withStartingAt()`          | none instantiate a new `LatinLetter` instead   |
+| `DecimalNumber::withStartingAt()`        | none instantiate a new `DecimalNumber` instead |
+| `RomanNumber::withStartingAt()`          | none instantiate a new `RomanNumber` instead   |
+| `AffixLabel::withPrefix()`               | none instantiate a new `AffixLabel` instead    |
+| `AffixLabel::withSuffix()`               | none instantiate a new `AffixLabel` instead    |
 
 ```diff
 - GanttChartConfig::fromRainbow()->withGapSize(3)->gapSize(); // returns 3
@@ -139,33 +139,34 @@ Most notably:
 - conversions methods are explicitly named with a `to` or a `from` prefix.
 - methods name have been changed for consistency throughout the package.
 
-| `4.x` method name                     | `5.x` method name             |
-|---------------------------------------|-------------------------------|
-| `Period::fromDatepoint`               | `Period::fromDate`            |
-| `Period::getDateInterval`             | `Period::dateInterval`      |
-| `Period::getTimestampInterval`        | `Period::timeDuration`      |
-| `Period::withBoundaryType`            | `Period::boundedBy`           |
-| `Period::getDatePeriod`               | `Period::dateRangeForward`    |
-| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`  |
-| `Period::split`                       | `Period::splitForward`        |
-| `Period::__toString`                  | `Period::toIso8601`           |
-| `Period::format`                      | `Period::toIso80000`          |
-| `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`    |
-| `Sequence::getTotalTimestampInterval` | `Sequence::totalTimeDuration` |
-| `Duration::createFromSeconds`         | `Duration::fromSeconds`       |
-| `Duration::createFromChronoString`    | `Duration::fromChronoString`  |
-| `Duration::createFromTimeString`      | `Duration::fromTimeString`    |
-| `Duration::createFromDateString`      | `Duration::fromDateString`    |
-| `Duration::createFromDateInterval`    | `Duration::fromDateInterval`  |
-| `Datepoint::getSecond`                | `Datepoint::second`           |
-| `Datepoint::getMinute`                | `Datepoint::minute`           |
-| `Datepoint::getHour`                  | `Datepoint::hour`             |
-| `Datepoint::getIsoWeek`               | `Datepoint::isoWeek`          |
-| `Datepoint::getMonth`                 | `Datepoint::month`            |
-| `Datepoint::getQuarter`               | `Datepoint::quarter`          |
-| `Datepoint::getSemester`              | `Datepoint::semester`         |
-| `Datepoint::getYear`                  | `Datepoint::year`             |
-| `Datepoint::getIsoYear`               | `Datepoint::isoYear`          |
+| `4.x` method name                     | `5.x` method name                             |
+|---------------------------------------|-----------------------------------------------|
+| `Period::fromDatepoint`               | `Period::fromDate`                            |
+| `Period::__construct`                 | `Period::fromDate` or `Period::fromTimestamp` |
+| `Period::getDateInterval`             | `Period::dateInterval`                        |
+| `Period::getTimestampInterval`        | `Period::timeDuration`                        |
+| `Period::withBoundaryType`            | `Period::boundedBy`                           |
+| `Period::getDatePeriod`               | `Period::dateRangeForward`                    |
+| `Period::getDatePeriodBackwards`      | `Period::dateRangeBackwards`                  |
+| `Period::split`                       | `Period::splitForward`                        |
+| `Period::__toString`                  | `Period::toIso8601`                           |
+| `Period::format`                      | `Period::toIso80000`                          |
+| `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`                    |
+| `Sequence::getTotalTimestampInterval` | `Sequence::totalTimeDuration`                 |
+| `Duration::createFromSeconds`         | `Duration::fromSeconds`                       |
+| `Duration::createFromChronoString`    | `Duration::fromChronoString`                  |
+| `Duration::createFromTimeString`      | `Duration::fromTimeString`                    |
+| `Duration::createFromDateString`      | `Duration::fromDateString`                    |
+| `Duration::createFromDateInterval`    | `Duration::fromDateInterval`                  |
+| `Datepoint::getSecond`                | `Datepoint::second`                           |
+| `Datepoint::getMinute`                | `Datepoint::minute`                           |
+| `Datepoint::getHour`                  | `Datepoint::hour`                             |
+| `Datepoint::getIsoWeek`               | `Datepoint::isoWeek`                          |
+| `Datepoint::getMonth`                 | `Datepoint::month`                            |
+| `Datepoint::getQuarter`               | `Datepoint::quarter`                          |
+| `Datepoint::getSemester`              | `Datepoint::semester`                         |
+| `Datepoint::getYear`                  | `Datepoint::year`                             |
+| `Datepoint::getIsoYear`               | `Datepoint::isoYear`                          |
 
 ```diff
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();

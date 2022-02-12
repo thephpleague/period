@@ -7,12 +7,12 @@ Period
 [![Build](https://github.com/thephpleague/period/workflows/build/badge.svg)](https://github.com/thephpleague/period/actions?query=workflow%3A%22build%22)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
 
-`Period` is PHP's missing time range API. Based on ideas from [Resolving Feature Envy in the Domain](http://verraes.net/2014/08/resolving-feature-envy-in-the-domain/) by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
+`Period` is PHP's missing time range API. This package covers all basic operations regarding time ranges.
 
 ## Highlights
 
-- Represents Interval, Datepoint, Duration and Collection as value objects
-- Exposes named constructors to ease object creation
+- Represents Interval and Bounds as immutable value objects or enumeration
+- Exposes named constructors to ease instantiation
 - Covers all basic manipulations related to time range
 - Enables working with simple or complex time ranges logic
 - Fully documented
@@ -47,8 +47,8 @@ require 'path/to/period/repo/autoload.php';
 
 use League\Period\Datepoint;
 
-Datepoint::fromDateString('2012-05-23')->day()->dateInterval();
-//returns new DateInterval('P1D');
+Datepoint::fromDateString('2012-05-23')->day()->toIso80000('Y-m-d');
+//returns [2012-05-23, 2012-05-24)
 ~~~
 
 where `path/to/period/repo` represents the path where the library was extracted.
@@ -58,13 +58,11 @@ Testing
 
 `Period` has:
 
-- a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/).
-- a code analysis compliance test suite using [PHPStan](https://github.com/phpstan/phpstan).
 - a [PHPUnit](https://phpunit.de) test suite
-- an optional [mutation test run](https://github.com/infection/infection)
+- a code analysis compliance test suite using [PHPStan](https://github.com/phpstan/phpstan).
+- a coding style compliance test suite using [PHP CS Fixer](http://cs.sensiolabs.org/).
 
 To run the tests, run the following command from the project folder.
-
 
 ``` bash
 $ composer test
