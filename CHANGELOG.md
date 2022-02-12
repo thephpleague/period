@@ -10,6 +10,7 @@ All notable changes to `Period` will be documented in this file
 - `InvalidInterval` exception for anything regarding creating an object.
 - `UnableToDrawChart` exception for anything regarding drawing a chart out of `Period` and/or `Sequence` objects.
 - `Duration::fromSeconds` uses a dedicated fraction parameter and the seconds are no longer expressed using a `float` value.
+- `Period::fromTimestamp` to instantiate a time range object from two timestamps.
 - `Period::fromIso80000` to instantiate a time range object from a mathematical representation and a date format.
 - `Period::fromBourbaki` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.

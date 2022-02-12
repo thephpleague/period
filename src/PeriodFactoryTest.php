@@ -60,6 +60,14 @@ final class PeriodFactoryTest extends TestCase
         self::assertTrue($generatedPeriod->equals($period));
     }
 
+    public function testInstantiationFromTimestamp(): void
+    {
+        $dateStart = new DateTimeImmutable('@1');
+        $dateEnd = new DateTimeImmutable('@2');
+
+        self::assertEquals(Period::fromDate($dateStart, $dateEnd), Period::fromTimestamp(1, 2));
+    }
+
     public function testInstantiationPrecision(): void
     {
         $date = new DateTimeImmutable('2014-05-01 00:00:00');

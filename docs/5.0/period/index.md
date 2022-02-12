@@ -51,6 +51,21 @@ $day = Period::fromDate('2012-01-03', Datepoint::fromDateString('2012-02-03'), B
 $day->toIso80000('Y-m-d'); //return (2012-01-03, 2012-02-03)
 ~~~
 
+### Using timestamp
+
+~~~php
+public static Period::fromTimestamp(
+    int $startDate, 
+    int $endDate, 
+    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+): Period
+~~~
+
+~~~php
+$day = Period::fromTimestamp(10125487, 10158962, Bounds::EXCLUDE_ALL);
+$day->toIso80000('Y-m-d H:i:s'); //return (1970-04-28 04:0:07, 1970-04-28 13:0:02)
+~~~
+
 ### Using a datepoint and a duration
 
 ~~~php

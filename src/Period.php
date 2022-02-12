@@ -93,7 +93,7 @@ final class Period implements JsonSerializable
     /**
      * @throws InvalidInterval If format can not be resolved
      */
-    private static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    private static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds): self
     {
         if (false === ($start = DateTimeImmutable::createFromFormat($format, $startDate))) {
             throw InvalidInterval::dueToInvalidDateFormat($format, $startDate);
@@ -132,6 +132,21 @@ final class Period implements JsonSerializable
             $duration instanceof DateInterval => $duration,
             default => Duration::fromDateString($duration)->dateInterval,
         };
+    }
+
+    /**
+     * Creates new instance from a starting timestamp endpoint and ending timestamp.
+     */
+    public static function fromTimestamp(
+        int $startDate,
+        int $endDate,
+        Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    ): self {
+        return new self(
+            DatePoint::fromTimestamp($startDate)->date,
+            DatePoint::fromTimestamp($endDate)->date,
+            $bounds
+        );
     }
 
     /**
@@ -178,15 +193,15 @@ final class Period implements JsonSerializable
     /**
      * @throws InvalidInterval If no instance can be generated from a DatePeriod object
      */
-    public static function fromDateRange(DatePeriod $datePeriod, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromDateRange(DatePeriod $dateRange, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
-        $endDate = $datePeriod->getEndDate();
+        $endDate = $dateRange->getEndDate();
         if (null === $endDate) {
             throw InvalidInterval::dueToInvalidDatePeriod();
         }
 
         return new self(
-            self::filterDatePoint($datePeriod->getStartDate()),
+            self::filterDatePoint($dateRange->getStartDate()),
             self::filterDatePoint($endDate),
             $bounds
         );
