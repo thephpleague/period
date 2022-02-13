@@ -81,7 +81,7 @@ final class StreamOutputTest extends TestCase
     public function testWritelnUnknown(string $message, string $expected): void
     {
         $stream = $this->setStream();
-        $output = new StreamOutput($stream, Terminal::UNKNOWN);
+        $output = new StreamOutput($stream, Terminal::COLORLESS);
         $output->writeln($message, Color::BLUE);
         $output->writeln($message);
         rewind($stream);

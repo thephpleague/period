@@ -14,5 +14,5 @@ namespace League\Period\Chart;
 enum Terminal
 {
     case POSIX;
-    case UNKNOWN;
+    case COLORLESS;
 }
