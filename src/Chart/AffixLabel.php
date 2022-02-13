@@ -42,12 +42,17 @@ final class AffixLabel implements LabelGenerator
     public function generate(int $nbLabels): Iterator
     {
         foreach ($this->labelGenerator->generate($nbLabels) as $key => $label) {
-            yield $key => $this->labelPrefix.$label.$this->labelSuffix;
+            yield $key => $this->decorate($label);
         }
     }
 
     public function format(string $label): string
     {
-        return $this->labelPrefix.$this->labelGenerator->format($label).$this->labelSuffix;
+        return $this->decorate($this->labelGenerator->format($label));
+    }
+
+    private function decorate(string $string): string
+    {
+        return $this->labelPrefix.$string.$this->labelSuffix;
     }
 }

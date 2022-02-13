@@ -36,7 +36,7 @@ enum Color: string
             self::MAGENTA => '35',
             self::CYAN => '36',
             self::WHITE => '37',
-            default => '',
+            self::NONE => '',
         };
     }
 
