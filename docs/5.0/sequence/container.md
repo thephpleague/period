@@ -84,32 +84,6 @@ $intersections = $sequence->intersections(); // a new Sequence object
 $intersections->isEmpty(); // true
 ~~~
 
-### Sequence intersect all
-
-Returns the `Period` instance which represents the intersections shared by **all** `Period` in the collection.
-If all instances do not overlaps the method will return `null`.
-
-~~~php
-$sequence = new Sequence(
-    Period::fromDate(new DateTime('2000-02-01'), new DateTime('2000-02-28')),
-    Period::fromDate(new DateTime('2000-01-12'), new DateTime('2000-02-10')),
-    Period::fromDate(new DateTime('2000-01-14'), new DateTime('2000-02-03')),
-);
-
-$sequence->intersectAll(); //returns a Period instance
-~~~
-
-whereas
-
-~~~php
-$sequence = new Sequence(
-    Period::fromDate(new DateTime('2000-02-01'), new DateTime('2000-02-28')),
-    Period::fromDate(new DateTime('2000-01-14'), new DateTime('2000-01-23')),
-);
-
-$sequence->intersectAll(); //returns null
-~~~
-
 ### Sequence unions
 
 Returns the unions inside the instance. The method returns a new `Sequence` object containing the calculated unions expressed as `Period` objects.

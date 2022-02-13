@@ -1008,6 +1008,33 @@ class PeriodRelationTest extends PeriodTest
         }
     }
 
+
+
+    public function testOverlapsAllCanReturnsAPeriod(): void
+    {
+        $period = Period::fromDate(new DateTime('2000-02-01'), new DateTime('2000-02-28'));
+        $sequence = new Sequence(
+            Period::fromDate(new DateTime('2000-01-12'), new DateTime('2000-02-10')),
+            Period::fromDate(new DateTime('2000-01-14'), new DateTime('2000-02-03')),
+        );
+        $overlaps = $period->intersect(...$sequence);
+        foreach ($sequence as $item) {
+            self::assertTrue($item->overlaps($overlaps));
+        }
+        self::assertTrue($period->overlaps($overlaps));
+    }
+
+    public function testOverlapsAllCanReturnNull(): void
+    {
+        $period1 = Period::fromDate(new DateTime('2000-02-01'), new DateTime('2000-02-28'));
+        $period2 = Period::fromDate(new DateTime('2000-01-14'), new DateTime('2000-01-23'));
+
+        $this->expectException(UnprocessableInterval::class);
+
+        $period1->intersect($period2);
+    }
+
+
     public function testSubtractWithOverlappingUnequalPeriods(): void
     {
         $periodA = Period::after(new DateTimeImmutable('2000-01-01 10:00:00'), DateInterval::createFromDateString('8 HOURS'));

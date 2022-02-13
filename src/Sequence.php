@@ -187,28 +187,6 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns if it exists the Period that overlap all contained Period instances.
-     */
-    public function intersectAll(): Period|null
-    {
-        $period = null;
-        foreach ($this->periods as $item) {
-            if (null === $period) {
-                $period = $item;
-                continue;
-            }
-
-            if (!$item->overlaps($period)) {
-                return null;
-            }
-
-            $period = $item->intersect($period);
-        }
-
-        return $period;
-    }
-
-    /**
      * Subtract a Sequence from the current instance.
      *
      * This method MUST retain the state of the current instance, and return

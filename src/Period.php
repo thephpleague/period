@@ -781,44 +781,6 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * Returns the computed intersection between two instances as a new instance.
-     *
-     * [--------------------)
-     *          ∩
-     *                 [----------)
-     *          =
-     *                 [----)
-     *
-     * @throws UnprocessableInterval If both objects do not overlaps
-     */
-    public function intersect(self $period): self
-    {
-        if (!$this->overlaps($period)) {
-            throw UnprocessableInterval::dueToMissingOverlaps();
-        }
-
-        $startDate = $this->startDate;
-        $endDate = $this->endDate;
-        $bounds = $this->bounds;
-        if ($period->startDate > $this->startDate) {
-            $bounds = $bounds->replaceStart($period->bounds);
-            $startDate = $period->startDate;
-        }
-
-        if ($period->endDate < $this->endDate) {
-            $bounds = $bounds->replaceEnd($period->bounds);
-            $endDate = $period->endDate;
-        }
-
-        $intersect = new self($startDate, $endDate, $bounds);
-        if ($intersect->equals($this)) {
-            return $this;
-        }
-
-        return $intersect;
-    }
-
-    /**
      * Returns the computed difference between two overlapping instances as
      * an array containing Period objects or the null value.
      *
@@ -914,6 +876,47 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Returns the computed intersection between two or more instances as a new instance.
+     *
+     * [--------------------)
+     *          ∩
+     *                 [----------)
+     *          =
+     *                 [----)
+     *
+     * @throws UnprocessableInterval If both objects do not overlaps
+     */
+    public function intersect(self ...$periods): self
+    {
+        return array_reduce($periods, function (Period $carry, Period $period): Period {
+            if (!$carry->overlaps($period)) {
+                throw UnprocessableInterval::dueToMissingOverlaps();
+            }
+
+            $bounds = $carry->bounds;
+
+            $startDate = $carry->startDate;
+            if ($period->startDate > $startDate) {
+                $bounds = $bounds->replaceStart($period->bounds);
+                $startDate = $period->startDate;
+            }
+
+            $endDate = $carry->endDate;
+            if ($period->endDate < $endDate) {
+                $bounds = $bounds->replaceEnd($period->bounds);
+                $endDate = $period->endDate;
+            }
+
+            $intersect = new self($startDate, $endDate, $bounds);
+            if ($intersect->equals($carry)) {
+                return $carry;
+            }
+
+            return $intersect;
+        }, $this);
+    }
+
+    /**
      * Returns the computed union between two instances as a Sequence.
      */
     public function union(self ...$periods): Sequence
@@ -936,7 +939,7 @@ final class Period implements JsonSerializable
      */
     public function merge(self ...$periods): self
     {
-        $reducer = function (Period $carry, Period $period): Period {
+        return array_reduce($periods, function (Period $carry, Period $period): Period {
             if ($carry->startDate > $period->startDate) {
                 $carry = new self(
                     $period->startDate,
@@ -954,9 +957,7 @@ final class Period implements JsonSerializable
             }
 
             return $carry;
-        };
-
-        return array_reduce($periods, $reducer, $this);
+        }, $this);
     }
 
     /**************************************************
@@ -1011,7 +1012,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new ending date endpoint.
+     * Returns a new instance with the specified duration after the start date.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending date endpoint.
@@ -1022,7 +1023,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new starting date endpoint.
+     * Returns a new instance with the specified duration before the end date.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting date endpoint.

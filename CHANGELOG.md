@@ -21,7 +21,6 @@ All notable changes to `Period` will be documented in this file
 - `Period::toBourbaki`
 - `Period::toIso80000`
 - `Period::toBourbaki`
-- `Sequence::intersectAll`
 - `Bounds` Enumeration.
 - `InitialDatePresence` Enumeration.
 - `Chart\LetterCase` Enumeration.
@@ -38,6 +37,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::__construct` is private.
 - `Period` named constructors, all parameters are required except for the boundaries.
 - `Period::timeDuration` now returns an `int` instead of a `float` value.  
+- `Period::intersect` now can take multiple `Period` instances as parameters.
 - `Duration` no longer extends a `DateInterval` object.
 - `Duration::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - `Datepoint` class renamed `DatePoint`.

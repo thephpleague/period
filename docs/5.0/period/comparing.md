@@ -384,7 +384,7 @@ $alt->contains($period); //return false;
 public function gap(Period $interval): Period
 ~~~
 
-A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a Exception is thrown.
+A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a `IntervalError` is thrown.
 
 <p class="message-info">Before getting the gap, make sure the <code>Period</code> objects do not overlaps.</p>
 
@@ -401,10 +401,10 @@ $gap = $interval->gap($altInterval);
 ### Period::intersect
 
 ~~~php
-public function intersect(Period $interval): Period
+public function intersect(Period ...$periods): Period
 ~~~
 
-An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap, then an `Period\Exception` is thrown.
+An Period overlaps another if it shares some common part of the datetime continuum. This method returns the amount of the overlap as a Period object, only if they actually do overlap. If they do not overlap, then an `Period\IntervalError` is thrown.
 
 <p class="message-info">Before getting the intersection, make sure the <code>Period</code> objects, at least, overlap each other.</p>
 
@@ -424,7 +424,7 @@ $intersection = $interval->intersect($altInterval);
 public Period::diff(Period $interval): Sequence
 ~~~
 
-This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `Exception` is thrown.
+This method returns the difference between two `Period` objects only if they actually do overlap. If they do not overlap or abut, then an `IntervalError` is thrown.
 
 <p class="message-info">This method complements <code>Period::intersect</code>.</p>
 
@@ -495,7 +495,7 @@ $sequenceCA[0]->equals($periodC); //returns true
 ### Period::union
 
 ~~~php
-public Period::union(Period $interval): Sequence
+public Period::union(Period ...$periods): Sequence
 ~~~
 
 This method returns the union between two `Period` objects.
