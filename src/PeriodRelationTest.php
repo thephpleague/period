@@ -787,6 +787,20 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
+    public function testUnion(): void
+    {
+        $interval1 = Period::fromYear(2015);
+        $interval2 = Period::fromYear(2017);
+
+        self::assertEquals($interval1->union($interval2), new Sequence($interval1, $interval2));
+
+        $interval1 = Period::fromMonth(2015, 7);
+        $interval2 = Period::fromQuarter(2015, 3);
+
+        self::assertEquals($interval1->union($interval2), new Sequence($interval1->merge($interval2)));
+    }
+
+
     public function testDiffThrowsException(): void
     {
         $interval1 = Period::fromDate(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));

@@ -491,3 +491,36 @@ $sequenceCA = $periodC->subtract($periodA);
 count($sequenceCA); //returns 1
 $sequenceCA[0]->equals($periodC); //returns true
 ~~~
+
+### Period::union
+
+~~~php
+public Period::union(Period $interval): Sequence
+~~~
+
+This method returns the union between two `Period` objects.
+
+#### Examples
+
+~~~php
+$periodA = Period::after('2000-01-01 10:00:00', '8 HOURS');
+$periodB = Period::after('2000-01-01 14:00:00', '6 HOURS');
+$periodC = Period::before('2019-01-03', '1 MONTH');
+
+$sequenceAB = $periodA->union($periodB);
+count($sequenceAB); //returns 1
+$sequenceBA = $periodB->union($periodA);
+count($sequenceBA); //returns 1
+$sequenceBA == $sequenceAB;
+
+$sequenceAC = $periodA->subtract($periodC);
+count($sequenceAC); //returns 1
+$sequenceAC[0]->equals($periodA); //returns true
+
+$sequenceCA = $periodC->union($periodA);
+count($sequenceCA); //returns 2
+$sequenceAC = $periodA->union($periodC);
+count($sequenceAC); //returns 2
+$sequenceCA == new Sequence($periodC, $periodA);
+$sequenceCA == $sequenceAC;
+~~~

@@ -85,7 +85,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
                 continue;
             }
 
-            if (!$interval->overlaps($period) && !$interval->abuts($period)) {
+            if (!$interval->overlaps($period) && !$interval->meets($period)) {
                 $sequence->push($interval->gap($period));
             }
 
@@ -173,9 +173,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         }
 
         $index = $sequence->count() - 1;
-        $interval = $sequence->get($index);
-        if ($interval->overlaps($period) || $interval->meets($period) || $interval->abuts($period)) {
-            $sequence->set($index, $interval->merge($period));
+        $currentInterval = $sequence[$index];
+
+        if ($currentInterval->overlaps($period) || $currentInterval->meets($period)) {
+            $sequence[$index] = $currentInterval->merge($period);
 
             return $sequence;
         }

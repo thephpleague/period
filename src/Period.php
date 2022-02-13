@@ -914,6 +914,14 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Returns the computed union between two instances as a Sequence.
+     */
+    public function union(self ...$periods): Sequence
+    {
+        return (new Sequence($this, ...$periods))->unions();
+    }
+
+    /**
      * Merges one or more instances to return a new instance.
      * The resulting instance represents the largest duration possible.
      *

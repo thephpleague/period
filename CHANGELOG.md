@@ -13,6 +13,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::fromIso80000` to instantiate a time range object from a mathematical representation and a date format.
 - `Period::fromBourbaki` to instantiate a time range object from a mathematical representation and a date format.
 - `Period` duration comparison methods accepts also `Duration` and `DateInterval` in addition to `Period` objects.
+- `Period::union`
 - `Period::snapTo*` methods to ease period expansion.
 - `Period::meets`
 - `Period::meetsOnStart`
