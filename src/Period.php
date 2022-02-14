@@ -657,9 +657,10 @@ final class Period implements JsonSerializable
      */
     public function overlaps(self $timeSlot): bool
     {
-        return !$this->abuts($timeSlot)
-            && $this->startDate < $timeSlot->endDate
-            && $this->endDate > $timeSlot->startDate;
+        return match (true) {
+            $this->meets($timeSlot) => true,
+            default => !$this->abuts($timeSlot) && $this->startDate < $timeSlot->endDate && $this->endDate > $timeSlot->startDate,
+        };
     }
 
     /**************************************************

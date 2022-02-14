@@ -175,7 +175,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
         $index = $sequence->count() - 1;
         $currentInterval = $sequence[$index];
 
-        if ($currentInterval->overlaps($period) || $currentInterval->meets($period)) {
+        if ($currentInterval->overlaps($period)) {
             $sequence[$index] = $currentInterval->merge($period);
 
             return $sequence;
