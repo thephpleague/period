@@ -1068,7 +1068,14 @@ final class Period implements JsonSerializable
     public function move(Period|Duration|DateInterval|string $duration): self
     {
         $duration = self::filterDuration($duration);
-        $interval = new self($this->startDate->add($duration), $this->endDate->add($duration), $this->bounds);
+
+        return $this->newInstance(
+            new self($this->startDate->add($duration), $this->endDate->add($duration), $this->bounds)
+        );
+    }
+
+    private function newInstance(Period $interval): Period
+    {
         if ($this->equals($interval)) {
             return $this;
         }
@@ -1088,12 +1095,10 @@ final class Period implements JsonSerializable
     public function expand(Period|Duration|DateInterval|string $duration): self
     {
         $duration = self::filterDuration($duration);
-        $interval = new self($this->startDate->sub($duration), $this->endDate->add($duration), $this->bounds);
-        if ($this->equals($interval)) {
-            return $this;
-        }
 
-        return $interval;
+        return $this->newInstance(
+            new self($this->startDate->sub($duration), $this->endDate->add($duration), $this->bounds)
+        );
     }
 
     /**
@@ -1104,11 +1109,17 @@ final class Period implements JsonSerializable
      */
     public function snapToSecond(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->second()->startDate,
-            DatePoint::fromDate($this->endDate)->second()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->second()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->second()->endDate;
+        if ($this->endDate->add(new DateInterval('PT1S')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1119,11 +1130,17 @@ final class Period implements JsonSerializable
      */
     public function snapToMinute(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->minute()->startDate,
-            DatePoint::fromDate($this->endDate)->minute()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->minute()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->minute()->endDate;
+        if ($this->endDate->add(new DateInterval('PT1M')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1134,11 +1151,17 @@ final class Period implements JsonSerializable
      */
     public function snapToHour(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->hour()->startDate,
-            DatePoint::fromDate($this->endDate)->hour()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->hour()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->hour()->endDate;
+        if ($this->endDate->add(new DateInterval('PT1H')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1149,11 +1172,17 @@ final class Period implements JsonSerializable
      */
     public function snapToDay(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->day()->startDate,
-            DatePoint::fromDate($this->endDate)->day()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->day()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->day()->endDate;
+        if ($this->endDate->add(new DateInterval('P1D')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1164,11 +1193,17 @@ final class Period implements JsonSerializable
      */
     public function snapToIsoWeek(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->isoWeek()->startDate,
-            DatePoint::fromDate($this->endDate)->isoWeek()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->isoWeek()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->isoWeek()->endDate;
+        if ($this->endDate->add(new DateInterval('P7D')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1179,11 +1214,17 @@ final class Period implements JsonSerializable
      */
     public function snapToMonth(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->month()->startDate,
-            DatePoint::fromDate($this->endDate)->month()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->month()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->month()->endDate;
+        if ($this->endDate->add(new DateInterval('P1M')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1194,11 +1235,17 @@ final class Period implements JsonSerializable
      */
     public function snapToQuarter(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->quarter()->startDate,
-            DatePoint::fromDate($this->endDate)->quarter()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->quarter()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->quarter()->endDate;
+        if ($this->endDate->add(new DateInterval('P3M')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1209,11 +1256,17 @@ final class Period implements JsonSerializable
      */
     public function snapToSemester(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->semester()->startDate,
-            DatePoint::fromDate($this->endDate)->semester()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->semester()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->semester()->endDate;
+        if ($this->endDate->add(new DateInterval('P6M')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1224,11 +1277,17 @@ final class Period implements JsonSerializable
      */
     public function snapToYear(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->year()->startDate,
-            DatePoint::fromDate($this->endDate)->year()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->year()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->year()->endDate;
+        if ($this->endDate->add(new DateInterval('P1Y')) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 
     /**
@@ -1239,10 +1298,16 @@ final class Period implements JsonSerializable
      */
     public function snapToIsoYear(): self
     {
-        return new self(
-            DatePoint::fromDate($this->startDate)->isoYear()->startDate,
-            DatePoint::fromDate($this->endDate)->isoYear()->endDate,
-            $this->bounds
-        );
+        $startDate = DatePoint::fromDate($this->startDate)->isoYear()->startDate;
+        if ($startDate == $this->startDate) {
+            $startDate = $this->startDate;
+        }
+
+        $endDate = DatePoint::fromDate($this->endDate)->isoYear()->endDate;
+        if ($this->endDate->setISODate((int) $this->endDate->format('Y') + 1, 1) == $endDate) {
+            $endDate = $this->endDate;
+        }
+
+        return $this->newInstance(new self($startDate, $endDate, $this->bounds));
     }
 }
