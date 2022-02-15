@@ -207,8 +207,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function subtractOne(Sequence $sequence, Period $interval): self
     {
-        return $sequence->reduce(function (Sequence $sequence, Period $period) use ($interval): Sequence {
-            $sequence->push(...$period->subtract($interval));
+        $sub = fn (Period $source, Period $period): Sequence =>
+            !$source->overlaps($period) ?
+                new Sequence($source) :
+                $source->diff($period)->filter(fn (Period $item): bool => $source->overlaps($item));
+
+        return $sequence->reduce(function (Sequence $sequence, Period $period) use ($interval, $sub): Sequence {
+            $sequence->push(...$sub($period, $interval));
 
             return $sequence;
         }, new self());

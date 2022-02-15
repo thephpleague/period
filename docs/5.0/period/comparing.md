@@ -454,10 +454,10 @@ $sequence[0]->isBefore($sequence[1]); //return true;
 ### Period::subtract
 
 ~~~php
-public Period::subtract(Period $interval): Sequence
+public Period::subtract(Period ...$periods): Sequence
 ~~~
 
-This method returns the difference between two `Period` objects. It differs from `Period::diff` as:
+This method returns the difference between two or more `Period` objects. It differs from `Period::diff` as:
 
 - the method is **not** commutative;
 - the method never throws even when the instances do not overlaps;

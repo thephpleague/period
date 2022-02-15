@@ -38,6 +38,7 @@ All notable changes to `Period` will be documented in this file
 - `Period` named constructors, all parameters are required except for the boundaries.
 - `Period::timeDuration` now returns an `int` instead of a `float` value.  
 - `Period::intersect` now can take multiple `Period` instances as parameters.
+- `Period::subtract` now can take multiple `Period` instances as parameters.
 - `Duration` no longer extends a `DateInterval` object.
 - `Duration::fromIsoString` supports 3 versions of dealing with fractions with ISO valid string.
 - `Datepoint` class renamed `DatePoint`.
