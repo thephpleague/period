@@ -259,20 +259,6 @@ final class Period implements JsonSerializable
     }
 
     /**************************************************
-     * Duration properties
-     **************************************************/
-
-    public function timeDuration(): int
-    {
-        return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
-    }
-
-    public function dateInterval(): DateInterval
-    {
-        return $this->startDate->diff($this->endDate);
-    }
-
-    /**************************************************
      * String representation
      **************************************************/
 
@@ -338,6 +324,20 @@ final class Period implements JsonSerializable
             'startDateIncluded' => $this->bounds->isStartIncluded(),
             'endDateIncluded' => $this->bounds->isEndIncluded(),
         ];
+    }
+
+    /**************************************************
+     * Duration properties
+     **************************************************/
+
+    public function timeDuration(): int
+    {
+        return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
+    }
+
+    public function dateInterval(): DateInterval
+    {
+        return $this->startDate->diff($this->endDate);
     }
 
     /**************************************************
@@ -508,19 +508,19 @@ final class Period implements JsonSerializable
      * [--------------------)
      *     [----------)
      */
-    private function containsInterval(self $period): bool
+    private function containsInterval(self $timeSlot): bool
     {
         return match (true) {
-            $this->startDate < $period->startDate && $this->endDate > $period->endDate
+            $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate
                 => true,
-            $this->startDate == $period->startDate && $this->endDate == $period->endDate
-                => $this->bounds === $period->bounds || $this->bounds === Bounds::INCLUDE_ALL,
-            $this->startDate == $period->startDate
-                => ($this->bounds->equalsStart($period->bounds) || $this->bounds->isStartIncluded())
-                    && $this->containsDatePoint($this->startDate->add($period->dateInterval()), $this->bounds),
-            $this->endDate == $period->endDate
-                => ($this->bounds->equalsEnd($period->bounds) || $this->bounds->isEndIncluded())
-                    && $this->containsDatePoint($this->endDate->sub($period->dateInterval()), $this->bounds),
+            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate
+                => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::INCLUDE_ALL,
+            $this->startDate == $timeSlot->startDate
+                => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
+                    && $this->containsDatePoint($this->startDate->add($timeSlot->dateInterval()), $this->bounds),
+            $this->endDate == $timeSlot->endDate
+                => ($this->bounds->equalsEnd($timeSlot->bounds) || $this->bounds->isEndIncluded())
+                    && $this->containsDatePoint($this->endDate->sub($timeSlot->dateInterval()), $this->bounds),
             default
                 => false,
         };
@@ -537,7 +537,7 @@ final class Period implements JsonSerializable
             Bounds::EXCLUDE_ALL => $datepoint > $this->startDate && $datepoint < $this->endDate,
             Bounds::INCLUDE_ALL => $datepoint >= $this->startDate && $datepoint <= $this->endDate,
             Bounds::EXCLUDE_START_INCLUDE_END => $datepoint > $this->startDate && $datepoint <= $this->endDate,
-            default => $datepoint >= $this->startDate && $datepoint < $this->endDate,
+            Bounds::INCLUDE_START_EXCLUDE_END => $datepoint >= $this->startDate && $datepoint < $this->endDate,
         };
     }
 
