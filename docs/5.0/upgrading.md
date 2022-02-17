@@ -362,15 +362,16 @@ The `LatinLetter` label generator no longer fall back to using the `0` value. On
 The `DecimalNumber` label generator allows negative integer and `O`. Previously they would be silently converted to `1`. 
 
 ```diff
-- (new DecimalNumber(-3))->startingAt(); // returns '1'
-- (new DecimalNumber(-3))->startLabel; // returns '-3'
+$labelGenerator = new DecimalNumber(-3);
+- $labelGenerator->startingAt(); // returns '1'
++ $labelGenerator->startLabel;   // returns '-3'
 ```
 
 The `RomanNumber` label generator constructor will throw if the `DecimalNumber::startLabel` is lower than `1`.
 
 ```diff
--  $labelGenerator = new RomanNumber(new DecimalNumber(5), RomanNumber::LOWER);
--  $labelGenerator->startingAt(); //returns 'v'
-+  $labelGenerator = new RomanNumber(new DecimalNumber(-3), LetterCase::LOWER);
+-  $labelGenerator = new RomanNumber(new DecimalNumber(-5), RomanNumber::LOWER);
+-  $labelGenerator->startingAt(); //returns 'i'
++  $labelGenerator = new RomanNumber(new DecimalNumber(-5), LetterCase::LOWER);
 // will throw UnableToDrawChart exception
 ```

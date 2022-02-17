@@ -56,3 +56,4 @@ upgrading:
     'Upgrading Guide':
         Release Notes: '/releases/'
         From 3.x to 4.x: '/4.0/upgrading/'
+        From 4.x to 5.x: '/5.0/upgrading/'
