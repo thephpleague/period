@@ -867,9 +867,9 @@ final class Period implements JsonSerializable
      *          =
      * [--------------)
      */
-    public function subtract(self ...$period): Sequence
+    public function subtract(self ...$periods): Sequence
     {
-        return (new Sequence($this))->subtract(new Sequence(...$period));
+        return (new Sequence($this))->subtract(new Sequence(...$periods));
     }
 
     /**

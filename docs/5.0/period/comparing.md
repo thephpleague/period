@@ -12,10 +12,10 @@ You can compare different `Period` objects according to their bounds, datepoints
 ### Sorting objects
 
 ~~~php
-public Period::durationCompare(Period $interval): int
-public Period::durationGreaterThan(Period $interval): bool
-public Period::durationLessThan(Period $interval): bool
-public Period::durationEquals(Period $interval): bool
+public Period::durationCompare(Period $duration): int
+public Period::durationGreaterThan(Period $duration): bool
+public Period::durationLessThan(Period $duration): bool
+public Period::durationEquals(Period $duration): bool
 ~~~
 
 The method `Period::durationCompare` compares two `Period` objects according to their duration. The method returns:
@@ -55,8 +55,8 @@ $orig->equals($other);       //return false
 ### Returning the duration differences
 
 ~~~php
-public Period::dateIntervalDiff(Period $interval): DateInterval
-public Period::timeDurationDiff(Period $interval): int
+public Period::dateIntervalDiff(Period $period): DateInterval
+public Period::timeDurationDiff(Period $period): int
 ~~~
 
 Returns the duration difference between two Period objects using a `DateInterval` object or expressed in seconds.
@@ -105,7 +105,7 @@ $period->isBefore($period->getEndDate()); //returns true
 ### Period::isDuring
 
 ~~~php
-public Period::isDuring(Period $interval): bool
+public Period::isDuring(Period $timeSlot): bool
 ~~~
 
 A `Period` is contained into another if its datetime continuum is completely contained within the submitted `Period` datetime continuum.
@@ -149,7 +149,7 @@ $period->isAfter($period->getStartDate()); //returns false
 ### Period::bordersOnStart
 
 ~~~php
-public Period::bordersOnStart(Period $interval): bool
+public Period::bordersOnStart(Period $timeSlot): bool
 ~~~
 
 A `Period` borders on the starting datepoint of another instance if its ending datepoint is immediately before the submitted `Period` starting datepoint without overlapping.
@@ -168,7 +168,7 @@ $alt->bordersOnStart($period); //return true;
 ### Period::bordersOnEnd
 
 ~~~php
-public Period::bordersOnEnd(Period $interval): bool
+public Period::bordersOnEnd(Period $timeSlot): bool
 ~~~
 
 A `Period` borders on the ending datepoint of another instance if its starting datepoint is immediately after the submitted `Period` end datepoint without overlapping.
@@ -187,7 +187,7 @@ $period->bordersOnEnd($alt); //return true;
 ### Period::abuts
 
 ~~~php
-public Period::abuts(Period $interval): bool
+public Period::abuts(Period $timeSlot): bool
 ~~~
 
 A `Period` abuts if it starts immediately after, or ends immediately before the submitted `Period` without overlapping.
@@ -208,7 +208,7 @@ $period->abuts($alt); //return true
 ### Periods::meetsOnStart
 
 ~~~php
-public Period::meetsOnStart(Period $interval): bool
+public Period::meetsOnStart(Period $timeSlot): bool
 ~~~
 
 A `Period` meets on the starting datepoint of another instance if its ending datepoint equals the submitted `Period` starting datepoint and 
@@ -232,7 +232,7 @@ $period->meetsOnStart($alt); //return true
 ### Periods::meetsOnEnd
 
 ~~~php
-public Period::meetsOnEnd(Period $interval): bool
+public Period::meetsOnEnd(Period $timeSlot): bool
 ~~~
 
 A `Period` meets on the ending datepoint of another instance if its start datepoint equals the submitted `Period` ending datepoint and
@@ -257,7 +257,7 @@ $period->meetsOnEnd($period); //return true
 ### Periods::meets
 
 ~~~php
-public Period::meets(Period $interval): bool
+public Period::meets(Period $timeSlot): bool
 ~~~
 
 A `Period` meets on the ending datepoint or on the starting datepoint of another instance and their bounds
@@ -278,7 +278,7 @@ $period->meets($period); //return true
 ### Period::overlaps
 
 ~~~php
-public Period::overlaps(Period $interval): bool
+public Period::overlaps(Period $timeSlot): bool
 ~~~
 
 A `Period` overlaps another if they share some common part of their respective continuous portion of time without abutting.
@@ -336,7 +336,7 @@ $period->isEndedBy($alt); //return true
 ### Period::equals
 
 ~~~php
-public Period::equals(Period $interval): bool
+public Period::equals(Period $timeSlot): bool
 ~~~
 
 Tells whether two `Period` objects shares the same datepoints and the same boundary type.
@@ -381,7 +381,7 @@ $alt->contains($period); //return false;
 ### Period::gap
 
 ~~~php
-public function gap(Period $interval): Period
+public function gap(Period $period): Period
 ~~~
 
 A `Period` has a gap with another Period if there is a non-zero interval between them. This method returns the amount of the gap as a new Period object only if they do actually have a gap between them. If they overlap a `IntervalError` is thrown.
