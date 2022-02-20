@@ -18,6 +18,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use ReturnTypeWillChange;
 use function filter_var;
 use function intdiv;
 use const FILTER_VALIDATE_INT;
@@ -66,7 +67,7 @@ final class Datepoint extends DateTimeImmutable
      *
      * @return static|false
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public static function createFromFormat($format, $datetime, ?DateTimeZone $timezone = null)
     {
         $datepoint = parent::createFromFormat($format, $datetime, $timezone);
@@ -113,7 +114,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::second()
      *
      * Returns a Period instance.
@@ -142,7 +143,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::minute()
      *
      * Returns a Period instance.
@@ -171,7 +172,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::hour()
      *
      * Returns a Period instance.
@@ -200,7 +201,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::day()
      *
      * Returns a Period instance.
@@ -231,7 +232,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::isoWeek()
      *
      * Returns a Period instance.
@@ -263,7 +264,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::month()
      *
      * Returns a Period instance.
@@ -295,7 +296,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::quarter()
      *
      * Returns a Period instance.
@@ -326,7 +327,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::semester()
      *
      * Returns a Period instance.
@@ -356,7 +357,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::year()
      *
      * Returns a Period instance.
@@ -390,7 +391,7 @@ final class Datepoint extends DateTimeImmutable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Datepoint::isoYear()
      *
      * Returns a Period instance.
