@@ -26,7 +26,6 @@ use function array_unshift;
 use function array_values;
 use function count;
 use function reset;
-use function sort;
 use function sprintf;
 use function uasort;
 use function usort;
@@ -42,7 +41,7 @@ use const ARRAY_FILTER_USE_BOTH;
 final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
     /** @var array<Period> */
-    private $intervals = [];
+    private $intervals;
 
     public function __construct(Period ...$intervals)
     {
@@ -455,30 +454,30 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @param mixed $offset   the integer index of the Period to add or update
-     * @param mixed $interval the Period instance to add
+     * @param mixed $offset the integer index of the Period to add or update
+     * @param mixed $value  the Period instance to add
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence
      *
      * @see Sequence::push
      * @see Sequence::set
      */
-    public function offsetSet($offset, $interval): void
+    public function offsetSet($offset, $value): void
     {
         if (!is_int($offset) && !is_null($offset)) {
-            throw new TypeError('Argument #1 ($offset) must be of type integer, '.gettype($interval).' given.');
+            throw new TypeError('Argument #1 ($offset) must be of type integer, '.gettype($value).' given.');
         }
 
-        if (!$interval instanceof Period) {
-            throw new TypeError('Argument #2 ($interval) must be of type Period, '.gettype($interval).' given.');
+        if (!$value instanceof Period) {
+            throw new TypeError('Argument #2 ($interval) must be of type League\Period\Period, '.gettype($value).' given.');
         }
 
         if (null !== $offset) {
-            $this->set($offset, $interval);
+            $this->set($offset, $value);
             return;
         }
 
-        $this->push($interval);
+        $this->push($value);
     }
 
     /**
