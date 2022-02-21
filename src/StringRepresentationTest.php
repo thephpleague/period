@@ -49,6 +49,7 @@ final class StringRepresentationTest extends TestCase
 
         self::assertTrue(false !== $json);
 
+        /** @var \stdClass{startDate:string, endDate:string} $res */
         $res = json_decode($json);
 
         self::assertEquals($period->getStartDate(), new DateTimeImmutable($res->startDate));

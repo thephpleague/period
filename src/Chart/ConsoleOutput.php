@@ -42,16 +42,6 @@ final class ConsoleOutput implements Output
     ];
 
     /**
-     * @var callable
-     */
-    private static $formatter;
-
-    /**
-     * @var string
-     */
-    private static $regexp;
-
-    /**
      * @var resource
      */
     private $stream;
@@ -101,10 +91,17 @@ final class ConsoleOutput implements Output
      */
     private function format(string $str): string
     {
-        self::$formatter = self::$formatter ?? $this->formatter();
-        self::$regexp = self::$regexp ?? ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
+        static $formatter;
+        if (null === $formatter) {
+            $formatter = $this->formatter();
+        }
 
-        return (string) preg_replace_callback(self::$regexp, self::$formatter, $str);
+        static $regexp;
+        if (null === $regexp) {
+            $regexp = ',<<\s*((('.implode('|', array_keys(self::POSIX_COLOR_CODES)).')(\s*))+)>>,Umsi';
+        }
+
+        return (string) preg_replace_callback($regexp, $formatter, $str);
     }
 
     /**

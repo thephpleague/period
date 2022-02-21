@@ -18,6 +18,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use JsonSerializable;
+use TypeError;
 use function array_filter;
 use function array_merge;
 use function array_splice;
@@ -40,16 +41,9 @@ use const ARRAY_FILTER_USE_BOTH;
  */
 final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
-    /**
-     * @var Period[]
-     */
+    /** @var array<Period> */
     private $intervals = [];
 
-    /**
-     * new instance.
-     *
-     * @param Period ...$intervals
-     */
     public function __construct(Period ...$intervals)
     {
         $this->intervals = $intervals;
@@ -75,7 +69,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Sequence::length()
      *
      * Returns the sequence length as a Period instance.
@@ -119,7 +113,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     private function sortByStartDate(Period $interval1, Period $interval2): int
     {
-        return $interval1->startDate() <=> $interval2->startDate();
+        return $interval1->getStartDate() <=> $interval2->getStartDate();
     }
 
     /**
@@ -200,8 +194,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated since version 4.9.0
-     * @see ::subtract
+     * @deprecated 4.9.0  This method will be removed in the next major point release
+     * @see Period::subtract
      */
     public function substract(Sequence $sequence): self
     {
@@ -254,8 +248,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
-     * @deprecated deprecated since version 4.4.0
-     * @see        ::boundaries
+     * @deprecated 4.4.0 This method will be removed in the next major point release
+     * @see Sequence::boundaries
      *
      * If the sequence contains no interval null is returned.
      *
@@ -271,8 +265,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
-     * @deprecated deprecated since version 4.4.0
-     * @see        ::intersections
+     * @deprecated 4.4.0 This method will be removed in the next major point release
+     * @see Sequence::intersections
      */
     public function getIntersections(): self
     {
@@ -284,8 +278,8 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * DEPRECATION WARNING! This method will be removed in the next major point release
      *
-     * @deprecated deprecated since version 4.4.0
-     * @see        ::gaps
+     * @deprecated 4.4.0 This method will be removed in the next major point release
+     * @see Sequence::gaps
      */
     public function getGaps(): self
     {
@@ -295,11 +289,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the sum of all instances durations as expressed in seconds.
      */
-    public function totalTimestampInterval(): float
+    public function totalTimeDuration(): float
     {
         $retval = 0.0;
         foreach ($this->intervals as $interval) {
-            $retval += $interval->timestampInterval();
+            $retval += $interval->timeDuration();
         }
 
         return $retval;
@@ -308,14 +302,14 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
-     * @see Sequence::totalTimestampInterval()
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Sequence::totalTimeDuration()
      *
      * Returns the sum of all instances durations as expressed in seconds.
      */
     public function getTotalTimestampInterval(): float
     {
-        return $this->totalTimestampInterval();
+        return $this->totalTimeDuration();
     }
 
     /**
@@ -349,7 +343,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Returns the array representation of the sequence.
      *
-     * @return Period[]
+     * @return array<int, Period>
      */
     public function toArray(): array
     {
@@ -389,6 +383,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetExists($offset): bool
     {
+        if (!is_int($offset)) {
+            throw new TypeError('Argument #1 ($offset) must be of type integer, '.gettype($offset).' given.');
+        }
+
         return null !== $this->filterOffset($offset);
     }
 
@@ -423,7 +421,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
     /**
      * @inheritDoc
-     * @see ::get
+     * @see Sequence::get
      *
      * @param mixed $offset the integer index of the Period instance to retrieve.
      *
@@ -431,12 +429,16 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetGet($offset): Period
     {
+        if (!is_int($offset)) {
+            throw new TypeError('Argument #1 ($offset) must be of type integer, '.gettype($offset).' given.');
+        }
+
         return $this->get($offset);
     }
 
     /**
      * @inheritDoc
-     * @see ::remove
+     * @see Sequence::remove
      *
      * @param mixed $offset the integer index of the Period instance to remove
      *
@@ -444,6 +446,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetUnset($offset): void
     {
+        if (!is_int($offset)) {
+            throw new TypeError('Argument #1 ($offset) must be of type integer, '.gettype($offset).' given.');
+        }
+
         $this->remove($offset);
     }
 
@@ -454,11 +460,19 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      *
      * @throws InvalidIndex If the offset is illegal for the current sequence
      *
-     * @see ::push
-     * @see ::set
+     * @see Sequence::push
+     * @see Sequence::set
      */
     public function offsetSet($offset, $interval): void
     {
+        if (!is_int($offset) && !is_null($offset)) {
+            throw new TypeError('Argument #1 ($offset) must be of type integer, '.gettype($interval).' given.');
+        }
+
+        if (!$interval instanceof Period) {
+            throw new TypeError('Argument #2 ($interval) must be of type Period, '.gettype($interval).' given.');
+        }
+
         if (null !== $offset) {
             $this->set($offset, $interval);
             return;
@@ -695,13 +709,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      * Iteratively reduces the sequence to a single value using a callback.
      *
-     * @param callable $func Accepts the carry, the current value and the current offset, and
-     *                       returns an updated carry value.
+     * @template TReduceInitial
+     * @template TReduceReturnType
      *
-     * @param mixed|null $carry Optional initial carry value.
+     * @param callable(TReduceInitial|TReduceReturnType, Period, array-key=): TReduceReturnType $func
+     * @param TReduceInitial $carry
      *
-     * @return mixed The carry value of the final iteration, or the initial
-     *               value if the sequence was empty.
+     * @return TReduceInitial|TReduceReturnType
      */
     public function reduce(callable $func, $carry = null)
     {

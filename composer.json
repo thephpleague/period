@@ -47,12 +47,11 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.19 || ^3.0",
-        "infection/infection": "^0",
+        "friendsofphp/php-cs-fixer": "^v2.19 || ~v3.4.0",
         "phpunit/phpunit" : "^8.0 || ^9.0",
-        "phpstan/phpstan": "0.12.94",
-        "phpstan/phpstan-strict-rules": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12"
+        "phpstan/phpstan": "^1.0.0",
+        "phpstan/phpstan-strict-rules": "^1.0.0",
+        "phpstan/phpstan-phpunit": "^1.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -63,22 +62,12 @@
     "scripts": {
         "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
-        "phpstan": "phpstan analyse -l max -c phpstan.neon src --ansi --memory-limit 192M",
+        "phpstan": "phpstan analyse -l max -c phpstan.neon src --ansi --memory-limit 256M",
         "phpunit": "phpunit --coverage-text",
-        "infection-linux": "infection -j$(nproc) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
-        "infection-osx": "infection -j$(sysctl -n hw.ncpu) --coverage=build --ignore-msi-with-no-mutations --min-covered-msi=80 --ansi",
         "test": [
             "@phpunit",
             "@phpstan",
             "@phpcs"
-        ],
-        "test-linux": [
-            "@test",
-            "@infection-linux"
-        ],
-        "test-osx": [
-            "@test",
-            "@infection-osx"
         ]
     },
     "extra": {

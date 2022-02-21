@@ -15,7 +15,6 @@ namespace League\Period;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 use function json_encode;
 
 /**
@@ -511,13 +510,6 @@ final class SequenceTest extends TestCase
         $sequence[0] = Period::fromMonth(2017, 1);
         self::assertNotEquals(Period::fromMonth(2018, 1), $sequence[0]);
         unset($sequence[0]);
-    }
-
-    public function testArrayAccessThrowsTypeError(): void
-    {
-        $this->expectException(TypeError::class);
-        $sequence = new Sequence();
-        $sequence['foo'] = Period::fromMonth(2017, 1);
     }
 
     public function testArrayAccessThrowsInvalidIndex(): void

@@ -15,6 +15,7 @@ namespace League\Period;
 
 use DateInterval;
 use DateTimeImmutable;
+use DateTimeInterface;
 use TypeError;
 use function filter_var;
 use function gettype;
@@ -116,11 +117,13 @@ final class Duration extends DateInterval
             return self::createFromSeconds($seconds);
         }
 
-        if (!is_string($duration) && !method_exists($duration, '__toString')) {
-            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
+        if (is_object($duration) && method_exists($duration, '__toString')) {
+            $duration = (string) $duration;
         }
 
-        $duration = (string) $duration;
+        if (!is_string($duration)) {
+            throw new TypeError(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($duration)));
+        }
 
         if (1 === preg_match(self::REGEXP_CHRONO_FORMAT, $duration)) {
             return self::createFromChronoString($duration);
@@ -152,7 +155,7 @@ final class Duration extends DateInterval
      *
      * the second value will be overflow up to the hour time unit.
      */
-    public static function createFromDateInterval(DateInterval $duration): self
+    public static function fromDateInterval(DateInterval $duration): self
     {
         $new = new self('PT0S');
         foreach ($duration as $name => $value) {
@@ -165,11 +168,21 @@ final class Duration extends DateInterval
     }
 
     /**
-     * Creates a new instance from a seconds.
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Duration::createFromDateInterval()
+     *
+     * Creates a new instance from a DateInterval object.
      *
      * the second value will be overflow up to the hour time unit.
      */
-    public static function createFromSeconds(float $seconds): self
+    public static function createFromDateInterval(DateInterval $duration): self
+    {
+        return self::fromDateInterval($duration);
+    }
+
+    public static function fromSeconds(float $seconds): self
     {
         $invert = 0 > $seconds;
         if ($invert) {
@@ -193,11 +206,26 @@ final class Duration extends DateInterval
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Duration::createFromSeconds()
+     *
+     * Creates a new instance from a seconds.
+     *
+     * the second value will be overflow up to the hour time unit.
+     */
+    public static function createFromSeconds(float $seconds): self
+    {
+        return self::fromSeconds($seconds);
+    }
+
+    /**
      * Creates a new instance from a timer string representation.
      *
      * @throws Exception
      */
-    public static function createFromChronoString(string $duration): self
+    public static function fromChronoString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_CHRONO_FORMAT, $duration, $units)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
@@ -211,17 +239,47 @@ final class Duration extends DateInterval
     }
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Duration::fromChronoString()
+     *
+     * Creates a new instance from a timer string representation.
+     *
+     * @throws Exception
+     */
+    public static function createFromChronoString(string $duration): self
+    {
+        return self::fromChronoString($duration);
+    }
+
+    /**
      * Creates a new instance from a time string representation following RDBMS specification.
      *
      * @throws Exception
      */
-    public static function createFromTimeString(string $duration): self
+    public static function fromTimeString(string $duration): self
     {
         if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
             throw new Exception(sprintf('Unknown or bad format (%s)', $duration));
         }
 
         return self::createFromTimeUnits($units);
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Duration::fromTimeString()
+     *
+     * Creates a new instance from a time string representation following RDBMS specification.
+     *
+     * @throws Exception
+     */
+    public static function createFromTimeString(string $duration): self
+    {
+        return self::fromTimeString($duration);
     }
 
     /**
@@ -252,11 +310,11 @@ final class Duration extends DateInterval
     /**
      * @inheritDoc
      *
-     * @param mixed $duration a date with relative parts
+     * @param string $duration a date with relative parts
      *
      * @return self|false
      */
-    public static function createFromDateString($duration)
+    public static function fromDateString($duration)
     {
         $duration = parent::createFromDateString($duration);
         if (false === $duration) {
@@ -272,10 +330,23 @@ final class Duration extends DateInterval
     }
 
     /**
+     * @inheritDoc
+     *
+     * @param string $duration a date with relative parts
+     *
+     * @return self|false
+     */
+    #[\ReturnTypeWillChange]
+    public static function createFromDateString($duration)
+    {
+        return self::fromDateString($duration);
+    }
+
+    /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.5
-     * @see ::format
+     * @deprecated 4.5.0 This method will be removed in the next major point release
+     * @see Duration::format
      *
      * Returns the ISO8601 interval string representation.
      *
@@ -328,8 +399,8 @@ final class Duration extends DateInterval
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.6
-     * @see ::adjustedTo
+     * @deprecated 4.6.0 This method will be removed in the next major point release
+     * @see Duration::adjustedTo
      *
      * Returns a new instance with recalculate time and date segments to remove carry over points.
      *
@@ -337,7 +408,7 @@ final class Duration extends DateInterval
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
+     * @param DateTimeInterface|string|int $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
      */
     public function withoutCarryOver($reference_date): self
     {
@@ -351,7 +422,7 @@ final class Duration extends DateInterval
      * an instance that contains the time and date segments recalculate to remove
      * carry over points.
      *
-     * @param mixed $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
+     * @param DateTimeInterface|string|int $reference_date a reference datepoint {@see \League\Period\Datepoint::create}
      */
     public function adjustedTo($reference_date): self
     {

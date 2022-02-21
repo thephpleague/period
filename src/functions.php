@@ -23,10 +23,10 @@ use function is_int;
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Datepoint::create
  *
- * @param mixed $datepoint a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $datepoint a datepoint
  */
 function datepoint($datepoint): DateTimeImmutable
 {
@@ -42,10 +42,10 @@ function datepoint($datepoint): DateTimeImmutable
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Duration::create
  *
- * @param mixed $duration a Duration
+ * @param Duration|DateInterval|string|int $duration a Duration
  */
 function duration($duration): DateInterval
 {
@@ -61,11 +61,11 @@ function duration($duration): DateInterval
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::after
  *
- * @param mixed $startDate the starting included datepoint
- * @param mixed $duration  a Duration
+ * @param Datepoint|\DateTimeInterface|int|string $startDate the starting included datepoint
+ * @param Duration|DateInterval|string|int        $duration  a Duration
  */
 function interval_after($startDate, $duration): Period
 {
@@ -77,11 +77,11 @@ function interval_after($startDate, $duration): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::before
  *
- * @param mixed $endDate  the ending excluded datepoint
- * @param mixed $duration a Duration
+ * @param Datepoint|\DateTimeInterface|int|string $endDate  the ending excluded datepoint
+ * @param Duration|DateInterval|string|int        $duration a Duration
  */
 function interval_before($endDate, $duration): Period
 {
@@ -94,11 +94,11 @@ function interval_before($endDate, $duration): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::around
  *
- * @param mixed $datepoint a datepoint at the center of the returned instance
- * @param mixed $duration  a Duration
+ * @param Datepoint|\DateTimeInterface|int|string $datepoint a datepoint at the center of the returned instance
+ * @param Duration|DateInterval|string|int        $duration  a Duration
  */
 function interval_around($datepoint, $duration): Period
 {
@@ -110,7 +110,7 @@ function interval_around($datepoint, $duration): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromDatePeriod
  */
 function interval_from_dateperiod(DatePeriod $datePeriod): Period
@@ -123,11 +123,11 @@ function interval_from_dateperiod(DatePeriod $datePeriod): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromYear
  * @see Datepoint::getYear
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function year($year_or_datepoint): Period
 {
@@ -143,11 +143,11 @@ function year($year_or_datepoint): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromIsoYear
  * @see Datepoint::getIsoYear
  *
- * @param mixed $year_or_datepoint an iso year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint an iso year as an int or a datepoint
  */
 function iso_year($year_or_datepoint): Period
 {
@@ -163,11 +163,11 @@ function iso_year($year_or_datepoint): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromSemester
  * @see Datepoint::getSemester
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function semester($year_or_datepoint, int $semester = 1): Period
 {
@@ -183,11 +183,11 @@ function semester($year_or_datepoint, int $semester = 1): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromQuarter
  * @see Datepoint::getQuarter
  *
- * @param mixed $year_or_datepoint an iso year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint an iso year as an int or a datepoint
  */
 function quarter($year_or_datepoint, int $quarter = 1): Period
 {
@@ -203,11 +203,11 @@ function quarter($year_or_datepoint, int $quarter = 1): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromMonth
  * @see Datepoint::getMonth
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function month($year_or_datepoint, int $month = 1): Period
 {
@@ -223,11 +223,11 @@ function month($year_or_datepoint, int $month = 1): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromIsoWeek
  * @see Datepoint::getIsoWeek
  *
- * @param mixed $year_or_datepoint an iso year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint an iso year as an int or a datepoint
  */
 function iso_week($year_or_datepoint, int $week = 1): Period
 {
@@ -243,14 +243,14 @@ function iso_week($year_or_datepoint, int $week = 1): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::fromIsoWeek
  * @see Datepoint::getDay
  *
  * The date is truncated so that the time range starts at midnight
  * according to the date timezone and last a full day.
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function day($year_or_datepoint, int $month = 1, int $day = 1): Period
 {
@@ -266,13 +266,13 @@ function day($year_or_datepoint, int $month = 1, int $day = 1): Period
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Datepoint::getHour
  *
  * The starting datepoint represents the beginning of the hour
  * The interval is equal to 1 hour
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): Period
 {
@@ -292,13 +292,13 @@ function hour($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0): 
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Datepoint::getMinute
  *
  * The starting datepoint represents the beginning of the minute
  * The interval is equal to 1 minute
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0, int $minute = 0): Period
 {
@@ -318,13 +318,13 @@ function minute($year_or_datepoint, int $month = 1, int $day = 1, int $hour = 0,
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Datepoint::getSecond
  *
  * The starting datepoint represents the beginning of the second
  * The interval is equal to 1 second
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function second(
     $year_or_datepoint,
@@ -350,10 +350,10 @@ function second(
  *
  * DEPRECATION WARNING! This function will be removed in the next major point release
  *
- * @deprecated deprecated since version 4.2
+ * @deprecated 4.2.0 This method will be removed in the next major point release
  * @see Period::__construct
  *
- * @param mixed $year_or_datepoint a year as an int or a datepoint
+ * @param Datepoint|\DateTimeInterface|int|string $year_or_datepoint a year as an int or a datepoint
  */
 function instant(
     $year_or_datepoint,

@@ -34,7 +34,6 @@ use function sprintf;
 final class Period implements JsonSerializable
 {
     private const ISO8601_FORMAT = 'Y-m-d\TH:i:s.u\Z';
-
     private const BOUNDARY_TYPE = [
         self::INCLUDE_START_EXCLUDE_END => 1,
         self::INCLUDE_ALL => 1,
@@ -43,39 +42,24 @@ final class Period implements JsonSerializable
     ];
 
     public const INCLUDE_START_EXCLUDE_END = '[)';
-
     public const EXCLUDE_START_INCLUDE_END = '(]';
-
     public const EXCLUDE_ALL = '()';
-
     public const INCLUDE_ALL = '[]';
 
-    /**
-     * The starting datepoint.
-     *
-     * @var DateTimeImmutable
-     */
+    /** @var DateTimeImmutable */
     private $startDate;
 
-    /**
-     * The ending datepoint.
-     *
-     * @var DateTimeImmutable
-     */
+    /** @var DateTimeImmutable */
     private $endDate;
 
-    /**
-     * The boundary type.
-     *
-     * @var string
-     */
+    /** @var string */
     private $boundaryType;
 
     /**
      * Creates a new instance.
      *
-     * @param mixed $startDate the starting datepoint
-     * @param mixed $endDate   the ending datepoint
+     * @param Datepoint|DateTimeInterface|int|string $startDate the starting datepoint
+     * @param Datepoint|DateTimeInterface|int|string $endDate   the ending datepoint
      *
      * @throws Exception If $startDate is greater than $endDate
      */
@@ -103,7 +87,7 @@ final class Period implements JsonSerializable
     /**
      * Returns a DateTimeImmutable instance.
      *
-     * @param mixed $datepoint a Datepoint
+     * @param Datepoint|DateTimeInterface|int|string $datepoint a Datepoint
      */
     private static function filterDatepoint($datepoint): DateTimeImmutable
     {
@@ -115,7 +99,8 @@ final class Period implements JsonSerializable
             return new DateTimeImmutable($datepoint->format('Y-m-d H:i:s.u'), $datepoint->getTimezone());
         }
 
-        if (false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
+        $timestamp = $datepoint;
+        if (is_int($timestamp) || false !== ($timestamp = filter_var($datepoint, FILTER_VALIDATE_INT))) {
             return new DateTimeImmutable('@'.$timestamp);
         }
 
@@ -125,7 +110,7 @@ final class Period implements JsonSerializable
     /**
      * Returns a DateInterval instance.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     private static function filterDuration($duration): DateInterval
     {
@@ -157,10 +142,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance from a starting datepoint and a duration.
+     * Creates new instance from a starting date endpoint and a duration.
      *
-     * @param mixed $startDate the starting datepoint
-     * @param mixed $duration  a Duration
+     * @param Datepoint|DateTimeInterface|int|string $startDate the starting date endpoint
+     * @param DateInterval|Duration|string|int       $duration  a Duration
      */
     public static function after($startDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -170,10 +155,10 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance from a ending datepoint and a duration.
+     * Creates new instance from a ending date endpoint and a duration.
      *
-     * @param mixed $endDate  the ending datepoint
-     * @param mixed $duration a Duration
+     * @param Datepoint|DateTimeInterface|int|string $endDate  the ending date endpoint
+     * @param DateInterval|Duration|string|int       $duration a Duration
      */
     public static function before($endDate, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -184,10 +169,10 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance where the given duration is simultaneously
-     * subtracted from and added to the datepoint.
+     * subtracted from and added to the date endpoint.
      *
-     * @param mixed $datepoint a Datepoint
-     * @param mixed $duration  a Duration
+     * @param Datepoint|DateTimeInterface|int|string $datepoint a Date endpoint
+     * @param DateInterval|Duration|string|int       $duration  a Duration
      */
     public static function around($datepoint, $duration, string $boundaryType = self::INCLUDE_START_EXCLUDE_END): self
     {
@@ -292,72 +277,33 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * Returns the starting datepoint.
+     * Returns the starting date endpoint.
      */
-    public function startDate(): DateTimeImmutable
+    public function getStartDate(): DateTimeImmutable
     {
         return $this->startDate;
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::startDate()
-     *
-     * Returns the starting datepoint.
+     * Returns the ending date endpoint.
      */
-    public function getStartDate(): DateTimeImmutable
-    {
-        return $this->startDate();
-    }
-
-    /**
-     * Returns the ending datepoint.
-     */
-    public function endDate(): DateTimeImmutable
+    public function getEndDate(): DateTimeImmutable
     {
         return $this->endDate;
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::endDate()
-     *
-     * Returns the ending datepoint.
-     */
-    public function getEndDate(): DateTimeImmutable
-    {
-        return $this->endDate();
-    }
-
-    /**
      * Returns the instance boundary type.
      */
-    public function bounds(): string
+    public function getBoundaryType(): string
     {
         return $this->boundaryType;
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::bounds()
-     *
-     * Returns the instance boundary type.
-     */
-    public function getBoundaryType(): string
-    {
-        return $this->bounds();
-    }
-
-    /**
      * Returns the instance duration as expressed in seconds.
      */
-    public function timestampInterval(): float
+    public function timeDuration(): float
     {
         return $this->endDate->getTimestamp() - $this->startDate->getTimestamp();
     }
@@ -365,14 +311,14 @@ final class Period implements JsonSerializable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
-     * @see Period::timestampInterval()
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Period::timeDuration()
      *
      * Returns the instance duration as expressed in seconds.
      */
     public function getTimestampInterval(): float
     {
-        return $this->timestampInterval();
+        return $this->timeDuration();
     }
 
     /**
@@ -386,7 +332,7 @@ final class Period implements JsonSerializable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
+     * @deprecated 4.12.0 This method will be removed in the next major point release
      * @see Period::dateInterval()
      *
      * Returns the instance duration as a DateInterval object.
@@ -403,7 +349,7 @@ final class Period implements JsonSerializable
     /**
      * Returns the string representation as a ISO8601 interval format.
      *
-     * @deprecated since version 4.10
+     * @deprecated 4.10.0 This method will be removed in the next major point release
      * @see ::toIso8601()
      */
     public function __toString()
@@ -455,7 +401,7 @@ final class Period implements JsonSerializable
      *
      * @param string $format the format of the outputted date string
      */
-    public function toNotation(string $format): string
+    public function toIso80000(string $format): string
     {
         return $this->boundaryType[0]
             .$this->startDate->format($format)
@@ -467,20 +413,20 @@ final class Period implements JsonSerializable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
-     * @see Period::toNotation()
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Period::toIso80000()
+     *
+     * @param string $format the format of the outputted date string
      *
      * Returns the mathematical representation of an instance as a left close, right open interval.
      *
      * @see https://en.wikipedia.org/wiki/Interval_(mathematics)#Notations_for_intervals
      * @see https://php.net/manual/en/function.date.php
      * @see https://www.postgresql.org/docs/9.3/static/rangetypes.html
-     *
-     * @param string $format the format of the outputted date string
      */
     public function format(string $format): string
     {
-        return $this->toNotation($format);
+        return $this->toIso80000($format);
     }
 
     /**************************************************
@@ -490,30 +436,12 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the start datepoint is included in the boundary.
      */
-    public function isStartDateIncluded(): bool
+    public function isStartIncluded(): bool
     {
         return '[' === $this->boundaryType[0];
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::isStartDateIncluded()
-     *
-     * Tells whether the start datepoint is included in the boundary.
-     */
-    public function isStartIncluded(): bool
-    {
-        return $this->isStartDateIncluded();
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::isStartDateIncluded()
-     *
      * Tells whether the start datepoint is excluded from the boundary.
      */
     public function isStartExcluded(): bool
@@ -524,30 +452,12 @@ final class Period implements JsonSerializable
     /**
      * Tells whether the end datepoint is included in the boundary.
      */
-    public function isEndDateIncluded(): bool
+    public function isEndIncluded(): bool
     {
         return ']' === $this->boundaryType[1];
     }
 
     /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::isEndDateIncluded()
-     *
-     * Tells whether the end datepoint is included in the boundary.
-     */
-    public function isEndIncluded(): bool
-    {
-        return $this->isEndDateIncluded();
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated deprecated since version 4.12
-     * @see Period::isEndDateIncluded()
-     *
      * Tells whether the end datepoint is excluded from the boundary.
      */
     public function isEndExcluded(): bool
@@ -571,8 +481,8 @@ final class Period implements JsonSerializable
      */
     public function durationCompare(self $interval): int
     {
-        return $this->startDate->add($this->getDateInterval())
-            <=> $this->startDate->add($interval->getDateInterval());
+        return $this->startDate->add($this->dateInterval())
+            <=> $this->startDate->add($interval->dateInterval());
     }
 
     /**
@@ -611,7 +521,7 @@ final class Period implements JsonSerializable
      * [--------------------)
      *                          [--------------------)
      *
-     * @param mixed $index a datepoint or a Period object
+     * @param Period|Datepoint|\DateTimeInterface|int|string $index a datepoint or a Period object
      */
     public function isBefore($index): bool
     {
@@ -650,7 +560,7 @@ final class Period implements JsonSerializable
      *    [--------------------)
      *    [---------)
      *
-     * @param mixed $index a datepoint or a Period object
+     * @param Period|Datepoint|\DateTimeInterface|int|string $index a datepoint or a Period object
      */
     public function isStartedBy($index): bool
     {
@@ -680,7 +590,7 @@ final class Period implements JsonSerializable
      *
      * The index can be a DateTimeInterface object or another Period object.
      *
-     * @param mixed $index a datepoint or a Period object
+     * @param Period|Datepoint|\DateTimeInterface|int|string $index a datepoint or a Period object
      */
     public function contains($index): bool
     {
@@ -721,7 +631,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether an instance contains a datepoint.
+     * Tells whether an instance contains a date endpoint.
      *
      * [------|------------)
      */
@@ -765,7 +675,7 @@ final class Period implements JsonSerializable
      *    [--------------------)
      *               [---------)
      *
-     * @param mixed $index a datepoint or a Period object
+     * @param Period|Datepoint|\DateTimeInterface|int|string $index a datepoint or a Period object
      */
     public function isEndedBy($index): bool
     {
@@ -797,7 +707,7 @@ final class Period implements JsonSerializable
      *                          [--------------------)
      * [--------------------)
      *
-     * @param mixed $index a datepoint or a Period object
+     * @param Period|Datepoint|\DateTimeInterface|int|string $index a datepoint or a Period object
      */
     public function isAfter($index): bool
     {
@@ -844,9 +754,22 @@ final class Period implements JsonSerializable
     /**
      * Returns the difference between two instances expressed in seconds.
      */
+    public function timeDurationDiff(self $interval): float
+    {
+        return $this->timeDuration() - $interval->timeDuration();
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Period::timeDurationDiff()
+     *
+     * Returns the difference between two instances expressed in seconds.
+     */
     public function timestampIntervalDiff(self $interval): float
     {
-        return $this->timestampInterval() - $interval->timestampInterval();
+        return $this->timeDurationDiff($interval);
     }
 
     /**
@@ -863,9 +786,9 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
-    public function toDatePeriod($duration, int $option = 0): DatePeriod
+    public function dateRangeForward($duration, int $option = 0): DatePeriod
     {
         return new DatePeriod($this->startDate, self::filterDuration($duration), $this->endDate, $option);
     }
@@ -873,29 +796,29 @@ final class Period implements JsonSerializable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
-     * @see Period::toDatePeriod()
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Period::dateRangeForward()
+     *
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance.
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
-     *
-     * @param mixed $duration a Duration
      */
     public function getDatePeriod($duration, int $option = 0): DatePeriod
     {
-        return $this->toDatePeriod($duration, $option);
+        return $this->dateRangeForward($duration, $option);
     }
 
     /**
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from
-     * the instance ending datepoint.
+     * the instance ending date endpoint.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
-    public function toDatePeriodBackwards($duration, int $option = 0): iterable
+    public function dateRangeBackwards($duration, int $option = 0): iterable
     {
         $duration = self::filterDuration($duration);
         $date = $this->endDate;
@@ -912,18 +835,18 @@ final class Period implements JsonSerializable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
-     * @see Period::toDatePeriodBackwards()
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Period::dateRangeBackwards()
+     *
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from
-     * the instance ending datepoint.
-     *
-     * @param mixed $duration a Duration
+     * the instance ending date endpoint.
      */
     public function getDatePeriodBackwards($duration, int $option = 0): iterable
     {
-        return $this->toDatePeriodBackwards($duration, $option);
+        return $this->dateRangeBackwards($duration, $option);
     }
 
     /**
@@ -937,14 +860,15 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      *
      * @return iterable<Period>
      */
-    public function split($duration): iterable
+    public function splitForward($duration): iterable
     {
         $duration = self::filterDuration($duration);
-        foreach ($this->toDatePeriod($duration) as $startDate) {
+        /** @var DateTimeImmutable $startDate */
+        foreach ($this->dateRangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
@@ -952,6 +876,30 @@ final class Period implements JsonSerializable
 
             yield new self($startDate, $endDate, $this->boundaryType);
         }
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @see Period::splitForward()
+     *
+     * Allows splitting an instance in smaller Period objects according to a given interval.
+     *
+     * The returned iterable Interval set is ordered so that:
+     * <ul>
+     * <li>The first returned object MUST share the starting datepoint of the parent object.</li>
+     * <li>The last returned object MUST share the ending datepoint of the parent object.</li>
+     * <li>The last returned object MUST have a duration equal or lesser than the submitted interval.</li>
+     * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
+     * </ul>
+     *
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
+     *
+     * @return iterable<Period>
+     */
+    public function split($duration): iterable
+    {
+        return $this->splitForward($duration);
     }
 
     /**
@@ -965,7 +913,7 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      *
      * @return iterable<Period>
      */
@@ -1058,14 +1006,14 @@ final class Period implements JsonSerializable
             $first = ')' === $intersect->boundaryType[1] ? '[' : '(';
             $boundary = $first.$merge->boundaryType[1];
 
-            return [$merge->startingOn($intersect->endDate)->boundedWith($boundary), null];
+            return [$merge->startingOn($intersect->endDate)->boundedBy($boundary), null];
         }
 
         if ($merge->endDate == $intersect->endDate) {
             $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
             $boundary = $merge->boundaryType[0].$last;
 
-            return [$merge->endingOn($intersect->startDate)->boundedWith($boundary), null];
+            return [$merge->endingOn($intersect->startDate)->boundedBy($boundary), null];
         }
 
         $last = '(' === $intersect->boundaryType[0] ? ']' : ')';
@@ -1075,16 +1023,16 @@ final class Period implements JsonSerializable
         $firstBoundary = $first.$merge->boundaryType[1];
 
         return [
-            $merge->endingOn($intersect->startDate)->boundedWith($lastBoundary),
-            $merge->startingOn($intersect->endDate)->boundedWith($firstBoundary),
+            $merge->endingOn($intersect->startDate)->boundedBy($lastBoundary),
+            $merge->startingOn($intersect->endDate)->boundedBy($firstBoundary),
         ];
     }
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated since version 4.9.0
-     * @see ::subtract
+     * @deprecated 4.9.0 This method will be removed in the next major point release
+     * @see Period::subtract
      */
     public function substract(self $interval): Sequence
     {
@@ -1132,8 +1080,8 @@ final class Period implements JsonSerializable
             throw new Exception('Both '.self::class.' objects must not overlaps');
         }
 
-        $bounds = $this->isEndDateIncluded() ? '(' : '[';
-        $bounds .= $interval->isStartDateIncluded() ? ')' : ']';
+        $bounds = $this->isEndIncluded() ? '(' : '[';
+        $bounds .= $interval->isStartIncluded() ? ')' : ']';
         if ($interval->startDate > $this->startDate) {
             return new self($this->endDate, $interval->startDate, $bounds);
         }
@@ -1187,12 +1135,12 @@ final class Period implements JsonSerializable
      **************************************************/
 
     /**
-     * Returns an instance with the specified starting datepoint.
+     * Returns an instance with the specified starting date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
+     * an instance that contains the specified starting date endpoint.
      *
-     * @param mixed $startDate the new starting datepoint
+     * @param Datepoint|DateTimeInterface|int|string $startDate the new starting date endpoint
      */
     public function startingOn($startDate): self
     {
@@ -1205,12 +1153,12 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns an instance with the specified ending datepoint.
+     * Returns an instance with the specified ending date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
+     * an instance that contains the specified ending date endpoint.
      *
-     * @param mixed $endDate the new ending datepoint
+     * @param Datepoint|DateTimeInterface|int|string $endDate the new ending date endpoint
      */
     public function endingOn($endDate): self
     {
@@ -1228,7 +1176,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance with the specified range type.
      */
-    public function boundedWith(string $bounds): self
+    public function boundedBy(string $bounds): self
     {
         if ($bounds === $this->boundaryType) {
             return $this;
@@ -1240,8 +1188,8 @@ final class Period implements JsonSerializable
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
      *
-     * @deprecated deprecated since version 4.12
-     * @see Period::boundedWith()
+     * @deprecated 4.12.0 This method will be removed in the next major point release
+     * @see Period::boundedBy()
      *
      * Returns an instance with the specified boundary type.
      *
@@ -1250,16 +1198,16 @@ final class Period implements JsonSerializable
      */
     public function withBoundaryType(string $boundaryType): self
     {
-        return $this->boundedWith($boundaryType);
+        return $this->boundedBy($boundaryType);
     }
 
     /**
-     * Returns a new instance with a new ending datepoint.
+     * Returns a new instance with a new ending date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
+     * an instance that contains the specified ending date endpoint.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     public function withDurationAfterStart($duration): self
     {
@@ -1267,12 +1215,12 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance with a new starting datepoint.
+     * Returns a new instance with a new starting date endpoint.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
+     * an instance that contains the specified starting date endpoint.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     public function withDurationBeforeEnd($duration): self
     {
@@ -1284,9 +1232,9 @@ final class Period implements JsonSerializable
      * moved forward or backward by the given interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified starting datepoint.
+     * an instance that contains the specified starting date endpoint.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     public function moveStartDate($duration): self
     {
@@ -1298,9 +1246,9 @@ final class Period implements JsonSerializable
      * moved forward or backward by the given interval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified ending datepoint.
+     * an instance that contains the specified ending date endpoint.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     public function moveEndDate($duration): self
     {
@@ -1308,13 +1256,13 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Returns a new instance where the datepoints
+     * Returns a new instance where the date endpoints
      * are moved forwards or backward simultaneously by the given DateInterval.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     public function move($duration): self
     {
@@ -1329,14 +1277,14 @@ final class Period implements JsonSerializable
 
     /**
      * Returns an instance where the given DateInterval is simultaneously
-     * subtracted from the starting datepoint and added to the ending datepoint.
+     * subtracted from the starting date endpoint and added to the ending date endpoint.
      *
      * Depending on the duration value, the resulting instance duration will be expanded or shrinked.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      *
-     * @param mixed $duration a Duration
+     * @param Period|DateInterval|Duration|string|int $duration a Duration
      */
     public function expand($duration): self
     {
