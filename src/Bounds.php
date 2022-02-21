@@ -28,6 +28,9 @@ enum Bounds
     case EXCLUDE_START_INCLUDE_END;
     case EXCLUDE_ALL;
 
+    private const REGEXP_ISO80000 = '/^(?<lower>\[|\()(?<start>[^,\]\)\[\(]*),(?<end>[^,\]\)\[\(]*)(?<upper>\]|\))$/';
+    private const REGEXP_BOURBAKI = '/^(?<lower>\[|\])(?<start>[^,\]\[]*),(?<end>[^,\]\[]*)(?<upper>\[|\])$/';
+
     /**
      * Parse the ISO 80000 string representation of an interval.
      *
@@ -37,8 +40,7 @@ enum Bounds
      */
     public static function parseIso80000(string $notation): array
     {
-        static $regexp = '/^(?<lower>\[|\()(?<start>[^,\]\)\[\(]*),(?<end>[^,\]\)\[\(]*)(?<upper>\]|\))$/';
-        if (1 !== preg_match($regexp, $notation, $found)) {
+        if (1 !== preg_match(self::REGEXP_ISO80000, $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('ISO-80000', $notation);
         }
 
@@ -63,8 +65,7 @@ enum Bounds
      */
     public static function parseBourbaki(string $notation): array
     {
-        static $regexp = '/^(?<lower>\[|\])(?<start>[^,\]\[]*),(?<end>[^,\]\[]*)(?<upper>\[|\])$/';
-        if (1 !== preg_match($regexp, $notation, $found)) {
+        if (1 !== preg_match(self::REGEXP_BOURBAKI, $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('Bourbaki', $notation);
         }
 

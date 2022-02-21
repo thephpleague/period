@@ -60,12 +60,11 @@ final class Period implements JsonSerializable
      */
     public static function fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
     {
-        static $regexp = '/^(?<startdate>[^\/]*)\/(?<enddate>.*)$/';
-        if (1 !== preg_match($regexp, $notation, $found)) {
+        if (1 !== preg_match('/^(?<start>[^\/]*)\/(?<end>.*)$/', $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('ISO-8601', $notation);
         }
 
-        return self::fromDateString($format, trim($found['startdate']), trim($found['enddate']), $bounds);
+        return self::fromDateString($format, trim($found['start']), trim($found['end']), $bounds);
     }
 
     /**
@@ -294,9 +293,8 @@ final class Period implements JsonSerializable
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601#Time_intervals
      */
-    public function toIso8601(string|null $format = null): string
+    public function toIso8601(string $format = 'Y-m-d\TH:i:s.u\Z'): string
     {
-        $format = $format ?? 'Y-m-d\TH:i:s.u\Z';
         $utc = new DateTimeZone('UTC');
 
         return $this->startDate->setTimezone($utc)->format($format)

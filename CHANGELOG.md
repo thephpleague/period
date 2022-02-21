@@ -2,7 +2,7 @@
 
 All notable changes to `Period` will be documented in this file
 
-## [Next] - TBD
+## [5.0.0] - 2022-02-22
 
 ### Added
 
@@ -115,6 +115,70 @@ Removed all the following namespaced functions from the package:
 - `League\Period\interval_before`
 - `League\Period\interval_around`
 - `League\Period\interval_from_dateperiod`
+
+## [4.12.0] - 2022-02-21
+
+### Added
+
+- `Datepoint::second`
+- `Datepoint::minute`
+- `Datepoint::hour`
+- `Datepoint::isoWeek`
+- `Datepoint::month`
+- `Datepoint::quarter`
+- `Datepoint::semester`
+- `Datepoint::year`
+- `Datepoint::isoYear`
+- `Duration::fromDateInterval`
+- `Duration::fromSeconds`
+- `Duration::fromChronoString`
+- `Duration::fromTimeString`
+- `Duration::fromDateString`
+- `Period::timeDuration`
+- `Period::dateInterval`
+- `Period::dateRangeForward`
+- `Period::dateRangeBackwards`
+- `Period::toIso80000`
+- `Period::splitForward`
+- `Period::timeDurationDiff`
+- `Period::boundedBy`
+- `Sequence::length`
+- `Sequence::totalTimeDuration`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- `Datepoint::getSecond` is deprecated in favor of `Datepoint::second`
+- `Datepoint::getMinute` is deprecated in favor of `Datepoint::minute`
+- `Datepoint::getHour` is deprecated in favor of `Datepoint::hour`
+- `Datepoint::getIsoWeek` is deprecated in favor of `Datepoint::isoWeek`
+- `Datepoint::getMonth`  is deprecated in favor of `Datepoint::month`
+- `Datepoint::getQuarter` is deprecated in favor of `Datepoint::quarter`
+- `Datepoint::getSemester` is deprecated in favor of `Datepoint::semester`
+- `Datepoint::getYear` is deprecated in favor of `Datepoint::year`
+- `Datepoint::getIsoYear` is deprecated in favor of `Datepoint::isoYear`
+- `Duration::createfromDateInterval` is deprecated in favor of `Datepoint::fromDateInterval`
+- `Duration::createfromSeconds` is deprecated in favor of `Datepoint::fromSeconds`
+- `Duration::createfromChronoString` is deprecated in favor of `Datepoint::fromChronoString`
+- `Duration::createfromTimeString` is deprecated in favor of `Datepoint::fromTimeString`
+- `Duration::createfromDateString` is deprecated in favor of `Datepoint::fromDateString`
+- `Period::getTimestampInterval` is deprecated in favor of `Period::timeDuration`
+- `Period::getDateInterval` is deprecated in favor of `Period::dateInterval`
+- `Period::getDatePeriod` is deprecated in favor of `Period::dateRangeForward`
+- `Period::getDatePeriodBackwards` is deprecated in favor of `Period::dateRangeBackwards`
+- `Period::format` is deprecated in favor of `Period::toIso80000`
+- `Period::split` is deprecated in favor of `Period::splitForward`
+- `Period::withBoundaryType` is deprecated in favor of `Period::boundedBy`
+- `Period::timestampIntervalDiff` is deprecated in favor of `Period::timeDurationDiff`
+- `Sequence::boundaries` is deprecated in favor of `Sequence::length`
+- `Sequence::getTotalTimestampInterval` is deprecated in favor of `Sequence::totalTimeDuration`
+
+### Removed
+
+- None
 
 ## [4.11.0] - 2020-11-11
 
@@ -790,13 +854,16 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 ## 1.0.1 - 2014-10-08
 
 ### Fixed
+
 - The `$interval` parameter can also an integer which represents the interval expressed in seconds.
 
-## 1.0 - 2014-09-24
+## 1.0.0 - 2014-09-24
 
 First stable release of `Period`
 
-[Next]: https://github.com/thephpleague/period/compare/4.11.0...master
+[Next]: https://github.com/thephpleague/period/compare/5.0.0...master
+[5.0.0]: https://github.com/thephpleague/period/compare/4.12.0...5.0.0
+[4.12.0]: https://github.com/thephpleague/period/compare/4.11.0...4.12.0
 [4.11.0]: https://github.com/thephpleague/period/compare/4.10.0...4.11.0
 [4.10.0]: https://github.com/thephpleague/period/compare/4.9.0...4.10.0
 [4.9.0]: https://github.com/thephpleague/period/compare/4.8.1...4.9.0
