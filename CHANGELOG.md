@@ -2,9 +2,40 @@
 
 All notable changes to `Period` will be documented in this file
 
-## Next - TBD
+## 4.12.0 - 2022-02-21
 
 ### Added
+
+- `Datepoint::second`
+- `Datepoint::minute`
+- `Datepoint::hour`
+- `Datepoint::isoWeek`
+- `Datepoint::month`
+- `Datepoint::quarter`
+- `Datepoint::semester`
+- `Datepoint::year`
+- `Datepoint::isoYear`
+- `Duration::fromDateInterval`
+- `Duration::fromSeconds`
+- `Duration::fromChronoString`
+- `Duration::fromTimeString`
+- `Duration::fromDateString`
+- `Period::timeDuration`
+- `Period::dateInterval`
+- `Period::dateRangeForward`
+- `Period::dateRangeBackwards`
+- `Period::toIso80000`
+- `Period::splitForward`
+- `Period::timeDurationDiff`
+- `Period::boundedBy`
+- `Sequence::length`
+- `Sequence::totalTimeDuration`
+
+### Fixed
+
+- None
+
+### Deprecated
 
 - `Datepoint::getSecond` is deprecated in favor of `Datepoint::second`
 - `Datepoint::getMinute` is deprecated in favor of `Datepoint::minute`
@@ -15,14 +46,21 @@ All notable changes to `Period` will be documented in this file
 - `Datepoint::getSemester` is deprecated in favor of `Datepoint::semester`
 - `Datepoint::getYear` is deprecated in favor of `Datepoint::year`
 - `Datepoint::getIsoYear` is deprecated in favor of `Datepoint::isoYear`
-
-### Fixed
-
-- None
-
-### Deprecated
-
-- None
+- `Duration::createfromDateInterval` is deprecated in favor of `Datepoint::fromDateInterval`
+- `Duration::createfromSeconds` is deprecated in favor of `Datepoint::fromSeconds`
+- `Duration::createfromChronoString` is deprecated in favor of `Datepoint::fromChronoString`
+- `Duration::createfromTimeString` is deprecated in favor of `Datepoint::fromTimeString`
+- `Duration::createfromDateString` is deprecated in favor of `Datepoint::fromDateString`
+- `Period::getTimestampInterval` is deprecated in favor of `Period::timeDuration`
+- `Period::getDateInterval` is deprecated in favor of `Period::dateInterval`
+- `Period::getDatePeriod` is deprecated in favor of `Period::dateRangeForward`
+- `Period::getDatePeriodBackwards` is deprecated in favor of `Period::dateRangeBackwards`
+- `Period::format` is deprecated in favor of `Period::toIso80000`
+- `Period::split` is deprecated in favor of `Period::splitForward`
+- `Period::withBoundaryType` is deprecated in favor of `Period::boundedBy`
+- `Period::timestampIntervalDiff` is deprecated in favor of `Period::timeDurationDiff`
+- `Sequence::boundaries` is deprecated in favor of `Sequence::length`
+- `Sequence::getTotalTimestampInterval` is deprecated in favor of `Sequence::totalTimeDuration`
 
 ### Removed
 
