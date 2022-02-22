@@ -248,13 +248,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     }
 
     /**
-     * Returns the array representation of the sequence.
+     * Returns the list representation of the sequence where keys consist of consecutive numbers from 0 to count($array)-1.
      *
      * @return array<Period>
      */
-    public function toArray(): array
+    public function toList(): array
     {
-        return $this->periods;
+        return array_values($this->periods);
     }
 
     /**

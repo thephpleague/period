@@ -191,10 +191,12 @@ final class SequenceTest extends TestCase
         $day1 = Period::fromDay(2012, 6, 23);
         $day2 = DatePoint::fromDateString('2012-06-12')->day();
         $sequence = new Sequence($day1, $day2);
-        self::assertSame([0 => $day1, 1 => $day2], $sequence->toArray());
+        self::assertSame([0 => $day1, 1 => $day2], $sequence->toList());
+        self::assertTrue(array_is_list($sequence->toList()));
 
         $sequence->sort(fn (Period $period1, Period $period2): int => $period1->startDate <=> $period2->startDate);
-        self::assertSame([1 => $day2, 0 => $day1], $sequence->toArray());
+        self::assertSame([0 => $day2, 1 => $day1], $sequence->toList());
+        self::assertTrue(array_is_list($sequence->toList()));
     }
 
     public function testSome(): void
@@ -480,7 +482,7 @@ final class SequenceTest extends TestCase
 
         $retval = $sequence->map(fn (Period $interval): Period => $interval->moveEndDate(Duration::fromDateString('+1 DAY')));
 
-        self::assertSame(array_keys($sequence->toArray()), array_keys($retval->toArray()));
+        self::assertSame(array_keys($sequence->toList()), array_keys($retval->toList()));
     }
 
 

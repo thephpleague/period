@@ -231,9 +231,9 @@ echo json_encode($sequence, JSON_PRETTY_PRINT);
 //]
 ~~~
 
-### Sequence::toArray
+### Sequence::toList
 
-Returns a native PHP array representation of the collection.
+Returns a native PHP array representation of the collection as a List, its keys consist of consecutive numbers from 0 to count($array)-1.
 
 ~~~php
 $sequence = new Sequence(
@@ -242,7 +242,21 @@ $sequence = new Sequence(
     Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
     Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
-$array = $sequence->toArray();
+$array = $sequence->toList();
+~~~
+
+<p class="message-info">Of note, the <code>Sequence::toList</code> method is not affected by the <code>Sequence::sort</code> method.</p>
+
+~~~php
+$day1 = Period::fromDay(2012, 6, 23);
+$day2 = Period::fromDay(2012, 6, 12);
+$sequence = new Sequence($day1, $day2);
+$sequence->sort(fn (Period $period1, Period $period2): int => $period1->startDate <=> $period2->startDate);
+foreach ($sequence as $offset => $period) {
+// first iteration $offset = 1 and $period === $day2
+// second iteration $offset = 0 and $period === $day1
+}
+$sequence->toList(); // returns [0 => $day2, 1 => $day1];
 ~~~
 
 ## Filtering the sequence

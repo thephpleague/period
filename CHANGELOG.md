@@ -23,6 +23,7 @@ All notable changes to `Period` will be documented in this file
 - `Period::toBourbaki`
 - `Bounds` Enumeration.
 - `InitialDatePresence` Enumeration.
+- `Sequence::toList`
 - `Chart\LetterCase` Enumeration.
 - `Chart\Alignment` Enumeration.
 - `Chart\StreamOutput` class to replace `Chart\ConsoleOutput` class.
@@ -78,6 +79,7 @@ All notable changes to `Period` will be documented in this file
 - `Sequence::getGaps` use `Sequence::gaps` instead
 - `Sequence::getBoundaries` use `Sequence::length` instead
 - `Sequence::getTotalTimestampInterval` use `Sequence::totalTimeDuration` instead  
+- `Sequence::toArray` use `Sequence::toList` instead
 - `Duration::__toString` and `Duration::format` with no replacement
 - `Duration::create` is removed with no replacement
 - `Datepoint::create` is removed with no replacement

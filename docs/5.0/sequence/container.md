@@ -107,7 +107,7 @@ $sequence = new Sequence(
     Period::fromMonth(2017, 1),
     Period::fromMonth(2018, 1)
 );
-$timestamp = $sequence->totalDuration(); // an integer
+$timestamp = $sequence->totalTimeDuration(); // an integer
 ~~~
 
 ## Container manipulations

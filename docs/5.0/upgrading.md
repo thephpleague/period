@@ -153,6 +153,7 @@ Most notably:
 | `Period::format`                      | `Period::toIso80000`                          |
 | `Period::timestampIntervalDiff`       | `Period::timeDurationDiff`                    |
 | `Sequence::getTotalTimestampInterval` | `Sequence::totalTimeDuration`                 |
+| `Sequence::toArray`                   | `Sequence::toList`                            |
 | `Duration::createFromSeconds`         | `Duration::fromSeconds`                       |
 | `Duration::createFromChronoString`    | `Duration::fromChronoString`                  |
 | `Duration::createFromTimeString`      | `Duration::fromTimeString`                    |
@@ -327,6 +328,25 @@ With the introduction of the `Bounds` enum, all bound related methods have been 
 | `Period::isEndIncluded`                       | `Bounds::isEndIncluded`                       |
 | `Period::isEndExcluded`                       | `Bounds::isEndIncluded`                       |
 
+## Changes in Sequence conversion
+
+The array provided by the `Sequence::toList` method will always be a list. While the order of the array values
+may change using the `Sequence::sort` method, for instance, the return array indexes will always be re-arranged to
+return a proper list.
+
+```diff
+$day1 = Period::fromDay(2012, 6, 23);
+$day2 = Period::fromDay(2012, 6, 12);
+$sequence = new Sequence($day1, $day2);
+$sequence->sort(fn (Period $period1, Period $period2): int => $period1->startDate <=> $period2->startDate);
+foreach ($sequence as $offset => $period) {
+// first iteration $offset = 1 and $period === $day2
+// second iteration $offset = 0 and $period === $day1
+}
+- $sequence->toArray(); // returns [1 => $day2, 0 => $day1];
++ $sequence->toList();  // returns [0 => $day2, 1 => $day1];
+```
+
 ## Changes in Charts LabelGenerator
 
 The label generators provided by the package no longer allows changes.
@@ -339,7 +359,6 @@ Instead of modifying the label generator, create a new instance instead with new
 + (new LatinLetter('A'))->startLabel; // returns 'A'
 + (new LatinLetter('a'))->startLabel; // returns 'a'
 ```
-
 
 | `4.x` method name                  | `5.x` method name                                    |
 |------------------------------------|------------------------------------------------------|

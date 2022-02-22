@@ -314,11 +314,12 @@ final class Period implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        [$startDate, $endDate] = explode('/', $this->toIso8601(), 2);
+        $format = 'Y-m-d\TH:i:s.u\Z';
+        $utc = new DateTimeZone('UTC');
 
         return [
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startDate' => $this->startDate->setTimezone($utc)->format($format),
+            'endDate' => $this->endDate->setTimezone($utc)->format($format),
             'startDateIncluded' => $this->bounds->isStartIncluded(),
             'endDateIncluded' => $this->bounds->isEndIncluded(),
         ];
