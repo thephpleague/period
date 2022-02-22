@@ -142,7 +142,7 @@ Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`
 
 #### Parameters
 
-- `$startDatePresence` Can be set to **`InitialDatePresence::INCLUDED`** or **`InitialDatePresence::EXCLUDED`** to exclude the initial date from the set of recurring dates within the period.
+- `$startDatePresence` Can be set to **`InitialDatePresence::Included`** or **`InitialDatePresence::Excluded`** to exclude the initial date from the set of recurring dates within the period.
 
 #### Examples
 
@@ -186,7 +186,7 @@ Returns a `Generator` to allow iteration over the instance datepoints, recurring
 
 #### Parameters
 
-- `$endDatePresence` Can be set to **`InitialDatePresence::INCLUDED`** or **`InitialDatePresence::EXCLUDED`** to exclude the initial date from the set of recurring dates within the period.
+- `$endDatePresence` Can be set to **`InitialDatePresence::Included`** or **`InitialDatePresence::Excluded`** to exclude the initial date from the set of recurring dates within the period.
 
 #### Examples
 
@@ -203,7 +203,7 @@ Using the `$endDatePresence` parameter
 
 ~~~php
 $interval = Period::fromYear('2012-06-05');
-$dateRange = $interval->dateRangeBackwards(new DateInterval('P1M'), InitialDatePresence::EXCLUDED);
+$dateRange = $interval->dateRangeBackwards(new DateInterval('P1M'), InitialDatePresence::Excluded);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }

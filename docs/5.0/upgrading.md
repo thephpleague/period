@@ -188,8 +188,13 @@ Most notably:
 
 to expose the boundaries properties of the `Period` object.
 
-```diff
+```php
 echo json_encode(Period::fromMonth(2015, 4)), PHP_EOL;
+```
+
+will now return the following JSON:
+
+```diff
 {
      "startDate": "2015-04-01T00:00:00.000000Z",
      "endDate": "2015-05-01T00:00:00.000000Z",
@@ -218,15 +223,8 @@ if better or more complex conversion is needed, first convert it using a `DateTi
 or a `DatePoint` named constructor.
 
 ```diff
-use League\Period\Period;
-use Carbon\Carbon;
-
 - Period::fromDatepoint('1635585868', '2021-05-24', Period::INCLUDE_ALL);
-+ Period::fromDate(
-+    Carbon::createFromTimestamp(1635585868), 
-+    '2021-05-24', 
-+    Bounds::IncludeAll
-+ );
++ Period::fromDate(Carbon::createFromTimestamp(1635585868), '2021-05-24', Bounds::IncludeAll);
 ```
 
 In version `4.x` a method expecting a duration accepts the following types:
@@ -287,10 +285,15 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 
 `Period::diff` now returns a `Sequence` object, before it was returning an `array`.
 
-```diff
+The following example 
+```php
 $period = Period::fromDate('2013-01-01', '2014-01-01');
 $alt = Period::fromDate('2013-01-01', '2014-01-01');
+```
+ 
+will have its return value updated.
 
+```diff
 - [] === $alt->diff($period); // return true
 + $alt->diff($period)->isEmpty(); //return true
 ```
@@ -307,7 +310,7 @@ or not of the initial date object in their returned values.
 
 ```diff
 - $res = $period->getDatePeriodBackwards('1 DAY', DatePeriod::EXCLUDE_START_DATE); 
-+ $res = $period->dateRangeBackwards('1 DAY', InitialDatePresence::EXCLUDED);
++ $res = $period->dateRangeBackwards('1 DAY', InitialDatePresence::Excluded);
 ```
 
 ## Changes in bounds related methods
@@ -334,7 +337,9 @@ The array provided by the `Sequence::toList` method will always be a list. While
 may change using the `Sequence::sort` method, for instance, the return array indexes will always be re-arranged to
 return a proper list.
 
-```diff
+The following code will work in both versions:
+
+```php
 $day1 = Period::fromDay(2012, 6, 23);
 $day2 = Period::fromDay(2012, 6, 12);
 $sequence = new Sequence($day1, $day2);
@@ -343,6 +348,11 @@ foreach ($sequence as $offset => $period) {
 // first iteration $offset = 1 and $period === $day2
 // second iteration $offset = 0 and $period === $day1
 }
+```
+
+But the returned value will be different:
+
+```diff
 - $sequence->toArray(); // returns [1 => $day2, 0 => $day1];
 + $sequence->toList();  // returns [0 => $day2, 1 => $day1];
 ```
@@ -380,8 +390,14 @@ The `LatinLetter` label generator no longer fall back to using the `0` value. On
 
 The `DecimalNumber` label generator allows negative integer and `O`. Previously they would be silently converted to `1`. 
 
-```diff
+For the following instance
+
+```php
 $labelGenerator = new DecimalNumber(-3);
+```
+The returned object will behave as follow:
+
+```diff
 - $labelGenerator->startingAt(); // returns '1'
 + $labelGenerator->startLabel;   // returns '-3'
 ```
@@ -392,5 +408,5 @@ The `RomanNumber` label generator constructor will throw if the `DecimalNumber::
 -  $labelGenerator = new RomanNumber(new DecimalNumber(-5), RomanNumber::LOWER);
 -  $labelGenerator->startingAt(); //returns 'i'
 +  $labelGenerator = new RomanNumber(new DecimalNumber(-5), LetterCase::Lower);
-// will throw UnableToDrawChart exception
++  //will throw UnableToDrawChart exception
 ```
