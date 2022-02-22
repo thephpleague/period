@@ -31,7 +31,7 @@ Returns the string representation of a `Period` object using [ISO8601 time inter
 ~~~php
 date_default_timezone_set('Africa/Nairobi');
 
-$period = Period::fromNotation('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
+$period = Period::fromIso80000('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
 echo $period->toIso8601(); // '2014-04-30T23:00:00.000000Z/2014-05-07T23:00:00.000000Z'
 ~~~
 
@@ -46,7 +46,7 @@ public Period::jsonSerialize(void): array
 ~~~php
 date_default_timezone_set('Africa/Kinshasa');
 
-$period = Period::fromNotation('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
+$period = Period::fromIso80000('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
 
 $res = json_decode(json_encode($period), true);
 //  $res will be equivalent to:
@@ -73,7 +73,7 @@ You can use the `format` method to represent a `Period` object in its [mathemati
 - The boundary representation depends on the `Period` boundaries property.
 
 ~~~php
-$period = Period::fromNotation('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
+$period = Period::fromIso80000('Y-m-d H:i:s', '[2014-05-01 00:00:00, 2014-05-08 00:00:00)');
 echo $period->toIso80000('Y-m-d'); // [2014-05-01, 2014-05-08)
 echo $period->toBourbaki('Y-m-d'); // [2014-05-01, 2014-05-08[
 ~~~

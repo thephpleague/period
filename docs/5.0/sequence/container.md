@@ -33,7 +33,7 @@ Tells whether the sequence contains all the submitted intervals.
 $sequence = new Sequence(Period::after('2018-01-01', '30 DAYS'));
 $sequence->contains(
     Period::fromMonth(2018, 3),
-    Period::fromNotation('!Y-m-d', '[2018-01-20, 2018-03-10)')
+    Period::fromIso80000('!Y-m-d', '[2018-01-20, 2018-03-10)')
 ); // false
 ~~~
 
@@ -45,10 +45,10 @@ Returns the sequence bounds as a `Period` instance. If the sequence is empty `nu
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20)'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31)'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10)')
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20)'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31)'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10)')
 );
 $sequence->length()->toIso80000('Y-m-d'); // [2018-01-01, 2018-03-31)
 (new Sequence())->length();               // null
@@ -61,9 +61,9 @@ gaps expressed as `Period` objects.
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01', '2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01', '2020-01-31)')
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01', '2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01', '2020-01-31)')
 );
 $gaps = $sequence->gaps(); // a new Sequence object
 count($gaps); // 2
@@ -76,9 +76,9 @@ intersections expressed as `Period` objects.
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01', '2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01', '2020-01-31)')
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01', '2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01', '2020-01-31)')
 );
 $intersections = $sequence->intersections(); // a new Sequence object
 $intersections->isEmpty(); // true

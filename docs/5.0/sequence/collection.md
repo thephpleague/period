@@ -25,7 +25,7 @@ $sequence->isEmpty(); // false
 Returns the number of `Period` instance contains in the `Sequence` object. The object implements PHP's `Countable` interface.
 
 ~~~php
-$sequence = new Sequence(Period::fromNotation('!Y-m-d', '[2018-01-01, 2018-01-31)'));
+$sequence = new Sequence(Period::fromIso80000('!Y-m-d', '[2018-01-01, 2018-01-31)'));
 count($sequence); // returns 1
 ~~~
 
@@ -37,10 +37,10 @@ The `Sequence` class implements PHP's `ArrayAccess`, `IteratorAggregate` interfa
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 foreach ($sequence as $interval) {
 	//$interval is a League\Period\Period object
@@ -58,10 +58,10 @@ Returns the interval found at the given offset.
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 $sequence->get(3)->format('Y-m-d'); //returns [2018-01-20, 2018-03-10)
 $sequence->get(42); //throws a League\Period\InaccessibleInterval exception
@@ -85,10 +85,10 @@ Adds new intervals at the end of the sequence.
 $sequence = new Sequence(new Period('2018-01-01', '2018-01-31'));
 $sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
 $sequence->push(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 $sequence->get(0)->toIso80000('Y-m-d'); // [2018-01-01, 2018-01-31)
 $sequence[] = Period::fromIso8601('!Y-m-d', '2018-12-20/2018-12-21');
@@ -102,12 +102,12 @@ Adds new intervals at the start of the sequence.
 <p class="message-notice">The sequence is re-indexed after the addition. This method when used with no argument leave the current instance unchanged.</p>
 
 ~~~php
-$sequence = new Sequence(Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'));
+$sequence = new Sequence(Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'));
 $sequence->get(0)->format('Y-m-d'); // [2018-01-01, 2018-01-31)
 $sequence->unshift(
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 $sequence->get(0)->toIso80000('Y-m-d'); // [2018-02-10, 2018-02-20)
 ~~~
@@ -159,10 +159,10 @@ Removes an interval from the collection at the given offset and returns it. This
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 $interval = $sequence->remove(3);
 $sequence->remove(42);//throws InaccessibleInterval
@@ -178,10 +178,10 @@ Clear the sequence by removing all intervals.
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 count($sequence); // 4
 $sequence->clear();
@@ -196,10 +196,10 @@ The `Sequence` class implements PHP's `JsonSerializable` interfaces to enable ex
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 
 echo json_encode($sequence, JSON_PRETTY_PRINT);
@@ -237,10 +237,10 @@ Returns a native PHP array representation of the collection as a List, its keys 
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31'),
-    Period::fromNotation('!Y-m-d', '[2018-02-10', '2018-02-20'),
-    Period::fromNotation('!Y-m-d', '[2018-03-01', '2018-03-31'),
-    Period::fromNotation('!Y-m-d', '[2018-01-20', '2018-03-10'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-02-10', '2018-02-20'),
+    Period::fromIso80000('!Y-m-d', '[2018-03-01', '2018-03-31'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-20', '2018-03-10'),
 );
 $array = $sequence->toList();
 ~~~
@@ -278,9 +278,9 @@ It takes up to two (2) parameters:
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01', '2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01', '2020-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01', '2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01', '2020-01-31)'),
 );
 
 $sequence->some(fn (Period $interval): bool => $interval->contains('2018-01-15')); // true
@@ -303,9 +303,9 @@ It takes up to two (2) parameters:
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01', '2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01', '2020-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01', '2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01', '2020-01-31)'),
 );
 
 $sequence->every(fn (Period $interval): bool => $interval->contains('2018-01-15');); // false
@@ -325,9 +325,9 @@ It must return an integer less than, equal to, or greater than zero if the first
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01', '2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01', '2020-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01', '2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01', '2020-01-31)'),
 );
 
 foreach ($sequence as $offset => $interval) {
@@ -356,9 +356,9 @@ It must return an integer less than, equal to, or greater than zero if the first
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01', '2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01', '2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01', '2020-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2018-01-01', '2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01', '2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01', '2020-01-31)'),
 );
 
 $newSequence = $sequence->sorted(fn (Period $interval1, Period $interval2): int => $interval1->endDate() <=> $interval2->endDate());

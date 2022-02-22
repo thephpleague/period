@@ -169,7 +169,7 @@ The possible bound values are:
 - `{upperbound}` can be `]` or `)`;
 
 ~~~php
-$day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 ]');
+$day = Period::fromIso80000('!Y-m-d', '[ 2012-01-03  , 2012-02-03 ]');
 echo $day->toIso80000('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00]
 $day->bounds() === Bounds::IncludeAll;
 ~~~
@@ -184,7 +184,7 @@ The possible bound values are:
 - `{upperbound}` can be `]` or `]`;
 
 ~~~php
-$day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 [');
+$day = Period::fromBourbaki('!Y-m-d', '[ 2012-01-03  , 2012-02-03 [');
 echo $day->toBourbaki('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00[
 $day->bounds() === Bounds::IncludeStartExcludeEnd;
 ~~~

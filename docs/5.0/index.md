@@ -92,9 +92,9 @@ $altPeriod->durationGreaterThan($period); //return true;
 
 ~~~php
 $sequence = new Sequence(
-    Period::fromNotation('!Y-m-d', '[2018-01-01,2018-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2017-01-01,2017-01-31)'),
-    Period::fromNotation('!Y-m-d', '[2020-01-01,2020-01-31)')
+    Period::fromIso80000('!Y-m-d', '[2018-01-01,2018-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2017-01-01,2017-01-31)'),
+    Period::fromIso80000('!Y-m-d', '[2020-01-01,2020-01-31)')
 );
 $gaps = $sequence->gaps(); // a new Sequence object
 count($gaps); // 2
