@@ -97,7 +97,7 @@ use League\Period\Chart;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$labelGenerator = new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\LetterCase::LOWER);
+$labelGenerator = new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\LetterCase::Lower);
 
 $dataset = Chart\Dataset::fromItems(
     new Sequence(
@@ -137,7 +137,7 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $labelGenerator = new Chart\AffixLabel(
-    new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\LetterCase::LOWER),
+    new Chart\RomanNumber(new Chart\DecimalNumber(5), Chart\LetterCase::Lower),
     '*', //prefix
     '.)'    //suffix
 );
@@ -180,7 +180,7 @@ use League\Period\Period;
 use League\Period\Sequence;
 
 $labelGenerator = new Chart\DecimalNumber(5);
-$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\LetterCase::LOWER);
+$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\LetterCase::Lower);
 $labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 

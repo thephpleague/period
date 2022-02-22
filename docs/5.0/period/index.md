@@ -32,7 +32,7 @@ Both `$startDate` and `$endDate` parameters are datepoints. `$endDate` **must be
 
 The `$bounds` is a `League\Period\Bounds` and only its value are eligible to create a new `Period` instance.
 
-<p class="message-info">By default for each named constructor the <code>$bounds</code> is <code>Bounds::INCLUDE_START_EXCLUDE_END</code> when not explicitly provided.</p>
+<p class="message-info">By default for each named constructor the <code>$bounds</code> is <code>Bounds::IncludeStartExcludeEnd</code> when not explicitly provided.</p>
 
 ### Using datepoints
 
@@ -40,14 +40,14 @@ The `$bounds` is a `League\Period\Bounds` and only its value are eligible to cre
 public static Period::fromDate(
     DatePoint|DateTimeInterface|string $startDate, 
     DatePoint|DateTimeInterface|string $endDate, 
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 ~~~
 
 If the timezone is important use a `DateTimeInterface` object instead of a string. When a string is provided, the timezone information is derived from the underlying system.
 
 ~~~php
-$day = Period::fromDate('2012-01-03', Datepoint::fromDateString('2012-02-03'), Bounds::EXCLUDE_ALL);
+$day = Period::fromDate('2012-01-03', Datepoint::fromDateString('2012-02-03'), Bounds::ExcludeAll);
 $day->toIso80000('Y-m-d'); //return (2012-01-03, 2012-02-03)
 ~~~
 
@@ -57,12 +57,12 @@ $day->toIso80000('Y-m-d'); //return (2012-01-03, 2012-02-03)
 public static Period::fromTimestamp(
     int $startDate, 
     int $endDate, 
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 ~~~
 
 ~~~php
-$day = Period::fromTimestamp(10125487, 10158962, Bounds::EXCLUDE_ALL);
+$day = Period::fromTimestamp(10125487, 10158962, Bounds::ExcludeAll);
 $day->toIso80000('Y-m-d H:i:s'); //return (1970-04-28 04:0:07, 1970-04-28 13:0:02)
 ~~~
 
@@ -72,17 +72,17 @@ $day->toIso80000('Y-m-d H:i:s'); //return (1970-04-28 04:0:07, 1970-04-28 13:0:0
 public static Period::after(
     DatePoint|DateTimeInterface|string $startDate, 
     Period|Duration|DateInterval|string $duration, 
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 public static Period::before(
     DatePoint|DateTimeInterface|string $endDate,
     Period|Duration|DateInterval|string $duration,
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 public static Period::around(
     DatePoint|DateTimeInterface|string $midpoint,
     Period|Duration|DateInterval|string $duration, 
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 ~~~
 
@@ -111,13 +111,13 @@ $intervalAround->equals($intervalBefore); //returns true
 <p class="message-notice">The week index follows the <a href="https://en.wikipedia.org/wiki/ISO_week_date" target="_blank">ISO week date</a> system. This means that the first week may be included in the previous year, conversely the last week may be included in the next year.</p>
 
 ~~~php
-public static Period::fromDay(int $year, int $month, int $day, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromIsoWeek(int $year, int $week, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromMonth(int $year, int $month, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromQuarter(int $year, int $quarter, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromSemester(int $year, int $semester, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromYear(int $year, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
-public static Period::fromIsoYear(int $year, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromDay(int $year, int $month, int $day, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
+public static Period::fromIsoWeek(int $year, int $week, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
+public static Period::fromMonth(int $year, int $month, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
+public static Period::fromQuarter(int $year, int $quarter, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
+public static Period::fromSemester(int $year, int $semester, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
+public static Period::fromYear(int $year, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
+public static Period::fromIsoYear(int $year, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
 ~~~
 
 <p class="message-info">The datepoints will be created following PHP <code>DateTimeImmutable::setDate</code>, <code>DateTimeImmutable::setISODate</code> and <code>DateTimeImmutable::setTime</code> rules<br> which means that overflow is possible and acceptable.</p>
@@ -135,7 +135,7 @@ $day->endDate->format('Y-m-d H:i:s'); //return 2012-01-04 00:00:00
 ### Using standardized notation
 
 ~~~php
-public static Period::fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+public static Period::fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
 public static Period::fromIso80000(string $format, string $notation): Period
 public static Period::fromBourbaki(string $format, string $notation): Period
 ~~~
@@ -171,7 +171,7 @@ The possible bound values are:
 ~~~php
 $day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 ]');
 echo $day->toIso80000('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00]
-$day->bounds() === Bounds::INCLUDE_ALL;
+$day->bounds() === Bounds::IncludeAll;
 ~~~
 
 #### Using Bourbaki notation
@@ -186,7 +186,7 @@ The possible bound values are:
 ~~~php
 $day = Period::fromNotation('!Y-m-d', '[ 2012-01-03  , 2012-02-03 [');
 echo $day->toBourbaki('Y-m-d H:i:s'); // returns [2012-01-03 00:00:00, 2012-02-03 00:00:00[
-$day->bounds() === Bounds::INCLUDE_START_EXCLUDE_END;
+$day->bounds() === Bounds::IncludeStartExcludeEnd;
 ~~~
 
 ### Using a DatePeriod object
@@ -194,7 +194,7 @@ $day->bounds() === Bounds::INCLUDE_START_EXCLUDE_END;
 ~~~php
 function Period::fromDateRange(
     DatePeriod $datePeriod,
-    Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+    Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): self
 ~~~
 

@@ -171,7 +171,7 @@ Most notably:
 
 ```diff
 - Period::fromDatepoint('2021-05-23', '2021-05-24', Period::INCLUDE_ALL)->getStartDate();
-+ Period::fromDate('2021-05-23', '2021-05-24', Bounds::INCLUDE_ALL)->startDate;
++ Period::fromDate('2021-05-23', '2021-05-24', Bounds::IncludeAll)->startDate;
 
 - (new Datepoint('NOW'))->getHour()->format('Y-m-d H:i:s');
 + DatePoint::fromDateString('NOW')->hour()->toIso80000('Y-m-d H:i:s');
@@ -225,7 +225,7 @@ use Carbon\Carbon;
 + Period::fromDate(
 +    Carbon::createFromTimestamp(1635585868), 
 +    '2021-05-24', 
-+    Bounds::INCLUDE_ALL
++    Bounds::IncludeAll
 + );
 ```
 
@@ -255,7 +255,7 @@ or one of the `Duration` named constructor.
 + Period::after(
 +    '2021-05-23', 
 +    Duration::fromChronoString('12:30'), 
-+    Bounds::INCLUDE_ALL
++    Bounds::IncludeAll
 + );
 ```
 
@@ -275,7 +275,7 @@ Creating a Duration out of some seconds as changed, the method only accepts inte
 
 ```diff
 - new Period('2021-03-21 12:23:56', '2021-03-21 13:23:56', Period::EXCLUDE_ALL);
-+ Period::fromDate('2021-03-21 12:23:56', '2021-03-21 13:23:56', Bounds::EXCLUDE_ALL);
++ Period::fromDate('2021-03-21 12:23:56', '2021-03-21 13:23:56', Bounds::ExcludeAll);
 ```
 
 `Period::timeDuration` now returns an `int` instead of a `float` value.
@@ -391,6 +391,6 @@ The `RomanNumber` label generator constructor will throw if the `DecimalNumber::
 ```diff
 -  $labelGenerator = new RomanNumber(new DecimalNumber(-5), RomanNumber::LOWER);
 -  $labelGenerator->startingAt(); //returns 'i'
-+  $labelGenerator = new RomanNumber(new DecimalNumber(-5), LetterCase::LOWER);
++  $labelGenerator = new RomanNumber(new DecimalNumber(-5), LetterCase::Lower);
 // will throw UnableToDrawChart exception
 ```

@@ -39,7 +39,7 @@ final class StreamOutputTest extends TestCase
     public function testCreateStreamWithInvalidParameter(): void
     {
         $this->expectException(TypeError::class);
-        new StreamOutput(__DIR__.'/data/foo.csv', Terminal::POSIX);
+        new StreamOutput(__DIR__.'/data/foo.csv', Terminal::Posix);
     }
 
     /**
@@ -48,8 +48,8 @@ final class StreamOutputTest extends TestCase
     public function testWriteln(string $message, string $expected): void
     {
         $stream = $this->setStream();
-        $output = new StreamOutput($stream, Terminal::POSIX);
-        $output->writeln($message, Color::BLUE);
+        $output = new StreamOutput($stream, Terminal::Posix);
+        $output->writeln($message, Color::Blue);
         $output->writeln($message);
         rewind($stream);
         /** @var string $data */
@@ -81,8 +81,8 @@ final class StreamOutputTest extends TestCase
     public function testWritelnUnknown(string $message, string $expected): void
     {
         $stream = $this->setStream();
-        $output = new StreamOutput($stream, Terminal::COLORLESS);
-        $output->writeln($message, Color::BLUE);
+        $output = new StreamOutput($stream, Terminal::Colorless);
+        $output->writeln($message, Color::Blue);
         $output->writeln($message);
         rewind($stream);
         /** @var string $data */

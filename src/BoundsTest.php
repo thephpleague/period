@@ -30,7 +30,7 @@ final class BoundsTest extends TestCase
     {
         yield 'exclude all' => [
             'notation' => '(3, 4)',
-            'bounds' => Bounds::EXCLUDE_ALL,
+            'bounds' => Bounds::ExcludeAll,
             'start' => '3',
             'end' => '4',
         ];
@@ -39,7 +39,7 @@ final class BoundsTest extends TestCase
 
         yield 'include start exclude end' => [
             'notation' => '[2022-03-01, 2022-04)',
-            'bounds' => Bounds::INCLUDE_START_EXCLUDE_END,
+            'bounds' => Bounds::IncludeStartExcludeEnd,
             'start' => $period->startDate->format('Y-m-d'),
             'end' => $period->endDate->format('Y-m'),
         ];
@@ -59,7 +59,7 @@ final class BoundsTest extends TestCase
     {
         yield 'exclude all' => [
             'notation' => ']3, 4[',
-            'bounds' => Bounds::EXCLUDE_ALL,
+            'bounds' => Bounds::ExcludeAll,
             'start' => '3',
             'end' => '4',
         ];
@@ -68,7 +68,7 @@ final class BoundsTest extends TestCase
 
         yield 'include start exclude end' => [
             'notation' => '[2022-03-01, 2022-04[',
-            'bounds' => Bounds::INCLUDE_START_EXCLUDE_END,
+            'bounds' => Bounds::IncludeStartExcludeEnd,
             'start' => $period->startDate->format('Y-m-d'),
             'end' => $period->endDate->format('Y-m'),
         ];
@@ -76,18 +76,18 @@ final class BoundsTest extends TestCase
 
     public function testFromIso80000Succeeds(): void
     {
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_ALL], Bounds::parseIso80000('[3,5]'));
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_ALL], Bounds::parseIso80000('(3,5)'));
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_START_INCLUDE_END], Bounds::parseIso80000('(3,5]'));
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_START_EXCLUDE_END], Bounds::parseIso80000('[3,5)'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::IncludeAll], Bounds::parseIso80000('[3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::ExcludeAll], Bounds::parseIso80000('(3,5)'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::ExcludeStartIncludeEnd], Bounds::parseIso80000('(3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::IncludeStartExcludeEnd], Bounds::parseIso80000('[3,5)'));
     }
 
     public function testFromBourbakiSucceeds(): void
     {
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_ALL], Bounds::parseBourbaki('[3,5]'));
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_ALL], Bounds::parseBourbaki(']3,5['));
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_START_INCLUDE_END], Bounds::parseBourbaki(']3,5]'));
-        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::INCLUDE_START_EXCLUDE_END], Bounds::parseBourbaki('[3,5['));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::IncludeAll], Bounds::parseBourbaki('[3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::ExcludeAll], Bounds::parseBourbaki(']3,5['));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::ExcludeStartIncludeEnd], Bounds::parseBourbaki(']3,5]'));
+        self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::IncludeStartExcludeEnd], Bounds::parseBourbaki('[3,5['));
     }
 
     /**

@@ -143,7 +143,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date second
      *  - the duration is equal to 1 second
      */
-    public function second(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function second(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date->setTime(
@@ -162,7 +162,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date minute
      *  - the duration is equal to 1 minute
      */
-    public function minute(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function minute(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date->setTime(
@@ -180,7 +180,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date hour
      *  - the duration is equal to 1 hour
      */
-    public function hour(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function hour(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date->setTime((int) $this->date->format('H'), 0),
@@ -195,7 +195,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date day
      *  - the duration is equal to 1 day
      */
-    public function day(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function day(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date->setTime(0, 0),
@@ -210,7 +210,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date iso week day
      *  - the duration is equal to 7 days
      */
-    public function isoWeek(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function isoWeek(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date
@@ -230,7 +230,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date month
      *  - the duration is equal to 1 month
      */
-    public function month(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function month(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date
@@ -251,7 +251,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date quarter
      *  - the duration is equal to 3 months
      */
-    public function quarter(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function quarter(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date
@@ -272,7 +272,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date semester
      *  - the duration is equal to 6 months
      */
-    public function semester(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function semester(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date
@@ -293,7 +293,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date year
      *  - the duration is equal to 1 year
      */
-    public function year(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function year(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         return Period::after(
             $this->date
@@ -310,7 +310,7 @@ final class DatePoint
      *  - the starting date endpoint represents the beginning of the current date iso year
      *  - the duration is equal to 1 iso year
      */
-    public function isoYear(Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): Period
+    public function isoYear(Bounds $bounds = Bounds::IncludeStartExcludeEnd): Period
     {
         $currentIsoYear = (int) $this->date->format('o');
 

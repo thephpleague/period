@@ -82,14 +82,14 @@ final class AffixLabelTest extends TestCase
 
     public function testGetter(): void
     {
-        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::UPPER));
+        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::Upper));
         self::assertSame('', $generator->labelSuffix);
         self::assertSame('', $generator->labelPrefix);
     }
 
     public function testFormat(): void
     {
-        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::UPPER), ':', '.');
+        $generator = new AffixLabel(new RomanNumber(new DecimalNumber(10), LetterCase::Upper), ':', '.');
         self::assertSame(':FOOBAR.', $generator->format('foobar'));
     }
 }

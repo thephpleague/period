@@ -18,16 +18,16 @@ use const STR_PAD_RIGHT;
 
 enum Alignment
 {
-    case CENTER;
-    case LEFT;
-    case RIGHT;
+    case Center;
+    case Left;
+    case Right;
 
     public static function fromPadding(int $padding): self
     {
         return match ($padding) {
-            STR_PAD_BOTH => self::CENTER,
-            STR_PAD_RIGHT => self::RIGHT,
-            STR_PAD_LEFT => self::LEFT,
+            STR_PAD_BOTH => self::Center,
+            STR_PAD_RIGHT => self::Right,
+            STR_PAD_LEFT => self::Left,
             default => throw new InvalidArgumentException('Unknown or unsupported padding value.'),
         };
     }
@@ -35,9 +35,9 @@ enum Alignment
     public function toPadding(): int
     {
         return match ($this) {
-            self::CENTER => STR_PAD_BOTH,
-            self::RIGHT => STR_PAD_RIGHT,
-            self::LEFT => STR_PAD_LEFT,
+            self::Center => STR_PAD_BOTH,
+            self::Right => STR_PAD_RIGHT,
+            self::Left => STR_PAD_LEFT,
         };
     }
 }

@@ -42,31 +42,31 @@ final class PeriodBoundsTest extends PeriodTest
         return [
             'left open right close' => [
                 'interval' => Period::fromDay(2012, 8, 12),
-                'rangeType' => Bounds::INCLUDE_START_EXCLUDE_END,
+                'rangeType' => Bounds::IncludeStartExcludeEnd,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => false,
                 'endExcluded' => true,
             ],
             'left close right open' => [
-                'interval' => Period::around('2012-08-12', '1 HOUR', Bounds::EXCLUDE_START_INCLUDE_END),
-                'rangeType' => Bounds::EXCLUDE_START_INCLUDE_END,
+                'interval' => Period::around('2012-08-12', '1 HOUR', Bounds::ExcludeStartIncludeEnd),
+                'rangeType' => Bounds::ExcludeStartIncludeEnd,
                 'startIncluded' => false,
                 'startExcluded' => true,
                 'endIncluded' => true,
                 'endExcluded' => false,
             ],
             'left open right open' => [
-                'interval' => Period::after('2012-08-12', '1 DAY', Bounds::INCLUDE_ALL),
-                'rangeType' => Bounds::INCLUDE_ALL,
+                'interval' => Period::after('2012-08-12', '1 DAY', Bounds::IncludeAll),
+                'rangeType' => Bounds::IncludeAll,
                 'startIncluded' => true,
                 'startExcluded' => false,
                 'endIncluded' => true,
                 'endExcluded' => false,
             ],
             'left close right close' => [
-                'interval' => Period::before('2012-08-12', '1 WEEK', Bounds::EXCLUDE_ALL),
-                'rangeType' => Bounds::EXCLUDE_ALL,
+                'interval' => Period::before('2012-08-12', '1 WEEK', Bounds::ExcludeAll),
+                'rangeType' => Bounds::ExcludeAll,
                 'startIncluded' => false,
                 'startExcluded' => true,
                 'endIncluded' => false,
@@ -78,10 +78,10 @@ final class PeriodBoundsTest extends PeriodTest
     public function testPeriodBoundedBy(): void
     {
         $interval = Period::fromDate('2014-01-13', '2014-01-20');
-        $altInterval = $interval->boundedBy(Bounds::EXCLUDE_ALL);
+        $altInterval = $interval->boundedBy(Bounds::ExcludeAll);
 
         self::assertEquals($altInterval->dateInterval(), $interval->dateInterval());
         self::assertTrue($interval->bounds !== $altInterval->bounds);
-        self::assertSame($interval, $interval->boundedBy(Bounds::INCLUDE_START_EXCLUDE_END));
+        self::assertSame($interval, $interval->boundedBy(Bounds::IncludeStartExcludeEnd));
     }
 }

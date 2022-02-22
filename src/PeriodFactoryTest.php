@@ -463,14 +463,14 @@ final class PeriodFactoryTest extends PeriodTest
             'same input/output format' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/2021-03-26',
-                'bounds' => Bounds::INCLUDE_ALL,
+                'bounds' => Bounds::IncludeAll,
                 'outputFormat'=> 'Y-m-d',
                 'expected' => '2021-03-25/2021-03-26',
             ],
             'different input/output format' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/2021-03-26',
-                'bounds' => Bounds::EXCLUDE_ALL,
+                'bounds' => Bounds::ExcludeAll,
                 'outputFormat'=> 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
@@ -493,11 +493,11 @@ final class PeriodFactoryTest extends PeriodTest
     public function provideInvalidIsoNotation(): iterable
     {
         return [
-            'empty string' => ['', 'Y-m-d', Bounds::INCLUDE_ALL],
-            'missing separator' => ['2021-01-02 2021-01-03', 'Y-m-d', Bounds::INCLUDE_ALL],
-            'too many separator' => ['2021-01-02/2021-/01-03', 'Y-m-d', Bounds::INCLUDE_ALL],
-            'missing dates' => ['2021-01-02/', 'Y-m-d', Bounds::INCLUDE_ALL],
-            'wrong format' => ['2021-01-02/2021-01-03', 'Ymd', Bounds::INCLUDE_ALL],
+            'empty string' => ['', 'Y-m-d', Bounds::IncludeAll],
+            'missing separator' => ['2021-01-02 2021-01-03', 'Y-m-d', Bounds::IncludeAll],
+            'too many separator' => ['2021-01-02/2021-/01-03', 'Y-m-d', Bounds::IncludeAll],
+            'missing dates' => ['2021-01-02/', 'Y-m-d', Bounds::IncludeAll],
+            'wrong format' => ['2021-01-02/2021-01-03', 'Ymd', Bounds::IncludeAll],
         ];
     }
 }

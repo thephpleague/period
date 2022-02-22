@@ -23,10 +23,10 @@ use function trim;
  */
 enum Bounds
 {
-    case INCLUDE_START_EXCLUDE_END;
-    case INCLUDE_ALL;
-    case EXCLUDE_START_INCLUDE_END;
-    case EXCLUDE_ALL;
+    case IncludeStartExcludeEnd;
+    case IncludeAll;
+    case ExcludeStartIncludeEnd;
+    case ExcludeAll;
 
     private const REGEXP_ISO80000 = '/^(?<lower>\[|\()(?<start>[^,\]\)\[\(]*),(?<end>[^,\]\)\[\(]*)(?<upper>\]|\))$/';
     private const REGEXP_BOURBAKI = '/^(?<lower>\[|\])(?<start>[^,\]\[]*),(?<end>[^,\]\[]*)(?<upper>\[|\])$/';
@@ -48,10 +48,10 @@ enum Bounds
             'start' => trim($found['start']),
             'end' => trim($found['end']),
             'bounds' => match ($found['lower'].$found['upper']) {
-                '[]' => self::INCLUDE_ALL,
-                '[)' => self::INCLUDE_START_EXCLUDE_END,
-                '()' => self::EXCLUDE_ALL,
-                default => self::EXCLUDE_START_INCLUDE_END,
+                '[]' => self::IncludeAll,
+                '[)' => self::IncludeStartExcludeEnd,
+                '()' => self::ExcludeAll,
+                default => self::ExcludeStartIncludeEnd,
             },
         ];
     }
@@ -73,10 +73,10 @@ enum Bounds
             'start' => trim($found['start']),
             'end' => trim($found['end']),
             'bounds' => match ($found['lower'].$found['upper']) {
-                '[]' => self::INCLUDE_ALL,
-                '[[' => self::INCLUDE_START_EXCLUDE_END,
-                '][' => self::EXCLUDE_ALL,
-                default => self::EXCLUDE_START_INCLUDE_END,
+                '[]' => self::IncludeAll,
+                '[[' => self::IncludeStartExcludeEnd,
+                '][' => self::ExcludeAll,
+                default => self::ExcludeStartIncludeEnd,
             },
         ];
     }
@@ -87,10 +87,10 @@ enum Bounds
     public function buildIso80000(string $start, string $end): string
     {
         return match ($this) {
-            self::INCLUDE_ALL => "[$start, $end]",
-            self::INCLUDE_START_EXCLUDE_END => "[$start, $end)",
-            self::EXCLUDE_ALL => "($start, $end)",
-            self::EXCLUDE_START_INCLUDE_END => "($start, $end]",
+            self::IncludeAll => "[$start, $end]",
+            self::IncludeStartExcludeEnd => "[$start, $end)",
+            self::ExcludeAll => "($start, $end)",
+            self::ExcludeStartIncludeEnd => "($start, $end]",
         };
     }
 
@@ -100,17 +100,17 @@ enum Bounds
     public function buildBourbaki(string $start, string $end): string
     {
         return match ($this) {
-            self::INCLUDE_ALL => "[$start, $end]",
-            self::INCLUDE_START_EXCLUDE_END => "[$start, {$end}[",
-            self::EXCLUDE_ALL => "]$start, {$end}[",
-            self::EXCLUDE_START_INCLUDE_END => "]$start, $end]",
+            self::IncludeAll => "[$start, $end]",
+            self::IncludeStartExcludeEnd => "[$start, {$end}[",
+            self::ExcludeAll => "]$start, {$end}[",
+            self::ExcludeStartIncludeEnd => "]$start, $end]",
         };
     }
 
     public function isStartIncluded(): bool
     {
         return match ($this) {
-            self::INCLUDE_START_EXCLUDE_END, self::INCLUDE_ALL => true,
+            self::IncludeStartExcludeEnd, self::IncludeAll => true,
             default => false,
         };
     }
@@ -118,7 +118,7 @@ enum Bounds
     public function isEndIncluded(): bool
     {
         return match ($this) {
-            self::EXCLUDE_START_INCLUDE_END, self::INCLUDE_ALL => true,
+            self::ExcludeStartIncludeEnd, self::IncludeAll => true,
             default => false,
         };
     }
@@ -126,7 +126,7 @@ enum Bounds
     public function equalsStart(self $other): bool
     {
         return match ($this) {
-            self::INCLUDE_ALL, self::INCLUDE_START_EXCLUDE_END => $other->isStartIncluded(),
+            self::IncludeAll, self::IncludeStartExcludeEnd => $other->isStartIncluded(),
             default => !$other->isStartIncluded(),
         };
     }
@@ -134,7 +134,7 @@ enum Bounds
     public function equalsEnd(self $other): bool
     {
         return match ($this) {
-            self::INCLUDE_ALL, self::EXCLUDE_START_INCLUDE_END => $other->isEndIncluded(),
+            self::IncludeAll, self::ExcludeStartIncludeEnd => $other->isEndIncluded(),
             default => !$other->isEndIncluded(),
         };
     }
@@ -142,8 +142,8 @@ enum Bounds
     public function includeStart(): self
     {
         return match ($this) {
-            self::EXCLUDE_ALL => self::INCLUDE_START_EXCLUDE_END,
-            self::EXCLUDE_START_INCLUDE_END => self::INCLUDE_ALL,
+            self::ExcludeAll => self::IncludeStartExcludeEnd,
+            self::ExcludeStartIncludeEnd => self::IncludeAll,
             default => $this,
         };
     }
@@ -151,8 +151,8 @@ enum Bounds
     public function includeEnd(): self
     {
         return match ($this) {
-            self::INCLUDE_START_EXCLUDE_END => self::INCLUDE_ALL,
-            self::EXCLUDE_ALL => self::EXCLUDE_START_INCLUDE_END,
+            self::IncludeStartExcludeEnd => self::IncludeAll,
+            self::ExcludeAll => self::ExcludeStartIncludeEnd,
             default => $this,
         };
     }
@@ -160,8 +160,8 @@ enum Bounds
     public function excludeStart(): self
     {
         return match ($this) {
-            self::INCLUDE_ALL => self::EXCLUDE_START_INCLUDE_END,
-            self::INCLUDE_START_EXCLUDE_END => self::EXCLUDE_ALL,
+            self::IncludeAll => self::ExcludeStartIncludeEnd,
+            self::IncludeStartExcludeEnd => self::ExcludeAll,
             default => $this,
         };
     }
@@ -169,8 +169,8 @@ enum Bounds
     public function excludeEnd(): self
     {
         return match ($this) {
-            self::INCLUDE_ALL => self::INCLUDE_START_EXCLUDE_END,
-            self::EXCLUDE_START_INCLUDE_END => self::EXCLUDE_ALL,
+            self::IncludeAll => self::IncludeStartExcludeEnd,
+            self::ExcludeStartIncludeEnd => self::ExcludeAll,
             default => $this,
         };
     }

@@ -35,7 +35,7 @@ final class GanttChartTest extends TestCase
     protected function setUp(): void
     {
         $this->stream = $this->setStream();
-        $this->graph = new GanttChart(new GanttChartConfig(output: new StreamOutput($this->stream, Terminal::POSIX), colors: [Color::RED]));
+        $this->graph = new GanttChart(new GanttChartConfig(output: new StreamOutput($this->stream, Terminal::Posix), colors: [Color::Red]));
     }
 
     /**
@@ -130,8 +130,8 @@ final class GanttChartTest extends TestCase
 
     public function testConstructor(): void
     {
-        $graph = new GanttChart(new GanttChartConfig(new StreamOutput(STDOUT, Terminal::POSIX)));
+        $graph = new GanttChart(new GanttChartConfig(new StreamOutput(STDOUT, Terminal::Posix)));
 
-        self::assertSame([Color::RESET], $graph->config->colors);
+        self::assertSame([Color::Reset], $graph->config->colors);
     }
 }

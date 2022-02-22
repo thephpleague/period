@@ -99,17 +99,17 @@ final class DatePointTest extends TestCase
                 'expected' => false,
             ],
             'range exclude start date success' => [
-                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::ExcludeStartIncludeEnd),
                 'input' => new DateTime('2015-01-01'),
                 'expected' => true,
             ],
             'range exclude start date fails' => [
-                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::ExcludeStartIncludeEnd),
                 'input' => new DateTime('2010-01-01'),
                 'expected' => false,
             ],
             'range exclude start date abuts date success' => [
-                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::ExcludeStartIncludeEnd),
                 'input' => new DateTime('2012-02-01'),
                 'expected' => false,
             ],
@@ -141,12 +141,12 @@ final class DatePointTest extends TestCase
                 'expected' => false,
             ],
             'range exclude end date abuts date fails' => [
-                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::ExcludeStartIncludeEnd),
                 'input' => new DateTime('2012-02-01'),
                 'expected' => false,
             ],
             'range exclude start date success' => [
-                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::EXCLUDE_START_INCLUDE_END),
+                'interval' => Period::after(new DateTime('2012-01-01'), DateInterval::createFromDateString('1 MONTH'), Bounds::ExcludeStartIncludeEnd),
                 'input' => new DateTime('2012-01-01'),
                 'expected' => true,
             ],
@@ -158,19 +158,19 @@ final class DatePointTest extends TestCase
         $datepoint = DatePoint::fromDateString('2018-01-18 10:00:00');
         $duration = Duration::fromDateString('3 minutes');
 
-        $intervalBorderOnStartTrue = Period::after($datepoint, $duration, Bounds::EXCLUDE_START_INCLUDE_END);
+        $intervalBorderOnStartTrue = Period::after($datepoint, $duration, Bounds::ExcludeStartIncludeEnd);
         self::assertTrue($datepoint->bordersOnStart($intervalBorderOnStartTrue));
         self::assertTrue($datepoint->abuts($intervalBorderOnStartTrue));
 
-        $intervalBorderOnStartFalse = Period::after($datepoint, $duration, Bounds::INCLUDE_ALL);
+        $intervalBorderOnStartFalse = Period::after($datepoint, $duration, Bounds::IncludeAll);
         self::assertFalse($datepoint->bordersOnStart($intervalBorderOnStartFalse));
         self::assertFalse($datepoint->abuts($intervalBorderOnStartFalse));
 
-        $intervalBorderOnEndTrue = Period::before($datepoint, $duration, Bounds::INCLUDE_START_EXCLUDE_END);
+        $intervalBorderOnEndTrue = Period::before($datepoint, $duration, Bounds::IncludeStartExcludeEnd);
         self::assertTrue($datepoint->bordersOnEnd($intervalBorderOnEndTrue));
         self::assertTrue($datepoint->abuts($intervalBorderOnEndTrue));
 
-        $intervalBorderOnEndFalse = Period::before($datepoint, $duration, Bounds::EXCLUDE_START_INCLUDE_END);
+        $intervalBorderOnEndFalse = Period::before($datepoint, $duration, Bounds::ExcludeStartIncludeEnd);
         self::assertFalse($datepoint->bordersOnEnd($intervalBorderOnEndFalse));
         self::assertFalse($datepoint->abuts($intervalBorderOnEndFalse));
     }
@@ -228,12 +228,12 @@ final class DatePointTest extends TestCase
                 false,
             ],
             'contains datetime edge case datetime equals start date OLCR interval' => [
-                Period::after(new DateTime('2012-01-08'), Duration::fromDateString('1 DAY'), Bounds::EXCLUDE_START_INCLUDE_END),
+                Period::after(new DateTime('2012-01-08'), Duration::fromDateString('1 DAY'), Bounds::ExcludeStartIncludeEnd),
                 new DateTime('2012-01-08'),
                 false,
             ],
             'contains datetime edge case datetime equals end date CLCR interval' => [
-                Period::after(new DateTime('2012-01-08'), Duration::fromDateString('1 DAY'), Bounds::EXCLUDE_ALL),
+                Period::after(new DateTime('2012-01-08'), Duration::fromDateString('1 DAY'), Bounds::ExcludeAll),
                 new DateTime('2012-01-09'),
                 false,
             ],
@@ -257,12 +257,12 @@ final class DatePointTest extends TestCase
 
         return [
             [
-                Period::fromDate($datepoint, new DateTime('2012-01-15'), Bounds::EXCLUDE_ALL),
+                Period::fromDate($datepoint, new DateTime('2012-01-15'), Bounds::ExcludeAll),
                 $datepoint,
                 false,
             ],
             [
-                Period::fromDate($datepoint, new DateTime('2012-01-15'), Bounds::INCLUDE_START_EXCLUDE_END),
+                Period::fromDate($datepoint, new DateTime('2012-01-15'), Bounds::IncludeStartExcludeEnd),
                 $datepoint,
                 true,
             ],
@@ -286,12 +286,12 @@ final class DatePointTest extends TestCase
 
         return [
             [
-                Period::fromDate(new DateTime('2012-01-01'), $datepoint, Bounds::EXCLUDE_ALL),
+                Period::fromDate(new DateTime('2012-01-01'), $datepoint, Bounds::ExcludeAll),
                 $datepoint,
                 false,
             ],
             [
-                Period::fromDate(new DateTime('2012-01-01'), $datepoint, Bounds::INCLUDE_ALL),
+                Period::fromDate(new DateTime('2012-01-01'), $datepoint, Bounds::IncludeAll),
                 $datepoint,
                 true,
             ],

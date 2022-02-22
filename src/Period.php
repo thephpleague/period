@@ -58,7 +58,7 @@ final class Period implements JsonSerializable
     /**
      * @throws InvalidInterval If the notation is not supported or not known
      */
-    public static function fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromIso8601(string $format, string $notation, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         if (1 !== preg_match('/^(?<start>[^\/]*)\/(?<end>.*)$/', $notation, $found)) {
             throw InvalidInterval::dueToUnknownNotation('ISO-8601', $notation);
@@ -108,7 +108,7 @@ final class Period implements JsonSerializable
     public static function fromDate(
         DatePoint|DateTimeInterface|string $startDate,
         DatePoint|DateTimeInterface|string $endDate,
-        Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+        Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         return new self(self::filterDatePoint($startDate), self::filterDatePoint($endDate), $bounds);
     }
@@ -139,7 +139,7 @@ final class Period implements JsonSerializable
     public static function fromTimestamp(
         int $startDate,
         int $endDate,
-        Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+        Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         return new self(
             DatePoint::fromTimestamp($startDate)->date,
@@ -154,7 +154,7 @@ final class Period implements JsonSerializable
     public static function after(
         DatePoint|DateTimeInterface|string $startDate,
         Period|Duration|DateInterval|string $duration,
-        Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+        Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         $startDate = self::filterDatePoint($startDate);
 
@@ -168,7 +168,7 @@ final class Period implements JsonSerializable
     public static function around(
         DatePoint|DateTimeInterface|string $midpoint,
         Period|Duration|DateInterval|string $duration,
-        Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+        Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         $midpoint = self::filterDatePoint($midpoint);
         $duration = self::filterDuration($duration);
@@ -182,7 +182,7 @@ final class Period implements JsonSerializable
     public static function before(
         DatePoint|DateTimeInterface|string $endDate,
         Period|Duration|DateInterval|string $duration,
-        Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END
+        Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         $endDate = self::filterDatePoint($endDate);
 
@@ -192,7 +192,7 @@ final class Period implements JsonSerializable
     /**
      * @throws InvalidInterval If no instance can be generated from a DatePeriod object
      */
-    public static function fromDateRange(DatePeriod $dateRange, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromDateRange(DatePeriod $dateRange, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $endDate = $dateRange->getEndDate();
         if (null === $endDate) {
@@ -206,21 +206,21 @@ final class Period implements JsonSerializable
         );
     }
 
-    public static function fromYear(int $year, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromYear(int $year, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, 1, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1Y')), $bounds);
     }
 
-    public static function fromIsoYear(int $year, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromIsoYear(int $year, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $today = (new DateTimeImmutable())->setTime(0, 0);
 
         return new self($today->setISODate($year, 1), $today->setISODate($year + 1, 1), $bounds);
     }
 
-    public static function fromSemester(int $year, int $semester, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromSemester(int $year, int $semester, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $month = (($semester - 1) * 6) + 1;
         $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
@@ -228,7 +228,7 @@ final class Period implements JsonSerializable
         return new self($startDate, $startDate->add(new DateInterval('P6M')), $bounds);
     }
 
-    public static function fromQuarter(int $year, int $quarter, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromQuarter(int $year, int $quarter, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $month = (($quarter - 1) * 3) + 1;
         $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
@@ -236,21 +236,21 @@ final class Period implements JsonSerializable
         return new self($startDate, $startDate->add(new DateInterval('P3M')), $bounds);
     }
 
-    public static function fromMonth(int $year, int $month, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromMonth(int $year, int $month, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, $month, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P1M')), $bounds);
     }
 
-    public static function fromIsoWeek(int $year, int $week, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromIsoWeek(int $year, int $week, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $startDate = (new DateTimeImmutable())->setISODate($year, $week, 1)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P7D')), $bounds);
     }
 
-    public static function fromDay(int $year, int $month, int $day, Bounds $bounds = Bounds::INCLUDE_START_EXCLUDE_END): self
+    public static function fromDay(int $year, int $month, int $day, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, $month, $day)->setTime(0, 0);
 
@@ -513,7 +513,7 @@ final class Period implements JsonSerializable
             $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate
                 => true,
             $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate
-                => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::INCLUDE_ALL,
+                => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::IncludeAll,
             $this->startDate == $timeSlot->startDate
                 => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
                     && $this->containsDatePoint($this->startDate->add($timeSlot->dateInterval()), $this->bounds),
@@ -533,10 +533,10 @@ final class Period implements JsonSerializable
     private function containsDatePoint(DateTimeInterface $datepoint, Bounds $bounds): bool
     {
         return match ($bounds) {
-            Bounds::EXCLUDE_ALL => $datepoint > $this->startDate && $datepoint < $this->endDate,
-            Bounds::INCLUDE_ALL => $datepoint >= $this->startDate && $datepoint <= $this->endDate,
-            Bounds::EXCLUDE_START_INCLUDE_END => $datepoint > $this->startDate && $datepoint <= $this->endDate,
-            Bounds::INCLUDE_START_EXCLUDE_END => $datepoint >= $this->startDate && $datepoint < $this->endDate,
+            Bounds::ExcludeAll => $datepoint > $this->startDate && $datepoint < $this->endDate,
+            Bounds::IncludeAll => $datepoint >= $this->startDate && $datepoint <= $this->endDate,
+            Bounds::ExcludeStartIncludeEnd => $datepoint > $this->startDate && $datepoint <= $this->endDate,
+            Bounds::IncludeStartExcludeEnd => $datepoint >= $this->startDate && $datepoint < $this->endDate,
         };
     }
 
@@ -692,13 +692,13 @@ final class Period implements JsonSerializable
      *
      * @return DatePeriod<DateTimeImmutable>
      */
-    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::INCLUDED): DatePeriod
+    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
     {
         return new DatePeriod(
             $this->startDate,
             self::filterDuration($timeDelta),
             $this->endDate,
-            $startDatePresence === InitialDatePresence::EXCLUDED ? DatePeriod::EXCLUDE_START_DATE : 0
+            $startDatePresence === InitialDatePresence::Excluded ? DatePeriod::EXCLUDE_START_DATE : 0
         );
     }
 
@@ -708,11 +708,11 @@ final class Period implements JsonSerializable
      *
      * @return Generator<DateTimeImmutable>
      */
-    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::INCLUDED): Generator
+    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
-        if ($endDatePresence === InitialDatePresence::EXCLUDED) {
+        if ($endDatePresence === InitialDatePresence::Excluded) {
             $date = $this->endDate->sub($timeDelta);
         }
 

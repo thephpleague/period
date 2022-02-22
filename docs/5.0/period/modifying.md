@@ -38,7 +38,7 @@ Returns a new `Period` object with a different bounds.
 
 ~~~php
 $interval = Period::fromMonth(2014, 3);
-$newInterval = $interval->boundedBy(Bounds::INCLUDE_ALL);
+$newInterval = $interval->boundedBy(Bounds::IncludeAll);
 $interval->toIso80000('Y-m-d');    // '[2014-03-01, 2014-04-01)'
 $newInterval->toIso80000('Y-m-d'); // '[2014-03-01, 2014-04-01]'
 ~~~

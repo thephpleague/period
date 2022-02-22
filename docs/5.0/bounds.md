@@ -12,10 +12,10 @@ in the interval. `Period` instances supports included and excluded datepoint, th
 ```php
 enum Bounds
 {
-    case INCLUDE_START_EXCLUDE_END;
-    case INCLUDE_ALL;
-    case EXCLUDE_START_INCLUDE_END;
-    case EXCLUDE_ALL;
+    case IncludeStartExcludeEnd;
+    case IncludeAll;
+    case ExcludeStartIncludeEnd;
+    case ExcludeAll;
 }
 ```
 
@@ -39,9 +39,9 @@ The parsers return the same array representation of the interval with the follow
 use League\Period\Bounds;
 
 Bounds::parseIso80000('(3, 5)'); 
-// returns [ 'start' => '3', 'end' => '5', 'bounds' => Bounds::EXCLUDE_ALL]
+// returns [ 'start' => '3', 'end' => '5', 'bounds' => Bounds::ExcludeAll]
 Bounds::parseBourbaki(']2022-03-05,2022-03-09[');
-// returns [ 'start' => '2022-03-05', 'end' => '2022-03-09', 'bounds' => Bounds::EXCLUDE_ALL]
+// returns [ 'start' => '2022-03-05', 'end' => '2022-03-09', 'bounds' => Bounds::ExcludeAll]
 ~~~
 
 ## Formatting interval from Bounds
@@ -61,8 +61,8 @@ You can specify which format you want to use, the ISO or the Boubarki one throug
 ~~~php
 use League\Period\Bounds;
 
-Bounds::EXCLUDE_ALL->buildBourbaki('3', '4'); // returns ']3, 4['
-Bounds::EXCLUDE_ALL->buildIso80000('3', '4'); // returns '(3, 4)'
+Bounds::ExcludeAll->buildBourbaki('3', '4'); // returns ']3, 4['
+Bounds::ExcludeAll->buildIso80000('3', '4'); // returns '(3, 4)'
 ~~~
 
 <p class="message-notice">The formatting does not try to validate or sanitize its input format as long as it is a string.</p>
@@ -81,8 +81,8 @@ public Bounds::isEndIncluded(): bool
 ~~~php
 use League\Period\Bounds;
 
-Bounds::INCLUDE_ALL->isStartIncluded(); // return true;
-Bounds::EXCLUDE_ALL->isStartIncluded(); // return false;
+Bounds::IncludeAll->isStartIncluded(); // return true;
+Bounds::ExcludeAll->isStartIncluded(); // return false;
 ~~~
 
 ## Tells whether bounds share the same endpoints
@@ -99,10 +99,10 @@ public Bounds::equalsEnd(Bound $other): bool
 ~~~php
 use League\Period\Bounds;
 
-Bounds::INCLUDE_ALL->equalsStart(Bounds::INCLUDE_START_EXCLUDE_END); // return true;
-Bounds::EXCLUDE_ALL->equalsStart(Bounds::INCLUDE_START_EXCLUDE_END); // return false;
-Bounds::INCLUDE_ALL->equalsEnd(Bounds::INCLUDE_START_EXCLUDE_END); // return false;
-Bounds::EXCLUDE_ALL->equalsEnd(Bounds::INCLUDE_START_EXCLUDE_END); // return true;
+Bounds::IncludeAll->equalsStart(Bounds::IncludeStartExcludeEnd); // return true;
+Bounds::ExcludeAll->equalsStart(Bounds::IncludeStartExcludeEnd); // return false;
+Bounds::IncludeAll->equalsEnd(Bounds::IncludeStartExcludeEnd); // return false;
+Bounds::ExcludeAll->equalsEnd(Bounds::IncludeStartExcludeEnd); // return true;
 ~~~
 
 ## Modify the enum
@@ -123,8 +123,8 @@ public Bounds::replaceEnd(Bounds $other): Bounds
 ~~~php
 use League\Period\Bounds;
 
-Bounds::INCLUDE_ALL->excludeStart() === Bounds::EXCLUDE_START_INCLUDE_END; // return true;
-Bounds::EXCLUDE_ALL->includeStart() == Bounds::INCLUDE_START_EXCLUDE_END; // return true;
-Bounds::EXCLUDE_ALL->replaceEnd(Bounds::INCLUDE_ALL) === Bounds::INCLUDE_START_EXCLUDE_END; // return true;
-Bounds::EXCLUDE_ALL->replaceEnd(Bounds::EXCLUDE_ALL) === Bounds::EXCLUDE_ALL; // return true;
+Bounds::IncludeAll->excludeStart() === Bounds::ExcludeStartIncludeEnd; // return true;
+Bounds::ExcludeAll->includeStart() == Bounds::IncludeStartExcludeEnd; // return true;
+Bounds::ExcludeAll->replaceEnd(Bounds::IncludeAll) === Bounds::IncludeStartExcludeEnd; // return true;
+Bounds::ExcludeAll->replaceEnd(Bounds::ExcludeAll) === Bounds::ExcludeAll; // return true;
 ~~~

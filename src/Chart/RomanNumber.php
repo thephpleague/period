@@ -50,7 +50,7 @@ final class RomanNumber implements LabelGenerator
 
     public function format(string $label): string
     {
-        if (LetterCase::UPPER === $this->letterCase) {
+        if (LetterCase::Upper === $this->letterCase) {
             return strtoupper($label);
         }
 
@@ -76,7 +76,7 @@ final class RomanNumber implements LabelGenerator
             }
         }
 
-        if (LetterCase::LOWER === $this->letterCase) {
+        if (LetterCase::Lower === $this->letterCase) {
             return strtolower($retVal);
         }
 

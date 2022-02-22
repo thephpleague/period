@@ -15,11 +15,11 @@ namespace League\Period\Chart;
 
 enum LetterCase
 {
-    case UPPER;
-    case LOWER;
+    case Upper;
+    case Lower;
 
     public function isUpper(): bool
     {
-        return $this === self::UPPER;
+        return $this === self::Upper;
     }
 }

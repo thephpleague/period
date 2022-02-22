@@ -29,9 +29,9 @@ final class GanttChartConfig
     private const REGEXP_UNICODE = '/\\\\u(?<unicode>[0-9A-F]{1,4})/i';
 
     public function __construct(
-        public readonly Output $output = new StreamOutput(STDOUT, Terminal::POSIX),
+        public readonly Output $output = new StreamOutput(STDOUT, Terminal::Posix),
         /** @var array<Color> */
-        public readonly array $colors = [Color::RESET],
+        public readonly array $colors = [Color::Reset],
         public readonly string $startExcludedCharacter = '(',
         public readonly string $startIncludedCharacter = '[',
         public readonly string $endExcludedCharacter = ')',
@@ -41,7 +41,7 @@ final class GanttChartConfig
         public readonly int $width = 60,
         public readonly int $gapSize = 1,
         public readonly int $leftMarginSize = 1,
-        public readonly Alignment $labelAlignment = Alignment::LEFT,
+        public readonly Alignment $labelAlignment = Alignment::Left,
     ) {
     }
 
@@ -50,7 +50,7 @@ final class GanttChartConfig
      *
      * @param resource $stream
      */
-    public static function fromStream($stream, Terminal $terminal = Terminal::POSIX): self
+    public static function fromStream($stream, Terminal $terminal = Terminal::Posix): self
     {
         return new self(new StreamOutput($stream, $terminal));
     }
@@ -353,7 +353,7 @@ final class GanttChartConfig
     public function colors(Color ...$colors): self
     {
         if ([] === $colors) {
-            $colors = [Color::RESET];
+            $colors = [Color::Reset];
         }
 
         if ($colors === $this->colors) {

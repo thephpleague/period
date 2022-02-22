@@ -39,8 +39,8 @@ final class GanttChartConfigTest extends TestCase
         self::assertSame(' ', $this->config->spaceCharacter);
         self::assertSame(60, $this->config->width);
         self::assertSame(1, $this->config->gapSize);
-        self::assertSame([Color::RESET], $this->config->colors);
-        self::assertSame(Alignment::LEFT, $this->config->labelAlignment);
+        self::assertSame([Color::Reset], $this->config->colors);
+        self::assertSame(Alignment::Left, $this->config->labelAlignment);
     }
 
     public function testCreateFromRandom(): void
@@ -155,8 +155,8 @@ final class GanttChartConfigTest extends TestCase
     public function colorsProvider(): array
     {
         return [
-            [Color::RESET, Color::RESET],
-            [Color::WHITE, Color::WHITE],
+            [Color::Reset, Color::Reset],
+            [Color::White, Color::White],
         ];
     }
 
@@ -243,19 +243,19 @@ final class GanttChartConfigTest extends TestCase
     {
         return [
             'default' => [
-                'padding' => Alignment::LEFT,
-                'expected' => Alignment::LEFT,
+                'padding' => Alignment::Left,
+                'expected' => Alignment::Left,
             ],
             'changing wit a defined config' => [
-                'padding' => Alignment::RIGHT,
-                'expected' => Alignment::RIGHT,
+                'padding' => Alignment::Right,
+                'expected' => Alignment::Right,
             ],
         ];
     }
 
     public function testWithOutputAlwaysReturnsANewInstance(): void
     {
-        $newConfig = $this->config->output(new StreamOutput(STDOUT, Terminal::POSIX));
+        $newConfig = $this->config->output(new StreamOutput(STDOUT, Terminal::Posix));
         self::assertNotSame($this->config, $newConfig);
         self::assertEquals($newConfig->output, $this->config->output);
     }
@@ -263,7 +263,7 @@ final class GanttChartConfigTest extends TestCase
     public function testConstructors(): void
     {
         self::assertEquals(
-            GanttChartConfig::fromOutput(new StreamOutput(STDERR, Terminal::POSIX)),
+            GanttChartConfig::fromOutput(new StreamOutput(STDERR, Terminal::Posix)),
             GanttChartConfig::fromStream(STDERR)
         );
     }

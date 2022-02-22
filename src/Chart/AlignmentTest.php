@@ -18,9 +18,9 @@ final class AlignmentTest extends TestCase
 {
     public function testItCanBeConstructFromPadding(): void
     {
-        self::assertSame(Alignment::LEFT, Alignment::fromPadding(STR_PAD_LEFT));
-        self::assertSame(Alignment::RIGHT, Alignment::fromPadding(STR_PAD_RIGHT));
-        self::assertSame(Alignment::CENTER, Alignment::fromPadding(STR_PAD_BOTH));
+        self::assertSame(Alignment::Left, Alignment::fromPadding(STR_PAD_LEFT));
+        self::assertSame(Alignment::Right, Alignment::fromPadding(STR_PAD_RIGHT));
+        self::assertSame(Alignment::Center, Alignment::fromPadding(STR_PAD_BOTH));
     }
 
     public function testItWillFailOnUnknownPadding(): void
@@ -32,8 +32,8 @@ final class AlignmentTest extends TestCase
 
     public function testItCanBeConvertedToPadding(): void
     {
-        self::assertSame(STR_PAD_LEFT, Alignment::LEFT->toPadding());
-        self::assertSame(STR_PAD_RIGHT, Alignment::RIGHT->toPadding());
-        self::assertSame(STR_PAD_BOTH, Alignment::CENTER->toPadding());
+        self::assertSame(STR_PAD_LEFT, Alignment::Left->toPadding());
+        self::assertSame(STR_PAD_RIGHT, Alignment::Right->toPadding());
+        self::assertSame(STR_PAD_BOTH, Alignment::Center->toPadding());
     }
 }

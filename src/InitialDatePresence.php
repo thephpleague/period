@@ -20,6 +20,6 @@ namespace League\Period;
  */
 enum InitialDatePresence
 {
-    case EXCLUDED;
-    case INCLUDED;
+    case Excluded;
+    case Included;
 }

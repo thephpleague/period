@@ -118,7 +118,7 @@ use League\Period\Period;
 $period = Period::fromDate('2012-04-01 08:30:25', '2013-09-04 12:35:21');
 $period->startDate;         // returns DateTimeImmutable('2012-04-01 08:30:25');
 $period->endDate;           // returns DateTimeImmutable('2013-09-04 12:35:21');
-$period->bounds;            // returns Bounds::INCLUDE_START_EXCLUDE_END
+$period->bounds;            // returns Bounds::IncludeStartExcludeEnd
 ~~~
 
 <p class="message-notice">More information can be extracted from the <code>Bounds</code> enum, please refer to its documentation page.</p>
@@ -133,7 +133,7 @@ of smaller `Period` instances.
 ~~~php
 use League\Period\InitialDatePresence;
 
-public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::INCLUDED): DatePeriod
+public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
 ~~~
 
 Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`.
@@ -165,7 +165,7 @@ use League\Period\InitialDatePresence;
 use League\Period\Duration;
 use League\Period\Period;
 
-$dateRange = Period::fromYear(2012)->dateRangeForward('1 MONTH', InitialDatePresence::EXCLUDED);
+$dateRange = Period::fromYear(2012)->dateRangeForward('1 MONTH', InitialDatePresence::Excluded);
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
@@ -179,7 +179,7 @@ foreach ($dateRange as $datetime) {
 ~~~php
 use League\Period\InitialDatePresence;
 
-public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::INCLUDED): Generator<DateTimeImmutable>
+public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator<DateTimeImmutable>
 ~~~
 
 Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.

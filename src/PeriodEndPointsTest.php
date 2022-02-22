@@ -215,7 +215,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_ALL
+            Bounds::IncludeAll
         );
 
         $snapToSeconds = $period->snapToSecond();
@@ -231,7 +231,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::EXCLUDE_ALL
+            Bounds::ExcludeAll
         );
 
         $snapToSeconds = $period->snapToMinute();
@@ -247,7 +247,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::EXCLUDE_START_INCLUDE_END
+            Bounds::ExcludeStartIncludeEnd
         );
 
         $snapToSeconds = $period->snapToHour();
@@ -263,7 +263,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToDay();
@@ -279,7 +279,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToMonth();
@@ -295,7 +295,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToYear();
@@ -311,7 +311,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToQuarter();
@@ -329,7 +329,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToSemester();
@@ -347,7 +347,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToIsoWeek();
@@ -365,7 +365,7 @@ final class PeriodEndPointsTest extends PeriodTest
         $period = Period::fromDate(
             new DateTimeImmutable('2021-07-18 12:12:12.123456'),
             new DateTimeImmutable('2021-07-23 12:12:12.435672'),
-            Bounds::INCLUDE_START_EXCLUDE_END
+            Bounds::IncludeStartExcludeEnd
         );
 
         $snapToSeconds = $period->snapToIsoYear();

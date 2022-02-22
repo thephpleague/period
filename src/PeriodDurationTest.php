@@ -51,13 +51,13 @@ final class PeriodDurationTest extends PeriodTest
     public function providerGetDatePeriod(): array
     {
         return [
-            'useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::INCLUDED, 24],
-            'useString' => ['2 HOUR', InitialDatePresence::INCLUDED, 12],
-            'useInt' => [9600, InitialDatePresence::INCLUDED, 9],
-            'exclude start date use DateInterval' => [new DateInterval('PT1H'), InitialDatePresence::EXCLUDED, 23],
-            'exclude start date use String' => ['2 HOUR', InitialDatePresence::EXCLUDED, 11],
-            'exclude start date use Int' => [9600, InitialDatePresence::EXCLUDED, 8],
-            'exclude start date use Float' => [14400, InitialDatePresence::EXCLUDED, 5],
+            'useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::Included, 24],
+            'useString' => ['2 HOUR', InitialDatePresence::Included, 12],
+            'useInt' => [9600, InitialDatePresence::Included, 9],
+            'exclude start date use DateInterval' => [new DateInterval('PT1H'), InitialDatePresence::Excluded, 23],
+            'exclude start date use String' => ['2 HOUR', InitialDatePresence::Excluded, 11],
+            'exclude start date use Int' => [9600, InitialDatePresence::Excluded, 8],
+            'exclude start date use Float' => [14400, InitialDatePresence::Excluded, 5],
         ];
     }
 
@@ -81,13 +81,13 @@ final class PeriodDurationTest extends PeriodTest
     public function providerGetDatePeriodBackwards(): array
     {
         return [
-            'useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::INCLUDED, 24],
-            'useString' => ['2 HOUR', InitialDatePresence::INCLUDED, 12],
-            'useInt' => [9600, InitialDatePresence::INCLUDED, 9],
-            'exclude start date useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::EXCLUDED, 23],
-            'exclude start date useString' => ['2 HOUR', InitialDatePresence::EXCLUDED, 11],
-            'exclude start date useInt' => [9600, InitialDatePresence::EXCLUDED, 8],
-            'exclude start date useFloat' => [14400, InitialDatePresence::EXCLUDED, 5],
+            'useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::Included, 24],
+            'useString' => ['2 HOUR', InitialDatePresence::Included, 12],
+            'useInt' => [9600, InitialDatePresence::Included, 9],
+            'exclude start date useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::Excluded, 23],
+            'exclude start date useString' => ['2 HOUR', InitialDatePresence::Excluded, 11],
+            'exclude start date useInt' => [9600, InitialDatePresence::Excluded, 8],
+            'exclude start date useFloat' => [14400, InitialDatePresence::Excluded, 5],
         ];
     }
     /**

@@ -42,7 +42,7 @@ final class StreamOutput implements Output
         $this->stream = $stream;
     }
 
-    public function writeln(string $message, Color $color = Color::NONE): void
+    public function writeln(string $message, Color $color = Color::None): void
     {
         fwrite($this->stream, $this->format($this->colorize($message, $color)).PHP_EOL);
         fflush($this->stream);
@@ -53,11 +53,11 @@ final class StreamOutput implements Output
      */
     private function colorize(string $characters, Color $color): string
     {
-        if (Color::NONE === $color || Terminal::POSIX !== $this->terminal) {
+        if (Color::None === $color || Terminal::Posix !== $this->terminal) {
             return $characters;
         }
 
-        return "<<$color->value>>$characters<<".Color::RESET->value.'>>';
+        return "<<$color->value>>$characters<<".Color::Reset->value.'>>';
     }
 
     /**
@@ -65,7 +65,7 @@ final class StreamOutput implements Output
      */
     private function format(string $str): string
     {
-        if (Terminal::POSIX !== $this->terminal) {
+        if (Terminal::Posix !== $this->terminal) {
             return $str;
         }
 

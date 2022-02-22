@@ -13,30 +13,30 @@ namespace League\Period\Chart;
 
 enum Color: string
 {
-    case RESET = 'reset';
-    case BLACK = 'black';
-    case RED = 'red';
-    case GREEN = 'green';
-    case YELLOW = 'yellow';
-    case BLUE = 'blue';
-    case MAGENTA = 'magenta';
-    case CYAN = 'cyan';
-    case WHITE = 'white';
-    case NONE = 'none';
+    case Reset = 'reset';
+    case Black = 'black';
+    case Red = 'red';
+    case Green = 'green';
+    case Yellow = 'yellow';
+    case Blue = 'blue';
+    case Magenta = 'magenta';
+    case Cyan = 'cyan';
+    case White = 'white';
+    case None = 'none';
 
     public function posix(): string
     {
         return match ($this) {
-            self::RESET => '0',
-            self::BLACK => '30',
-            self::RED => '31',
-            self::GREEN => '32',
-            self::YELLOW => '33',
-            self::BLUE => '34',
-            self::MAGENTA => '35',
-            self::CYAN => '36',
-            self::WHITE => '37',
-            self::NONE => '',
+            self::Reset => '0',
+            self::Black => '30',
+            self::Red => '31',
+            self::Green => '32',
+            self::Yellow => '33',
+            self::Blue => '34',
+            self::Magenta => '35',
+            self::Cyan => '36',
+            self::White => '37',
+            self::None => '',
         };
     }
 
@@ -45,6 +45,6 @@ enum Color: string
      */
     public static function rainBow(): array
     {
-        return [self::BLACK, self::RED, self::GREEN, self::YELLOW, self::BLUE, self::MAGENTA, self::CYAN, self::WHITE];
+        return [self::Black, self::Red, self::Green, self::Yellow, self::Blue, self::Magenta, self::Cyan, self::White];
     }
 }

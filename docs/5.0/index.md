@@ -20,10 +20,10 @@ title: Examples
 use League\Period\Bounds;
 use League\Period\Period;
 
-$period1 = Period::fromMonth(2014, 10, Bounds::EXCLUDE_ALL);
-$period2 = Period::after('2014-10-01', new DateInterval('P1M'), Bounds::EXCLUDE_ALL);
+$period1 = Period::fromMonth(2014, 10, Bounds::ExcludeAll);
+$period2 = Period::after('2014-10-01', new DateInterval('P1M'), Bounds::ExcludeAll);
 $period3 = Period::fromIso80000('!Y-m-d', '(2014-10-01 , 2014-11-01)');
-$period4 = Period::fromIso8601('!Y-m-d', '2014-10-01/2014-11-01', Bounds::EXCLUDE_ALL);
+$period4 = Period::fromIso8601('!Y-m-d', '2014-10-01/2014-11-01', Bounds::ExcludeAll);
 ~~~
 
 All the above calls will end up creating `Period` instances that are equals. The package comes bundle with even more [named constructors](/5.0/period/).
@@ -65,8 +65,8 @@ foreach (Period::fromMonth(2014, 10)->splitForward('1 DAY') as $day) {
 ## Comparing intervals
 
 ~~~php
-$period = Period::after(new DateTime('2014-01-01'), '1 MONTH', Bounds::INCLUDE_ALL);
-$altPeriod = Period::after(new DateTimeImmutable('2014-01-01'), new DateInterval('P1M'), Bounds::EXCLUDE_ALL);
+$period = Period::after(new DateTime('2014-01-01'), '1 MONTH', Bounds::IncludeAll);
+$altPeriod = Period::after(new DateTimeImmutable('2014-01-01'), new DateInterval('P1M'), Bounds::ExcludeAll);
 $period->durationEquals($altPeriod); //returns true
 $period->equals($altPeriod);         //returns false
 $period->contains($altPeriod);       //returns true

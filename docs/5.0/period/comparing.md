@@ -220,8 +220,8 @@ theirs respective bounds are inclusive.
 use League\Period\Bounds;
 use League\Period\Period;
 
-$period = Period::fromMonth(2014, 3, Bounds::INCLUDE_ALL);
-$alt = Period::fromMonth(2014, 4, Bounds::INCLUDE_START_EXCLUDE_END);
+$period = Period::fromMonth(2014, 3, Bounds::IncludeAll);
+$alt = Period::fromMonth(2014, 4, Bounds::IncludeStartExcludeEnd);
 $period->meetsOnStart($alt); //return true
 //in this case
 // $period->endDate == $alt->startDate
@@ -244,8 +244,8 @@ theirs respective bounds are inclusive.
 use League\Period\Bounds;
 use League\Period\Period;
 
-$period = Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
-$alt = Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+$period = Period::fromDate('2022-02-01', '2022-03-01', Bounds::IncludeStartExcludeEnd),
+$alt = Period::fromDate('2022-01-01', '2022-02-01', Bounds::ExcludeStartIncludeEnd),
 $period->meetsOnEnd($period); //return true
 //in this case
 // $period->startDate == $alt->endDate;
@@ -269,8 +269,8 @@ are incluse when they meet. This method returns `true` if both period returns tr
 use League\Period\Bounds;
 use League\Period\Period;
 
-$period = Period::fromDate('2022-02-01', '2022-03-01', Bounds::INCLUDE_START_EXCLUDE_END),
-$alt = Period::fromDate('2022-01-01', '2022-02-01', Bounds::EXCLUDE_START_INCLUDE_END),
+$period = Period::fromDate('2022-02-01', '2022-03-01', Bounds::IncludeStartExcludeEnd),
+$alt = Period::fromDate('2022-01-01', '2022-02-01', Bounds::ExcludeStartIncludeEnd),
 $period->meets($period); //return true
 ~~~
 

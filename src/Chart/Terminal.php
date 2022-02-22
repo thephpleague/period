@@ -13,6 +13,6 @@ namespace League\Period\Chart;
 
 enum Terminal
 {
-    case POSIX;
-    case COLORLESS;
+    case Posix;
+    case Colorless;
 }

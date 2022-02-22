@@ -41,21 +41,21 @@ final class RomanNumberTest extends TestCase
             'empty labels' => [
                 'nbLabels' => 0,
                 'label' => 1,
-                'lettercase' => LetterCase::UPPER,
+                'lettercase' => LetterCase::Upper,
                 'expected' => [],
                 'isUpper' => true,
             ],
             'labels starts at 3' => [
                 'nbLabels' => 1,
                 'label' => 3,
-                'lettercase' => LetterCase::UPPER,
+                'lettercase' => LetterCase::Upper,
                 'expected' => ['III'],
                 'isUpper' => true,
             ],
             'labels starts ends at 4' => [
                 'nbLabels' => 2,
                 'label' => 4,
-                'lettercase' => LetterCase::LOWER,
+                'lettercase' => LetterCase::Lower,
                 'expected' => ['iv', 'v'],
                 'isUpper' => false,
             ],
@@ -66,13 +66,13 @@ final class RomanNumberTest extends TestCase
     {
         $this->expectException(UnableToDrawChart::class);
 
-        new RomanNumber(new DecimalNumber(0), LetterCase::LOWER);
+        new RomanNumber(new DecimalNumber(0), LetterCase::Lower);
     }
 
     public function testFormat(): void
     {
-        $upperRoman = new RomanNumber(new DecimalNumber(10), LetterCase::UPPER);
-        $lowerRoman = new RomanNumber(new DecimalNumber(10), LetterCase::LOWER);
+        $upperRoman = new RomanNumber(new DecimalNumber(10), LetterCase::Upper);
+        $lowerRoman = new RomanNumber(new DecimalNumber(10), LetterCase::Lower);
 
         self::assertSame('FOOBAR', $upperRoman->format('fOoBaR'));
         self::assertSame('foobar', $lowerRoman->format('fOoBaR'));

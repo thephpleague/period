@@ -103,7 +103,7 @@ Once you've got a `DatePoint` instantiated object, you can access a set of calen
 
 ~~~php
 use League\Period\Bounds;
-public function method(string $boundaries = Bounds::INCLUDE_START_EXCLUDE_END): Period;
+public function method(string $boundaries = Bounds::IncludeStartExcludeEnd): Period;
 ~~~
 
 where `method` is one of the following date time span:
@@ -121,7 +121,7 @@ where `method` is one of the following date time span:
 
 For each a these methods a `Period` object is returned with:
 
-- the `Bounds::INCLUDE_START_EXCLUDE_END` bounds type by default unless changed using the `$bounds` argument;
+- the `Bounds::IncludeStartExcludeEnd` bounds type by default unless changed using the `$bounds` argument;
 - the starting date endpoint represents the beginning of the current date endpoint calendar interval;
 - the duration associated with the given calendar interval;
 
@@ -134,7 +134,7 @@ use League\Period\DatePoint;
 $datepoint = Datepoint::fromDateString('2018-06-18 08:35:25');
 $hour = $datepoint->hour();
 // new Period('2018-06-18 08:00:00', '2018-06-18 09:00:00');
-$month = $datepoint->month(Bounds::INCLUDE_ALL);
+$month = $datepoint->month(Bounds::IncludeAll);
 echo $month->toIso80000('Y-m-d');
 // [2018-06-01, 2018-07-01 00:00:00];
 $month->contains($datepoint); // true
@@ -171,19 +171,19 @@ use League\Period\Period;
 
 $datepoint = DatePoint::fromDateString('2018-01-18 10:00:00');
 $datepoint->bordersOnStart(
-    Period::after($datepoint, new DateInterval('PT3M'), Bounds::EXCLUDE_START_INCLUDE_END)
+    Period::after($datepoint, new DateInterval('PT3M'), Bounds::ExcludeStartIncludeEnd)
 ); //  true
 
 
 $datepoint->bordersOnStart(
-    Period::after($datepoint, new DateInterval('PT3M'), Bounds::INCLUDE_ALL)
+    Period::after($datepoint, new DateInterval('PT3M'), Bounds::IncludeAll)
 ); // false
 
 $datepoint->isAfter(
     Period::before(
         '2018-01-13 23:34:28', 
         '3 minutes', 
-        Bounds::INCLUDE_START_EXCLUDE_END
+        Bounds::IncludeStartExcludeEnd
     )
 );  // true
 ~~~

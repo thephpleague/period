@@ -135,10 +135,10 @@ The `GanttChartConfig` class exposes the following additional constants and meth
 <?php
 use League\Period\Chart;
 
-public static function GanttChartConfig::fromStream(resource $stream = STDOUT, Chart\Terminal $terminal = Chart\Terminal::POSIX);
-public static function GanttChartConfig::fromOutput(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::POSIX));
-public static function GanttChartConfig::fromRandomColor(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::POSIX)): self
-public static function GanttChartConfig::fromRainbow(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::POSIX)): self
+public static function GanttChartConfig::fromStream(resource $stream = STDOUT, Chart\Terminal $terminal = Chart\Terminal::Posix);
+public static function GanttChartConfig::fromOutput(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::Posix));
+public static function GanttChartConfig::fromRandomColor(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::Posix)): self
+public static function GanttChartConfig::fromRainbow(Output $output = new Chart\StreamOutput(STDOUT, Chart\Terminal::Posix)): self
 public readonly Output GanttChartConfig::output;                 //Returns the Output instance.
 public readonly string GanttChartConfig::startExcludedCharacter; //Returns the excluded start block character.
 public readonly string GanttChartConfig::startIncludedCharacter; //Returns the included start block character.
@@ -167,7 +167,7 @@ use League\Period\Duration;
 use League\Period\Period;
 use League\Period\Sequence;
 
-$config = Chart\GanttChartConfig::fromStream(STDOUT, Chart\Terminal::POSIX)
+$config = Chart\GanttChartConfig::fromStream(STDOUT, Chart\Terminal::Posix)
     ->colors(...Chart\Color::rainBow())
     ->startExcludedCharacter('🍕')
     ->startIncludedCharacter('🍅')
@@ -178,18 +178,18 @@ $config = Chart\GanttChartConfig::fromStream(STDOUT, Chart\Terminal::POSIX)
     ->width(30)
     ->gapSize(2)
     ->leftMarginSize(1)
-    ->labelAlignment(Chart\Alignment::RIGHT);
+    ->labelAlignment(Chart\Alignment::Right);
 
 $labelGenerator = new Chart\DecimalNumber(42);
-$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\LetterCase::UPPER);
+$labelGenerator = new Chart\RomanNumber($labelGenerator, Chart\LetterCase::Upper);
 $labelGenerator = new Chart\AffixLabel($labelGenerator, '', '.');
 $labelGenerator = new Chart\ReverseLabel($labelGenerator);
 
 $sequence = new Sequence(
-    DatePoint::fromDateString('2018-11-29')->year(Bounds::EXCLUDE_START_INCLUDE_END),
+    DatePoint::fromDateString('2018-11-29')->year(Bounds::ExcludeStartIncludeEnd),
     DatePoint::fromDateString('2018-05-29')->month()->expand('3 MONTH'),
-    DatePoint::fromDateString('2017-01-13')->quarter(Bounds::EXCLUDE_ALL),
-    Period::around(new DateTime('2016-06-01'), Duration::fromDateString('3 MONTHS'), Bounds::INCLUDE_ALL)
+    DatePoint::fromDateString('2017-01-13')->quarter(Bounds::ExcludeAll),
+    Period::around(new DateTime('2016-06-01'), Duration::fromDateString('3 MONTHS'), Bounds::IncludeAll)
 );
 $dataset = Chart\Dataset::fromItems($sequence, $labelGenerator);
 $dataset->append($labelGenerator->format('gaps'), $sequence->gaps());

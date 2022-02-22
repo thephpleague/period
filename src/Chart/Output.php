@@ -15,5 +15,5 @@ namespace League\Period\Chart;
 
 interface Output
 {
-    public function writeln(string $message, Color $color = Color::NONE): void;
+    public function writeln(string $message, Color $color = Color::None): void;
 }
