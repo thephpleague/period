@@ -47,8 +47,8 @@ require 'path/to/period/repo/autoload.php';
 
 use League\Period\Datepoint;
 
-Datepoint::fromDateString('2012-05-23')->day()->toIso80000('Y-m-d');
-//returns [2012-05-23, 2012-05-24)
+Datepoint::fromDateString('2012-05-23')->month()->toIso80000('Y-m-d');
+//returns [2012-05-01, 2012-06-01)
 ~~~
 
 where `path/to/period/repo` represents the path where the library was extracted.
