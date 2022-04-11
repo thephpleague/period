@@ -34,9 +34,9 @@ final class GanttChart implements Chart
     /** @var array<string>  */
     private array $emptyLineCharacters;
 
-    public function __construct(public readonly GanttChartConfig $config = new GanttChartConfig())
-    {
-        $this->emptyLineCharacters = array_fill(0, $this->config->width, $this->config->spaceCharacter);
+    public function __construct(
+        public readonly GanttChartConfig $config = new GanttChartConfig()
+    ){
     }
 
     /**
@@ -60,6 +60,7 @@ final class GanttChart implements Chart
         $colorCodeIndexes = $this->config->colors;
         $colorCodeCount = count($colorCodeIndexes);
         $output = $this->config->output;
+        $this->emptyLineCharacters = array_fill(0, $this->config->width, $this->config->spaceCharacter);
         foreach ($dataset as $offset => [$label, $sequence]) {
             $output->writeln(
                 $leftMargin
