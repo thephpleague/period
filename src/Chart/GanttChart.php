@@ -36,7 +36,7 @@ final class GanttChart implements Chart
 
     public function __construct(
         public readonly GanttChartConfig $config = new GanttChartConfig()
-    ){
+    ) {
     }
 
     /**
