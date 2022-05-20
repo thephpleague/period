@@ -474,6 +474,34 @@ final class PeriodFactoryTest extends PeriodTest
                 'outputFormat'=> 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
+            'same input/output format extended' => [
+                'inputFormat' => 'Y-m-d',
+                'notation' => '2021-03-25/26',
+                'bounds' => Bounds::IncludeAll,
+                'outputFormat'=> 'Y-m-d',
+                'expected' => '2021-03-25/2021-03-26',
+            ],
+            'different input/output format extended' => [
+                'inputFormat' => 'Y-m-d',
+                'notation' => '2021-03-25/03-26',
+                'bounds' => Bounds::ExcludeAll,
+                'outputFormat'=> 'Y-n-d',
+                'expected' => '2021-3-25/2021-3-26',
+            ],
+            'different input/output format with interval duration after start' => [
+                'inputFormat' => 'Y-m-d',
+                'notation' => '2021-03-25/P1D',
+                'bounds' => Bounds::ExcludeAll,
+                'outputFormat'=> 'Y-n-d',
+                'expected' => '2021-3-25/2021-3-26',
+            ],
+            'different input/output format with interval duration before end' => [
+                'inputFormat' => 'Y-m-d',
+                'notation' => 'P1D/2021-03-26',
+                'bounds' => Bounds::ExcludeAll,
+                'outputFormat'=> 'Y-n-d',
+                'expected' => '2021-3-25/2021-3-26',
+            ],
         ];
     }
 
@@ -498,6 +526,9 @@ final class PeriodFactoryTest extends PeriodTest
             'too many separator' => ['2021-01-02/2021-/01-03', 'Y-m-d', Bounds::IncludeAll],
             'missing dates' => ['2021-01-02/', 'Y-m-d', Bounds::IncludeAll],
             'wrong format' => ['2021-01-02/2021-01-03', 'Ymd', Bounds::IncludeAll],
+            'invalid extended format delimiters are different' => ['2021-01-02/01:03', 'Ymd', Bounds::IncludeAll],
+            'invalid extended format start date is shorter than end date' => ['01/2021-01-02', 'Ymd', Bounds::IncludeAll],
+            'invalid date with wrong period' => ['PMD/2021-01-02', 'Ymd', Bounds::IncludeAll],
         ];
     }
 }

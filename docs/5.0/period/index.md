@@ -159,6 +159,29 @@ $day = Period::fromIso8601('Y-m-d', '2012-01-03/2012-02-03');
 echo $day->toIso80000('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
 ~~~
 
+<p class="message-notice">New in <code>version 5.1</code> extended support for ISO8601 notation is added.</p>
+
+The previous example can be rewritten as follow:
+
+~~~php
+$day = Period::fromIso8601('Y-m-d', '2012-01-03/02-03'); // the end value is extended (the year is skipped)
+echo $day->toIso80000('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
+~~~
+
+or
+
+~~~php
+$day = Period::fromIso8601('Y-m-d', '2012-01-03/P1M'); // the end value is a duration
+echo $day->toIso80000('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
+~~~
+
+or
+
+~~~php
+$day = Period::fromIso8601('Y-m-d', 'P1M/2012-01-03'); // the start value is a duration
+echo $day->toIso80000('Y-m-d H:i:s'), //return [2012-01-03 21:38:22, 2012-02-03 21:38:22)
+~~~
+
 #### Using ISO 80000 notation
 
 The `$notation` should follow the `{lowerbound}{startDate},{endDate}{upperbound}` where `,` serves as delimiter. 

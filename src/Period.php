@@ -20,6 +20,7 @@ use DateTimeInterface;
 use DateTimeZone;
 use Generator;
 use JsonSerializable;
+use Throwable;
 
 /**
  * An immutable value object class to manipulate DateTimeInterface interval.
@@ -64,7 +65,65 @@ final class Period implements JsonSerializable
             throw InvalidInterval::dueToUnknownNotation('ISO-8601', $notation);
         }
 
-        return self::fromDateString($format, trim($found['start']), trim($found['end']), $bounds);
+        $start = trim($found['start']);
+        $end = trim($found['end']);
+
+        return match (true) {
+            null !== ($duration = self::extractDuration($start)) => self::before(DatePoint::fromFormat($format, $end), $duration, $bounds),
+            null !== ($duration = self::extractDuration($end)) => self::after(DatePoint::fromFormat($format, $start), $duration, $bounds),
+            default => self::fromDateString($format, $start, self::resolveIso8601Date($start, $end), $bounds),
+        };
+    }
+
+    private static function extractDuration(string $duration): Duration|null
+    {
+        if (!str_starts_with($duration, 'P')) {
+            return null;
+        }
+
+        try {
+            return Duration::fromIsoString($duration);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    private static function resolveIso8601Date(string $startDate, string $endDate): string
+    {
+        $startDate = trim($startDate);
+        $endDate = trim($endDate);
+        /** @var array<string> $startDateComponents */
+        $startDateComponents = preg_split('/\D/', $startDate);
+        /** @var array<string> $endDateComponents */
+        $endDateComponents = preg_split('/\D/', $endDate);
+
+        $componentDiff = count($startDateComponents) - count($endDateComponents);
+        if (0 > $componentDiff) {
+            throw InvalidInterval::dueToInvalidRelativeDateFormat($endDate, $startDate);
+        }
+
+        if (0 === $componentDiff) {
+            return $endDate;
+        }
+
+        /** @var array<string> $startDateDelimiters */
+        $startDateDelimiters = preg_split('/\d+/', $startDate);
+        /** @var array<string> $endDateDelimiters */
+        $endDateDelimiters = preg_split('/\d+/', $endDate);
+        $res = array_slice($startDateDelimiters, count($startDateDelimiters) - count($endDateDelimiters));
+        $res[0] = '';
+        if ($res !== $endDateDelimiters) {
+            throw InvalidInterval::dueToInvalidRelativeDateFormat($endDate, $startDate);
+        }
+
+        $endDateExtendedComponents = array_merge(array_slice($startDateComponents, 0, $componentDiff), $endDateComponents);
+
+        $endDateExtended = '';
+        foreach ($startDateDelimiters as $offset => $char) {
+            $endDateExtended .= $char.($endDateExtendedComponents[$offset] ?? '');
+        }
+
+        return $endDateExtended;
     }
 
     /**
@@ -94,15 +153,11 @@ final class Period implements JsonSerializable
      */
     private static function fromDateString(string $format, string $startDate, string $endDate, Bounds $bounds): self
     {
-        if (false === ($start = DateTimeImmutable::createFromFormat($format, $startDate))) {
-            throw InvalidInterval::dueToInvalidDateFormat($format, $startDate);
-        }
-
-        if (false === ($end = DateTimeImmutable::createFromFormat($format, $endDate))) {
-            throw InvalidInterval::dueToInvalidDateFormat($format, $endDate);
-        }
-
-        return new self($start, $end, $bounds);
+        return new self(
+            self::filterDatePoint(DatePoint::fromFormat($format, $startDate)),
+            self::filterDatePoint(DatePoint::fromFormat($format, $endDate)),
+            $bounds
+        );
     }
 
     public static function fromDate(
@@ -245,7 +300,7 @@ final class Period implements JsonSerializable
 
     public static function fromIsoWeek(int $year, int $week, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
-        $startDate = (new DateTimeImmutable())->setISODate($year, $week, 1)->setTime(0, 0);
+        $startDate = (new DateTimeImmutable())->setISODate($year, $week)->setTime(0, 0);
 
         return new self($startDate, $startDate->add(new DateInterval('P7D')), $bounds);
     }
