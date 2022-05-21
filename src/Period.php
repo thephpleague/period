@@ -68,30 +68,27 @@ final class Period implements JsonSerializable
         $start = trim($found['start']);
         $end = trim($found['end']);
 
+        $findDuration = static function (string $duration): Duration|null {
+            if (1 !== preg_match('/^P([YMDTHS\d\.]+)$/', $duration)) {
+                return null;
+            }
+
+            try {
+                return Duration::fromIsoString($duration);
+            } catch (Throwable) {
+                return null;
+            }
+        };
+
         return match (true) {
-            null !== ($duration = self::extractDuration($start)) => self::before(DatePoint::fromFormat($format, $end), $duration, $bounds),
-            null !== ($duration = self::extractDuration($end)) => self::after(DatePoint::fromFormat($format, $start), $duration, $bounds),
+            null !== ($duration = $findDuration($start)) => self::before(DatePoint::fromFormat($format, $end), $duration, $bounds),
+            null !== ($duration = $findDuration($end)) => self::after(DatePoint::fromFormat($format, $start), $duration, $bounds),
             default => self::fromDateString($format, $start, self::resolveIso8601Date($start, $end), $bounds),
         };
     }
 
-    private static function extractDuration(string $duration): Duration|null
-    {
-        if (!str_starts_with($duration, 'P')) {
-            return null;
-        }
-
-        try {
-            return Duration::fromIsoString($duration);
-        } catch (Throwable) {
-            return null;
-        }
-    }
-
     private static function resolveIso8601Date(string $startDate, string $endDate): string
     {
-        $startDate = trim($startDate);
-        $endDate = trim($endDate);
         /** @var array<string> $startDateComponents */
         $startDateComponents = preg_split('/\D/', $startDate);
         /** @var array<string> $endDateComponents */
