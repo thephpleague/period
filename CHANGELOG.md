@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [Next] - TBD
+
+### Added
+
+- `DatePoint::fromFormat` to instantiate from a date format and its related string. 
+
+### Fixed
+
+- `Period::fromIso8601` now supports truncated date and duration in the interval string.
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [5.0.0] - 2022-02-22
 
 ### Added

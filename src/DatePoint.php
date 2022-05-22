@@ -65,6 +65,16 @@ final class DatePoint
         return new self((new DateTimeImmutable())->setTimestamp($timestamp));
     }
 
+    public static function fromFormat(string $format, string $dateString): self
+    {
+        $date = DateTimeImmutable::createFromFormat($format, $dateString);
+        if (false === $date) {
+            throw InvalidInterval::dueToInvalidDateFormat($format, $dateString);
+        }
+
+        return new self($date);
+    }
+
     /**************************************************
      * Relation methods
      **************************************************/

@@ -31,6 +31,11 @@ final class InvalidInterval extends InvalidArgumentException implements Interval
         return new self('The date notation `'.$date.'` is incompatible with the date format `'.$format.'`.');
     }
 
+    public static function dueToInvalidRelativeDateFormat(string $endDate, string $startDate): self
+    {
+        return new self('The end date notation `'.$endDate.'` is incompatible with the start date notation `'.$startDate.'`.');
+    }
+
     public static function dueToInvalidDatePeriod(): self
     {
         return new self('The '.DatePeriod::class.' should contain an end date to instantiate a '.Period::class.' class.');
