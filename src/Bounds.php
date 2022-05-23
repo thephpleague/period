@@ -100,10 +100,10 @@ enum Bounds
     public function buildBourbaki(string $start, string $end): string
     {
         return match ($this) {
-            self::IncludeAll => "[$start, $end]",
-            self::IncludeStartExcludeEnd => "[$start, {$end}[",
-            self::ExcludeAll => "]$start, {$end}[",
-            self::ExcludeStartIncludeEnd => "]$start, $end]",
+            self::IncludeAll => '['.$start.', '.$end.']',
+            self::IncludeStartExcludeEnd => '['.$start.', '.$end.'[',
+            self::ExcludeAll => ']'.$start.', '.$end.'[',
+            self::ExcludeStartIncludeEnd => ']'.$start.', '.$end.']',
         };
     }
 

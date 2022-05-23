@@ -17,6 +17,7 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 use function date_default_timezone_get;
 use function intdiv;
 
@@ -50,6 +51,9 @@ final class DatePoint
         return new self($date);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fromDateString(string $dateString, DateTimeZone|string $timezone = null): self
     {
         $timezone ??= date_default_timezone_get();

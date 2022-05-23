@@ -18,9 +18,9 @@ use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 use Generator;
 use JsonSerializable;
-use Throwable;
 
 /**
  * An immutable value object class to manipulate DateTimeInterface interval.
@@ -69,13 +69,13 @@ final class Period implements JsonSerializable
         $end = trim($found['end']);
 
         $findDuration = static function (string $duration): Duration|null {
-            if (1 !== preg_match('/^P([YMDTHS\d\.]+)$/', $duration)) {
+            if (1 !== preg_match('/^P([YMDTHS\d.]+)$/', $duration)) {
                 return null;
             }
 
             try {
                 return Duration::fromIsoString($duration);
-            } catch (Throwable) {
+            } catch (Exception) {
                 return null;
             }
         };
@@ -157,6 +157,9 @@ final class Period implements JsonSerializable
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fromDate(
         DatePoint|DateTimeInterface|string $startDate,
         DatePoint|DateTimeInterface|string $endDate,
@@ -165,13 +168,16 @@ final class Period implements JsonSerializable
         return new self(self::filterDatePoint($startDate), self::filterDatePoint($endDate), $bounds);
     }
 
-    private static function filterDatePoint(DatePoint|DateTimeInterface|string $datepoint): DateTimeImmutable
+    /**
+     * @throws Exception
+     */
+    private static function filterDatePoint(DatePoint|DateTimeInterface|string $datePoint): DateTimeImmutable
     {
         return match (true) {
-            $datepoint instanceof DatePoint => $datepoint->date,
-            $datepoint instanceof DateTimeImmutable => $datepoint,
-            $datepoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datepoint),
-            default => DatePoint::fromDateString($datepoint)->date,
+            $datePoint instanceof DatePoint => $datePoint->date,
+            $datePoint instanceof DateTimeImmutable => $datePoint,
+            $datePoint instanceof DateTimeInterface => DateTimeImmutable::createFromInterface($datePoint),
+            default => DatePoint::fromDateString($datePoint)->date,
         };
     }
 
@@ -215,7 +221,7 @@ final class Period implements JsonSerializable
 
     /**
      * Creates new instance where the given duration is simultaneously
-     * subtracted from and added to the given datepoint.
+     * subtracted from and added to the given date endpoint.
      */
     public static function around(
         DatePoint|DateTimeInterface|string $midpoint,
@@ -229,7 +235,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Creates new instance from a ending date endpoint and a duration.
+     * Creates new instance from an ending date endpoint and a duration.
      */
     public static function before(
         DatePoint|DateTimeInterface|string $endDate,
@@ -474,10 +480,10 @@ final class Period implements JsonSerializable
             return $this->endDate <= $timeSlot->startDate;
         }
 
-        $datepoint = self::filterDatePoint($timeSlot);
+        $datePoint = self::filterDatePoint($timeSlot);
 
-        return $this->endDate < $datepoint
-            || ($this->endDate == $datepoint && !$this->bounds->isEndIncluded());
+        return $this->endDate < $datePoint
+            || ($this->endDate == $datePoint && !$this->bounds->isEndIncluded());
     }
 
     /**
@@ -506,7 +512,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two intervals share the same start datepoint
+     * Tells whether two intervals share the same start date endpoint
      * and the same starting boundary type.
      *
      *    [----------)
@@ -578,22 +584,22 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether an instance contains a datepoint.
+     * Tells whether an instance contains a date endpoint.
      *
      * [------|------------)
      */
-    private function containsDatePoint(DateTimeInterface $datepoint, Bounds $bounds): bool
+    private function containsDatePoint(DateTimeInterface $datePoint, Bounds $bounds): bool
     {
         return match ($bounds) {
-            Bounds::ExcludeAll => $datepoint > $this->startDate && $datepoint < $this->endDate,
-            Bounds::IncludeAll => $datepoint >= $this->startDate && $datepoint <= $this->endDate,
-            Bounds::ExcludeStartIncludeEnd => $datepoint > $this->startDate && $datepoint <= $this->endDate,
-            Bounds::IncludeStartExcludeEnd => $datepoint >= $this->startDate && $datepoint < $this->endDate,
+            Bounds::ExcludeAll => $datePoint > $this->startDate && $datePoint < $this->endDate,
+            Bounds::IncludeAll => $datePoint >= $this->startDate && $datePoint <= $this->endDate,
+            Bounds::ExcludeStartIncludeEnd => $datePoint > $this->startDate && $datePoint <= $this->endDate,
+            Bounds::IncludeStartExcludeEnd => $datePoint >= $this->startDate && $datePoint < $this->endDate,
         };
     }
 
     /**
-     * Tells whether two intervals share the same datepoints.
+     * Tells whether two intervals share the same date endpoints.
      *
      * [--------------------)
      * [--------------------)
@@ -606,7 +612,7 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * Tells whether two intervals share the same end datepoint
+     * Tells whether two intervals share the same end date endpoint
      * and the same ending boundary type.
      *
      *              [----------)
@@ -790,13 +796,14 @@ final class Period implements JsonSerializable
     public function splitForward(Period|Duration|DateInterval|string $duration): Generator
     {
         $duration = self::filterDuration($duration);
+        /** @var DateTimeImmutable $startDate */
         foreach ($this->dateRangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
             }
 
-            yield new self($startDate, $endDate, $this->bounds);
+            yield self::fromDate($startDate, $endDate, $this->bounds);
         }
     }
 
@@ -836,12 +843,12 @@ final class Period implements JsonSerializable
      * Returns the computed difference between two overlapping instances as
      * an array containing Period objects or the null value.
      *
-     * The array will always contains 2 elements:
+     * The array will always contain 2 elements:
      *
      * <ul>
-     * <li>an NULL filled array if both objects have the same datepoints</li>
-     * <li>one Period object and NULL if both objects share one datepoint</li>
-     * <li>two Period objects if both objects share no datepoint</li>
+     * <li>an NULL filled array if both objects have the same date endpoints</li>
+     * <li>one Period object and NULL if both objects share one date endpoint</li>
+     * <li>two Period objects if both objects share no date endpoint</li>
      * </ul>
      *
      * [--------------------)
@@ -932,7 +939,7 @@ final class Period implements JsonSerializable
      *          =
      *                 [----)
      *
-     * @throws UnprocessableInterval If both objects do not overlaps
+     * @throws UnprocessableInterval If both objects do not overlap
      */
     public function intersect(self ...$periods): self
     {
@@ -977,7 +984,7 @@ final class Period implements JsonSerializable
      * The resulting instance represents the largest duration possible.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified new datepoints.
+     * an instance that contains the specified new date endpoints.
      *
      * [--------------------)
      *          +

@@ -16,6 +16,7 @@ namespace League\Period;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
 use InvalidArgumentException;
 use function preg_match;
 use function str_pad;
@@ -61,6 +62,8 @@ final class Duration
 
     /**
      * Returns a new instance from an interval specification.
+     *
+     * @throws Exception
      */
     public static function fromIsoString(string $duration): self
     {
