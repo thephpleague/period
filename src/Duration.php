@@ -42,9 +42,9 @@ final class Duration
     $@x';
 
     private const REGEXP_TIME_FORMAT = '@^
-        (?<sign>\+|-)?                               # optional sign
-        (?<hour>\d+)(:(?<minute>\d+))                # required hour and minute
-        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)?  # optional second and fraction
+        (?<sign>\+|-)?                              # optional sign
+        (?<hour>\d+)(:(?<minute>\d+))               # required hour and minute
+        (:(?<second>\d+)(\.(?<fraction>\d{1,6}))?)? # optional second and fraction
     $@x';
 
     private function __construct(public readonly DateInterval $dateInterval)
@@ -159,7 +159,7 @@ final class Duration
     }
 
     /**
-     * @param array<array-key, string> $units
+     * @param array{hour: ?string, minute: ?string, second: ?string, fraction: ?string, sign: ?string} $units
      */
     private static function fromUnits(array $units): self
     {
