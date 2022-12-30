@@ -11,6 +11,7 @@
 
 namespace League\Period;
 
+use Cassandra\Date;
 use DateInterval;
 use Generator;
 
@@ -90,6 +91,56 @@ final class PeriodDurationTest extends PeriodTest
             'exclude start date useFloat' => [14400, InitialDatePresence::Excluded, 5],
         ];
     }
+
+    /**
+     * @dataProvider provideRangedData
+     */
+    public function testRangeForwards(Period $period, DateInterval $dateInterval, int $count): void
+    {
+        self::assertCount($count, iterator_to_array($period->rangeForward($dateInterval)));
+    }
+
+    /**
+     * @dataProvider provideRangedData
+     */
+    public function testRangeBackwards(Period $period, DateInterval $dateInterval, int $count): void
+    {
+        self::assertCount($count, iterator_to_array($period->rangeBackwards($dateInterval)));
+    }
+
+    /**
+     * @return iterable<string, array{period:Period, dateInterval:DateInterval, count:int}>
+     */
+    public function provideRangedData(): iterable
+    {
+        $period = Period::fromDate('2012-01-12', '2012-01-13');
+        $dateInterval = new DateInterval('PT1H');
+
+        yield 'bounds include start exclude end' => [
+            'period' => $period->boundedBy(Bounds::IncludeStartExcludeEnd),
+            'dateInterval' => $dateInterval,
+            'count' => 24,
+        ];
+
+        yield 'bounds exclude start include end' => [
+            'period' => $period->boundedBy(Bounds::ExcludeStartIncludeEnd),
+            'dateInterval' => $dateInterval,
+            'count' => 24,
+        ];
+
+        yield 'bounds include all' => [
+            'period' => $period->boundedBy(Bounds::IncludeAll),
+            'dateInterval' => $dateInterval,
+            'count' => 25,
+        ];
+
+        yield 'bounds exclude all' => [
+            'period' => $period->boundedBy(Bounds::ExcludeAll),
+            'dateInterval' => $dateInterval,
+            'count' => 23,
+        ];
+    }
+
     /**
      * @dataProvider durationCompareDataProvider
      */

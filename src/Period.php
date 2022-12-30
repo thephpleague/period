@@ -21,6 +21,7 @@ use DateTimeZone;
 use Exception;
 use Generator;
 use JsonSerializable;
+use const PHP_VERSION_ID;
 
 /**
  * An immutable value object class to manipulate DateTimeInterface interval.
@@ -741,6 +742,10 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * @deprecated since version 5.2.0
+     * @see ::rangeForwards
+     *
+     *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance.
      *
@@ -761,6 +766,9 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * @deprecated since version 5.2.0
+     * @see ::rangeBackwards
+     *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from the instance ending.
      *
@@ -777,6 +785,59 @@ final class Period implements JsonSerializable
         while ($date > $this->startDate) {
             yield $date;
             $date = $date->sub($timeDelta);
+        }
+    }
+
+    /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance.
+     *
+     * The returned DatePeriod object contains only DateTimeImmutable objects.
+     *
+     * @see http://php.net/manual/en/dateperiod.construct.php
+     *
+     * @return DatePeriod|DateTimeImmutable[]
+     */
+    public function rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
+    {
+        $duration = self::filterDuration($timeDelta);
+
+        return match (defined(DatePeriod::class. '::INCLUDE_END_DATE')) {
+            true => match ($this->bounds) {
+                Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
+                Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
+                Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::INCLUDE_END_DATE),
+                Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE | DatePeriod::INCLUDE_END_DATE),
+            },
+            false => match ($this->bounds) {
+                Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
+                Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
+                Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate->add($duration)),
+                Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate->add($duration), DatePeriod::EXCLUDE_START_DATE),
+            },
+        };
+    }
+
+    /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance backwards starting from the instance ending.
+     *
+     * @return Generator|DateTimeImmutable[]
+     */
+    public function rangeBackwards(Period|Duration|DateInterval|string $timeDelta): Generator
+    {
+        $timeDelta = self::filterDuration($timeDelta);
+        [$endDate, $startDate, $compare] = match ($this->bounds) {
+            Bounds::IncludeStartExcludeEnd => [$this->endDate->sub($timeDelta), $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end >= $start],
+            Bounds::ExcludeStartIncludeEnd => [$this->endDate, $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end > $start],
+            Bounds::IncludeAll => [$this->endDate, $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end >= $start],
+            Bounds::ExcludeAll => [$this->endDate->sub($timeDelta), $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end > $start],
+        };
+
+        while ($compare($endDate, $startDate)) {
+            yield $endDate;
+
+            $endDate = $endDate->sub($timeDelta);
         }
     }
 
