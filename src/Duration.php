@@ -126,15 +126,17 @@ final class Duration
      */
     public static function fromChronoString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $duration, $units)) {
+        if (1 !== preg_match(self::REGEXP_CHRONOMETER, $duration, $matches)) {
             throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.');
         }
 
-        if ('' === $units['hour']) {
-            $units['hour'] = '0';
-        }
-
-        return self::fromUnits($units);
+        return self::fromUnits([
+            'hour' => '' === $matches['hour'] ? '0' : $matches['hour'],
+            'minute' => $matches['minute'],
+            'second' => $matches['second'],
+            'fraction' => $matches['fraction'] ?? null,
+            'sign' => $matches['sign'] ?? null,
+        ]);
     }
 
     /**
@@ -144,11 +146,17 @@ final class Duration
      */
     public static function fromTimeString(string $duration): self
     {
-        if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $units)) {
+        if (1 !== preg_match(self::REGEXP_TIME_FORMAT, $duration, $matches)) {
             throw new InvalidArgumentException('Unknown or bad format ('.$duration.')');
         }
 
-        return self::fromUnits($units);
+        return self::fromUnits([
+            'hour' => $matches['hour'] ?? null,
+            'minute' => $matches['minute'] ?? null,
+            'second' => $matches['second'] ?? '0',
+            'fraction' => $matches['fraction'] ?? null,
+            'sign' => $matches['sign'] ?? null,
+        ]);
     }
 
     /**
