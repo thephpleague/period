@@ -265,6 +265,32 @@ final class Period implements JsonSerializable
         );
     }
 
+    /**
+     * @throws InvalidInterval If the PHP version is lower than PHP 8.2
+     */
+    public static function fromRange(DatePeriod $range): self
+    {
+        if (PHP_VERSION_ID < 80200) {
+            throw InvalidInterval::dueToUnsupportedVersion();
+        }
+
+        $endDate = $range->getEndDate();
+        if (null === $endDate) {
+            throw InvalidInterval::dueToInvalidDatePeriod();
+        }
+
+        return new self(
+            self::filterDatePoint($range->getStartDate()),
+            self::filterDatePoint($endDate),
+            match (true) {
+                true === $range->include_start_date && true === $range->include_end_date => Bounds::IncludeAll,
+                true === $range->include_start_date && false === $range->include_end_date => Bounds::IncludeStartExcludeEnd,
+                false === $range->include_start_date && true === $range->include_end_date => Bounds::ExcludeStartIncludeEnd,
+                default => Bounds::ExcludeAll,
+            }
+        );
+    }
+
     public static function fromYear(int $year, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
     {
         $startDate = (new DateTimeImmutable())->setDate($year, 1, 1)->setTime(0, 0);
@@ -802,7 +828,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($timeDelta);
 
-        return match (defined(DatePeriod::class. '::INCLUDE_END_DATE')) {
+        return match (PHP_VERSION_ID >= 80200) {
             true => match ($this->bounds) {
                 Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
                 Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),

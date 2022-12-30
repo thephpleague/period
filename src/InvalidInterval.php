@@ -41,6 +41,11 @@ final class InvalidInterval extends InvalidArgumentException implements Interval
         return new self('The '.DatePeriod::class.' should contain an end date to instantiate a '.Period::class.' class.');
     }
 
+    public static function dueToUnsupportedVersion(): self
+    {
+        return new self('The '.DatePeriod::class.' contains an include end date property starting with PHP8.2.');
+    }
+
     public static function dueToUnknownNotation(string $expectedFormat, string $notation): self
     {
         return new self('Unknown or unsupported interval notation `'.$notation.'` for `'.$expectedFormat.'`.');

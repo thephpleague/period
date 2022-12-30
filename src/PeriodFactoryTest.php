@@ -195,11 +195,50 @@ final class PeriodFactoryTest extends PeriodTest
         self::assertEquals($datePeriod->getEndDate(), $period->endDate);
     }
 
-    public function testIntervalFromDatePeriodThrowsException(): void
+    public function testIntervalFromDateRangeThrowsException(): void
     {
         $this->expectException(InvalidInterval::class);
 
-        Period::fromDateRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+    }
+
+    public function testIntervalFromRangeThrowsException(): void
+    {
+        $this->expectException(InvalidInterval::class);
+
+        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+    }
+
+    /**
+     * @requires PHP < 8.2
+     */
+    public function testIntervalFromRangeThrowsExceptionOnPHPVersion(): void
+    {
+        $this->expectException(InvalidInterval::class);
+
+        Period::fromRange(new DatePeriod(
+            new DateTime('2016-05-16T00:00:00Z'),
+            new DateInterval('P1D'),
+            new DateTime('2016-05-20T00:00:00Z')
+        ));
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testFromRange(): void
+    {
+        $datePeriod = new DatePeriod(
+            new DateTime('2016-05-16T00:00:00Z'),
+            new DateInterval('P1D'),
+            new DateTime('2016-05-20T00:00:00Z'),
+            DatePeriod::INCLUDE_END_DATE | DatePeriod::EXCLUDE_START_DATE
+        );
+
+        $period = Period::fromRange($datePeriod);
+        self::assertSame(Bounds::ExcludeStartIncludeEnd, $period->bounds);
+        self::assertEquals($datePeriod->getStartDate(), $period->startDate);
+        self::assertEquals($datePeriod->getEndDate(), $period->endDate);
     }
 
     public function testIsoWeek(): void
