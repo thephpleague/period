@@ -451,8 +451,8 @@ final class SequenceTest extends TestCase
             Period::fromDay(2018, 1, 1)
         );
 
-        $newSequence = $sequence->map(function (Period $period, int|string $offset): Period {
-            if (in_array($offset, [1, '1'], true)) {
+        $newSequence = $sequence->map(function (Period $period, int $offset): Period {
+            if (1 === $offset) {
                 return $period;
             }
 
