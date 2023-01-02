@@ -43,7 +43,7 @@ final class PeriodDurationTest extends PeriodTest
         }
 
         $period = Period::fromDate('2012-01-12', '2012-01-13');
-        self::assertCount($count, iterator_to_array($period->dateRangeForward($duration, $option)));
+        self::assertCount($count, iterator_to_array($period->dateRangeForward($duration, $option))); /** @phpstan-ignore-line */
     }
 
     /**
@@ -73,7 +73,7 @@ final class PeriodDurationTest extends PeriodTest
 
         $period = Period::fromDate('2012-01-12', '2012-01-13');
 
-        self::assertCount($count, iterator_to_array($period->dateRangeBackwards($duration, $option)));
+        self::assertCount($count, iterator_to_array($period->dateRangeBackwards($duration, $option)));  /** @phpstan-ignore-line */
     }
 
     /**

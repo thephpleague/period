@@ -884,7 +884,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->dateRangeForward($duration) as $startDate) {
+        foreach ($this->rangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;

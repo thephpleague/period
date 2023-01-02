@@ -17,6 +17,7 @@ namespace League\Period;
  * @package League.period
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   5.0.0
+ * @deprecated since version 5.2.0
  */
 enum InitialDatePresence
 {
