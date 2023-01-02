@@ -13,6 +13,7 @@ namespace League\Period;
 
 use Cassandra\Date;
 use DateInterval;
+use DateTimeImmutable;
 use Generator;
 
 /**
@@ -94,18 +95,28 @@ final class PeriodDurationTest extends PeriodTest
 
     /**
      * @dataProvider provideRangedData
+     *
+     * @param array<DateTimeImmutable> $range
      */
-    public function testRangeForwards(Period $period, DateInterval $dateInterval, int $count): void
+    public function testRangeForwards(Period $period, DateInterval $dateInterval, int $count, array $range): void
     {
-        self::assertCount($count, iterator_to_array($period->rangeForward($dateInterval)));
+        $result = iterator_to_array($period->rangeForward($dateInterval));
+
+        self::assertEquals($range, $result);
+        self::assertCount($count, $result);
     }
 
     /**
      * @dataProvider provideRangedData
+     *
+     * @param array<DateTimeImmutable> $range
      */
-    public function testRangeBackwards(Period $period, DateInterval $dateInterval, int $count): void
+    public function testRangeBackwards(Period $period, DateInterval $dateInterval, int $count, array $range): void
     {
-        self::assertCount($count, iterator_to_array($period->rangeBackwards($dateInterval)));
+        $result = iterator_to_array($period->rangeBackwards($dateInterval));
+
+        self::assertEquals($range, array_reverse($result));
+        self::assertCount($count, $result);
     }
 
     /**
@@ -113,31 +124,63 @@ final class PeriodDurationTest extends PeriodTest
      */
     public function provideRangedData(): iterable
     {
-        $period = Period::fromDate('2012-01-12', '2012-01-13');
-        $dateInterval = new DateInterval('PT1H');
+        $period = Period::fromDate('2012-01-12 00:00:00', '2012-01-12 01:00:00');
+        $dateInterval = new DateInterval('PT10M');
 
         yield 'bounds include start exclude end' => [
             'period' => $period->boundedBy(Bounds::IncludeStartExcludeEnd),
             'dateInterval' => $dateInterval,
-            'count' => 24,
+            'count' => 6,
+            'range' => [
+                new DateTimeImmutable('2012-01-12 00:00:00'),
+                new DateTimeImmutable('2012-01-12 00:10:00'),
+                new DateTimeImmutable('2012-01-12 00:20:00'),
+                new DateTimeImmutable('2012-01-12 00:30:00'),
+                new DateTimeImmutable('2012-01-12 00:40:00'),
+                new DateTimeImmutable('2012-01-12 00:50:00'),
+            ],
         ];
 
         yield 'bounds exclude start include end' => [
             'period' => $period->boundedBy(Bounds::ExcludeStartIncludeEnd),
             'dateInterval' => $dateInterval,
-            'count' => 24,
+            'count' => 6,
+            'range' => [
+                new DateTimeImmutable('2012-01-12 00:10:00'),
+                new DateTimeImmutable('2012-01-12 00:20:00'),
+                new DateTimeImmutable('2012-01-12 00:30:00'),
+                new DateTimeImmutable('2012-01-12 00:40:00'),
+                new DateTimeImmutable('2012-01-12 00:50:00'),
+                new DateTimeImmutable('2012-01-12 01:00:00'),
+            ],
         ];
 
         yield 'bounds include all' => [
             'period' => $period->boundedBy(Bounds::IncludeAll),
             'dateInterval' => $dateInterval,
-            'count' => 25,
+            'count' => 7,
+            'range' => [
+                new DateTimeImmutable('2012-01-12 00:00:00'),
+                new DateTimeImmutable('2012-01-12 00:10:00'),
+                new DateTimeImmutable('2012-01-12 00:20:00'),
+                new DateTimeImmutable('2012-01-12 00:30:00'),
+                new DateTimeImmutable('2012-01-12 00:40:00'),
+                new DateTimeImmutable('2012-01-12 00:50:00'),
+                new DateTimeImmutable('2012-01-12 01:00:00'),
+            ],
         ];
 
         yield 'bounds exclude all' => [
             'period' => $period->boundedBy(Bounds::ExcludeAll),
             'dateInterval' => $dateInterval,
-            'count' => 23,
+            'count' => 5,
+            'range' => [
+                new DateTimeImmutable('2012-01-12 00:10:00'),
+                new DateTimeImmutable('2012-01-12 00:20:00'),
+                new DateTimeImmutable('2012-01-12 00:30:00'),
+                new DateTimeImmutable('2012-01-12 00:40:00'),
+                new DateTimeImmutable('2012-01-12 00:50:00'),
+            ],
         ];
     }
 
