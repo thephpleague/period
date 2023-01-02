@@ -195,14 +195,14 @@ final class PeriodFactoryTest extends PeriodTest
         self::assertEquals($datePeriod->getEndDate(), $period->endDate);
     }
 
-    public function testIntervalFromDateRangeThrowsException(): void
+    public function testFromDateRangeThrowsException(): void
     {
         $this->expectException(InvalidInterval::class);
 
         Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
-    public function testIntervalFromRangeThrowsException(): void
+    public function testFromRangeThrowsException(): void
     {
         $this->expectException(InvalidInterval::class);
 

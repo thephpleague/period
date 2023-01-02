@@ -143,7 +143,7 @@ $period->isAfter($alt); //return false;
 //test againts a datepoint
 $period->isAfter('1983-06-02'); //returns false
 $period->isAfter('1982-06-02'); //returns true
-$period->isAfter($period->getStartDate()); //returns false
+$period->isAfter($period->startDate); //returns false
 ~~~
 
 ### Period::bordersOnStart
@@ -202,7 +202,7 @@ A `Period` abuts if it starts immediately after, or ends immediately before the 
 $period = Period::fromMonth(2014, 3);
 $alt = Period::fromMonth(2014, 4);
 $period->abuts($alt); //return true
-//in this case $period->getEndDate() == $alt->getStartDate();
+//in this case $period->endDate == $alt->startDate;
 ~~~
 
 ### Periods::meetsOnStart
@@ -310,7 +310,7 @@ public Period::isStartedBy(Period|DatePoint|DateTimeInterface|string $timeSlot):
 $period = Period::fromMonth(2014, 3);
 $alt = Period::after('2014-03-01', '2 DAYS');
 $period->isStartedBy($alt); //return true
-//in this case $period->getStartDate() == $alt->getStartDate();
+//in this case $period->startDate == $alt->startDate;
 //         and $period->isStartIncluded === $alt->isStartIncluded;
 ~~~
 
@@ -368,9 +368,9 @@ public Period::contains(Period|DatePoint|DateTimeInterface|string $timeSlot): bo
 ~~~php
 //comparing a datetime
 $period = Period::fromMonth(1983, 4);
-$period->contains('1983-04-15');            //returns true;
-$period->contains($period->getStartDate()); //returns true;
-$period->contains($period->getEndDate());   //returns false;
+$period->contains('1983-04-15');       //returns true;
+$period->contains($period->startDate); //returns true;
+$period->contains($period->endDate);   //returns false;
 
 //comparing two Period objects
 $alt = Period::after('1983-04-12', '12 DAYS');
@@ -474,7 +474,7 @@ $periodC = Period::before('2019-01-03', '1 MONTH');
 $sequenceAB = $periodA->subtract($periodB);
 count($sequenceAB); //returns 1
 $sequenceAB[0]->equals
-	new Period($periodA->getStartDate(), $periodB->getStartDate())
+	new Period($periodA->startDate, $periodB->startDate)
 );
 
 $sequenceBA = $periodB->subtract($periodA);

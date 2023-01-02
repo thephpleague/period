@@ -232,8 +232,8 @@ $daterange = new DatePeriod(
     new DateTime('2012-08-31')
 );
 $interval = Period::fromDateRange($daterange);
-$interval->getStartDate() == $daterange->getStartDate();
-$interval->getEndDate() == $daterange->getEndDate();
+$interval->startDate == $daterange->getStartDate();
+$interval->endDate == $daterange->getEndDate();
 ~~~
 
 <p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
@@ -266,8 +266,8 @@ $daterange = new DatePeriod(
     DatePeriod::EXCLUDE_START_DATE | DatePeriod::INCLUDE_END_DATE
 );
 $interval = Period::fromRange($daterange);
-$interval->getStartDate() == $daterange->getStartDate();
-$interval->getEndDate() == $daterange->getEndDate();
+$interval->startDate == $daterange->getStartDate();
+$interval->endDate == $daterange->getEndDate();
 $interval->bounds === Bounds::ExcludeStartIncludeEnd;
 ~~~
 

@@ -11,7 +11,6 @@
 
 namespace League\Period;
 
-use Cassandra\Date;
 use DateInterval;
 use DateTimeImmutable;
 use Generator;
