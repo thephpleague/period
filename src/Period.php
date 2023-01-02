@@ -271,7 +271,7 @@ final class Period implements JsonSerializable
     public static function fromRange(DatePeriod $range): self
     {
         if (PHP_VERSION_ID < 80200) {
-            throw InvalidInterval::dueToUnsupportedVersion();
+            throw InvalidInterval::dueToUnsupportedVersion(__METHOD__, '8.2');
         }
 
         $endDate = $range->getEndDate();
