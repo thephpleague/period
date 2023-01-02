@@ -128,7 +128,36 @@ $period->bounds;            // returns Bounds::IncludeStartExcludeEnd
 Iterating over a `Period` instance can produce two outcomes. A collection of `DateTimeImmutable` discrete values or one
 of smaller `Period` instances.
 
-### Period::dateRange
+### Period::rangeForward and Period::rangeBackwards
+
+~~~php
+public Period::rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
+public Period::rangeForward(Period|Duration|DateInterval|string $timeDelta): Generator<DateTimeImmutable>
+~~~
+
+`Period::rangeForward` returns a `DatePeriod` instance using the `Period` datepoints and bounds with the given `$timeDelta`.
+`Period::rangeBackward` returns a `Generator` instance using the `Period` datepoints and bounds with the given `$timeDelta`.
+
+<p class="message-notice">When iterating over the resulting <code>DatePeriod</code> object, all the generated datepoints are <code>DateTimeImmutable</code> instances.</p>
+
+#### Examples
+
+~~~php
+use League\Period\Period;
+
+foreach (Period::fromYear(2012)->rangeForward('1 MONTH') as $datetime) {
+    echo $datetime->format('Y-m-d');
+}
+//will iterate 12 times
+////the first date is 2012-01-01
+//the last date is 2012-12-01
+~~~
+
+<p class="message-notice">Both methods take into account the <code>Period</code> bounds to include or not the interval endpoints in the resulting generator.</p>
+
+### Period::dateRangeForward
+
+<p class="message-warning"><code>Period::dateRangeForward</code> is deprecated since version 5.2 and will be removed in the next major version. Please use the <code>Period::rangeForward</code> method instead.</p> 
 
 ~~~php
 use League\Period\InitialDatePresence;
@@ -175,6 +204,8 @@ foreach ($dateRange as $datetime) {
 ~~~
 
 ### Period::dateRangeBackwards
+
+<p class="message-warning"><code>Period::dateRangeBackwards</code> is deprecated since version 5.2 and will be removed in the next major version. Please use the <code>Period::rangeBackwards</code> method instead.</p>
 
 ~~~php
 use League\Period\InitialDatePresence;

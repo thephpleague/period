@@ -214,6 +214,8 @@ $day->bounds() === Bounds::IncludeStartExcludeEnd;
 
 ### Using a DatePeriod object
 
+#### On PHP8.1
+
 ~~~php
 function Period::fromDateRange(
     DatePeriod $datePeriod,
@@ -239,5 +241,40 @@ $interval->getEndDate() == $daterange->getEndDate();
 ~~~php
 $dateRange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
 $interval = Period::fromDateRange($dateRange);
+//throws a TypeError error because $dateRange->getEndDate() returns null
+~~~
+
+#### On PHP8.2+
+
+In PHP8.2+ the `DatePeriod` exposes full bound informations that allow the removal of the 
+extra optional parameter associated with `Period::fromDateRange`.
+
+~~~php
+function Period::fromRange(DatePeriod $datePeriod): self
+~~~
+
+#### Example
+
+~~~php
+use League\Period\Bounds;
+use League\Period\Period;
+
+$daterange = new DatePeriod(
+    new DateTime('2012-08-01'),
+    new DateInterval('PT1H'),
+    new DateTime('2012-08-31'),
+    DatePeriod::EXCLUDE_START_DATE | DatePeriod::INCLUDE_END_DATE
+);
+$interval = Period::fromRange($daterange);
+$interval->getStartDate() == $daterange->getStartDate();
+$interval->getEndDate() == $daterange->getEndDate();
+$interval->bounds === Bounds::ExcludeStartIncludeEnd;
+~~~
+
+<p class="message-warning">If the submitted <code>DatePeriod</code> instance does not have a ending datepoint, It will trigger a <code>TypeError</code> error. This is possible if the <code>DatePeriod</code> instance was created using recurrences only</p>
+
+~~~php
+$dateRange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
+$interval = Period::fromRange($dateRange);
 //throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~
