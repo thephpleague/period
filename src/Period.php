@@ -595,18 +595,13 @@ final class Period implements JsonSerializable
     private function containsInterval(self $timeSlot): bool
     {
         return match (true) {
-            $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate
-                => true,
-            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate
-                => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::IncludeAll,
-            $this->startDate == $timeSlot->startDate
-                => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
+            $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate => true,
+            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::IncludeAll,
+            $this->startDate == $timeSlot->startDate => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
                     && $this->containsDatePoint($this->startDate->add($timeSlot->dateInterval()), $this->bounds),
-            $this->endDate == $timeSlot->endDate
-                => ($this->bounds->equalsEnd($timeSlot->bounds) || $this->bounds->isEndIncluded())
+            $this->endDate == $timeSlot->endDate => ($this->bounds->equalsEnd($timeSlot->bounds) || $this->bounds->isEndIncluded())
                     && $this->containsDatePoint($this->endDate->sub($timeSlot->dateInterval()), $this->bounds),
-            default
-                => false,
+            default => false,
         };
     }
 
@@ -769,7 +764,7 @@ final class Period implements JsonSerializable
 
     /**
      * @deprecated since version 5.2.0
-     * @see ::rangeForwards
+     * @see ::rangeForward
      *
      *
      * Allows iteration over a set of dates and times,

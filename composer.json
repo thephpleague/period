@@ -48,7 +48,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^v3.13.1",
-        "phpstan/phpstan": "^1.9.4",
+        "phpstan/phpstan": "^1.9.5",
         "phpstan/phpstan-deprecation-rules": "^1.1.1",
         "phpstan/phpstan-phpunit": "^1.3.3",
         "phpstan/phpstan-strict-rules": "^1.4.4",
@@ -63,7 +63,7 @@
         ]
     },
     "scripts": {
-        "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
+        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
         "phpstan": "phpstan analyse -c phpstan.neon --xdebug --ansi --memory-limit 192M",
         "phpunit": "XDEBUG_MODE=coverage phpunit --coverage-text",

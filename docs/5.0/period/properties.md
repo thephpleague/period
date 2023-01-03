@@ -132,11 +132,9 @@ of smaller `Period` instances.
 
 ~~~php
 public Period::rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
-public Period::rangeForward(Period|Duration|DateInterval|string $timeDelta): Generator<DateTimeImmutable>
 ~~~
 
 `Period::rangeForward` returns a `DatePeriod` instance using the `Period` datepoints and bounds with the given `$timeDelta`.
-`Period::rangeBackward` returns a `Generator` instance using the `Period` datepoints and bounds with the given `$timeDelta`.
 
 <p class="message-notice">When iterating over the resulting <code>DatePeriod</code> object, all the generated datepoints are <code>DateTimeImmutable</code> instances.</p>
 
@@ -153,7 +151,8 @@ foreach (Period::fromYear(2012)->rangeForward('1 MONTH') as $datetime) {
 //the last date is 2012-12-01
 ~~~
 
-<p class="message-notice">Both methods take into account the <code>Period</code> bounds to include or not the interval endpoints in the resulting generator.</p>
+<p class="message-notice">The method takes into account the <code>Period</code> bounds to include or not the interval endpoints in the resulting generator.</p>
+
 
 ### Period::dateRangeForward
 
@@ -182,9 +181,9 @@ use League\Period\Period;
 foreach (Period::fromYear(2012)->dateRangeForward('1 MONTH') as $datetime) {
     echo $datetime->format('Y-m-d');
 }
-//will iterate 12 times
-////the first date is 2012-01-01
-//the last date is 2012-12-01
+// will iterate 12 times
+// the first date is 2012-01-01
+// the last date is 2012-12-01
 ~~~
 
 Using the `$startDatePresence` parameter
@@ -198,10 +197,34 @@ $dateRange = Period::fromYear(2012)->dateRangeForward('1 MONTH', InitialDatePres
 foreach ($dateRange as $datetime) {
     echo $datetime->format('Y-m-d');
 }
-//will iterate 11 times
-//the first date is 2012-02-01
-//the last date is 2012-12-01
+// will iterate 11 times
+// the first date is 2012-02-01
+// the last date is 2012-12-01
 ~~~
+
+### Period::rangeBackwards
+
+~~~php
+public Period::rangeBackwards(Period|Duration|DateInterval|string $timeDelta): Generator<DateTimeImmutable>
+~~~
+
+`Period::rangeBackward` returns a `Generator` instance using the `Period` endpoints and bounds with the given `$timeDelta`.
+
+<p class="message-notice">When iterating over the resulting <code>DatePeriod</code> object, all the generated datepoints are <code>DateTimeImmutable</code> instances.</p>
+
+#### Examples
+
+~~~php
+use League\Period\Period;
+
+foreach (Period::fromYear(2012)->rangeBackwards('1 MONTH') as $datetime) {
+    echo $datetime->format('Y-m-d');
+}
+// will iterate 12 times
+// the first date is 2012-12-01
+// the last date is 2012-01-01
+~~~
+
 
 ### Period::dateRangeBackwards
 
@@ -225,9 +248,9 @@ Returns a `Generator` to allow iteration over the instance datepoints, recurring
 foreach (Period::fromYear(2012)->dateRangeBackwards(new DateInterval('P1M')) as $datetime) {
     echo $datetime->format('Y-m-d');
 }
-//will iterate 12 times
-//the first date is 2013-01-01
-//the last date is 2012-02-01
+// will iterate 12 times
+// the first date is 2013-01-01
+// the last date is 2012-02-01
 ~~~
 
 Using the `$endDatePresence` parameter

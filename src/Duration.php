@@ -166,7 +166,12 @@ final class Duration
      */
     public static function fromDateString(string $duration): self
     {
-        return new self(DateInterval::createFromDateString($duration));
+        $dateInterval = DateInterval::createFromDateString($duration);
+        if (false === $dateInterval) {
+            throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.');
+        }
+
+        return new self($dateInterval);
     }
 
     /**
@@ -180,9 +185,9 @@ final class Duration
             $units['hour'] = '-'.$units['hour'];
         }
 
-        return new self(DateInterval::createFromDateString(
+        return self::fromDateString(
             $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds'
-        ));
+        );
     }
 
     /**
