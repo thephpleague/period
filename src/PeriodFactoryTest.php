@@ -79,7 +79,7 @@ final class PeriodFactoryTest extends PeriodTest
         $start = new DateTimeImmutable($startDate);
         $period = match (true) {
             $duration instanceof Period => Period::after($start, $duration->dateInterval()),
-            is_string($duration) => Period::after($start, DateInterval::createFromDateString($duration)),
+            is_string($duration) => Period::after($start, DateInterval::createFromDateString($duration)), /* @phpstan-ignore-line */
             !$duration instanceof DateInterval => Period::after($start, Duration::fromSeconds($duration)),
             default => Period::after($start, $duration),
         };
@@ -125,13 +125,14 @@ final class PeriodFactoryTest extends PeriodTest
     public function testIntervalBefore(string $startDate, string $endDate, int|DateInterval|string $duration): void
     {
         $end = new DateTimeImmutable($endDate);
-        $duration = match (true) {
+        /** @var DateInterval $dateInterval */
+        $dateInterval = match (true) {
             is_string($duration) => DateInterval::createFromDateString($duration),
             !$duration instanceof DateInterval => Duration::fromSeconds($duration),
             default => $duration,
         };
 
-        $period = Period::before($end, $duration);
+        $period = Period::before($end, $dateInterval);
         self::assertEquals(new DateTimeImmutable($startDate), $period->startDate);
         self::assertEquals($end, $period->endDate);
     }
@@ -195,11 +196,50 @@ final class PeriodFactoryTest extends PeriodTest
         self::assertEquals($datePeriod->getEndDate(), $period->endDate);
     }
 
-    public function testIntervalFromDatePeriodThrowsException(): void
+    public function testFromDateRangeThrowsException(): void
     {
         $this->expectException(InvalidInterval::class);
 
-        Period::fromDateRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+    }
+
+    public function testFromRangeThrowsException(): void
+    {
+        $this->expectException(InvalidInterval::class);
+
+        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+    }
+
+    /**
+     * @requires PHP < 8.2
+     */
+    public function testIntervalFromRangeThrowsExceptionOnPHPVersion(): void
+    {
+        $this->expectException(InvalidInterval::class);
+
+        Period::fromRange(new DatePeriod(
+            new DateTime('2016-05-16T00:00:00Z'),
+            new DateInterval('P1D'),
+            new DateTime('2016-05-20T00:00:00Z')
+        ));
+    }
+
+    /**
+     * @requires PHP >= 8.2
+     */
+    public function testFromRange(): void
+    {
+        $datePeriod = new DatePeriod(
+            new DateTime('2016-05-16T00:00:00Z'),
+            new DateInterval('P1D'),
+            new DateTime('2016-05-20T00:00:00Z'),
+            DatePeriod::INCLUDE_END_DATE | DatePeriod::EXCLUDE_START_DATE
+        );
+
+        $period = Period::fromRange($datePeriod);
+        self::assertSame(Bounds::ExcludeStartIncludeEnd, $period->bounds);
+        self::assertEquals($datePeriod->getStartDate(), $period->startDate);
+        self::assertEquals($datePeriod->getEndDate(), $period->endDate);
     }
 
     public function testIsoWeek(): void

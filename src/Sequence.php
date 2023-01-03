@@ -544,7 +544,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the returned intervals.
      *
-     * @param Closure(Period, array-key=): Period $closure
+     * @param Closure(Period, array-key): Period $closure
      */
     public function map(Closure $closure): self
     {

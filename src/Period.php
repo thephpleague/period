@@ -21,6 +21,7 @@ use DateTimeZone;
 use Exception;
 use Generator;
 use JsonSerializable;
+use const PHP_VERSION_ID;
 
 /**
  * An immutable value object class to manipulate DateTimeInterface interval.
@@ -261,6 +262,32 @@ final class Period implements JsonSerializable
             self::filterDatePoint($dateRange->getStartDate()),
             self::filterDatePoint($endDate),
             $bounds
+        );
+    }
+
+    /**
+     * @throws InvalidInterval If the PHP version is lower than PHP 8.2
+     */
+    public static function fromRange(DatePeriod $range): self
+    {
+        if (PHP_VERSION_ID < 80200) {
+            throw InvalidInterval::dueToUnsupportedVersion(__METHOD__, '8.2');
+        }
+
+        $endDate = $range->getEndDate();
+        if (null === $endDate) {
+            throw InvalidInterval::dueToInvalidDatePeriod();
+        }
+
+        return new self(
+            self::filterDatePoint($range->getStartDate()),
+            self::filterDatePoint($endDate),
+            match (true) {
+                true === $range->include_start_date && true === $range->include_end_date => Bounds::IncludeAll,
+                true === $range->include_start_date && false === $range->include_end_date => Bounds::IncludeStartExcludeEnd,
+                false === $range->include_start_date && true === $range->include_end_date => Bounds::ExcludeStartIncludeEnd,
+                default => Bounds::ExcludeAll,
+            }
         );
     }
 
@@ -568,18 +595,13 @@ final class Period implements JsonSerializable
     private function containsInterval(self $timeSlot): bool
     {
         return match (true) {
-            $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate
-                => true,
-            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate
-                => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::IncludeAll,
-            $this->startDate == $timeSlot->startDate
-                => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
+            $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate => true,
+            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::IncludeAll,
+            $this->startDate == $timeSlot->startDate => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
                     && $this->containsDatePoint($this->startDate->add($timeSlot->dateInterval()), $this->bounds),
-            $this->endDate == $timeSlot->endDate
-                => ($this->bounds->equalsEnd($timeSlot->bounds) || $this->bounds->isEndIncluded())
+            $this->endDate == $timeSlot->endDate => ($this->bounds->equalsEnd($timeSlot->bounds) || $this->bounds->isEndIncluded())
                     && $this->containsDatePoint($this->endDate->sub($timeSlot->dateInterval()), $this->bounds),
-            default
-                => false,
+            default => false,
         };
     }
 
@@ -741,6 +763,10 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * @deprecated since version 5.2.0
+     * @see ::rangeForward
+     *
+     *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance.
      *
@@ -761,6 +787,9 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * @deprecated since version 5.2.0
+     * @see ::rangeBackwards
+     *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from the instance ending.
      *
@@ -781,6 +810,59 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance.
+     *
+     * The returned DatePeriod object contains only DateTimeImmutable objects.
+     *
+     * @see http://php.net/manual/en/dateperiod.construct.php
+     *
+     * @return DatePeriod|DateTimeImmutable[]
+     */
+    public function rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
+    {
+        $duration = self::filterDuration($timeDelta);
+
+        return match (PHP_VERSION_ID >= 80200) {
+            true => match ($this->bounds) {
+                Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
+                Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
+                Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::INCLUDE_END_DATE),
+                Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE | DatePeriod::INCLUDE_END_DATE),
+            },
+            false => match ($this->bounds) {
+                Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
+                Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
+                Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate->add($duration)),
+                Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate->add($duration), DatePeriod::EXCLUDE_START_DATE),
+            },
+        };
+    }
+
+    /**
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance backwards starting from the instance ending.
+     *
+     * @return Generator|DateTimeImmutable[]
+     */
+    public function rangeBackwards(Period|Duration|DateInterval|string $timeDelta): Generator
+    {
+        $timeDelta = self::filterDuration($timeDelta);
+        [$endDate, $startDate, $compare] = match ($this->bounds) {
+            Bounds::IncludeStartExcludeEnd => [$this->endDate->sub($timeDelta), $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end >= $start],
+            Bounds::ExcludeStartIncludeEnd => [$this->endDate, $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end > $start],
+            Bounds::IncludeAll => [$this->endDate, $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end >= $start],
+            Bounds::ExcludeAll => [$this->endDate->sub($timeDelta), $this->startDate, fn (DateTimeImmutable $end, DateTimeImmutable $start): bool => $end > $start],
+        };
+
+        while ($compare($endDate, $startDate)) {
+            yield $endDate;
+
+            $endDate = $endDate->sub($timeDelta);
+        }
+    }
+
+    /**
      * Allows splitting an instance in smaller Period objects according to a given interval.
      *
      * The returned iterable Interval set is ordered so that:
@@ -797,7 +879,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
-        foreach ($this->dateRangeForward($duration) as $startDate) {
+        foreach ($this->rangeForward($duration) as $startDate) {
             $endDate = $startDate->add($duration);
             if ($endDate > $this->endDate) {
                 $endDate = $this->endDate;
