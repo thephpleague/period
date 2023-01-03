@@ -14,7 +14,7 @@ jobs:
         stability: [prefer-lowest, prefer-stable]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -31,8 +31,8 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.stability }}-${{ matrix.flags }}-${{ hashFiles('**/composer.lock') }}
