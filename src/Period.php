@@ -774,7 +774,7 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      *
-     * @return DatePeriod|DateTimeImmutable[]
+     * @return DatePeriod<DateTimeImmutable>
      */
     public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
     {
@@ -793,7 +793,7 @@ final class Period implements JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from the instance ending.
      *
-     * @return Generator|DateTimeImmutable[]
+     * @return Generator<int,DateTimeImmutable>
      */
     public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator
     {
@@ -817,7 +817,7 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      *
-     * @return DatePeriod|DateTimeImmutable[]
+     * @return DatePeriod<DateTimeImmutable>
      */
     public function rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
     {
@@ -843,7 +843,7 @@ final class Period implements JsonSerializable
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from the instance ending.
      *
-     * @return Generator|DateTimeImmutable[]
+     * @return Generator<int,DateTimeImmutable>
      */
     public function rangeBackwards(Period|Duration|DateInterval|string $timeDelta): Generator
     {
@@ -873,7 +873,7 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST start immediately after the previously returned object</li>
      * </ul>
      *
-     * @return Generator|Period[]
+     * @return Generator<int,Period>
      */
     public function splitForward(Period|Duration|DateInterval|string $duration): Generator
     {
@@ -900,7 +900,7 @@ final class Period implements JsonSerializable
      * <li>All returned objects except for the first one MUST end immediately before the previously returned object</li>
      * </ul>
      *
-     * @return Generator|Period[]
+     * @return Generator<int,Period>
      */
     public function splitBackwards(Period|Duration|DateInterval|string $duration): Generator
     {
