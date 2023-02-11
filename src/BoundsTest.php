@@ -9,15 +9,25 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class BoundsTest extends TestCase
 {
-    /**
-     * @dataProvider boundsIso80000Provider
-     */
+    #[DataProvider('boundsIso80000Provider')]
     public function testIso80000(string $notation, Bounds $bounds, string $start, string $end): void
     {
         self::assertSame($notation, $bounds->buildIso80000($start, $end));
@@ -26,7 +36,7 @@ final class BoundsTest extends TestCase
     /**
      * @return iterable<array{notation:string, bounds:Bounds, start:string, end:string}>
      */
-    public function boundsIso80000Provider(): iterable
+    public static function boundsIso80000Provider(): iterable
     {
         yield 'exclude all' => [
             'notation' => '(3, 4)',
@@ -44,9 +54,8 @@ final class BoundsTest extends TestCase
             'end' => $period->endDate->format('Y-m'),
         ];
     }
-    /**
-     * @dataProvider boundsBourbakiProvider
-     */
+
+    #[DataProvider('boundsBourbakiProvider')]
     public function testBourbaki(string $notation, Bounds $bounds, string $start, string $end): void
     {
         self::assertSame($notation, $bounds->buildBourbaki($start, $end));
@@ -55,7 +64,7 @@ final class BoundsTest extends TestCase
     /**
      * @return iterable<array{notation:string, bounds:Bounds, start:string, end:string}>
      */
-    public function boundsBourbakiProvider(): iterable
+    public static function boundsBourbakiProvider(): iterable
     {
         yield 'exclude all' => [
             'notation' => ']3, 4[',
@@ -90,9 +99,7 @@ final class BoundsTest extends TestCase
         self::assertSame(['start' => '3', 'end' => '5', 'bounds' => Bounds::IncludeStartExcludeEnd], Bounds::parseBourbaki('[3,5['));
     }
 
-    /**
-     * @dataProvider fromNotationFailsProvider
-     */
+    #[DataProvider('fromNotationFailsProvider')]
     public function testFromNotationFails(string $notation): void
     {
         $this->expectException(InvalidInterval::class);
@@ -103,7 +110,7 @@ final class BoundsTest extends TestCase
     /**
      * @return iterable<string, array{notation:string}>
      */
-    public function fromNotationFailsProvider(): iterable
+    public static function fromNotationFailsProvider(): iterable
     {
         yield 'invalid notation' => ['notation' => 'foobar'];
         yield 'mixed notation 1' => ['notation' => ']3,5)'];

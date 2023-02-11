@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @coversDefaultClass \League\Period\Chart\LatinLetter;
- */
 final class LatinLetterTest extends TestCase
 {
     public function testFailsToCreateNewInstanceWithEmptyString(): void
@@ -35,10 +33,9 @@ final class LatinLetterTest extends TestCase
     }
 
     /**
-     * @dataProvider providerLetter
-     *
      * @param array<string> $expected
      */
+    #[DataProvider('providerLetter')]
     public function testGetLabels(int $nbLabels, string $letter, array $expected): void
     {
         $generator = new LatinLetter($letter);
@@ -48,7 +45,7 @@ final class LatinLetterTest extends TestCase
     /**
      * @return iterable<string, array{nbLabels:int, letter:string, expected:array<string>}>
      */
-    public function providerLetter(): iterable
+    public static function providerLetter(): iterable
     {
         return [
             'empty labels' => [

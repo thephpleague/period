@@ -3,7 +3,6 @@ build
 .idea
 docs/_site
 docs/.jekyll-cache
-docs/node_modules
+.phpunit.cache
 composer.lock
 .php-cs-fixer.cache
-.phpunit.result.cache

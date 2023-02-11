@@ -11,31 +11,24 @@
 
 declare(strict_types=1);
 
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use function json_encode;
 
-/**
- * @coversDefaultClass \League\Period\Sequence
- */
-final class SequenceTest extends TestCase
+final class SequenceTest extends PeriodTestCase
 {
-    private string $timezone;
-
-    protected function setUp(): void
-    {
-        $this->timezone = date_default_timezone_get();
-    }
-
-    protected function tearDown(): void
-    {
-        date_default_timezone_set($this->timezone);
-    }
-
     public function testIsEmpty(): void
     {
         $sequence = new Sequence();

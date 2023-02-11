@@ -1,39 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
-    bootstrap="vendor/autoload.php"
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    colors="true"
-    verbose="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    convertDeprecationsToExceptions="true"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    processIsolation="false"
-    stopOnFailure="false">
-    <coverage>
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-        <exclude>
-            <directory suffix="Test.php">src</directory>
-        </exclude>
-        <report>
-            <clover outputFile="build/clover.xml"/>
-            <html outputDirectory="build/coverage"/>
-            <xml outputDirectory="build/coverage-xml"/>
-        </report>
-    </coverage>
-    <testsuites>
-        <testsuite name="Period Test Suite">
-            <directory suffix="Test.php">src</directory>
-        </testsuite>
-    </testsuites>
-    <logging>
-        <junit outputFile="build/junit.xml"/>
-    </logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" bootstrap="vendor/autoload.php" backupGlobals="false" colors="true" beStrictAboutOutputDuringTests="true" beStrictAboutTestsThatDoNotTestAnything="true" processIsolation="false" stopOnFailure="false" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <coverage>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <exclude>
+      <directory suffix="Test.php">src</directory>
+    </exclude>
+    <report>
+      <clover outputFile="build/clover.xml"/>
+      <html outputDirectory="build/coverage"/>
+      <xml outputDirectory="build/coverage-xml"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Period Test Suite">
+      <directory suffix="Test.php">src</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <junit outputFile="build/junit.xml"/>
+  </logging>
 </phpunit>

@@ -14,12 +14,10 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use const STDOUT;
 
-/**
- * @coversDefaultClass \League\Period\Chart\GanttChartConfig
- */
 final class GanttChartConfigTest extends TestCase
 {
     private GanttChartConfig $config;
@@ -50,9 +48,7 @@ final class GanttChartConfigTest extends TestCase
         self::assertContains($config1->colors[0], $config2->colors);
     }
 
-    /**
-     * @dataProvider widthProvider
-     */
+    #[DataProvider('widthProvider')]
     public function testWidth(int $size, int $expected): void
     {
         self::assertSame($expected, $this->config->width($size)->width);
@@ -61,7 +57,7 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @return array<string, array{0:int, 1:int}>
      */
-    public function widthProvider(): array
+    public static function widthProvider(): array
     {
         return [
             '0 size' => [0, 10],
@@ -71,49 +67,37 @@ final class GanttChartConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerChars
-     */
+    #[DataProvider('providerChars')]
     public function testBody(string $char, string $expected): void
     {
         self::assertSame($expected, $this->config->bodyCharacter($char)->bodyCharacter);
     }
 
-    /**
-     * @dataProvider providerChars
-     */
+    #[DataProvider('providerChars')]
     public function testEndExcluded(string $char, string $expected): void
     {
         self::assertSame($expected, $this->config->endExcludedCharacter($char)->endExcludedCharacter);
     }
 
-    /**
-     * @dataProvider providerChars
-     */
+    #[DataProvider('providerChars')]
     public function testEndIncluded(string $char, string $expected): void
     {
         self::assertSame($expected, $this->config->endIncludedCharacter($char)->endIncludedCharacter);
     }
 
-    /**
-     * @dataProvider providerChars
-     */
+    #[DataProvider('providerChars')]
     public function testStartExcluded(string $char, string $expected): void
     {
         self::assertSame($expected, $this->config->startExcludedCharacter($char)->startExcludedCharacter);
     }
 
-    /**
-     * @dataProvider providerChars
-     */
+    #[DataProvider('providerChars')]
     public function testStartIncluded(string $char, string $expected): void
     {
         self::assertSame($expected, $this->config->startIncludedCharacter($char)->startIncludedCharacter);
     }
 
-    /**
-     * @dataProvider providerChars
-     */
+    #[DataProvider('providerChars')]
     public function testSpace(string $char, string $expected): void
     {
         self::assertSame($expected, $this->config->spaceCharacter($char)->spaceCharacter);
@@ -122,7 +106,7 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @return array<array{0:string, 1:string}>
      */
-    public function providerChars(): array
+    public static function providerChars(): array
     {
         return [
             ['-', '-'],
@@ -141,9 +125,7 @@ final class GanttChartConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider colorsProvider
-     */
+    #[DataProvider('colorsProvider')]
     public function testColors(Color $char, Color $expected): void
     {
         self::assertSame($expected, $this->config->colors($char)->colors[0]);
@@ -152,7 +134,7 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @return array<array{0:Color, 1:Color}>
      */
-    public function colorsProvider(): array
+    public static function colorsProvider(): array
     {
         return [
             [Color::Reset, Color::Reset],
@@ -168,7 +150,7 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @return array<array{0:string}>
      */
-    public function providerInvalidChars(): array
+    public static function providerInvalidChars(): array
     {
         return [
             ['coucou'],
@@ -176,25 +158,20 @@ final class GanttChartConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerInvalidChars
-     */
+    #[DataProvider('providerInvalidChars')]
     public function testWithHeadBlockThrowsInvalidArgumentException(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->config->bodyCharacter($input);
     }
-    /**
-     * @dataProvider providerGaps
-     */
+
+    #[DataProvider('providerGaps')]
     public function testLeftMargin(int $gap, int $expected): void
     {
         self::assertSame($expected, $this->config->leftMarginSize($gap)->leftMarginSize);
     }
 
-    /**
-     * @dataProvider providerGaps
-     */
+    #[DataProvider('providerGaps')]
     public function testGap(int $gap, int $expected): void
     {
         self::assertSame($expected, $this->config->gapSize($gap)->gapSize);
@@ -203,7 +180,7 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @return iterable<string, array{gap:int, expected:int}>
      */
-    public function providerGaps(): iterable
+    public static function providerGaps(): iterable
     {
         return [
             'single gap' => [
@@ -221,9 +198,7 @@ final class GanttChartConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerPaddings
-     */
+    #[DataProvider('providerPaddings')]
     public function testPadding(Alignment $padding, Alignment $expected): void
     {
         self::assertSame($expected, $this->config->labelAlignment($padding)->labelAlignment);
@@ -239,7 +214,7 @@ final class GanttChartConfigTest extends TestCase
     /**
      * @return iterable<string, array{padding:Alignment, expected:Alignment}>
      */
-    public function providerPaddings(): iterable
+    public static function providerPaddings(): iterable
     {
         return [
             'default' => [

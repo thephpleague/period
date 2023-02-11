@@ -9,16 +9,25 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
 use DateInterval;
 use DateTimeImmutable;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \League\Period\Period
- */
-final class PeriodDurationTest extends PeriodTest
+final class PeriodDurationTest extends PeriodTestCase
 {
     public function testGetDateInterval(): void
     {
@@ -30,10 +39,7 @@ final class PeriodDurationTest extends PeriodTest
         self::assertSame(86400, Period::fromDate('2012-02-01', '2012-02-02')->timeDuration());
     }
 
-    /**
-     * @dataProvider providerGetDatePeriod
-     *
-     */
+    #[DataProvider('providerGetDatePeriod')]
     public function testGetDatePeriod(DateInterval|int|string $duration, InitialDatePresence $option, int $count): void
     {
         if (is_string($duration)) {
@@ -49,7 +55,7 @@ final class PeriodDurationTest extends PeriodTest
     /**
      * @return array<string, array{0:DateInterval|int|string, 1:InitialDatePresence, 2:int}>
      */
-    public function providerGetDatePeriod(): array
+    public static function providerGetDatePeriod(): array
     {
         return [
             'useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::Included, 24],
@@ -62,9 +68,7 @@ final class PeriodDurationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider providerGetDatePeriodBackwards
-     */
+    #[DataProvider('providerGetDatePeriodBackwards')]
     public function testGetDatePeriodBackwards(DateInterval|int|string $duration, InitialDatePresence $option, int $count): void
     {
         if (is_int($duration)) {
@@ -79,7 +83,7 @@ final class PeriodDurationTest extends PeriodTest
     /**
      * @return array<string,array{0:DateInterval|string|int, 1:InitialDatePresence, 2:int}>
      */
-    public function providerGetDatePeriodBackwards(): array
+    public static function providerGetDatePeriodBackwards(): array
     {
         return [
             'useDateInterval' => [new DateInterval('PT1H'), InitialDatePresence::Included, 24],
@@ -93,10 +97,9 @@ final class PeriodDurationTest extends PeriodTest
     }
 
     /**
-     * @dataProvider provideRangedData
-     *
      * @param array<DateTimeImmutable> $range
      */
+    #[DataProvider('provideRangedData')]
     public function testRangeForwards(Period $period, DateInterval $dateInterval, int $count, array $range): void
     {
         $result = iterator_to_array($period->rangeForward($dateInterval));
@@ -106,10 +109,9 @@ final class PeriodDurationTest extends PeriodTest
     }
 
     /**
-     * @dataProvider provideRangedData
-     *
      * @param array<DateTimeImmutable> $range
      */
+    #[DataProvider('provideRangedData')]
     public function testRangeBackwards(Period $period, DateInterval $dateInterval, int $count, array $range): void
     {
         $result = iterator_to_array($period->rangeBackwards($dateInterval));
@@ -121,7 +123,7 @@ final class PeriodDurationTest extends PeriodTest
     /**
      * @return iterable<string, array{period:Period, dateInterval:DateInterval, count:int}>
      */
-    public function provideRangedData(): iterable
+    public static function provideRangedData(): iterable
     {
         $period = Period::fromDate('2012-01-12 00:00:00', '2012-01-12 01:00:00');
         $dateInterval = new DateInterval('PT10M');
@@ -183,9 +185,7 @@ final class PeriodDurationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider durationCompareDataProvider
-     */
+    #[DataProvider('durationCompareDataProvider')]
     public function testDurationCompare(Period $interval1, Period $interval2, int $expected): void
     {
         self::assertSame($expected, $interval1->durationCompare($interval2));
@@ -194,7 +194,7 @@ final class PeriodDurationTest extends PeriodTest
     /**
      * @return array<string,array{0:Period, 1:Period, 2:int}>
      */
-    public function durationCompareDataProvider(): array
+    public static function durationCompareDataProvider(): array
     {
         return [
             'duration less than' => [

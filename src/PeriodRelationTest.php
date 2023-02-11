@@ -9,21 +9,28 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \League\Period\Period
- */
-class PeriodRelationTest extends PeriodTest
+final class PeriodRelationTest extends PeriodTestCase
 {
-    /**
-     * @dataProvider isBeforeProvider
-     */
+    #[DataProvider('isBeforeProvider')]
     public function testIsBefore(Period $interval, DateTimeInterface|Period|string $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isBefore($input));
@@ -32,7 +39,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{interval:Period, input:DateTimeInterface|Period|string, expected:bool}>
      */
-    public function isBeforeProvider(): array
+    public static function isBeforeProvider(): array
     {
         return [
             'range exclude end date success' => [
@@ -98,10 +105,7 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider isAfterProvider
-     *
-     */
+    #[DataProvider('isAfterProvider')]
     public function testIsAfter(Period $interval, DateTimeInterface|Period|string $input, bool $expected): void
     {
         self::assertSame($expected, $interval->isAfter($input));
@@ -110,7 +114,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{interval:Period, input:DateTimeInterface|Period|string, expected:bool}>
      */
-    public function isAfterProvider(): array
+    public static function isAfterProvider(): array
     {
         return [
             'range exclude end date success' => [
@@ -171,9 +175,7 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider abutsDataProvider
-     */
+    #[DataProvider('abutsDataProvider')]
     public function testAbuts(Period $interval, Period $arg, bool $expected): void
     {
         self::assertSame($expected, $interval->abuts($arg));
@@ -182,7 +184,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{0:Period, 1:Period, 2:bool}>
      */
-    public function abutsDataProvider(): array
+    public static function abutsDataProvider(): array
     {
         return [
             'test abuts returns true with equal datepoints by defaut' => [
@@ -208,9 +210,7 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider overlapsDataProvider
-     */
+    #[DataProvider('overlapsDataProvider')]
     public function testOverlaps(Period $interval, Period $arg, bool $expected): void
     {
         self::assertSame($expected, $interval->overlaps($arg));
@@ -219,7 +219,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{0:Period, 1:Period, 2:bool}>
      */
-    public function overlapsDataProvider(): array
+    public static function overlapsDataProvider(): array
     {
         return [
             'overlaps returns false with gapped intervals' => [
@@ -255,10 +255,7 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider containsDataProvider
-     *
-     */
+    #[DataProvider('containsDataProvider')]
     public function testContains(Period $interval, DateTimeInterface|Period|string $arg, bool $expected): void
     {
         self::assertSame($expected, $interval->contains($arg));
@@ -271,7 +268,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{0:Period, 1:Period|DateTimeInterface|string, 2:bool}>
      */
-    public function containsDataProvider(): array
+    public static function containsDataProvider(): array
     {
         return [
             'contains returns true with a DateTimeInterface object' => [
@@ -387,13 +384,11 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider startsDataProvider
-     * @param DateTimeInterface|Period $index
-     */
-    public function testStarts(Period $interval, $index, bool $expected): void
+    #[DataProvider('startsDataProvider')]
+    public function testStarts(Period $interval, DateTimeInterface|Period $index, bool $expected): void
     {
         self::assertSame($expected, $interval->isStartedBy($index));
+
         if ($index instanceof DateTimeInterface) {
             self::assertSame($expected, DatePoint::fromDate($index)->isStarting($interval));
         }
@@ -402,7 +397,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<array{0:Period, 1:Period|DateTimeInterface, 2:bool}>
      */
-    public function startsDataProvider(): array
+    public static function startsDataProvider(): array
     {
         $startingDate = new DateTime('2012-01-01');
         $interval = Period::fromDate($startingDate, new DateTime('2012-01-15'));
@@ -446,9 +441,7 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider finishesDataProvider
-     */
+    #[DataProvider('finishesDataProvider')]
     public function testFinishes(Period $interval, DateTimeInterface|Period $index, bool $expected): void
     {
         self::assertSame($expected, $interval->isEndedBy($index));
@@ -457,7 +450,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<array{0:Period, 1:Period|DateTimeInterface, 2:bool}>
      */
-    public function finishesDataProvider(): array
+    public static function finishesDataProvider(): array
     {
         $endingDate = new DateTime('2012-01-16');
         $interval = Period::fromDate('2012-01-01', $endingDate);
@@ -495,9 +488,7 @@ class PeriodRelationTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider equalsDataProvider
-     */
+    #[DataProvider('equalsDataProvider')]
     public function testEquals(Period  $interval1, Period $interval2, bool $expected): void
     {
         self::assertSame($expected, $interval1->equals($interval2));
@@ -506,7 +497,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{0:Period, 1:Period, 2:bool}>
      */
-    public function equalsDataProvider(): array
+    public static function equalsDataProvider(): array
     {
         return [
             'returns true' => [
@@ -547,20 +538,19 @@ class PeriodRelationTest extends PeriodTest
         $orig->intersect($alt);
     }
 
-    /**
-     * @dataProvider intersectBoundaryResultProvider
-     */
+    #[DataProvider('intersectBoundaryResultProvider')]
     public function testIntersectBoundaryTypeResult(Bounds $boundary1, Bounds $boundary2, Bounds $expected): void
     {
         $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $boundary1);
         $interval1 = Period::fromDate(new DateTime('2014-05-01'), new DateTime('2014-08-01'), $boundary2);
+
         self::assertTrue($expected === $interval0->intersect($interval1)->bounds);
     }
 
     /**
      * @return array<string, array{boundary1:Bounds, boundary2:Bounds, expected:Bounds}>
      */
-    public function intersectBoundaryResultProvider(): array
+    public static function intersectBoundaryResultProvider(): array
     {
         return [
             '() + ()' => [
@@ -688,9 +678,7 @@ class PeriodRelationTest extends PeriodTest
         self::assertEquals(0, $orig->gap($alt)->timeDuration());
     }
 
-    /**
-     * @dataProvider gapBoundaryResultProvider
-     */
+    #[DataProvider('gapBoundaryResultProvider')]
     public function testGapBoundaryTypeResult(Bounds $boundary1, Bounds $boundary2, Bounds $expected): void
     {
         $interval0 = Period::fromDate(new DateTime('2014-03-01'), new DateTime('2014-06-01'), $boundary1);
@@ -701,7 +689,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{boundary1:Bounds, boundary2:Bounds, expected:Bounds}>
      */
-    public function gapBoundaryResultProvider(): array
+    public static function gapBoundaryResultProvider(): array
     {
         return [
             '() + ()' => [
@@ -800,7 +788,6 @@ class PeriodRelationTest extends PeriodTest
         self::assertEquals($interval1->union($interval2), new Sequence($interval1->merge($interval2)));
     }
 
-
     public function testDiffThrowsException(): void
     {
         $interval1 = Period::fromDate(new DateTimeImmutable('2015-01-01'), new DateTimeImmutable('2016-01-01'));
@@ -855,9 +842,7 @@ class PeriodRelationTest extends PeriodTest
         self::assertEquals($alt->diff($period), $period->diff($alt));
     }
 
-    /**
-     * @dataProvider diffBoundaryResultProvider
-     */
+    #[DataProvider('diffBoundaryResultProvider')]
     public function testDiffBoundaryTypeResult(
         Bounds $boundary1,
         Bounds $boundary2,
@@ -880,7 +865,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return array<string, array{boundary1:Bounds, boundary2:Bounds, expected1:Bounds, expected2:Bounds}>
      */
-    public function diffBoundaryResultProvider(): array
+    public static function diffBoundaryResultProvider(): array
     {
         return [
             '() + ()' => [
@@ -1109,7 +1094,7 @@ class PeriodRelationTest extends PeriodTest
     /**
      * @return iterable<array{period1:Period, period2:Period, meets:bool, meetsOnStart:bool, meetsOnEnd:bool}>
      */
-    public function meetsProvider(): iterable
+    public static function meetsProvider(): iterable
     {
         yield [
             'period1' => Period::fromDate('2022-01-01', '2022-02-01', Bounds::IncludeAll),

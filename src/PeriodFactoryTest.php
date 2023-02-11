@@ -9,6 +9,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
 use DateInterval;
@@ -17,11 +28,9 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \League\Period\Period
- */
-final class PeriodFactoryTest extends PeriodTest
+final class PeriodFactoryTest extends PeriodTestCase
 {
     public function testInstantiationFromDatePointInstance(): void
     {
@@ -70,10 +79,7 @@ final class PeriodFactoryTest extends PeriodTest
         );
     }
 
-    /**
-     * @dataProvider provideIntervalAfterData
-     *
-     */
+    #[DataProvider('provideIntervalAfterData')]
     public function testIntervalAfter(string $startDate, string $endDate, Period|DateInterval|int|string $duration): void
     {
         $start = new DateTimeImmutable($startDate);
@@ -91,7 +97,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return array<string, array{0:string, 1:string, 2:int|DateInterval|string|Period}>
      */
-    public function provideIntervalAfterData(): array
+    public static function provideIntervalAfterData(): array
     {
         return [
             'usingAString' => [
@@ -118,10 +124,7 @@ final class PeriodFactoryTest extends PeriodTest
         Period::after(new DateTime('2012-01-12'), $duration);
     }
 
-    /**
-     * @dataProvider intervalBeforeProviderData
-     *
-     */
+    #[DataProvider('intervalBeforeProviderData')]
     public function testIntervalBefore(string $startDate, string $endDate, int|DateInterval|string $duration): void
     {
         $end = new DateTimeImmutable($endDate);
@@ -140,7 +143,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return array<string, array{0:string, 1:string, 2:int|DateInterval|string}>
      */
-    public function intervalBeforeProviderData(): array
+    public static function intervalBeforeProviderData(): array
     {
         return [
             'usingAString' => [
@@ -354,9 +357,7 @@ final class PeriodFactoryTest extends PeriodTest
         self::assertEquals('+00:00', $period->endDate->format('P'));
     }
 
-    /**
-     * @dataProvider provideValidIntervalIso80000
-     */
+    #[DataProvider('provideValidIntervalIso80000')]
     public function testCreateNewInstanceFromNotation(string $notation, string $format, string $expected): void
     {
         self::assertSame($expected, Period::fromIso80000($format, $notation)->toIso80000($format));
@@ -365,7 +366,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return iterable<string, array{notation:string, format:string, expected:string}>
      */
-    public function provideValidIntervalIso80000(): iterable
+    public static function provideValidIntervalIso80000(): iterable
     {
         yield 'date string' => [
           'notation' => '[2021-01-03,2021-01-04)',
@@ -389,9 +390,7 @@ final class PeriodFactoryTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider provideInvalidIntervalNotation
-     */
+    #[DataProvider('provideInvalidIntervalNotation')]
     public function testFailsToCreateNewInstanceFromIso80000(string $notation, string $format): void
     {
         $this->expectException(InvalidInterval::class);
@@ -402,7 +401,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return iterable<string, array<string>>
      */
-    public function provideInvalidIntervalNotation(): iterable
+    public static function provideInvalidIntervalNotation(): iterable
     {
         return [
             'empty string' => ['', 'Y-m-d'],
@@ -416,9 +415,7 @@ final class PeriodFactoryTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider provideValidIntervalBourbaki
-     */
+    #[DataProvider('provideValidIntervalBourbaki')]
     public function testCreateNewInstanceFromBourbaki(string $notation, string $format, string $expected): void
     {
         self::assertSame($expected, Period::fromBourbaki($format, $notation)->toBourbaki($format));
@@ -427,7 +424,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return iterable<string, array{notation:string, format:string, expected:string}>
      */
-    public function provideValidIntervalBourbaki(): iterable
+    public static function provideValidIntervalBourbaki(): iterable
     {
         yield 'date string' => [
             'notation' => '[2021-01-03,2021-01-04[',
@@ -451,9 +448,7 @@ final class PeriodFactoryTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider provideInvalidIntervalBourbaki
-     */
+    #[DataProvider('provideInvalidIntervalBourbaki')]
     public function testFailsToCreateNewInstanceFromBourbaki(string $notation, string $format): void
     {
         $this->expectException(InvalidInterval::class);
@@ -464,7 +459,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return iterable<string, array<string>>
      */
-    public function provideInvalidIntervalBourbaki(): iterable
+    public static function provideInvalidIntervalBourbaki(): iterable
     {
         return [
             'empty string' => ['', 'Y-m-d'],
@@ -478,9 +473,7 @@ final class PeriodFactoryTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider providesValidIso8601Notation
-     */
+    #[DataProvider('providesValidIso8601Notation')]
     public function testCreateNewInstanceFromIsoNotation(
         string $inputFormat,
         string $notation,
@@ -497,7 +490,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return array<string, array{inputFormat:string, notation:string, bounds:Bounds, outputFormat:string, expected:string}>
      */
-    public function providesValidIso8601Notation(): array
+    public static function providesValidIso8601Notation(): array
     {
         return [
             'same input/output format' => [
@@ -545,9 +538,7 @@ final class PeriodFactoryTest extends PeriodTest
         ];
     }
 
-    /**
-     * @dataProvider provideInvalidIsoNotation
-     */
+    #[DataProvider('provideInvalidIsoNotation')]
     public function testFailsToCreateNewInstanceFromIsoNotation(string $notation, string $format, Bounds $bounds): void
     {
         $this->expectException(InvalidInterval::class);
@@ -558,7 +549,7 @@ final class PeriodFactoryTest extends PeriodTest
     /**
      * @return iterable<string, array{0:string, 1:string, 2:Bounds}>
      */
-    public function provideInvalidIsoNotation(): iterable
+    public static function provideInvalidIsoNotation(): iterable
     {
         return [
             'empty string' => ['', 'Y-m-d', Bounds::IncludeAll],

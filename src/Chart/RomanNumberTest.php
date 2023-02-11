@@ -13,18 +13,15 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @coversDefaultClass \League\Period\Chart\RomanNumber;
- */
 final class RomanNumberTest extends TestCase
 {
     /**
-     * @dataProvider providerLetter
-     *
      * @param array<string> $expected
      */
+    #[DataProvider('providerLetter')]
     public function testGetLabels(int $nbLabels, int $label, LetterCase $lettercase, array $expected, bool $isUpper): void
     {
         $generator = new RomanNumber(new DecimalNumber($label), $lettercase);
@@ -35,7 +32,7 @@ final class RomanNumberTest extends TestCase
     /**
      * @return iterable<string, array{nbLabels:int, label:int, lettercase:LetterCase, expected:array<string>}>
      */
-    public function providerLetter(): iterable
+    public static function providerLetter(): iterable
     {
         return [
             'empty labels' => [

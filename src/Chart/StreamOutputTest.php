@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 use function chr;
@@ -20,9 +21,6 @@ use function fopen;
 use function rewind;
 use function stream_get_contents;
 
-/**
- * @coversDefaultClass \League\Period\Chart\StreamOutput
- */
 final class StreamOutputTest extends TestCase
 {
     /**
@@ -42,9 +40,7 @@ final class StreamOutputTest extends TestCase
         new StreamOutput(__DIR__.'/data/foo.csv', Terminal::Posix);
     }
 
-    /**
-     * @dataProvider providesWritelnTextsPosix
-     */
+    #[DataProvider('providesWritelnTextsPosix')]
     public function testWriteln(string $message, string $expected): void
     {
         $stream = $this->setStream();
@@ -61,7 +57,7 @@ final class StreamOutputTest extends TestCase
     /**
      * @return iterable<string, array{message:string, expected:string}>
      */
-    public function providesWritelnTextsPosix(): iterable
+    public static function providesWritelnTextsPosix(): iterable
     {
         return [
             'empty message' => [
@@ -75,9 +71,7 @@ final class StreamOutputTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providesWritelnTextsUnknown
-     */
+    #[DataProvider('providesWritelnTextsUnknown')]
     public function testWritelnUnknown(string $message, string $expected): void
     {
         $stream = $this->setStream();
@@ -94,7 +88,7 @@ final class StreamOutputTest extends TestCase
     /**
      * @return iterable<string, array{message:string, expected:string}>
      */
-    public function providesWritelnTextsUnknown(): iterable
+    public static function providesWritelnTextsUnknown(): iterable
     {
         return [
             'empty message' => [

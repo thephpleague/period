@@ -9,6 +9,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
 use DateInterval;
@@ -16,6 +27,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class DatePointTest extends TestCase
@@ -69,9 +81,7 @@ final class DatePointTest extends TestCase
         self::assertSame('[2021-07-08 13:23:58, 2021-07-08 13:23:59)', $secondPeriod->toIso80000('Y-m-d H:i:s'));
     }
 
-    /**
-     * @dataProvider isAfterProvider
-     */
+    #[DataProvider('isAfterProvider')]
     public function testIsAfter(Period $interval, DateTimeInterface $input, bool $expected): void
     {
         self::assertSame($expected, DatePoint::fromDate($input)->isAfter($interval));
@@ -80,7 +90,7 @@ final class DatePointTest extends TestCase
     /**
      * @return array<string, array{interval:Period, input:DateTimeInterface, expected:bool}>
      */
-    public function isAfterProvider(): array
+    public static function isAfterProvider(): array
     {
         return [
             'range exclude end date success' => [
@@ -116,9 +126,7 @@ final class DatePointTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isBeforeProvider
-     */
+    #[DataProvider('isBeforeProvider')]
     public function testIsBefore(Period $interval, DateTimeInterface $input, bool $expected): void
     {
         self::assertSame($expected, DatePoint::fromDate($input)->isBefore($interval));
@@ -127,7 +135,7 @@ final class DatePointTest extends TestCase
     /**
      * @return array<string, array{interval:Period, input:DateTimeInterface, expected:bool}>
      */
-    public function isBeforeProvider(): array
+    public static function isBeforeProvider(): array
     {
         return [
             'range exclude end date success' => [
@@ -175,10 +183,7 @@ final class DatePointTest extends TestCase
         self::assertFalse($datepoint->abuts($intervalBorderOnEndFalse));
     }
 
-    /**
-     * @dataProvider isDuringDataProvider
-     *
-     */
+    #[DataProvider('isDuringDataProvider')]
     public function testIsDuring(Period $interval, DateTimeInterface|string $input, bool $expected): void
     {
         $datepoint = $input instanceof DateTimeInterface ? DatePoint::fromDate($input) : DatePoint::fromDateString($input);
@@ -189,7 +194,7 @@ final class DatePointTest extends TestCase
     /**
      * @return array<string, array{0:Period, 1:DateTimeInterface|string, 2:bool}>
      */
-    public function isDuringDataProvider(): array
+    public static function isDuringDataProvider(): array
     {
         return [
             'contains returns true with a DateTimeInterface object' => [
@@ -240,9 +245,7 @@ final class DatePointTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider startsDataProvider
-     */
+    #[DataProvider('startsDataProvider')]
     public function testStarts(Period $interval, DateTimeInterface $index, bool $expected): void
     {
         self::assertSame($expected, DatePoint::fromDate($index)->isStarting($interval));
@@ -251,7 +254,7 @@ final class DatePointTest extends TestCase
     /**
      * @return array<array{0:Period, 1:DateTimeInterface, 2:bool}>
      */
-    public function startsDataProvider(): array
+    public static function startsDataProvider(): array
     {
         $datepoint = new DateTime('2012-01-01');
 
@@ -269,9 +272,7 @@ final class DatePointTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isEndingDataProvider
-     */
+    #[DataProvider('isEndingDataProvider')]
     public function testFinishes(Period $interval, DateTimeInterface $index, bool $expected): void
     {
         self::assertSame($expected, DatePoint::fromDate($index)->isEnding($interval));
@@ -280,7 +281,7 @@ final class DatePointTest extends TestCase
     /**
      * @return array<array{0:Period, 1:DateTimeInterface, 2:bool}>
      */
-    public function isEndingDataProvider(): array
+    public static function isEndingDataProvider(): array
     {
         $datepoint = new DateTime('2012-01-16');
 

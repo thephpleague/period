@@ -9,6 +9,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+/**
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace League\Period;
 
 use DateInterval;
@@ -16,6 +27,7 @@ use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
@@ -111,7 +123,7 @@ final class DurationTest extends TestCase
     /**
      * @return iterable<string, array<string>>
      */
-    public function getDurationCreateFailsProvider(): iterable
+    public static function getDurationCreateFailsProvider(): iterable
     {
         return [
             'invalid interval spec 1' => ['PT'],
@@ -124,29 +136,7 @@ final class DurationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getDurationCreateFromDateStringFailsProvider
-     */
-    public function testDurationCreateFromDateStringFails(string $input): void
-    {
-        $this->expectWarning();
-
-        Duration::fromDateString($input);
-    }
-
-    /**
-     * @return iterable<string,array<string>>
-     */
-    public function getDurationCreateFromDateStringFailsProvider(): iterable
-    {
-        return [
-            'invalid interval spec 1' => ['yolo'],
-        ];
-    }
-
-    /**
-     * @dataProvider getDurationFromSecondsSuccessfulProvider
-     */
+    #[DataProvider('getDurationFromSecondsSuccessfulProvider')]
     public function testCreateFromSeconds(int $seconds, int $fraction, string $expected): void
     {
         self::assertSame($expected, $this->formatDuration(Duration::fromSeconds($seconds, $fraction)));
@@ -155,7 +145,7 @@ final class DurationTest extends TestCase
     /**
      * @return array<string, array{seconds:int, fraction:int, expected:string}>
      */
-    public function getDurationFromSecondsSuccessfulProvider(): array
+    public static function getDurationFromSecondsSuccessfulProvider(): array
     {
         return [
             'from an integer' => [
@@ -178,10 +168,7 @@ final class DurationTest extends TestCase
         Duration::fromSeconds(32, -1);
     }
 
-    /**
-     * @dataProvider providesValidIsoString
-     *
-     */
+    #[DataProvider('providesValidIsoString')]
     public function testIntervalWithFraction(string $input, string $expected): void
     {
         self::assertSame($expected, $this->formatDuration(Duration::fromIsoString($input)));
@@ -190,7 +177,7 @@ final class DurationTest extends TestCase
     /**
      * @return iterable<string, array{input:string, expected:string}>
      */
-    public function providesValidIsoString(): iterable
+    public static function providesValidIsoString(): iterable
     {
         return [
             'IsoString with fraction v1' => [
@@ -208,10 +195,7 @@ final class DurationTest extends TestCase
         ];
     }
 
-
-    /**
-     * @dataProvider fromChronoFailsProvider
-     */
+    #[DataProvider('fromChronoFailsProvider')]
     public function testCreateFromChronoStringFails(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -222,7 +206,7 @@ final class DurationTest extends TestCase
     /**
      * @return iterable<string, array<string>>
      */
-    public function fromChronoFailsProvider(): iterable
+    public static function fromChronoFailsProvider(): iterable
     {
         return [
             'invalid string' => ['foobar'],
@@ -230,9 +214,7 @@ final class DurationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider fromChronoProvider
-     */
+    #[DataProvider('fromChronoProvider')]
     public function testCreateFromChronoStringSucceeds(string $chronometer, string $expected): void
     {
         $duration = Duration::fromChronoString($chronometer);
@@ -243,7 +225,7 @@ final class DurationTest extends TestCase
     /**
      * @return iterable<string, array{chronometer:string, expected:string}>
      */
-    public function fromChronoProvider(): iterable
+    public static function fromChronoProvider(): iterable
     {
         return [
             'minute and seconds' => [
@@ -272,9 +254,7 @@ final class DurationTest extends TestCase
         Duration::fromTimeString('123');
     }
 
-    /**
-     * @dataProvider fromTimeStringProvider
-     */
+    #[DataProvider('fromTimeStringProvider')]
     public function testCreateFromTimeStringSucceeds(string $chronometer, string $expected): void
     {
         $duration = Duration::fromTimeString($chronometer);
@@ -285,7 +265,7 @@ final class DurationTest extends TestCase
     /**
      * @return array<array{chronometer:string, expected:string}>
      */
-    public function fromTimeStringProvider(): iterable
+    public static function fromTimeStringProvider(): iterable
     {
         return [
             'hour and minute' => [
@@ -311,9 +291,7 @@ final class DurationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider adjustedToDataProvider
-     */
+    #[DataProvider('adjustedToDataProvider')]
     public function testAdjustedTo(string $input, int|string|DateTimeInterface $reference_date, string $expected): void
     {
         $duration = Duration::fromIsoString($input);
@@ -330,7 +308,7 @@ final class DurationTest extends TestCase
     /**
      * @return iterable<string, array{input:string, reference_date:int|string|DateTimeInterface, expected:string}>
      */
-    public function adjustedToDataProvider(): iterable
+    public static function adjustedToDataProvider(): iterable
     {
         return [
             'nothing to carry over' => [

@@ -21,14 +21,12 @@ use Iterator;
 use IteratorAggregate;
 use League\Period\Period;
 use League\Period\Sequence;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 use function iterator_to_array;
 use function json_encode;
 
-/**
- * @coversDefaultClass \League\Period\Chart\Dataset;
- */
 final class DatasetTest extends TestCase
 {
     public function testFromSequenceConstructor(): void
@@ -50,10 +48,9 @@ final class DatasetTest extends TestCase
     }
 
     /**
-     * @dataProvider provideIterableStructure
-     *
      * @param iterable<int, Period|Sequence> $input
      */
+    #[DataProvider('provideIterableStructure')]
     public function testFromIterableConstructor(iterable $input, int $expectedCount, bool $isEmpty, bool $boundaryIsNull): void
     {
         $dataset = Dataset::fromIterable($input);
@@ -65,7 +62,7 @@ final class DatasetTest extends TestCase
     /**
      * @return array<string, array{input:iterable<int, Period|Sequence>, expectedCount:int, isEmpty:bool, boundaryIsNull:bool}>
      */
-    public function provideIterableStructure(): array
+    public static function provideIterableStructure(): array
     {
         return [
             'empty structure' => [

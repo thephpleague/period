@@ -9,16 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace League\Period;
+declare(strict_types=1);
 
 /**
- * @coversDefaultClass \League\Period\Period
+ * League.Period (https://period.thephpleague.com).
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
-final class PeriodBoundsTest extends PeriodTest
+
+namespace League\Period;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+
+final class PeriodBoundsTest extends PeriodTestCase
 {
-    /**
-     * @dataProvider provideBounds
-     */
+    #[DataProvider('provideBounds')]
     public function testPeriodBounds(
         Period $interval,
         Bounds $rangeType,
@@ -37,7 +45,7 @@ final class PeriodBoundsTest extends PeriodTest
     /**
      * @return array<string, array{interval:Period, rangeType:Bounds, startIncluded:bool, startExcluded:bool, endIncluded:bool, endExcluded:bool}>
      */
-    public function provideBounds(): array
+    public static function provideBounds(): array
     {
         return [
             'left open right close' => [

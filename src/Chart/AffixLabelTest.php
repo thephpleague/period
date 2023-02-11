@@ -13,18 +13,15 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @coversDefaultClass \League\Period\Chart\AffixLabel;
- */
 final class AffixLabelTest extends TestCase
 {
     /**
-     * @dataProvider providerLetter
-     *
      * @param array<string> $expected
      */
+    #[DataProvider('providerLetter')]
     public function testGetLabels(
         int $nbLabels,
         string $letter,
@@ -39,7 +36,7 @@ final class AffixLabelTest extends TestCase
     /**
      * @return array<string, array{nbLabels:int, letter:string, prefix:string, suffix:string, expected:array<int, string>}>
      */
-    public function providerLetter(): iterable
+    public static function providerLetter(): iterable
     {
         return [
             'empty labels' => [

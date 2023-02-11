@@ -13,18 +13,15 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @coversDefaultClass \League\Period\Chart\DecimalNumber;
- */
 final class DecimalNumberTest extends TestCase
 {
     /**
-     * @dataProvider providerLetter
-     *
      * @param array<string> $expected
      */
+    #[DataProvider('providerLetter')]
     public function testGetLabels(int $nbLabels, int $label, array $expected): void
     {
         $generator = new DecimalNumber($label);
@@ -34,7 +31,7 @@ final class DecimalNumberTest extends TestCase
     /**
      * @return iterable<string, array{nbLabels:int, label:int, expected:array<string>}>
      */
-    public function providerLetter(): iterable
+    public static function providerLetter(): iterable
     {
         return [
             'empty labels' => [

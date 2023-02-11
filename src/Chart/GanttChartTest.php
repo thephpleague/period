@@ -22,9 +22,6 @@ use function fopen;
 use function rewind;
 use function stream_get_contents;
 
-/**
- * @coversDefaultClass \League\Period\Chart\GanttChart
- */
 final class GanttChartTest extends TestCase
 {
     private GanttChart $graph;
@@ -49,10 +46,6 @@ final class GanttChartTest extends TestCase
         return $stream;
     }
 
-    /**
-     * @covers ::stroke
-     * @covers ::setChartScale
-     */
     public function testDisplayEmptyDataset(): void
     {
         $this->graph->stroke(new Dataset());
@@ -62,13 +55,6 @@ final class GanttChartTest extends TestCase
         self::assertSame('', $data);
     }
 
-    /**
-     * @covers ::stroke
-     * @covers ::setChartScale
-     * @covers ::sequenceToLine
-     * @covers ::periodToCharacters
-     * @covers \League\Period\Chart\StreamOutput
-     */
     public function testDisplayPeriods(): void
     {
         $this->graph->stroke(new Dataset([
@@ -84,12 +70,6 @@ final class GanttChartTest extends TestCase
         self::assertStringContainsString('B                            [-------------------------------)', $data);
     }
 
-    /**
-     * @covers ::stroke
-     * @covers ::setChartScale
-     * @covers ::sequenceToLine
-     * @covers ::periodToCharacters
-     */
     public function testDisplaySequence(): void
     {
         $dataset = new Dataset([
@@ -107,12 +87,6 @@ final class GanttChartTest extends TestCase
         self::assertStringContainsString('B                            [-------------------------------)', $data);
     }
 
-    /**
-     * @covers ::stroke
-     * @covers ::setChartScale
-     * @covers ::sequenceToLine
-     * @covers ::periodToCharacters
-     */
     public function testDisplayEmptySequence(): void
     {
         $dataset = new Dataset();
