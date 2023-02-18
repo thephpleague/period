@@ -2,7 +2,7 @@
 
 All notable changes to `Period` will be documented in this file
 
-## [Next] - TBD
+## [5.2.0](https://github.com/thephpleague/period/compare/5.1.0...5.2.0) - 2023-02-18
 
 ### Added
 
