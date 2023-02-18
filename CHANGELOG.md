@@ -2,6 +2,27 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [Next] - TBD
+
+### Added
+
+- `Period::rangeForward` allows iteration over a set of dates and times, recurring at regular intervals, over the instance forward starting from the instance start.
+- `Period::rangeBackwards` Allows iteration over a set of dates and times, recurring at regular intervals, over the instance backwards starting from the instance ending.
+- `Period::fromRange` returns a new `Period` instance from a `DatePeriod` object. Only usable in PHP8.2+ installation
+
+### Fixed
+
+- Using PHPUnit 10 instead of PHPUnit 9.
+
+### Deprecated
+
+- `Period::dateRangeForward` use instead `Period::rangeForward`
+- `Period::dateRangeBackwards` use instead `Period::rangeBackwards`
+
+### Removed
+
+- None
+
 ## [5.1.0](https://github.com/thephpleague/period/compare/5.0.0...5.1.0) - 2022-06-28
 
 
@@ -882,7 +903,8 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 First stable release of `Period`
 
-[Next]: https://github.com/thephpleague/period/compare/5.0.0...master
+[Next]: https://github.com/thephpleague/period/compare/5.1.0...master
+[5.1.0]: https://github.com/thephpleague/period/compare/5.0.0...5.1.0
 [5.0.0]: https://github.com/thephpleague/period/compare/4.12.0...5.0.0
 [4.12.0]: https://github.com/thephpleague/period/compare/4.11.0...4.12.0
 [4.11.0]: https://github.com/thephpleague/period/compare/4.10.0...4.11.0
