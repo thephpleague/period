@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [Next] - TBD
+
+### Added
+
+- None
+
+### Fixed
+
+- `Period::fromRange` should work in PHP8.1 with DatePeriod limitations.
+
+### Deprecated
+
+- `InitialDatePresence` use instead `Period::fromRange`
+
+### Removed
+
+- None
+
 ## [5.2.0](https://github.com/thephpleague/period/compare/5.1.0...5.2.0) - 2023-02-18
 
 ### Added

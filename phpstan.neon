@@ -7,3 +7,5 @@ parameters:
     level: max
     paths:
         - src
+    ignoreErrors:
+        - '#^Generator expects value type array#'

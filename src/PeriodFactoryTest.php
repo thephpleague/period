@@ -194,7 +194,7 @@ final class PeriodFactoryTest extends PeriodTestCase
             new DateInterval('P1D'),
             new DateTime('2016-05-20T00:00:00Z')
         );
-        $period = Period::fromDateRange($datePeriod);
+        $period = Period::fromDateRange($datePeriod);  /* @phpstan-ignore-line */
         self::assertEquals($datePeriod->getStartDate(), $period->startDate);
         self::assertEquals($datePeriod->getEndDate(), $period->endDate);
     }
@@ -213,36 +213,48 @@ final class PeriodFactoryTest extends PeriodTestCase
         Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
     }
 
-    /**
-     * @requires PHP < 8.2
-     */
-    public function testIntervalFromRangeThrowsExceptionOnPHPVersion(): void
-    {
-        $this->expectException(InvalidInterval::class);
-
-        Period::fromRange(new DatePeriod(
-            new DateTime('2016-05-16T00:00:00Z'),
-            new DateInterval('P1D'),
-            new DateTime('2016-05-20T00:00:00Z')
-        ));
-    }
-
-    /**
-     * @requires PHP >= 8.2
-     */
-    public function testFromRange(): void
+    #[DataProvider('provideDatePeriodOptions')]
+    public function testFromRange(int $option, Bounds $expectedBounds): void
     {
         $datePeriod = new DatePeriod(
             new DateTime('2016-05-16T00:00:00Z'),
             new DateInterval('P1D'),
             new DateTime('2016-05-20T00:00:00Z'),
-            DatePeriod::INCLUDE_END_DATE | DatePeriod::EXCLUDE_START_DATE
+            $option
         );
 
         $period = Period::fromRange($datePeriod);
-        self::assertSame(Bounds::ExcludeStartIncludeEnd, $period->bounds);
+        self::assertSame($expectedBounds, $period->bounds);
         self::assertEquals($datePeriod->getStartDate(), $period->startDate);
         self::assertEquals($datePeriod->getEndDate(), $period->endDate);
+    }
+
+    /**
+     * @return iterable<string, array{option: int, expectedBounds: Bounds}>
+     */
+    public static function provideDatePeriodOptions(): iterable
+    {
+        yield 'include start date' => [
+            'options' => DatePeriod::EXCLUDE_START_DATE,
+            'expectedBounds' => Bounds::ExcludeAll,
+        ];
+
+        yield 'exclude start date' => [
+            'options' => 0,
+            'expectedBounds' => Bounds::IncludeStartExcludeEnd,
+        ];
+
+        if (defined('DatePeriod::INCLUDE_END_DATE')) {
+            yield 'include all' => [
+                'options' => DatePeriod::INCLUDE_END_DATE,
+                'expectedBounds' => Bounds::IncludeAll,
+            ];
+
+            yield 'exclude start date' => [
+                'options' => DatePeriod::INCLUDE_END_DATE | DatePeriod::EXCLUDE_START_DATE,
+                'expectedBounds' => Bounds::ExcludeStartIncludeEnd,
+            ];
+        }
     }
 
     public function testIsoWeek(): void

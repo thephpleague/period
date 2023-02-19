@@ -12,6 +12,8 @@
 namespace League\Period;
 
 /*
+ * @deprecated since version 5.2.1
+ *
  * Presence Enum
  *
  * @package League.period

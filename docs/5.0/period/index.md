@@ -244,9 +244,9 @@ $interval = Period::fromDateRange($dateRange);
 //throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~
 
-#### On PHP8.2+
+#### On PHP8.1+
 
-In PHP8.2+ the `DatePeriod` exposes full bound informations that allow the removal of the 
+In PHP8.2+ the `DatePeriod` exposes full bound information that allow the removal of the 
 extra optional parameter associated with `Period::fromDateRange`.
 
 ~~~php
@@ -278,3 +278,5 @@ $dateRange = new DatePeriod('R4/2012-07-01T00:00:00Z/P7D');
 $interval = Period::fromRange($dateRange);
 //throws a TypeError error because $dateRange->getEndDate() returns null
 ~~~
+
+<p class="message-info">Since version <code>5.2.1</code> this method is made available in PHP8.1 but is restricted by <code>DatePeriod</code> features available.

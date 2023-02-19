@@ -249,6 +249,9 @@ final class Period implements JsonSerializable
     }
 
     /**
+     * @deprecated since version 5.2.1
+     * @see ::fromRange
+     *
      * @throws InvalidInterval If no instance can be generated from a DatePeriod object
      */
     public static function fromDateRange(DatePeriod $dateRange, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
@@ -270,13 +273,17 @@ final class Period implements JsonSerializable
      */
     public static function fromRange(DatePeriod $range): self
     {
-        if (PHP_VERSION_ID < 80200) {
-            throw InvalidInterval::dueToUnsupportedVersion(__METHOD__, '8.2');
-        }
-
         $endDate = $range->getEndDate();
         if (null === $endDate) {
             throw InvalidInterval::dueToInvalidDatePeriod();
+        }
+
+        if (PHP_VERSION_ID < 80200) {
+            return new self(
+                self::filterDatePoint($range->getStartDate()),
+                self::filterDatePoint($endDate),
+                $range->include_start_date ? Bounds::IncludeStartExcludeEnd : Bounds::ExcludeAll
+            );
         }
 
         return new self(
