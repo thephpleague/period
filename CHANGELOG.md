@@ -20,7 +20,7 @@ All notable changes to `Period` will be documented in this file
 
 - None
 
-## [5.2.0](https://github.com/thephpleague/period/compare/5.1.0...5.2.0) - 2023-02-18
+## [5.2.0] - 2023-02-18
 
 ### Added
 
@@ -921,7 +921,9 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 First stable release of `Period`
 
-[Next]: https://github.com/thephpleague/period/compare/5.1.0...master
+[Next]: https://github.com/thephpleague/period/compare/5.2.0...master
+[5.2.0]: https://github.com/thephpleague/period/compare/5.1.0...5.2.0
+[5.1.0]: https://github.com/thephpleague/period/compare/5.0.0...5.1.0
 [5.1.0]: https://github.com/thephpleague/period/compare/5.0.0...5.1.0
 [5.0.0]: https://github.com/thephpleague/period/compare/4.12.0...5.0.0
 [4.12.0]: https://github.com/thephpleague/period/compare/4.11.0...4.12.0

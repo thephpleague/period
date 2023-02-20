@@ -21,7 +21,6 @@ use DateTimeZone;
 use Exception;
 use Generator;
 use JsonSerializable;
-use const PHP_VERSION_ID;
 
 /**
  * An immutable value object class to manipulate DateTimeInterface interval.
@@ -278,23 +277,23 @@ final class Period implements JsonSerializable
             throw InvalidInterval::dueToInvalidDatePeriod();
         }
 
-        if (PHP_VERSION_ID < 80200) {
+        if (property_exists(DatePeriod::class, 'include_end_date')) {
             return new self(
                 self::filterDatePoint($range->getStartDate()),
                 self::filterDatePoint($endDate),
-                $range->include_start_date ? Bounds::IncludeStartExcludeEnd : Bounds::ExcludeAll
+                match (true) {
+                    true === $range->include_start_date && true === $range->include_end_date => Bounds::IncludeAll,
+                    true === $range->include_start_date && false === $range->include_end_date => Bounds::IncludeStartExcludeEnd,
+                    false === $range->include_start_date && true === $range->include_end_date => Bounds::ExcludeStartIncludeEnd,
+                    default => Bounds::ExcludeAll,
+                }
             );
         }
 
         return new self(
             self::filterDatePoint($range->getStartDate()),
             self::filterDatePoint($endDate),
-            match (true) {
-                true === $range->include_start_date && true === $range->include_end_date => Bounds::IncludeAll,
-                true === $range->include_start_date && false === $range->include_end_date => Bounds::IncludeStartExcludeEnd,
-                false === $range->include_start_date && true === $range->include_end_date => Bounds::ExcludeStartIncludeEnd,
-                default => Bounds::ExcludeAll,
-            }
+            $range->include_start_date ? Bounds::IncludeStartExcludeEnd : Bounds::ExcludeAll
         );
     }
 
@@ -830,7 +829,7 @@ final class Period implements JsonSerializable
     {
         $duration = self::filterDuration($timeDelta);
 
-        return match (PHP_VERSION_ID >= 80200) {
+        return match (defined('DatePeriod::INCLUDE_END_DATE')) {
             true => match ($this->bounds) {
                 Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
                 Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
