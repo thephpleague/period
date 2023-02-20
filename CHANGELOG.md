@@ -41,7 +41,7 @@ All notable changes to `Period` will be documented in this file
 
 - None
 
-## [5.1.0](https://github.com/thephpleague/period/compare/5.0.0...5.1.0) - 2022-06-28
+## [5.1.0] - 2022-06-28
 
 
 ### Added
@@ -60,7 +60,7 @@ All notable changes to `Period` will be documented in this file
 
 - None
 
-## [5.0.0](https://github.com/thephpleague/period/compare/4.12.0...5.0.0) - 2022-02-22
+## [5.0.0] - 2022-02-22
 
 ### Added
 
@@ -676,7 +676,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 - `Period::compareDuration` replaced by `Period::durationCompare`
 - `Period::withDuration` replaced by `Period::withDurationAfterStart`
 
-## 3.4.0 - 2017-11-17
+## [3.4.0] - 2017-11-17
 
 ### Added
 
@@ -695,7 +695,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 3.3.0 - 2016-09-19
+## [3.3.0] - 2016-09-19
 
 ### Added
 
@@ -716,7 +716,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 3.2.0 - 2016-05-09
+## [3.2.0] - 2016-05-09
 
 ### Added
 
@@ -736,7 +736,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 3.1.1 - 2016-02-10
+## [3.1.1] - 2016-02-10
 
 ### Added
 
@@ -755,7 +755,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 3.1.0 - 2016-02-01
+## [3.1.0] - 2016-02-01
 
 ### Added
 
@@ -775,7 +775,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 3.0.1 - 2015-12-21
+## [3.0.1] - 2015-12-21
 
 ### Added
 
@@ -793,7 +793,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 
 - None
 
-## 3.0.0 - 2015-09-02
+## [3.0.0] - 2015-09-02
 
 ### Added
 
@@ -819,13 +819,13 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 - `Period::duration`
 - `Period::durationDiff`
 
-## 2.5.1 - 2015-03-06
+## [2.5.1] - 2015-03-06
 
 ### Fixed
 
 - `Period` always returns `DateTime` objects even when given `DateTimeImmutable` objects.
 
-## 2.5.0 - 2015-03-06
+## [2.5.0] - 2015-03-06
 
 ### Added
 
@@ -851,7 +851,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 ### Remove
 - support for PHP 5.3
 
-## 2.4.0 - 2014-12-18
+## [2.4.0] - 2014-12-18
 
 ### Added
 - Modifying methods:
@@ -860,7 +860,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 ### Fixed
 - Added support for `DateTimeInterface` interface
 
-## 2.3.0 - 2014-12-15
+## [2.3.0] - 2014-12-15
 
 ### Added
 - Named constructor:
@@ -869,7 +869,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 ### Fixed
 - `Period::isBefore` `Period::isAfter` bug fixed. must take into account the *half-open* implementation of a `Period`object.
 
-## 2.2.0 - 2014-12-12
+## [2.2.0] - 2014-12-12
 
 ### Added
 - Modifying methods:
@@ -882,7 +882,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 ### Fixed
 - `Period::overlaps` bug fixed [issue #8](https://github.com/thephpleague/period/issues/8)
 
-## 2.1.0 - 2014-12-08
+## [2.1.0] - 2014-12-08
 
 ### Added
 - Modifying methods:
@@ -890,7 +890,7 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
     - `Period::previous`
 - `Period::__toString` using ISO8601 representation
 
-## 2.0.0 - 2014-10-15
+## [2.0.0] - 2014-10-15
 
 ### Added
 - Change vendor namespace from `Period` to `League\Period`
@@ -911,15 +911,37 @@ bug fix](https://bugs.php.net/bug.php?id=50020)
 - `Period::getDuration` accept an optional parameter `$get_as_seconds` if used and set to `true`, the method will return a integer which represents the duration in seconds.
 - `Period::merge` now accepts one or more `Period` objects to return the `Period` object which contains all submitted `Period` objects.
 
-## 1.0.1 - 2014-10-08
+## [1.0.1] - 2014-10-08
 
 ### Fixed
 
 - The `$interval` parameter can also an integer which represents the interval expressed in seconds.
 
-## 1.0.0 - 2014-09-24
+## [1.0.0] - 2014-09-24
 
 First stable release of `Period`
+
+## [0.3.0] - 2014-09-22
+
+- Added methods overlaps and merge
+- namespace simplification
+
+## [0.2.1] - 2014-09-22
+
+- bug fixes
+
+## [0.2.0] - 2014-09-22
+
+Class name changed from `ReportingPeriod` to `Period`
+
+- added the following methods `contains`, `getRange`, `setDuration` and `getDuration`
+- name consistency applied by removing the (Date reference)
+
+you can feed:
+- a `DateTime` or a string when a `DateTime` is expected
+- a `DateInterval` or a string when a `DateInterval` is expected
+
+## 0.1.0 - 2014-09-19
 
 [Next]: https://github.com/thephpleague/period/compare/5.2.0...master
 [5.2.0]: https://github.com/thephpleague/period/compare/5.1.0...5.2.0
@@ -943,3 +965,22 @@ First stable release of `Period`
 [4.1.0]: https://github.com/thephpleague/period/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/thephpleague/period/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/thephpleague/period/compare/3.4.0...4.0.0
+[3.4.0]: https://github.com/thephpleague/period/compare/3.3.0...3.4.0
+[3.3.0]: https://github.com/thephpleague/period/compare/3.2.0...3.3.0
+[3.2.0]: https://github.com/thephpleague/period/compare/3.1.1...3.2.0
+[3.1.1]: https://github.com/thephpleague/period/compare/3.1.0...3.1.1
+[3.1.0]: https://github.com/thephpleague/period/compare/3.0.1...3.1.0
+[3.0.1]: https://github.com/thephpleague/period/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/thephpleague/period/compare/2.5.1...3.0.0
+[2.5.1]: https://github.com/thephpleague/period/compare/2.5.0...2.5.1
+[2.5.0]: https://github.com/thephpleague/period/compare/2.4.0...2.5.0
+[2.4.0]: https://github.com/thephpleague/period/compare/2.3.0...2.4.0
+[2.3.0]: https://github.com/thephpleague/period/compare/2.2.0...2.3.0
+[2.2.0]: https://github.com/thephpleague/period/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/thephpleague/period/compare/2.0.0...2.1.0
+[2.0.0]: https://github.com/thephpleague/period/compare/1.0.1...2.0.0
+[1.0.1]: https://github.com/thephpleague/period/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/thephpleague/period/compare/0.3.0...1.0.0
+[0.3.0]: https://github.com/thephpleague/period/compare/0.2.1...0.3.0
+[0.2.1]: https://github.com/thephpleague/period/compare/0.2.0...0.2.1
+[0.2.0]: https://github.com/thephpleague/period/compare/0.1.0...0.2.0
