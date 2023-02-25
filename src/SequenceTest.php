@@ -185,11 +185,9 @@ final class SequenceTest extends PeriodTestCase
         $day2 = DatePoint::fromDateString('2012-06-12')->day();
         $sequence = new Sequence($day1, $day2);
         self::assertSame([0 => $day1, 1 => $day2], $sequence->toList());
-        self::assertTrue(array_is_list($sequence->toList()));
 
         $sequence->sort(fn (Period $period1, Period $period2): int => $period1->startDate <=> $period2->startDate);
         self::assertSame([0 => $day2, 1 => $day1], $sequence->toList());
-        self::assertTrue(array_is_list($sequence->toList()));
     }
 
     public function testSome(): void

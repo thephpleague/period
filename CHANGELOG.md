@@ -2,7 +2,7 @@
 
 All notable changes to `Period` will be documented in this file
 
-## [Next] - TBD
+## [5.2.1] - 2023-02-25
 
 ### Added
 
@@ -943,7 +943,8 @@ you can feed:
 
 ## 0.1.0 - 2014-09-19
 
-[Next]: https://github.com/thephpleague/period/compare/5.2.0...master
+[Next]: https://github.com/thephpleague/period/compare/5.2.1...master
+[5.2.1]: https://github.com/thephpleague/period/compare/5.2.0...5.2.1
 [5.2.0]: https://github.com/thephpleague/period/compare/5.1.0...5.2.0
 [5.1.0]: https://github.com/thephpleague/period/compare/5.0.0...5.1.0
 [5.1.0]: https://github.com/thephpleague/period/compare/5.0.0...5.1.0
