@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [Next] - TBD
+
+### Added
+
+- None
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [5.2.1] - 2023-02-25
 
 ### Added
