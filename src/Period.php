@@ -794,7 +794,7 @@ final class Period implements JsonSerializable
 
     /**
      * @deprecated since version 5.2.0
-     * @see ::rangeBackwards
+     * @see Period::rangeBackwards()
      *
      * Allows iteration over a set of dates and times,
      * recurring at regular intervals, over the instance backwards starting from the instance ending.

@@ -570,7 +570,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @template TReduceReturnType
      *
      * @param Closure(TReduceInitial|TReduceReturnType, Period, array-key=): TReduceReturnType $closure
-     * @param TReduceInitial $carry
+     * @param TReduceInitial                                                                   $carry
      *
      * @return TReduceInitial|TReduceReturnType
      */

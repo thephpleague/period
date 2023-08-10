@@ -234,23 +234,23 @@ final class PeriodFactoryTest extends PeriodTestCase
      */
     public static function provideDatePeriodOptions(): iterable
     {
-        yield 'include start date' => [
+        yield 'include start date legacy' => [
             'options' => DatePeriod::EXCLUDE_START_DATE,
             'expectedBounds' => Bounds::ExcludeAll,
         ];
 
-        yield 'exclude start date' => [
+        yield 'exclude start date legacy' => [
             'options' => 0,
             'expectedBounds' => Bounds::IncludeStartExcludeEnd,
         ];
 
         if (defined('DatePeriod::INCLUDE_END_DATE')) {
-            yield 'include all' => [
+            yield 'include all new' => [
                 'options' => DatePeriod::INCLUDE_END_DATE,
                 'expectedBounds' => Bounds::IncludeAll,
             ];
 
-            yield 'exclude start date' => [
+            yield 'exclude start date new' => [
                 'options' => DatePeriod::INCLUDE_END_DATE | DatePeriod::EXCLUDE_START_DATE,
                 'expectedBounds' => Bounds::ExcludeStartIncludeEnd,
             ];

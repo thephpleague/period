@@ -18,6 +18,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
+use Throwable;
 use function preg_match;
 use function str_pad;
 use function strlen;
@@ -166,7 +167,12 @@ final class Duration
      */
     public static function fromDateString(string $duration): self
     {
-        $dateInterval = DateInterval::createFromDateString($duration);
+        try {
+            $dateInterval = DateInterval::createFromDateString($duration);
+        } catch (Throwable $exception) {
+            throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.', 0, $exception);
+        }
+
         if (false === $dateInterval) {
             throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.');
         }
