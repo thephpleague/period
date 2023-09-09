@@ -15,6 +15,7 @@ namespace League\Period\Chart;
 
 use League\Period\Period;
 use League\Period\Sequence;
+
 use function array_fill;
 use function array_splice;
 use function ceil;

@@ -17,6 +17,7 @@ use function mb_convert_encoding;
 use function mb_strlen;
 use function preg_match;
 use function preg_replace;
+
 use const STDOUT;
 
 /**

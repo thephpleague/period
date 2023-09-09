@@ -12,6 +12,7 @@
 namespace League\Period\Chart;
 
 use InvalidArgumentException;
+
 use const STR_PAD_BOTH;
 use const STR_PAD_LEFT;
 use const STR_PAD_RIGHT;

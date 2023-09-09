@@ -25,6 +25,7 @@ namespace League\Period;
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
+
 use function json_encode;
 
 final class SequenceTest extends PeriodTestCase

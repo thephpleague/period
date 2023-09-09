@@ -18,6 +18,7 @@ use DateTimeImmutable;
 use League\Period\Period;
 use League\Period\Sequence;
 use PHPUnit\Framework\TestCase;
+
 use function fopen;
 use function rewind;
 use function stream_get_contents;

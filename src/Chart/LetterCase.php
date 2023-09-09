@@ -20,6 +20,6 @@ enum LetterCase
 
     public function isUpper(): bool
     {
-        return $this === self::Upper;
+        return self::Upper === $this;
     }
 }

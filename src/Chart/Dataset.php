@@ -19,6 +19,7 @@ use League\Period\Period;
 use League\Period\Sequence;
 use MultipleIterator;
 use TypeError;
+
 use function array_column;
 use function count;
 use function strlen;
@@ -49,7 +50,7 @@ final class Dataset implements Data
             throw new TypeError('The submitted items collection should be countable.');
         }
 
-        $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL|MultipleIterator::MIT_KEYS_ASSOC);
+        $pairs = new MultipleIterator(MultipleIterator::MIT_NEED_ALL | MultipleIterator::MIT_KEYS_ASSOC);
         $pairs->attachIterator($labelGenerator->generate(count($items)), 0);
         $pairs->attachIterator((function () use ($items): Iterator {
             foreach ($items as $key => $value) {

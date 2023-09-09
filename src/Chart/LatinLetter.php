@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Period\Chart;
 
 use Iterator;
+
 use function array_pop;
 use function chr;
 use function implode;

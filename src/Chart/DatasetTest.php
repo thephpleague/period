@@ -24,6 +24,7 @@ use League\Period\Sequence;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TypeError;
+
 use function iterator_to_array;
 use function json_encode;
 
@@ -161,7 +162,7 @@ final class DatasetTest extends TestCase
 
     public function testFromItemsFailsWithNonCountableIterator(): void
     {
-        $items = new class() implements IteratorAggregate {
+        $items = new class () implements IteratorAggregate {
             /**
              * @return ArrayIterator<array-key, Period>
              */

@@ -15,12 +15,14 @@ namespace League\Period\Chart;
 
 use Closure;
 use TypeError;
+
 use function chr;
 use function fflush;
 use function fwrite;
 use function implode;
 use function preg_replace;
 use function preg_replace_callback;
+
 use const PHP_EOL;
 
 final class StreamOutput implements Output

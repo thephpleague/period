@@ -19,6 +19,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use JsonSerializable;
+
 use function array_filter;
 use function array_splice;
 use function array_unshift;
@@ -27,6 +28,7 @@ use function count;
 use function reset;
 use function uasort;
 use function usort;
+
 use const ARRAY_FILTER_USE_BOTH;
 
 /**
@@ -346,7 +348,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     /**
      *
      * @param int|null $offset the integer index of the Period to add or update
-     * @param Period   $value  the Period instance to add
+     * @param Period $value the Period instance to add
      *
      * @throws InaccessibleInterval If the offset is illegal for the current sequence
      *
@@ -570,7 +572,7 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
      * @template TReduceReturnType
      *
      * @param Closure(TReduceInitial|TReduceReturnType, Period, array-key=): TReduceReturnType $closure
-     * @param TReduceInitial                                                                   $carry
+     * @param TReduceInitial $carry
      *
      * @return TReduceInitial|TReduceReturnType
      */

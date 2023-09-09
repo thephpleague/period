@@ -303,7 +303,7 @@ final class PeriodFactoryTest extends PeriodTestCase
 
     public function testDay(): void
     {
-        $extendedDate = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $extendedDate = new class ('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
 
         $period = DatePoint::fromDate($extendedDate)->day();
@@ -322,7 +322,7 @@ final class PeriodFactoryTest extends PeriodTestCase
 
     public function testHour(): void
     {
-        $today = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $today = new class ('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
         $period = DatePoint::fromDate($today)->hour();
         self::assertEquals(new DateTimeImmutable('2008-07-01T22:00:00+08:00'), $period->startDate);
@@ -342,7 +342,7 @@ final class PeriodFactoryTest extends PeriodTestCase
 
     public function testMonthWithDateTimeInterface(): void
     {
-        $today = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $today = new class ('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
         $period = DatePoint::fromDate($today)->month();
         self::assertEquals(new DateTimeImmutable('2008-07-01T00:00:00+08:00'), $period->startDate);
@@ -353,7 +353,7 @@ final class PeriodFactoryTest extends PeriodTestCase
 
     public function testYearWithDateTimeInterface(): void
     {
-        $today = new class('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
+        $today = new class ('2008-07-01T22:35:17.123456+08:00') extends DateTimeImmutable {
         };
         $period = DatePoint::fromDate($today)->year();
         self::assertEquals(new DateTimeImmutable('2008-01-01T00:00:00+08:00'), $period->startDate);
@@ -509,42 +509,42 @@ final class PeriodFactoryTest extends PeriodTestCase
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/2021-03-26',
                 'bounds' => Bounds::IncludeAll,
-                'outputFormat'=> 'Y-m-d',
+                'outputFormat' => 'Y-m-d',
                 'expected' => '2021-03-25/2021-03-26',
             ],
             'different input/output format' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/2021-03-26',
                 'bounds' => Bounds::ExcludeAll,
-                'outputFormat'=> 'Y-n-d',
+                'outputFormat' => 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
             'same input/output format extended' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/26',
                 'bounds' => Bounds::IncludeAll,
-                'outputFormat'=> 'Y-m-d',
+                'outputFormat' => 'Y-m-d',
                 'expected' => '2021-03-25/2021-03-26',
             ],
             'different input/output format extended' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/03-26',
                 'bounds' => Bounds::ExcludeAll,
-                'outputFormat'=> 'Y-n-d',
+                'outputFormat' => 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
             'different input/output format with interval duration after start' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => '2021-03-25/P1D',
                 'bounds' => Bounds::ExcludeAll,
-                'outputFormat'=> 'Y-n-d',
+                'outputFormat' => 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
             'different input/output format with interval duration before end' => [
                 'inputFormat' => 'Y-m-d',
                 'notation' => 'P1D/2021-03-26',
                 'bounds' => Bounds::ExcludeAll,
-                'outputFormat'=> 'Y-n-d',
+                'outputFormat' => 'Y-n-d',
                 'expected' => '2021-3-25/2021-3-26',
             ],
         ];

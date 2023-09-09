@@ -16,6 +16,7 @@ namespace League\Period\Chart;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
 use const STDOUT;
 
 final class GanttChartConfigTest extends TestCase

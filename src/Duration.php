@@ -19,6 +19,7 @@ use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
 use Throwable;
+
 use function preg_match;
 use function str_pad;
 use function strlen;
@@ -85,7 +86,7 @@ final class Duration
         if (1 === preg_match(self::REGEXP_FRACTION_DESIGNATOR, $duration, $matches)
             && isset($matches['fraction'])
         ) {
-            $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction'])-1));
+            $interval = new DateInterval(substr($duration, 0, -strlen($matches['fraction']) - 1));
             $interval->f = (int) $matches['fraction'] / 1_000_000;
 
             return new self($interval);

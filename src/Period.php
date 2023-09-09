@@ -602,7 +602,7 @@ final class Period implements JsonSerializable
     {
         return match (true) {
             $this->startDate < $timeSlot->startDate && $this->endDate > $timeSlot->endDate => true,
-            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate => $this->bounds === $timeSlot->bounds || $this->bounds === Bounds::IncludeAll,
+            $this->startDate == $timeSlot->startDate && $this->endDate == $timeSlot->endDate => $this->bounds === $timeSlot->bounds || Bounds::IncludeAll === $this->bounds,
             $this->startDate == $timeSlot->startDate => ($this->bounds->equalsStart($timeSlot->bounds) || $this->bounds->isStartIncluded())
                     && $this->containsDatePoint($this->startDate->add($timeSlot->dateInterval()), $this->bounds),
             $this->endDate == $timeSlot->endDate => ($this->bounds->equalsEnd($timeSlot->bounds) || $this->bounds->isEndIncluded())
@@ -788,7 +788,7 @@ final class Period implements JsonSerializable
             $this->startDate,
             self::filterDuration($timeDelta),
             $this->endDate,
-            $startDatePresence === InitialDatePresence::Excluded ? DatePeriod::EXCLUDE_START_DATE : 0
+            InitialDatePresence::Excluded === $startDatePresence ? DatePeriod::EXCLUDE_START_DATE : 0
         );
     }
 
@@ -805,7 +805,7 @@ final class Period implements JsonSerializable
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
-        if ($endDatePresence === InitialDatePresence::Excluded) {
+        if (InitialDatePresence::Excluded === $endDatePresence) {
             $date = $this->endDate->sub($timeDelta);
         }
 

@@ -16,6 +16,7 @@ namespace League\Period\Chart;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TypeError;
+
 use function chr;
 use function fopen;
 use function rewind;
