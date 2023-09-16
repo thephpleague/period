@@ -6,11 +6,11 @@ All notable changes to `Period` will be documented in this file
 
 ### Added
 
-- None
+- `Chart\LetterCase::convert`
 
 ### Fixed
 
-- None
+- Handles gracefully new Date exception in PHP8.3
 
 ### Deprecated
 
