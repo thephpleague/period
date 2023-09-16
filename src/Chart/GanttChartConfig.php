@@ -83,35 +83,6 @@ final class GanttChartConfig
     }
 
     /**
-     * Returns an instance with the start excluded pattern.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified start excluded character.
-     */
-    public function startExcludedCharacter(string $startExcludedCharacter): self
-    {
-        $startExcludedCharacter = $this->filterPattern($startExcludedCharacter, 'startExcludedCharacter');
-        if ($startExcludedCharacter === $this->startExcludedCharacter) {
-            return $this;
-        }
-
-        return new self(
-            $this->output,
-            $this->colors,
-            $startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
-    }
-
-    /**
      * Filter the submitted string.
      *
      * @throws UnableToDrawChart if the pattern is invalid
@@ -137,11 +108,40 @@ final class GanttChartConfig
         $replaced = (string) preg_replace(self::REGEXP_UNICODE, '&#x$1;', $str);
         $result = mb_convert_encoding($replaced, 'UTF-16', 'HTML-ENTITIES');
         $result = mb_convert_encoding($result, 'UTF-8', 'UTF-16');
-        if (1 === mb_strlen($result)) {
-            return $result;
-        }
 
-        throw UnableToDrawChart::dueToInvalidUnicodeChar($str);
+        return match (1) {
+            mb_strlen($result) => $result,
+            default => throw UnableToDrawChart::dueToInvalidUnicodeChar($str),
+        };
+    }
+
+    /**
+     * Returns an instance with the start excluded pattern.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified start excluded character.
+     */
+    public function startExcludedCharacter(string $startExcludedCharacter): self
+    {
+        $startExcludedCharacter = $this->filterPattern($startExcludedCharacter, 'startExcludedCharacter');
+
+        return match ($this->startExcludedCharacter) {
+            $startExcludedCharacter => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -177,24 +177,24 @@ final class GanttChartConfig
     public function startIncludedCharacter(string $startIncludedCharacter): self
     {
         $startIncludedCharacter = $this->filterPattern($startIncludedCharacter, 'startIncludedCharacter');
-        if ($startIncludedCharacter === $this->startIncludedCharacter) {
-            return $this;
-        }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->startIncludedCharacter) {
+            $startIncludedCharacter => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -206,24 +206,24 @@ final class GanttChartConfig
     public function endExcludedCharacter(string $endExcludedCharacter): self
     {
         $endExcludedCharacter = $this->filterPattern($endExcludedCharacter, 'endExcludedCharacter');
-        if ($endExcludedCharacter === $this->endExcludedCharacter) {
-            return $this;
-        }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->endExcludedCharacter) {
+            $endExcludedCharacter => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -235,24 +235,24 @@ final class GanttChartConfig
     public function endIncludedCharacter(string $endIncludedCharacter): self
     {
         $endIncludedCharacter = $this->filterPattern($endIncludedCharacter, 'endIncludedCharacter');
-        if ($endIncludedCharacter === $this->endIncludedCharacter) {
-            return $this;
-        }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->endIncludedCharacter) {
+            $endIncludedCharacter => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -267,24 +267,23 @@ final class GanttChartConfig
             $width = 10;
         }
 
-        if ($width === $this->width) {
-            return $this;
-        }
-
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->width) {
+            $width => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -296,24 +295,24 @@ final class GanttChartConfig
     public function bodyCharacter(string $bodyCharacter): self
     {
         $bodyCharacter = $this->filterPattern($bodyCharacter, 'body');
-        if ($bodyCharacter === $this->bodyCharacter) {
-            return $this;
-        }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->bodyCharacter) {
+            $bodyCharacter => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -325,24 +324,24 @@ final class GanttChartConfig
     public function spaceCharacter(string $spaceCharacter): self
     {
         $spaceCharacter = $this->filterPattern($spaceCharacter, 'spaceCharacter');
-        if ($spaceCharacter === $this->spaceCharacter) {
-            return $this;
-        }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->spaceCharacter) {
+            $spaceCharacter => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -357,24 +356,23 @@ final class GanttChartConfig
             $colors = [Color::Reset];
         }
 
-        if ($colors === $this->colors) {
-            return $this;
-        }
-
-        return new self(
-            $this->output,
-            $colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->colors) {
+            $colors => $this,
+            default => new self(
+                $this->output,
+                $colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -385,28 +383,27 @@ final class GanttChartConfig
      */
     public function leftMarginSize(int $leftMarginSize): self
     {
-        if ($leftMarginSize === $this->leftMarginSize) {
-            return $this;
-        }
-
         if ($leftMarginSize < 0) {
             $leftMarginSize = 1;
         }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->leftMarginSize) {
+            $leftMarginSize => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
     /**
      * Return an instance with a new gap size.
@@ -416,28 +413,27 @@ final class GanttChartConfig
      */
     public function gapSize(int $gapSize): self
     {
-        if ($gapSize === $this->gapSize) {
-            return $this;
-        }
-
         if ($gapSize < 0) {
             $gapSize = 1;
         }
 
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $gapSize,
-            $this->leftMarginSize,
-            $this->labelAlignment,
-        );
+        return match ($this->gapSize) {
+            $gapSize => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $gapSize,
+                $this->leftMarginSize,
+                $this->labelAlignment,
+            ),
+        };
     }
 
     /**
@@ -448,23 +444,22 @@ final class GanttChartConfig
      */
     public function labelAlignment(Alignment $labelAlignment): self
     {
-        if ($this->labelAlignment === $labelAlignment) {
-            return $this;
-        }
-
-        return new self(
-            $this->output,
-            $this->colors,
-            $this->startExcludedCharacter,
-            $this->startIncludedCharacter,
-            $this->endExcludedCharacter,
-            $this->endIncludedCharacter,
-            $this->bodyCharacter,
-            $this->spaceCharacter,
-            $this->width,
-            $this->gapSize,
-            $this->leftMarginSize,
-            $labelAlignment,
-        );
+        return match ($this->labelAlignment) {
+            $labelAlignment => $this,
+            default => new self(
+                $this->output,
+                $this->colors,
+                $this->startExcludedCharacter,
+                $this->startIncludedCharacter,
+                $this->endExcludedCharacter,
+                $this->endIncludedCharacter,
+                $this->bodyCharacter,
+                $this->spaceCharacter,
+                $this->width,
+                $this->gapSize,
+                $this->leftMarginSize,
+                $labelAlignment,
+            ),
+        };
     }
 }

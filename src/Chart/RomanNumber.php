@@ -15,9 +15,6 @@ namespace League\Period\Chart;
 
 use Iterator;
 
-use function strtolower;
-use function strtoupper;
-
 /**
  * A class to attach a roman number to the generated label.
  *
@@ -51,11 +48,7 @@ final class RomanNumber implements LabelGenerator
 
     public function format(string $label): string
     {
-        if (LetterCase::Upper === $this->letterCase) {
-            return strtoupper($label);
-        }
-
-        return strtolower($label);
+        return $this->letterCase->convert($label);
     }
 
     /**
@@ -77,10 +70,6 @@ final class RomanNumber implements LabelGenerator
             }
         }
 
-        if (LetterCase::Lower === $this->letterCase) {
-            return strtolower($retVal);
-        }
-
-        return $retVal;
+        return $this->letterCase->convert($retVal);
     }
 }

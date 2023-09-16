@@ -45,11 +45,10 @@ final class DatePoint
 
     public static function fromDate(DateTimeInterface $date): self
     {
-        if (!$date instanceof DateTimeImmutable) {
-            return new self(DateTimeImmutable::createFromInterface($date));
-        }
-
-        return new self($date);
+        return new self(match (true) {
+            $date instanceof DateTimeImmutable => $date,
+            default => DateTimeImmutable::createFromInterface($date),
+        });
     }
 
     /**
@@ -57,12 +56,11 @@ final class DatePoint
      */
     public static function fromDateString(string $dateString, DateTimeZone|string $timezone = null): self
     {
-        $timezone ??= date_default_timezone_get();
-        if (!$timezone instanceof DateTimeZone) {
-            $timezone = new DateTimeZone($timezone);
-        }
-
-        return new self(new DateTimeImmutable($dateString, $timezone));
+        return new self(new DateTimeImmutable($dateString, match (true) {
+            $timezone instanceof DateTimeZone => $timezone,
+            null === $timezone => new DateTimeZone(date_default_timezone_get()),
+            default => new DateTimeZone($timezone),
+        }));
     }
 
     public static function fromTimestamp(int $timestamp): self
@@ -72,7 +70,12 @@ final class DatePoint
 
     public static function fromFormat(string $format, string $dateString): self
     {
-        $date = DateTimeImmutable::createFromFormat($format, $dateString);
+        try {
+            $date = DateTimeImmutable::createFromFormat($format, $dateString);
+        } catch (Exception $exception) {
+            throw InvalidInterval::dueToInvalidDateFormat($format, $dateString, $exception);
+        }
+
         if (false === $date) {
             throw InvalidInterval::dueToInvalidDateFormat($format, $dateString);
         }

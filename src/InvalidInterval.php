@@ -13,12 +13,13 @@ namespace League\Period;
 
 use DatePeriod;
 use InvalidArgumentException;
+use Throwable;
 
 final class InvalidInterval extends InvalidArgumentException implements IntervalError
 {
-    private function __construct(string $message)
+    private function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {
-        parent::__construct($message);
+        parent::__construct($message, $code, $previous);
     }
 
     public static function dueToEndPointMismatch(): self
@@ -26,9 +27,9 @@ final class InvalidInterval extends InvalidArgumentException implements Interval
         return new self('The ending endpoint must be greater or equal to the starting endpoint.');
     }
 
-    public static function dueToInvalidDateFormat(string $format, string $date): self
+    public static function dueToInvalidDateFormat(string $format, string $date, ?Throwable $throwable = null): self
     {
-        return new self('The date notation `'.$date.'` is incompatible with the date format `'.$format.'`.');
+        return new self('The date notation `'.$date.'` is incompatible with the date format `'.$format.'`.', 0, $throwable);
     }
 
     public static function dueToInvalidRelativeDateFormat(string $endDate, string $startDate): self

@@ -39,11 +39,11 @@ final class LatinLetter implements LabelGenerator
     private function filterLabel(string $str): string
     {
         $label = trim($str);
-        if (1 !== preg_match('/^[A-Za-z]+$/', $label)) {
-            throw UnableToDrawChart::dueToInvalidLabel($str, $this);
-        }
 
-        return $label;
+        return match (1) {
+            preg_match('/^[A-Za-z]+$/', $label) => $label,
+            default => throw UnableToDrawChart::dueToInvalidLabel($str, $this),
+        };
     }
 
     public function format(string $label): string

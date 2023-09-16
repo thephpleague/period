@@ -55,11 +55,11 @@ final class StreamOutput implements Output
      */
     private function colorize(string $characters, Color $color): string
     {
-        if (Color::None === $color || Terminal::Posix !== $this->terminal) {
-            return $characters;
-        }
-
-        return "<<$color->value>>$characters<<".Color::Reset->value.'>>';
+        return match (true) {
+            Color::None === $color,
+            Terminal::Posix !== $this->terminal => $characters,
+            default => "<<$color->value>>$characters<<".Color::Reset->value.'>>',
+        };
     }
 
     /**

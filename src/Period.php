@@ -558,12 +558,10 @@ final class Period implements JsonSerializable
      */
     public function isStartedBy(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
-        if ($timeSlot instanceof self) {
-            return $this->startDate == $timeSlot->startDate
-                && $this->bounds->equalsStart($timeSlot->bounds);
-        }
-
-        return self::filterDatePoint($timeSlot) == $this->startDate && $this->bounds->isStartIncluded();
+        return match (true) {
+            $timeSlot instanceof self => $this->startDate == $timeSlot->startDate && $this->bounds->equalsStart($timeSlot->bounds),
+            default => $this->startDate == self::filterDatePoint($timeSlot) && $this->bounds->isStartIncluded(),
+        };
     }
 
     /**
@@ -585,11 +583,10 @@ final class Period implements JsonSerializable
      */
     public function contains(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
-        if ($timeSlot instanceof self) {
-            return $this->containsInterval($timeSlot);
-        }
-
-        return $this->containsDatePoint(self::filterDatePoint($timeSlot), $this->bounds);
+        return match (true) {
+            $timeSlot instanceof self => $this->containsInterval($timeSlot),
+            default => $this->containsDatePoint(self::filterDatePoint($timeSlot), $this->bounds),
+        };
     }
 
     /**
@@ -654,12 +651,10 @@ final class Period implements JsonSerializable
      */
     public function isEndedBy(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
-        if ($timeSlot instanceof self) {
-            return $this->endDate == $timeSlot->endDate
-                && $this->bounds->equalsEnd($timeSlot->bounds);
-        }
-
-        return self::filterDatePoint($timeSlot) == $this->endDate && $this->bounds->isEndIncluded();
+        return match (true) {
+            $timeSlot instanceof self => $this->endDate == $timeSlot->endDate && $this->bounds->equalsEnd($timeSlot->bounds),
+            default => $this->endDate == self::filterDatePoint($timeSlot) && $this->bounds->isEndIncluded(),
+        };
     }
 
     /**
@@ -953,26 +948,27 @@ final class Period implements JsonSerializable
 
         $intersect = $this->intersect($period);
         $merge = $this->merge($period);
-        if ($merge->startDate == $intersect->startDate) {
-            return new Sequence($merge->startingOn($intersect->endDate)->boundedBy(
-                $intersect->bounds->isEndIncluded() ? $merge->bounds->excludeStart() : $merge->bounds->includeStart()
-            ));
-        }
 
-        if ($merge->endDate == $intersect->endDate) {
-            return new Sequence($merge->endingOn($intersect->startDate)->boundedBy(
-                $intersect->bounds->isStartIncluded() ? $merge->bounds->excludeEnd() : $merge->bounds->includeEnd()
-            ));
-        }
-
-        return new Sequence(
-            $merge->endingOn($intersect->startDate)->boundedBy(
-                $intersect->bounds->isStartIncluded() ? $merge->bounds->excludeEnd() : $merge->bounds->includeEnd()
+        return match (true) {
+            $merge->startDate == $intersect->startDate => new Sequence(
+                $merge->startingOn($intersect->endDate)->boundedBy(
+                    $intersect->bounds->isEndIncluded() ? $merge->bounds->excludeStart() : $merge->bounds->includeStart()
+                )
             ),
-            $merge->startingOn($intersect->endDate)->boundedBy(
-                $intersect->bounds->isEndIncluded() ? $merge->bounds->excludeStart() : $merge->bounds->includeStart()
+            $merge->endDate == $intersect->endDate =>  new Sequence(
+                $merge->endingOn($intersect->startDate)->boundedBy(
+                    $intersect->bounds->isStartIncluded() ? $merge->bounds->excludeEnd() : $merge->bounds->includeEnd()
+                )
             ),
-        );
+            default => new Sequence(
+                $merge->endingOn($intersect->startDate)->boundedBy(
+                    $intersect->bounds->isStartIncluded() ? $merge->bounds->excludeEnd() : $merge->bounds->includeEnd()
+                ),
+                $merge->startingOn($intersect->endDate)->boundedBy(
+                    $intersect->bounds->isEndIncluded() ? $merge->bounds->excludeStart() : $merge->bounds->includeStart()
+                ),
+            ),
+        };
     }
 
     /**
@@ -1116,11 +1112,11 @@ final class Period implements JsonSerializable
     public function startingOn(DatePoint|DateTimeInterface|string $startDate): self
     {
         $startDate = self::filterDatePoint($startDate);
-        if ($startDate == $this->startDate) {
-            return $this;
-        }
 
-        return new self($startDate, $this->endDate, $this->bounds);
+        return match (true) {
+            $startDate == $this->startDate => $this,
+            default => new self($startDate, $this->endDate, $this->bounds),
+        };
     }
 
     /**
@@ -1132,11 +1128,11 @@ final class Period implements JsonSerializable
     public function endingOn(DatePoint|DateTimeInterface|string $endDate): self
     {
         $endDate = self::filterDatePoint($endDate);
-        if ($endDate == $this->endDate) {
-            return $this;
-        }
 
-        return new self($this->startDate, $endDate, $this->bounds);
+        return match (true) {
+            $endDate == $this->endDate => $this,
+            default => new self($this->startDate, $endDate, $this->bounds),
+        };
     }
 
     /**
@@ -1147,11 +1143,10 @@ final class Period implements JsonSerializable
      */
     public function boundedBy(Bounds $bounds): self
     {
-        if ($bounds === $this->bounds) {
-            return $this;
-        }
-
-        return new self($this->startDate, $this->endDate, $bounds);
+        return match ($bounds) {
+            $this->bounds => $this,
+            default => new self($this->startDate, $this->endDate, $bounds),
+        };
     }
 
     /**
@@ -1216,13 +1211,12 @@ final class Period implements JsonSerializable
         );
     }
 
-    private function newInstance(Period $interval): Period
+    private function newInstance(Period $timeSlot): Period
     {
-        if ($this->equals($interval)) {
-            return $this;
-        }
-
-        return $interval;
+        return match (true) {
+            $this->equals($timeSlot) => $this,
+            default => $timeSlot,
+        };
     }
 
     /**

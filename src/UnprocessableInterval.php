@@ -14,12 +14,13 @@ declare(strict_types=1);
 namespace League\Period;
 
 use RuntimeException;
+use Throwable;
 
 final class UnprocessableInterval extends RuntimeException implements IntervalError
 {
-    private function __construct(string $message)
+    private function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {
-        parent::__construct($message);
+        parent::__construct($message, $code, $previous);
     }
 
     public static function dueToMissingOverlaps(): self

@@ -59,11 +59,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function length(): Period|null
     {
         $period = reset($this->periods);
-        if (false === $period) {
-            return null;
-        }
 
-        return $period->merge(...$this->periods);
+        return match (false) {
+            $period => null,
+            default => $period->merge(...$this->periods),
+        };
     }
 
     /**
@@ -156,11 +156,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             ->reduce($this->calculateUnion(...), new self())
         ;
 
-        if ($sequence->periods === $this->periods) {
-            return $this;
-        }
-
-        return $sequence;
+        return match ($sequence->periods) {
+            $this->periods => $this,
+            default => $sequence,
+        };
     }
 
     /**
@@ -197,11 +196,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function subtract(Sequence $sequence): self
     {
         $new = $sequence->reduce($this->subtractOne(...), $this);
-        if ($new->periods === $this->periods) {
-            return $this;
-        }
 
-        return $new;
+        return match ($this->periods) {
+            $new->periods => $this,
+            default => $new,
+        };
     }
 
     /**
@@ -312,11 +311,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     private function getOffset(int $offset): int
     {
         $index = $this->filterOffset($offset);
-        if (null === $index) {
-            throw InaccessibleInterval::dueToInvalidIndex($offset);
-        }
 
-        return $index;
+        return match (null) {
+            $index => throw InaccessibleInterval::dueToInvalidIndex($offset),
+            default => $index,
+        };
     }
 
     /**
@@ -505,11 +504,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function filter(Closure $predicate): self
     {
         $intervals = array_filter($this->periods, $predicate, ARRAY_FILTER_USE_BOTH);
-        if ($intervals === $this->periods) {
-            return $this;
-        }
 
-        return new self(...$intervals);
+        return match ($this->periods) {
+            $intervals => $this,
+            default => new self(...$intervals),
+        };
     }
 
     /**
@@ -531,11 +530,11 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
     {
         $intervals = $this->periods;
         usort($intervals, $compare);
-        if ($intervals === $this->periods) {
-            return $this;
-        }
 
-        return new self(...$intervals);
+        return match ($this->periods) {
+            $intervals => $this,
+            default => new self(...$intervals),
+        };
     }
 
     /**
@@ -555,14 +554,10 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
             $intervals[$offset] = $closure($period, $offset);
         }
 
-        if ($intervals === $this->periods) {
-            return $this;
-        }
-
-        $mapped = new self();
-        $mapped->periods = $intervals;
-
-        return $mapped;
+        return match ($this->periods) {
+            $intervals => $this,
+            default => new self(...$intervals),
+        };
     }
 
     /**

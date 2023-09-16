@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Period;
 
 use InvalidArgumentException;
+use Throwable;
 
 /**
  * Exception thrown by the Sequence class.
@@ -24,9 +25,9 @@ use InvalidArgumentException;
  */
 final class InaccessibleInterval extends InvalidArgumentException implements IntervalError
 {
-    private function __construct(string $message)
+    private function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {
-        parent::__construct($message);
+        parent::__construct($message, $code, $previous);
     }
 
     public static function dueToInvalidIndex(int $offset): self

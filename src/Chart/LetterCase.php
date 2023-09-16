@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
+use function mb_strtolower;
+use function mb_strtoupper;
+
 enum LetterCase
 {
     case Upper;
@@ -21,5 +24,13 @@ enum LetterCase
     public function isUpper(): bool
     {
         return self::Upper === $this;
+    }
+
+    public function convert(string $str): string
+    {
+        return match ($this) {
+            self::Upper => mb_strtoupper($str),
+            self::Lower => mb_strtolower($str),
+        };
     }
 }
