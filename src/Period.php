@@ -698,7 +698,7 @@ final class Period implements JsonSerializable
         $datePoint = self::filterDatePoint($timeSlot);
 
         return $this->startDate > $datePoint
-            || ($this->startDate == $datePoint && ! $this->bounds->isStartIncluded());
+            || ($this->startDate == $datePoint && !$this->bounds->isStartIncluded());
     }
 
     /**
