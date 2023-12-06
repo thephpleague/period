@@ -123,13 +123,13 @@ final class Sequence implements ArrayAccess, Countable, IteratorAggregate, JsonS
 
             /** @var Period $current */
             $isContained = $current->contains($period);
-            if ($isContained && $isPreviouslyContained && !$sequence->contains($current)) {
+            if ($isContained && $isPreviouslyContained && !$sequence->contains($period)) {
                 $sequence->push($current->intersect($period));
 
                 return $sequence;
             }
 
-            if ($current->overlaps($period) && !$sequence->contains($current)) {
+            if ($current->overlaps($period) && !$sequence->contains($period)) {
                 $sequence->push($current->intersect($period));
             }
 
