@@ -513,4 +513,16 @@ final class SequenceTest extends PeriodTestCase
             self::assertNotEquals($period->timeDuration(), $sequence->totalTimeDuration());
         }
     }
+
+    public function testIssue134RemoveDuplicateOnIntersection(): void
+    {
+        $p1 = Period::fromDate('2023-01-01 00:00:00', '2023-01-03 00:00:00');
+        $p2 = Period::fromDate('2023-01-01 00:00:00', '2023-01-03 00:00:00');
+        $p3 = Period::fromDate('2023-01-01 00:00:00', '2023-01-03 00:00:00');
+        $p4 = Period::fromDate('2023-01-02 00:00:00', '2023-01-04 00:00:00');
+        $p5 = Period::fromDate('2023-01-02 00:00:00', '2023-01-04 00:00:00');
+
+        $sequence = new Sequence($p1, $p2, $p3, $p4, $p5);
+        self::assertCount(2, $sequence->intersections());
+    }
 }
