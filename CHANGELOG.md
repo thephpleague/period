@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [5.3.1](https://github.com/thephpleague/period/compare/5.3.0...5.3.1) - 2023-12-06
+
+### Added
+
+- None
+
+### Fixed
+
+- Fix Period duplication during intersection calculation [#135](https://github.com/thephpleague/period/issues/135) by [maogou](https://github.com/maogou)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [5.3.0](https://github.com/thephpleague/period/compare/5.2.1...5.3.0) - 2023-11-28
 
 ### Added
