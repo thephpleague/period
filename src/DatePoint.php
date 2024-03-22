@@ -54,7 +54,7 @@ final class DatePoint
     /**
      * @throws Exception
      */
-    public static function fromDateString(string $dateString, DateTimeZone|string $timezone = null): self
+    public static function fromDateString(string $dateString, DateTimeZone|string|null $timezone = null): self
     {
         return new self(new DateTimeImmutable($dateString, match (true) {
             $timezone instanceof DateTimeZone => $timezone,
