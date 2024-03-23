@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [5.3.2](https://github.com/thephpleague/period/compare/5.3.1...5.3.2) - 2024-03-23
+
+### Added
+
+- None
+
+### Fixed
+
+- Fix package to avoid PHP8.4 deprecation warnings
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [5.3.1](https://github.com/thephpleague/period/compare/5.3.0...5.3.1) - 2023-12-06
 
 ### Added
