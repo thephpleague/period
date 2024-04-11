@@ -214,13 +214,13 @@ final class PeriodFactoryTest extends PeriodTestCase
     }
 
     #[DataProvider('provideDatePeriodOptions')]
-    public function testFromRange(int $option, Bounds $expectedBounds): void
+    public function testFromRange(int $options, Bounds $expectedBounds): void
     {
         $datePeriod = new DatePeriod(
             new DateTime('2016-05-16T00:00:00Z'),
             new DateInterval('P1D'),
             new DateTime('2016-05-20T00:00:00Z'),
-            $option
+            $options
         );
 
         $period = Period::fromRange($datePeriod);
