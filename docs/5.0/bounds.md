@@ -1,6 +1,6 @@
 ---
 layout: default
-title: The Bounds enum
+title: The Bounds Enumeration
 ---
 
 # The Bounds Enumeration

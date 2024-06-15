@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ site.data.project.description }}">
+    <meta name="docsearch:version" content="{{ site.data.project.releases.current.version }}">
+    <meta name="theme-color" content="#FFC61D">
+    <link rel="icon" href="/assets/img/period-logo.svg" type="image/svg+xml">
+    <title>Time range API for PHP - PERIOD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Onest:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="output.css" rel="stylesheet">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46050814-6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{  site.data.project.google_analytics_tracking_id }}');
+    </script>
+</head>
+<body class="bg-white text-dark font-onest antialiased relative">
+<div class="relative z-10">
+    <header class="flex items-center sm:justify-center">
+        <div class="flex gap-6 md:gap-0 md:flex-row justify-between md:items-center p-3 md:p-6 w-full max-w-7xl">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <img src="/assets/img/period-logo.svg" alt="Logo" class="w-[40px] sm:w-[50px] h-[40px] sm:h-[50px]"/>
+
+                <div class="font-black">PERIOD</div>
+            </div>
+            <div class="flex items-center gap-2 md:gap-6">
+                <a href="https://github.com/thephpleague/period" class="hidden sm:flex text-white transition-all hover-button rounded-full">
+                    <img src="/assets/img/github-logo.svg" alt="Github" class=""/>
+                </a>
+                <a href="{{ site.data.project.releases.current.documentation_link}}" target="_blank" class="px-2 py-2 sm:px-6 sm:py-3 rounded-full text-xs md:text-lg font-bold text-white bg-period-base transition-all whitespace-nowrap hover-button">documentation</a>
+                <a href="https://github.com/sponsors/nyamsprod" target="_blank" class="px-2 py-2 sm:px-6 sm:py-3 rounded-full text-xs md:text-lg font-bold text-white bg-period-dark whitespace-nowrap hover-button">Become a sponsor</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex justify-center">
+        <div class="flex flex-col gap-3 pt-24 justify-between px-6 sm:px-12 lg:px-0 w-full max-w-5xl">
+            <h1 class="font-black text-8xl md:text-9xl tracking-tighter">PERIOD</h1>
+
+            <h2 class="font-medium text-3xl text-light">Time range API for PHP</h2>
+
+            <div class="flex">
+                <span class="mt-6 rounded-xl bg-white p-6 py-9 shadow-lg border border-light border-opacity-10 flex items-center gap-6 transition hover-block">
+                    <div class="bg-gray-200 px-6 py-3 rounded-lg text-light font-mono transition-all hover:bg-black-200">
+                        composer require league/period:^5.3.1
+                    </div>
+                </span>
+            </div>
+
+            <div class="flex flex-col gap-6 py-16 sm:py-24 text-light">
+
+            </div>
+
+            <div class="flex flex-col gap-6 sm:w-2/3">
+                <h3 class="font-black text-6xl md:text-8xl tracking-tighter">Highlights</h3>
+
+                <p class="text-light">
+                    <code>Period</code> is PHP's Time Range class. Based on ideas from
+                    <a class="underline" href="https://verraes.net/2014/08/resolving-feature-envy-in-the-domain/">Resolving Feature Envy in the Domain</a>
+                    by Mathias Verraes, this package extends the concept to cover all basic operations regarding time ranges.
+                </p>
+
+                <div class="gap-6 flex flex-col my-16">
+                    <h4 class="font-bold text-2xl">Uses Immutable Value Objects</h4>
+
+                    <div class="bg-gradient-to-r from-period-base to-white h-px"></div>
+
+                    <h4 class="font-bold text-xl">Uses named constructors to ease object creation</h4>
+
+                    <div class="bg-gradient-to-r from-period-base to-white h-px"></div>
+
+                    <h4 class="font-bold text-xl">Covers all basic manipulations related to time range</h4>
+
+                    <div class="bg-gradient-to-r from-period-base to-white h-px"></div>
+
+                    <h4 class="font-bold text-xl">Enables working with simple or complex time ranges logic</h4>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-6 rounded-lg text-white flex flex-col sm:flex-row gap-6">
+                <div class="bg-period-light text-black font-black text-lg w-12 h-12 flex shrink-0 items-center justify-center rounded-full">!</div>
+                <p>Once a new <strong>major</strong> version is released, the previous stable release remains supported for <strong>six more months</strong> with patches and security fixes.</p>
+            </div>
+
+            <div class="flex flex-col gap-3 my-16 content">
+                {{ content }}
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-6 max-w-7xl mx-auto pb-32">
+        <hr class="border-t border-light border-opacity-50 max-w-7xl mx-auto" />
+
+        <div class="flex flex-col lg:flex-row gap-12 my-16 px-6 md:px-0">
+            <a href="https://csv.thephpleague.com/" class="flex gap-3 lg:justify-between items-start transition-all hover-block">
+                <img src="/assets/img/csv-logo.svg" alt="CSV Logo" class="" />
+
+                <div class="flex flex-col">
+                    <div class="font-black text-lg text-dark">CSV</div>
+
+                    <p class="text-light">Data manipulation made easy in PHP</p>
+                </div>
+            </a>
+
+            <a href="https://uri.thephpleague.com/" class="flex gap-3 lg:justify-between items-start transition-all hover-block">
+                <img src="/assets/img/uri-logo.svg" alt="URI Logo" class="" />
+
+                <div class="flex flex-col">
+                    <div class="font-black text-lg text-dark">URI</div>
+
+                    <p class="text-light">Modern API to process URIs in PHP</p>
+                </div>
+            </a>
+
+            <a href="https://period.thephpleague.com/" class="flex gap-3 lg:justify-between items-start transition-all hover-block">
+                <img src="/assets/img/period-logo.svg" alt="Period Logo" class="" />
+
+                <div class="flex flex-col">
+                    <div class="font-black text-lg text-dark">PERIOD</div>
+
+                    <p class="text-light">Time range API for PHP</p>
+                </div>
+            </a>
+        </div>
+
+        <hr class="border-t border-light border-opacity-50 max-w-7xl mx-auto mb-16" />
+
+        <div class="gap-12 sm:gap-32 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+            <div class="flex flex-col gap-3 sm:col-span-3 lg:col-span-1">
+                <div class="text-period-base font-black text-xl">Copyright</div>
+
+                <a href="//thephpleague.com" class="font-mono tracking-tighter text-sm underline transition-all hover-text">The League of <br />Extraordinary Packages</a>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="text-dark font-black text-xl">Questions?</div>
+
+                <p class="font-mono text-sm tracking-tighter">
+                    <a href="https://github.com/thephpleague/csv" target="_blank" class="transition-all hover-text">
+                        CSV was created by Ignace Nyamagana Butera.
+                        Find him on Twitter at <span class="underline">@nyamsprod</span>.
+                    </a>
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="text-dark font-black text-xl">Design</div>
+
+                <p class="font-mono text-sm tracking-tighter">
+                    <a href="https://twitter.com/sandr" target="_blank" class="transition-all hover-text">
+                        Brand and site design by <span class="underline">Sander van der Kolk</span>
+                    </a>
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="font-black text-xl">License package</div>
+
+                <p class="font-mono text-sm tracking-tighter">
+                    <a href="https://github.com/thephpleague/csv" target="_blank" class="transition-all hover-text underline">
+                        The MIT License (MIT)
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div class="absolute z-0 flex justify-center top-0 right-0 left-0 overflow-hidden">
+    <img src="/assets/img/period-logo-big.svg" alt="Logo" class="w-1/2 sm:w-auto rotate-6 z-0 top-logo -right-logo"/>
+</div>
+</body>
+</html>

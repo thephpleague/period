@@ -1,18 +1,26 @@
-<!DOCTYPE html>
-<html class="homepage">
+{% assign version = page.url | remove_first: "/" | split: "/" | first %}
+{% assign upgrading = false %}
+{% if version == '' or version == 'releases' %}
+{% assign version = site.data.project.releases.current.version %}
+{% assign upgrading = true %}
+{% endif %}
+{% capture version_home %}/{{ version }}/{% endcapture %}
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="refresh" content="0; url={{ page.redirect.to }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:version" content="{{ site.data.project.releases.current.version }}">
     <meta name="description" content="{{ site.data.project.description }}">
-    <title>{{ site.data.project.tagline }} - {{ site.data.project.title }}</title>
-    <link rel="canonical" href="{{ page.redirect.to }}">
-    <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
+    <meta name="docsearch:version" content="{{ version }}">
+    <title>{{ page.title }} - {{ site.data.project.title }}</title>
+    <link rel="icon" href="/assets/img/period-logo.svg" type="image/svg+xml">
     <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
-    <link rel="stylesheet" href="//theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="/homepage.css?15">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Onest:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id={{  site.data.project.google_analytics_tracking_id }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -21,31 +29,162 @@
         gtag('config', '{{  site.data.project.google_analytics_tracking_id }}');
     </script>
 </head>
+<body class="bg-white text-dark font-onest antialiased relative">
+<div class="relative z-10">
+    <header class="flex items-center sm:justify-center pl-6 pr-6 pb-6 max-w-7xl mx-auto pb-32">
+        <div class="flex gap-6 md:gap-0 md:flex-row justify-between md:items-center p-3 md:p-6 w-full max-w-7xl">
+            <a class="flex items-center gap-2 sm:gap-3" href="/">
+                <img src="/assets/img/period-logo.svg" alt="Logo" class="w-[40px] sm:w-[50px] h-[40px] sm:h-[50px]"/>
+                <div class="font-black">PERIOD</div>
+            </a>
+        </div>
+        <div class="flex gap-6 md:gap-0 md:flex-row justify-between md:items-center p-3 md:p-6 w-full max-w-7xl">
+            <input type="search" id="doc-search" class="w-64" placeholder="search the docs...">
+        </div>
+    </header>
+    <main class="relative flex justify-center mx-auto max-w-8xl sm:px-2 lg:px-8 xl:px-12">
+        <label for="navigation" class="fixed top-5 right-5 z-50 flex items-center justify-center w-12 h-12 mb-4 ml-4 bg-white border rounded-full shadow-lg cursor-pointer text-slate-600 border-slate-300 lg:hidden transition duration-200 ease-in-out active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+            </svg>
+        </label>
+        <input type="checkbox" name="navigation" id="navigation" class="hidden peer" />
+        <div class="fixed top-[3.5rem] h-screen shadow-xl px-4 left-0 hidden peer-checked:block lg:relative lg:top-0 lg:h-auto lg:px-0 lg:block lg:flex-none lg:shadow-none  bg-slate-100 lg:bg-transparent">
+            <div class="absolute inset-y-0 right-0 w-full lg:w-[50vw]"></div>
+            <nav class="sticky top-[4.5rem] w-64 pr-8 text-base lg:text-sm xl:w-72 xl:pr-16">
+                <ul role="list" class="-ml-0.5 h-[calc(100vh-4.5rem)] overflow-y-auto py-7 pl-0.5 space-y-8">
+                    {% if upgrading == false %}
+                    {% for section in site.data.menu.version[version] %}
+                    <h3 class="font-semibold tracking-tight text-slate-900">{{ section[0] }}</h3>
+                    <ul role="list" class="pl-3 mt-3 space-y-2">
+                        {% for link in section[1] %}
+                        <li {% if page.url == link[1] %}class="selected"{% endif %}>
+                            <a href="{{ link[1] }}" class="text-slate-900 hover:text-slate-800">{{ link[0] }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endfor %}
+                    {% else %}
+                    {% for section in site.data.menu.upgrading %}
+                    <h3 class="font-semibold tracking-tight text-slate-900">{{ section[0] }}</h3>
+                    <ul role="list" class="pl-3 mt-3 space-y-2">
+                        {% for link in section[1] %}
+                        <li {% if page.url == link[1] %}class="selected"{% endif %}>
+                            <a href="{{ link[1] }}" class="text-slate-900 hover:text-slate-800">{{ link[0] }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endfor %}
+                    {% endif %}
+                    <h3 class="font-semibold tracking-tight text-slate-900">Release Notes</h3>
+                    <ul role="list" class="pl-3 mt-3 space-y-2">
+                        <li {% if upgrading == true %}class="selected"{% endif %}><a href="/releases/">Releases Notes</a></li>
+                    </ul>
+                    <h3 class="font-semibold tracking-tight text-slate-900">Older versions</h3>
+                    <ul role="list" class="pl-3 mt-3 space-y-2">
+                        {% for v in site.data.menu.version %}
+                        <li {% if version == v[0] and upgrading == false %}class="selected"{% endif %}>
+                            <a href="/{{ v[0] }}/">{{ v[0] }} {% if v[0] == site.data.project.releases.current.version %}(latest stable){% endif %}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </ul>
+            </nav>
+        </div>
+        <div class="flex-auto max-w-2xl min-w-0 px-4 py-10 lg:max-w-4xl lg:pr-0 lg:pl-8 xl:px-16">
+            <article class="content">
+              <h1>Redirecting…</h1>
+              <a href="{{ page.redirect.to }}" style="color:#ff4043">Click here if you are not redirected.</a>
+              <script>location="{{ page.redirect.to }}"</script>
+            </article>
+        </div>
+    </main>
+    <footer class="p-6 max-w-7xl mx-auto pb-32">
+        <hr class="border-t border-light border-opacity-50 max-w-7xl mx-auto" />
 
-<body>
-<header>
-    <div class="inner-content">
-      <h1>{{ site.data.project.title }}</h1>
-      <h2>{{ site.data.project.tagline }}</h2>
-      <p class="composer"><span>{{ site.data.project.composer }}</span></p>
-    </div>
-</header>
+        <div class="flex flex-col lg:flex-row gap-12 my-16 px-6 md:px-0">
+            <a href="https://csv.thephpleague.com/" class="flex gap-3 lg:justify-between items-start transition-all hover-block">
+                <img src="/assets/img/csv-logo.svg" alt="CSV Logo" class="" />
 
-<main>
-  <div class="highlights">
-    <div class="inner-content">
-      <h1>Redirecting…</h1>
-      <div class="content">
-      <a href="{{ page.redirect.to }}" style="color:#ff4043">Click here if you are not redirected.</a>
-      <script>location="{{ page.redirect.to }}"</script>
-      </div>
-    </div>
-  </div>
-</main>
+                <div class="flex flex-col">
+                    <div class="font-black text-lg text-dark">CSV</div>
 
-<footer>
-    <span>&copy; Copyright <a href="//thephpleague.com">The League of Extraordinary Packages</a>.</span>
-    <span>Site design by <a href="//reinink.ca">Jonathan Reinink</a> and <a href="//nyamsprod.com">Ignace Nyamagana Butera</a>.</span>
-</footer>
+                    <p class="text-light">Data manipulation made easy in PHP</p>
+                </div>
+            </a>
+
+            <a href="https://uri.thephpleague.com/" class="flex gap-3 lg:justify-between items-start transition-all hover-block">
+                <img src="/assets/img/uri-logo.svg" alt="URI Logo" class="" />
+
+                <div class="flex flex-col">
+                    <div class="font-black text-lg text-dark">URI</div>
+
+                    <p class="text-light">Modern API to process URIs in PHP</p>
+                </div>
+            </a>
+
+            <a href="https://period.thephpleague.com/" class="flex gap-3 lg:justify-between items-start transition-all hover-block">
+                <img src="/assets/img/period-logo.svg" alt="Period Logo" class="" />
+
+                <div class="flex flex-col">
+                    <div class="font-black text-lg text-dark">PERIOD</div>
+
+                    <p class="text-light">Time range API for PHP</p>
+                </div>
+            </a>
+        </div>
+
+        <hr class="border-t border-light border-opacity-50 max-w-7xl mx-auto mb-16" />
+
+        <div class="gap-12 sm:gap-32 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+            <div class="flex flex-col gap-3 sm:col-span-3 lg:col-span-1">
+                <div class="text-period-base font-black text-xl">Copyright</div>
+
+                <a href="//thephpleague.com" class="font-mono tracking-tighter text-sm underline transition-all hover-text">The League of <br />Extraordinary Packages</a>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="text-dark font-black text-xl">Questions?</div>
+
+                <p class="font-mono text-sm tracking-tighter">
+                    <a href="https://github.com/thephpleague/csv" target="_blank" class="transition-all hover-text">
+                        CSV was created by Ignace Nyamagana Butera.
+                        Find him on Twitter at <span class="underline">@nyamsprod</span>.
+                    </a>
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="text-dark font-black text-xl">Design</div>
+
+                <p class="font-mono text-sm tracking-tighter">
+                    <a href="https://twitter.com/sandr" target="_blank" class="transition-all hover-text">
+                        Brand and site design by <span class="underline">Sander van der Kolk</span>
+                    </a>
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="font-black text-xl">License package</div>
+
+                <p class="font-mono text-sm tracking-tighter">
+                    <a href="https://github.com/thephpleague/csv" target="_blank" class="transition-all hover-text underline">
+                        The MIT License (MIT)
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+<script src="/custom.js?7"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script> docsearch({
+    apiKey: '0b444a337a024ecded8e2da9367775fa',
+    indexName: 'period_thephpleague',
+    inputSelector: '#doc-search',
+    algoliaOptions: { 'facetFilters': ["version:{{ version }}"] },
+    debug: false // Set debug to true if you want to inspect the dropdown
+});
+</script>
 </body>
 </html>

@@ -7,7 +7,7 @@ releases:
   current:
     version: '5.0'
     requires: 'PHP >= 8.1'
-    latest: '5.0'
+    latest: '5.3.2'
     supported_until: 'TBD'
     documentation_link: '/5.0/'
   previous:
@@ -34,4 +34,4 @@ highlights:
         - Covers all basic manipulations related to time range
         - Enables working with simple or complex time ranges logic
 composer: '$ composer require league/period'
-support: 'Once a new major version is released, the previous stable release remains supported for six more months through patches and security fixes.'
+support: 'Once a new **major** version is released, the previous stable release remains supported for **six more months** through patches and security fixes.'
