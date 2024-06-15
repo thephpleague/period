@@ -3,7 +3,7 @@ layout: default
 title: The Sequence class
 ---
 
-# The Sequence object
+# The Sequence class
 
 If you need to manipulate multiple `Period` instances you can now manage them easily using the provided `Sequence` class. 
 This class is a **List** similar to an array that uses incremental integer keys.

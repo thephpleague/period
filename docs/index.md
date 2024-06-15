@@ -1,10 +1,10 @@
 ---
-layout: homepage
+layout: index
 ---
 
 # Features
 
-## easy instance creation
+## Easy instance creation
 
 ~~~php
 use League\Period\Period;
@@ -23,7 +23,7 @@ $interval = Period::fromDate($startDate, $endDate);
 
 To help you start working with `Period` objects, the library comes bundled with many more named constructors to ease datepoint, duration and intervals creation.
 
-## iterating over the interval made simple
+## Iterating over the interval made simple
 
 You can return selected date endpoints inside the interval
 
@@ -49,7 +49,7 @@ foreach (Period::fromMonth(2014, 10)->splitForward('1 DAY') as $period) {
 
 The library also allow iterating backwards over the interval.
 
-## compare intervals and datepoints
+## Compare intervals and datepoints
 
 You can compare time ranges based on their duration, their datepoints and even their boundary types.
 
@@ -80,7 +80,7 @@ $period->contains($altPeriod); //return false;
 $altPeriod->durationGreaterThan($period); //return true;
 ~~~
 
-## formatting
+## Formatting
 
 Format and export your `Period` instance following standardized format.
 
