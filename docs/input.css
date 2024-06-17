@@ -19,7 +19,7 @@
 }
 
 pre {
-    @apply p-6 overflow-auto bg-gray-100 border-0 border-b-4 border-b-gray-200 rounded-lg my-4;
+    @apply p-6 overflow-auto bg-gray-100 rounded-lg my-4;
 }
 
 .hover-button:hover {
@@ -378,7 +378,7 @@ code {
 .message-info,
 .message-notice,
 .message-warning {
-  @apply p-2 my-3 rounded-lg text-light
+  @apply p-5 my-3 rounded-lg text-light
 }
 
 .message-info a,.message-notice a,.message-warning a {
@@ -393,7 +393,11 @@ code {
 .message-info code {
     background: rgba(255,255,255,0.8);
     border-color: #5faee3;
-    color: #196090
+    color: #196090;
+    margin-left:.3rem;
+    margin-right: .3rem;
+    padding-right: .3rem;
+    padding-left: .3rem;
 }
 
 .message-notice {
@@ -404,7 +408,11 @@ code {
 .message-notice code {
     background: rgba(255,255,255,0.8);
     border-color: #f4d03f;
-    color: #927608
+    color: #927608;
+    margin-left:.3rem;
+    margin-right: .3rem;
+    padding-right: .3rem;
+    padding-left: .3rem;
 }
 
 .message-warning {
@@ -415,7 +423,11 @@ code {
 .message-warning code {
     background: rgba(255,255,255,0.8);
     border-color: #ed7669;
-    color: #a82315
+    color: #a82315;
+    margin-left:.3rem;
+    margin-right: .3rem;
+    padding-right: .3rem;
+    padding-left: .3rem;
 }
 
 .content h1 {
@@ -423,11 +435,15 @@ code {
 }
 
 .content h2 {
-  @apply text-3xl tracking-tight text-period-base mb-4
+  @apply text-3xl tracking-tight text-period-base mt-10 mb-3
 }
 
 .content h3 {
-  @apply text-2xl tracking-tight text-gray-800 py-3
+  @apply text-2xl tracking-tight text-gray-800 mt-10 mb-3 py-3
+}
+
+.content h4 {
+  @apply text-xl tracking-tight text-period-dark mt-10 mb-3 py-3
 }
 
 .content {

@@ -247,7 +247,7 @@ public Period::snapToYear(): Period
 public Period::snapToIsoYear(): Period
 ~~~
 
-### Examples
+#### Examples
 
 ~~~php
 $period = Period::fromDate('2022-01-08 09:44:38', '2022-01-08 09:45:01');

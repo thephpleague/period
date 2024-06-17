@@ -14,6 +14,8 @@ To generate a graph you need to give to the `Dataset` constructor a list of pair
 - the value at key `0` represents the label
 - the value at key `1` is a `League\Period\Period` or a `League\Period\Sequence` object
 
+#### Example
+
 ~~~php
 <?php
 
@@ -31,7 +33,7 @@ $dataset = new Chart\Dataset([
 (new Chart\GanttChart())->stroke($dataset);
 ~~~
 
-results:
+#### Result
 
 ~~~bash
  period   [----------------------------------------------------------)
@@ -41,6 +43,8 @@ results:
 ## Appending items to display
 
 If you want to display a `Sequence` and some of its operations. You can append the operation result using the `Dataset::append` method.
+
+#### Example
 
 ~~~php
 <?php
@@ -60,7 +64,7 @@ $dataset->append('GAPS', $sequence->gaps());
 (new Chart\GanttChart())->stroke($dataset);
 ~~~
 
-results:
+#### Result
 
 ~~~bash
  A    [-------------)                                                         
@@ -91,6 +95,8 @@ The `GanttChart::stroke` methods expects a `Dataset` object as its unique argume
 
 If you wish to present the graph on another medium like a web browser or an image, you will need to implement the interface for your implementation.
 
+#### Example
+
 ~~~php
 <?php
 
@@ -104,7 +110,7 @@ $graph->stroke(new Chart\Dataset([
 ]));
 ~~~
 
-results:
+#### Result
 
 ~~~bash
  first [---------------------------)
@@ -157,6 +163,8 @@ public readonly int GanttChartConfig::leftMarginSize;            //Returns the m
 
 Here's a complex example which highlights most of the features introduces along visualizing `Period` and `Sequance` instances:
 
+#### Example
+
 ~~~php
 <?php
 
@@ -198,6 +206,8 @@ $graph->stroke($dataset);
 ~~~
 
 which will output in your console:
+
+#### Result
 
 ~~~bash
    XLV.  💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩🍕😊😊😊😊😊😊😊😊😊🍔

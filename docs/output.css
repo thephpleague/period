@@ -691,6 +691,10 @@ video {
   margin-top: 1.5rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .block {
   display: block;
 }
@@ -842,6 +846,12 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+}
+
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
 
 .overflow-hidden {
@@ -1214,10 +1224,6 @@ pre {
   margin-bottom: 1rem;
   overflow: auto;
   border-radius: 0.5rem;
-  border-width: 0px;
-  border-bottom-width: 4px;
-  --tw-border-opacity: 1;
-  border-bottom-color: rgb(229 231 235 / var(--tw-border-opacity));
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
   padding: 1.5rem;
@@ -1607,7 +1613,7 @@ code {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   border-radius: 0.5rem;
-  padding: 0.5rem;
+  padding: 1.25rem;
   --tw-text-opacity: 1;
   color: rgb(128 128 128 / var(--tw-text-opacity));
 }
@@ -1624,7 +1630,11 @@ code {
 .message-info code {
   background: rgba(255,255,255,0.8);
   border-color: #5faee3;
-  color: #196090
+  color: #196090;
+  margin-left:.3rem;
+  margin-right: .3rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
 }
 
 .message-notice {
@@ -1635,7 +1645,11 @@ code {
 .message-notice code {
   background: rgba(255,255,255,0.8);
   border-color: #f4d03f;
-  color: #927608
+  color: #927608;
+  margin-left:.3rem;
+  margin-right: .3rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
 }
 
 .message-warning {
@@ -1646,7 +1660,11 @@ code {
 .message-warning code {
   background: rgba(255,255,255,0.8);
   border-color: #ed7669;
-  color: #a82315
+  color: #a82315;
+  margin-left:.3rem;
+  margin-right: .3rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
 }
 
 .content h1 {
@@ -1658,7 +1676,8 @@ code {
 }
 
 .content h2 {
-  margin-bottom: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
   font-size: 1.875rem;
   line-height: 2.25rem;
   letter-spacing: -0.025em;
@@ -1667,6 +1686,8 @@ code {
 }
 
 .content h3 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   font-size: 1.5rem;
@@ -1674,6 +1695,18 @@ code {
   letter-spacing: -0.025em;
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+
+.content h4 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  letter-spacing: -0.025em;
+  --tw-text-opacity: 1;
+  color: rgb(178 139 20 / var(--tw-text-opacity));
 }
 
 .content {
