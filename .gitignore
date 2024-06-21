@@ -3,6 +3,7 @@ build
 .idea
 docs/_site
 docs/.jekyll-cache
+docs/tailwindcss
 .phpunit.cache
 composer.lock
 .php-cs-fixer.cache

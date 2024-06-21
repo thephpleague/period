@@ -50,6 +50,22 @@ code {
     @apply text-sm sm:text-base font-mono;
 }
 
+.language-php.highlighter-rouge {
+  @apply relative
+}
+
+.language-php.highlighter-rouge .copy-snippet {
+  @apply absolute top-1 right-1 px-4 py-2 bg-white hidden no-underline cursor-pointer
+}
+
+.language-php.highlighter-rouge .copy-snippet-notification {
+  @apply absolute top-14 right-1 text-white
+}
+
+.language-php.highlighter-rouge:hover .copy-snippet {
+  @apply block;
+}
+
 .language-php .string {
     color: #ff4143
 }
