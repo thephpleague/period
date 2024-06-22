@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'onest': ['"Onest"', 'sans-serif'],
-        'mono': ['"IBM Plex Mono"', 'mono']
+        'mono': ['"IBM Plex Mono"', 'mono', 'source-code-pro', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace']
       },
       colors: {
         'csv': {

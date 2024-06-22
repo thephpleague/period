@@ -138,12 +138,10 @@ code {
 
 .highlight .k {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .o {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .cm {
@@ -153,7 +151,6 @@ code {
 
 .highlight .cp {
     color: #999999;
-    font-weight: bold;
     font-style: italic
 }
 
@@ -164,7 +161,6 @@ code {
 
 .highlight .cs {
     color: #999999;
-    font-weight: bold;
     font-style: italic
 }
 
@@ -200,7 +196,6 @@ code {
 }
 
 .highlight .gs {
-    font-weight: bold
 }
 
 .highlight .gu {
@@ -213,32 +208,26 @@ code {
 
 .highlight .kc {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .kd {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .kn {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .kp {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .kr {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .kt {
     color: #445588;
-    font-weight: bold
 }
 
 .highlight .m {
@@ -259,7 +248,6 @@ code {
 
 .highlight .nc {
     color: #445588;
-    font-weight: bold
 }
 
 .highlight .no {
@@ -268,7 +256,6 @@ code {
 
 .highlight .nd {
     color: #3c5d5d;
-    font-weight: bold
 }
 
 .highlight .ni {
@@ -277,17 +264,14 @@ code {
 
 .highlight .ne {
     color: #990000;
-    font-weight: bold
 }
 
 .highlight .nf {
     color: #990000;
-    font-weight: bold
 }
 
 .highlight .nl {
     color: #990000;
-    font-weight: bold
 }
 
 .highlight .nn {
@@ -304,7 +288,6 @@ code {
 
 .highlight .ow {
     color: #000000;
-    font-weight: bold
 }
 
 .highlight .w {
@@ -397,53 +380,50 @@ code {
   @apply p-5 my-3 rounded-lg text-light
 }
 
-.message-info a,.message-notice a,.message-warning a {
-    color: black
+.message-info a,
+.message-notice a,
+.message-warning a {
+  color: black
+}
+
+.message-info code,
+.message-notice code,
+.message-warning code {
+  margin-left:.3rem;
+  margin-right: .3rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
+  background: rgba(255,255,255,0.8);
 }
 
 .message-info {
-    color: #196090;
-    background: #cce5f6;
+  color: #196090;
+  background: #cce5f6;
 }
 
 .message-info code {
-    background: rgba(255,255,255,0.8);
-    border-color: #5faee3;
-    color: #196090;
-    margin-left:.3rem;
-    margin-right: .3rem;
-    padding-right: .3rem;
-    padding-left: .3rem;
+  border-color: #5faee3;
+  color: #196090;
 }
 
 .message-notice {
-    color: #927608;
-    background: #fbedb8;
+  color: #927608;
+  background: #fbedb8;
 }
 
 .message-notice code {
-    background: rgba(255,255,255,0.8);
-    border-color: #f4d03f;
-    color: #927608;
-    margin-left:.3rem;
-    margin-right: .3rem;
-    padding-right: .3rem;
-    padding-left: .3rem;
+  border-color: #f4d03f;
+  color: #927608;
 }
 
 .message-warning {
-    color: #a82315;
-    background: #fbdedb;
+  color: #a82315;
+  background: #fbdedb;
 }
 
 .message-warning code {
-    background: rgba(255,255,255,0.8);
-    border-color: #ed7669;
-    color: #a82315;
-    margin-left:.3rem;
-    margin-right: .3rem;
-    padding-right: .3rem;
-    padding-left: .3rem;
+  border-color: #ed7669;
+  color: #a82315;
 }
 
 .content h1 {

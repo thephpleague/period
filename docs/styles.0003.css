@@ -135,7 +135,7 @@ code,
 kbd,
 samp,
 pre {
-  font-family: "IBM Plex Mono", mono;
+  font-family: "IBM Plex Mono", mono, source-code-pro, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   /* 1 */
   font-feature-settings: normal;
   /* 2 */
@@ -1057,7 +1057,7 @@ video {
 }
 
 .font-mono {
-  font-family: "IBM Plex Mono", mono;
+  font-family: "IBM Plex Mono", mono, source-code-pro, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 }
 
 .font-onest {
@@ -1284,7 +1284,7 @@ pre {
 }
 
 code {
-  font-family: "IBM Plex Mono", mono;
+  font-family: "IBM Plex Mono", mono, source-code-pro, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
@@ -1399,12 +1399,10 @@ code {
 
 .highlight .k {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .o {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .cm {
@@ -1414,7 +1412,6 @@ code {
 
 .highlight .cp {
   color: #999999;
-  font-weight: bold;
   font-style: italic
 }
 
@@ -1425,7 +1422,6 @@ code {
 
 .highlight .cs {
   color: #999999;
-  font-weight: bold;
   font-style: italic
 }
 
@@ -1461,7 +1457,6 @@ code {
 }
 
 .highlight .gs {
-  font-weight: bold
 }
 
 .highlight .gu {
@@ -1474,32 +1469,26 @@ code {
 
 .highlight .kc {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .kd {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .kn {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .kp {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .kr {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .kt {
   color: #445588;
-  font-weight: bold
 }
 
 .highlight .m {
@@ -1520,7 +1509,6 @@ code {
 
 .highlight .nc {
   color: #445588;
-  font-weight: bold
 }
 
 .highlight .no {
@@ -1529,7 +1517,6 @@ code {
 
 .highlight .nd {
   color: #3c5d5d;
-  font-weight: bold
 }
 
 .highlight .ni {
@@ -1538,17 +1525,14 @@ code {
 
 .highlight .ne {
   color: #990000;
-  font-weight: bold
 }
 
 .highlight .nf {
   color: #990000;
-  font-weight: bold
 }
 
 .highlight .nl {
   color: #990000;
-  font-weight: bold
 }
 
 .highlight .nn {
@@ -1565,7 +1549,6 @@ code {
 
 .highlight .ow {
   color: #000000;
-  font-weight: bold
 }
 
 .highlight .w {
@@ -1663,8 +1646,20 @@ code {
   color: rgb(128 128 128 / var(--tw-text-opacity));
 }
 
-.message-info a,.message-notice a,.message-warning a {
+.message-info a,
+.message-notice a,
+.message-warning a {
   color: black
+}
+
+.message-info code,
+.message-notice code,
+.message-warning code {
+  margin-left:.3rem;
+  margin-right: .3rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
+  background: rgba(255,255,255,0.8);
 }
 
 .message-info {
@@ -1673,13 +1668,8 @@ code {
 }
 
 .message-info code {
-  background: rgba(255,255,255,0.8);
   border-color: #5faee3;
   color: #196090;
-  margin-left:.3rem;
-  margin-right: .3rem;
-  padding-right: .3rem;
-  padding-left: .3rem;
 }
 
 .message-notice {
@@ -1688,13 +1678,8 @@ code {
 }
 
 .message-notice code {
-  background: rgba(255,255,255,0.8);
   border-color: #f4d03f;
   color: #927608;
-  margin-left:.3rem;
-  margin-right: .3rem;
-  padding-right: .3rem;
-  padding-left: .3rem;
 }
 
 .message-warning {
@@ -1703,13 +1688,8 @@ code {
 }
 
 .message-warning code {
-  background: rgba(255,255,255,0.8);
   border-color: #ed7669;
   color: #a82315;
-  margin-left:.3rem;
-  margin-right: .3rem;
-  padding-right: .3rem;
-  padding-left: .3rem;
 }
 
 .content h1 {
