@@ -137,7 +137,7 @@ final class Duration
             'minute' => $matches['minute'],
             'second' => $matches['second'],
             'fraction' => $matches['fraction'] ?? null,
-            'sign' => $matches['sign'] ?? null,
+            'sign' => $matches['sign'],
         ]);
     }
 
@@ -153,11 +153,11 @@ final class Duration
         }
 
         return self::fromUnits([
-            'hour' => $matches['hour'] ?? null,
-            'minute' => $matches['minute'] ?? null,
+            'hour' => $matches['hour'],
+            'minute' => $matches['minute'],
             'second' => $matches['second'] ?? '0',
             'fraction' => $matches['fraction'] ?? null,
-            'sign' => $matches['sign'] ?? null,
+            'sign' => $matches['sign'],
         ]);
     }
 
