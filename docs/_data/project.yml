@@ -13,8 +13,8 @@ releases:
   previous:
     version: '4.0'
     requires: 'PHP >= 7.1.3'
-    latest: '4.12.0'
-    supported_until: 'TBD'
+    latest: '4.12.0 - 2022-02-21'
+    supported_until: '2022-08-21'
     documentation_link: '/4.0/'
   legacy:
     version: '3.0'

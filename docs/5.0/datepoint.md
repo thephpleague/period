@@ -103,7 +103,8 @@ Once you've got a `DatePoint` instantiated object, you can access a set of calen
 
 ~~~php
 use League\Period\Bounds;
-public function method(string $boundaries = Bounds::IncludeStartExcludeEnd): Period;
+
+public function method(Bounds $boundaries = Bounds::IncludeStartExcludeEnd): Period;
 ~~~
 
 where `method` is one of the following date time span:
