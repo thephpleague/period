@@ -18,6 +18,7 @@ use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Deprecated;
 use Exception;
 use Generator;
 use JsonSerializable;
@@ -248,34 +249,11 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * @deprecated since version 5.2.1
-     * @see ::fromRange
-     *
-     * @throws InvalidInterval If no instance can be generated from a DatePeriod object
-     */
-    public static function fromDateRange(DatePeriod $dateRange, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
-    {
-        $endDate = $dateRange->getEndDate();
-        if (null === $endDate) {
-            throw InvalidInterval::dueToInvalidDatePeriod();
-        }
-
-        return new self(
-            self::filterDatePoint($dateRange->getStartDate()),
-            self::filterDatePoint($endDate),
-            $bounds
-        );
-    }
-
-    /**
      * @throws InvalidInterval If the PHP version is lower than PHP 8.2
      */
     public static function fromRange(DatePeriod $range): self
     {
-        $endDate = $range->getEndDate();
-        if (null === $endDate) {
-            throw InvalidInterval::dueToInvalidDatePeriod();
-        }
+        $endDate = $range->getEndDate() ?? throw InvalidInterval::dueToInvalidDatePeriod();
 
         if (property_exists(DatePeriod::class, 'include_end_date')) {
             return new self(
@@ -761,53 +739,6 @@ final class Period implements JsonSerializable
     public function dateIntervalDiff(self $period): DateInterval
     {
         return $this->endDate->diff($this->startDate->add($period->dateInterval()));
-    }
-
-    /**
-     * @deprecated since version 5.2.0
-     * @see ::rangeForward
-     *
-     *
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the instance.
-     *
-     * The returned DatePeriod object contains only DateTimeImmutable objects.
-     *
-     * @see http://php.net/manual/en/dateperiod.construct.php
-     *
-     * @return DatePeriod<DateTimeImmutable>
-     */
-    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
-    {
-        return new DatePeriod(
-            $this->startDate,
-            self::filterDuration($timeDelta),
-            $this->endDate,
-            InitialDatePresence::Excluded === $startDatePresence ? DatePeriod::EXCLUDE_START_DATE : 0
-        );
-    }
-
-    /**
-     * @deprecated since version 5.2.0
-     * @see Period::rangeBackwards()
-     *
-     * Allows iteration over a set of dates and times,
-     * recurring at regular intervals, over the instance backwards starting from the instance ending.
-     *
-     * @return Generator<int,DateTimeImmutable>
-     */
-    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator
-    {
-        $timeDelta = self::filterDuration($timeDelta);
-        $date = $this->endDate;
-        if (InitialDatePresence::Excluded === $endDatePresence) {
-            $date = $this->endDate->sub($timeDelta);
-        }
-
-        while ($date > $this->startDate) {
-            yield $date;
-            $date = $date->sub($timeDelta);
-        }
     }
 
     /**
@@ -1445,5 +1376,72 @@ final class Period implements JsonSerializable
         }
 
         return $this->newInstance(new self($startDate, $endDate, $this->bounds));
+    }
+
+
+
+    /**
+     * @deprecated since version 5.2.0
+     * @see ::rangeForward
+     *
+     *
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance.
+     *
+     * The returned DatePeriod object contains only DateTimeImmutable objects.
+     *
+     * @see http://php.net/manual/en/dateperiod.construct.php
+     *
+     * @return DatePeriod<DateTimeImmutable>
+     */
+    #[Deprecated(since:'league/period:5.2.0', message: "use League\Perio\Period::rangeForward()")]
+    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
+    {
+        return new DatePeriod(
+            $this->startDate,
+            self::filterDuration($timeDelta),
+            $this->endDate,
+            InitialDatePresence::Excluded === $startDatePresence ? DatePeriod::EXCLUDE_START_DATE : 0
+        );
+    }
+
+    /**
+     * @deprecated since version 5.2.0
+     * @see Period::rangeBackwards()
+     *
+     * Allows iteration over a set of dates and times,
+     * recurring at regular intervals, over the instance backwards starting from the instance ending.
+     *
+     * @return Generator<int,DateTimeImmutable>
+     */
+    #[Deprecated(since:'league/period:5.2.0', message: "use League\Perio\Period::rangeBackwards()")]
+    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator
+    {
+        $timeDelta = self::filterDuration($timeDelta);
+        $date = $this->endDate;
+        if (InitialDatePresence::Excluded === $endDatePresence) {
+            $date = $this->endDate->sub($timeDelta);
+        }
+
+        while ($date > $this->startDate) {
+            yield $date;
+            $date = $date->sub($timeDelta);
+        }
+    }
+
+    /**
+     * @deprecated since version 5.2.1
+     * @see ::fromRange
+     *
+     * @throws InvalidInterval If no instance can be generated from a DatePeriod object
+     */
+    #[Deprecated(since:'league/period:5.2.1', message: "use League\Perio\Period::fromRange()")]
+    public static function fromDateRange(DatePeriod $dateRange, Bounds $bounds = Bounds::IncludeStartExcludeEnd): self
+    {
+        return new self(
+            self::filterDatePoint($dateRange->getStartDate()),
+            self::filterDatePoint($dateRange->getEndDate() ?? throw InvalidInterval::dueToInvalidDatePeriod()),
+            $bounds
+        );
     }
 }
