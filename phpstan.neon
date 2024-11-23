@@ -9,3 +9,4 @@ parameters:
         - src
     ignoreErrors:
         - '#^Generator expects value type array#'
+        - '#Attribute class Deprecated does not exist.#'
