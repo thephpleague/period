@@ -10,3 +10,5 @@ parameters:
     ignoreErrors:
         - '#^Generator expects value type array#'
         - '#Attribute class Deprecated does not exist.#'
+        - '#^Fetching class constant#'
+        - '#has typehint with deprecated enum League\\Period\\InitialDatePresence#'
