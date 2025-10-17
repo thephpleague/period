@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [5.3.3](https://github.com/thephpleague/period/compare/5.3.2...5.3.3) - 2025-10-17
+
+### Added
+
+- None
+
+### Fixed
+
+- Fix inconsistent behaviour for `isBefore()` when comparing periods with other periods or dates [#138](https://github.com/thephpleague/period/issues/138) thanks [@brummbar](https://github.com/brummbar)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [5.3.2](https://github.com/thephpleague/period/compare/5.3.1...5.3.2) - 2024-03-23
 
 ### Added
