@@ -1,0 +1,13 @@
+includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+parameters:
+    level: max
+    paths:
+        - src
+    ignoreErrors:
+        - '#^Generator expects value type array#'
+        - '#^Fetching class constant#'
+        - '#has typehint with deprecated enum League\\Period\\InitialDatePresence#'
