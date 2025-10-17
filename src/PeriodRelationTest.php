@@ -90,11 +90,11 @@ final class PeriodRelationTest extends PeriodTestCase
             'exclude start date is before interval' => [
                 'interval' => Period::after('2012-01-01', '1 MONTH', Bounds::ExcludeStartIncludeEnd),
                 'input' => Period::fromMonth(2012, 2),
-                'expected' => true,
+                'expected' => false,
             ],
             'exclude start date is not before interval' => [
                 'interval' => Period::after('2012-01-01', '1 MONTH', Bounds::ExcludeStartIncludeEnd),
-                'input' => Period::fromMonth(2012, 2),
+                'input' => Period::fromMonth(2012, 3),
                 'expected' => true,
             ],
             'exclude start date abuts interval start date' => [
@@ -155,10 +155,10 @@ final class PeriodRelationTest extends PeriodTestCase
             'exclude start date is before interval' => [
                 'interval' => Period::fromMonth(2012, 2),
                 'input' => Period::after('2012-01-01', '1 MONTH', Bounds::ExcludeStartIncludeEnd),
-                'expected' => true,
+                'expected' => false,
             ],
             'exclude start date is not before interval' => [
-                'interval' => Period::fromMonth(2012, 2),
+                'interval' => Period::fromMonth(2012, 3),
                 'input' => Period::after('2012-01-01', '1 MONTH', Bounds::ExcludeStartIncludeEnd),
                 'expected' => true,
             ],

@@ -488,7 +488,7 @@ final class Period implements JsonSerializable
     public function isBefore(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
     {
         if ($timeSlot instanceof self) {
-            return $this->endDate <= $timeSlot->startDate;
+            return $this->endDate <= $timeSlot->startDate && !$this->meetsOnStart($timeSlot);
         }
 
         $datePoint = self::filterDatePoint($timeSlot);
