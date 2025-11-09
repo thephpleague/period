@@ -679,8 +679,16 @@ video {
   margin-bottom: 1rem;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .ml-4 {
   margin-left: 1rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
 }
 
 .mt-3 {
@@ -689,18 +697,6 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
-.mt-16 {
-  margin-top: 4rem;
-}
-
-.mt-12 {
-  margin-top: 3rem;
 }
 
 .block {
@@ -1139,11 +1135,6 @@ video {
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
-.text-csv-base {
-  --tw-text-opacity: 1;
-  color: rgb(56 193 99 / var(--tw-text-opacity));
-}
-
 .text-dark {
   --tw-text-opacity: 1;
   color: rgb(44 44 44 / var(--tw-text-opacity));
@@ -1159,6 +1150,11 @@ video {
   color: rgb(255 198 29 / var(--tw-text-opacity));
 }
 
+.text-period-dark {
+  --tw-text-opacity: 1;
+  color: rgb(178 139 20 / var(--tw-text-opacity));
+}
+
 .text-slate-600 {
   --tw-text-opacity: 1;
   color: rgb(71 85 105 / var(--tw-text-opacity));
@@ -1172,11 +1168,6 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-period-dark {
-  --tw-text-opacity: 1;
-  color: rgb(178 139 20 / var(--tw-text-opacity));
 }
 
 .underline {
@@ -1880,6 +1871,73 @@ img {
   .algolia-autocomplete .algolia-docsearch-suggestion--subcategory-column {
     display: none !important;
   }
+}
+
+#onthispage {
+  position: sticky;
+  top: 4.5rem;
+  display: none;
+  height: calc(100vh - 4.5rem);
+  width: 18rem;
+  align-self: flex-start;
+  overflow-y: auto;
+  padding-right: 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  #onthispage {
+    display: block;
+  }
+}
+
+@media (min-width: 1280px) {
+  #onthispage {
+    padding-right: 4rem;
+  }
+}
+
+#onthispage nav h3 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  --tw-text-opacity: 1;
+  color: rgb(15 23 42 / var(--tw-text-opacity));
+}
+
+#onthispage ul {
+  margin-top: 0.75rem;
+}
+
+#onthispage ul > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
+#onthispage ul {
+  padding-left: 0.75rem;
+}
+
+#onthispage a {
+  display:block;
+  border-left: 2px solid transparent;
+  padding-left: 0.5rem;
+  text-decoration: none;
+}
+
+#onthispage a:hover {
+  text-decoration: underline;
+}
+
+#onthispage .active {
+  color: #b78e1d;
+  /* Tailwind blue-600 */
+  border-left-color: #b78e1d;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 .hover\:bg-period-base:hover {
