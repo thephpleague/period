@@ -33,8 +33,6 @@ The parsers return the same array representation of the interval with the follow
 - `end`: the end or upper bound as a string
 - `bounds`: the end or upper bound as a `Bounds` Enumeration
 
-#### Examples
-
 ~~~php
 use League\Period\Bounds;
 
@@ -56,8 +54,6 @@ Bounds::buildBourbaki(string $lowerBound, string $upperBound): string;
 On the opposite, the `Bounds` enum can format an interval by decorating the interval string representation.
 You can specify which format you want to use, the ISO or the Boubarki one through the dedicated method.
 
-#### Examples
-
 ~~~php
 use League\Period\Bounds;
 
@@ -76,8 +72,6 @@ public Bounds::isStartIncluded(): bool
 public Bounds::isEndIncluded(): bool
 ~~~
 
-#### Examples
-
 ~~~php
 use League\Period\Bounds;
 
@@ -93,8 +87,6 @@ It will returns `true` if both `Bounds` object share the same bound type.
 public Bounds::equalsStart(Bound $other): bool
 public Bounds::equalsEnd(Bound $other): bool
 ~~~
-
-#### Examples
 
 ~~~php
 use League\Period\Bounds;
@@ -117,8 +109,6 @@ public Bounds::excludeEnd(): Bounds
 public Bounds::replaceStart(Bounds $other): Bounds
 public Bounds::replaceEnd(Bounds $other): Bounds
 ~~~
-
-#### Examples
 
 ~~~php
 use League\Period\Bounds;

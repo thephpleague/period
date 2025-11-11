@@ -23,8 +23,6 @@ public DatePoint::fromDate(DateTimeInterface $date): self;
 ~~~
 
 Returns a `DatePoint` from a `DateTimeInterface` implementing object
- 
-#### example
 
 ~~~php
 use League\Period\DatePoint;
@@ -45,8 +43,6 @@ Returns a `DatePoint` from a string parsable by the `DateTimeImmutable` construc
 
 <p class="message-info">Because we are using PHP's parser, values exceeding ranges will be added to their parent values.</p>
 <p class="message-info">If no timezone information is given, the returned <code>DatePoint</code> object will use the current timezone.</p>
-
-#### examples
 
 ~~~php
 use League\Period\DatePoint;
@@ -70,8 +66,6 @@ Returns a `DatePoint` from an integer interpreted as a timestamp.
 
 <p class="message-info">The timezone will always be <code>UTC</code>.</p>
 
-#### examples
-
 Using the `$datepoint` argument
 
 ~~~php
@@ -87,8 +81,6 @@ public readonly DateTimeImmutable DatePoint::date;
 
 At any given moment you can easily access the underlying `DateTimeImmutable` instance by
 calling the public readonly property `DatePoint::date`.
-
-#### examples
 
 ~~~php
 use League\Period\DatePoint;
@@ -126,8 +118,6 @@ For each a these methods a `Period` object is returned with:
 - the starting date endpoint represents the beginning of the current date endpoint calendar interval;
 - the duration associated with the given calendar interval;
 
-#### Examples
-
 ~~~php
 use League\Period\Bounds;
 use League\Period\DatePoint;
@@ -162,8 +152,6 @@ where `method` is one of the basic relation between a datepoint and an interval.
 - `DatePoint::bordersOnEnd`
 - `DatePoint::abuts`
 - `DatePoint::isAfter`
-
-#### Examples
 
 ~~~php
 use League\Period\Bounds;

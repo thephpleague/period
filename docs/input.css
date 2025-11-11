@@ -542,33 +542,28 @@ img {
   }
 }
 
-
 #onthispage {
-  @apply sticky top-[4.5rem] h-[calc(100vh-4.5rem)] w-72 overflow-y-auto pr-8 text-sm xl:pr-16 self-start hidden lg:block;
+  @apply sticky top-[4.5rem] h-[calc(100vh-4.5rem)] w-72 overflow-y-auto pr-8 text-sm xl:pr-16 self-start hidden lg:block shrink-0;
 }
 
 #onthispage nav h3 {
-  @apply font-semibold tracking-tight text-slate-900
+  @apply font-semibold tracking-tight text-slate-900;
 }
 
 #onthispage ul {
-  @apply pl-3 mt-3 space-y-2
+  @apply pl-3 mt-3 space-y-2;
 }
 
 #onthispage a {
-  display:block;
-  border-left: 2px solid transparent;
-  padding-left: 0.5rem;
-  text-decoration: none;
+  @apply block border-l-2 border-transparent pl-2 no-underline;
 }
 
 #onthispage a:hover {
-  text-decoration: underline;
+  @apply underline;
 }
 
 #onthispage .active {
-  color: #b78e1d; /* Tailwind blue-600 */
-  border-left-color: #b78e1d;
+  @apply text-period-dark border-l-period-dark;
 }
 
 html {
