@@ -46,13 +46,13 @@
         "php" : "^8.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.65.0",
-        "phpstan/phpstan": "^1.12.12",
+        "friendsofphp/php-cs-fixer": "^3.95.1",
+        "phpstan/phpstan": "^1.12.33",
         "phpstan/phpstan-deprecation-rules": "^1.2.1",
-        "phpstan/phpstan-phpunit": "^1.4.1",
-        "phpstan/phpstan-strict-rules": "^1.6.1",
-        "phpunit/phpunit": "^10.5.15 || ^11.5.0",
-        "symfony/var-dumper": "^6.4.15"
+        "phpstan/phpstan-phpunit": "^1.4.2",
+        "phpstan/phpstan-strict-rules": "^1.6.2",
+        "phpunit/phpunit": "^10.5.63 || ^11.5.55 || ^12.5.23 || ^13.1.7",
+        "symfony/var-dumper": "^6.4.15 || ^v7.4.8 || ^v8.0.8"
     },
     "autoload": {
         "psr-4": {
@@ -65,10 +65,10 @@
     "scripts": {
         "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
-        "phpstan": "phpstan analyse -c phpstan.neon --ansi --memory-limit 192M",
-        "phpstan-build": "phpstan analyse -c phpstan-build.neon --ansi --memory-limit 192M",
+        "phpstan": "phpstan analyse -c phpstan.neon --ansi --memory-limit=256M",
+        "phpstan-build": "phpstan analyse -c phpstan-build.neon --ansi --memory-limit=256M",
         "phpunit": "XDEBUG_MODE=coverage phpunit --coverage-text",
-        "phpunit:min": "phpunit --no-coverage",
+        "phpunit:no-coverage": "phpunit --no-coverage",
         "test": [
             "@phpunit",
             "@phpstan",
@@ -78,6 +78,7 @@
     "scripts-descriptions": {
         "phpstan": "Runs complete codebase static analysis",
         "phpunit": "Runs unit and functional testing",
+        "phpunit:no-coverage": "Runs unit and functional testing without code-coverage",
         "phpcs": "Runs coding style testing",
         "phpcs:fix": "Fix coding style issues",
         "test": "Runs all tests"

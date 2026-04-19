@@ -12,3 +12,6 @@ parameters:
         - '#Attribute class Deprecated does not exist.#'
         - '#^Fetching class constant#'
         - '#has typehint with deprecated enum League\\Period\\InitialDatePresence#'
+    bootstrapFiles:
+        - vendor/autoload.php
+

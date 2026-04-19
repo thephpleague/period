@@ -27,6 +27,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
+use function count;
 
 final class PeriodRelationTest extends PeriodTestCase
 {
@@ -1081,9 +1082,7 @@ final class PeriodRelationTest extends PeriodTestCase
         self::assertEquals($diff, $periodA->subtract($periodA));
     }
 
-    /**
-     * @dataProvider meetsProvider
-     */
+    #[DataProvider('meetsProvider')]
     public function testMeets(Period $period1, Period $period2, bool $meets, bool $meetsOnStart, bool $meetsOnEnd): void
     {
         self::assertSame($meets, $period1->meets($period2));

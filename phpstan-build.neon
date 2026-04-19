@@ -11,3 +11,6 @@ parameters:
         - '#^Generator expects value type array#'
         - '#^Fetching class constant#'
         - '#has typehint with deprecated enum League\\Period\\InitialDatePresence#'
+    bootstrapFiles:
+        - vendor/autoload.php
+
