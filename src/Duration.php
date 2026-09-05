@@ -188,12 +188,13 @@ final class Duration
     {
         $units += ['hour' => '0', 'minute' => '0', 'second' => '0', 'fraction' => '0', 'sign' => '+'];
         $units['fraction'] = str_pad($units['fraction'] ?? '000000', 6, '0');
-        if ('-' === $units['sign']) {
-            $units['hour'] = '-'.$units['hour'];
-        }
+        $sign = '-' === $units['sign'] ? '-' : '';
 
         return self::fromDateString(
-            $units['hour'].' hours '.$units['minute'].' minutes '.$units['second'].' seconds '.$units['fraction'].' microseconds'
+            $sign.$units['hour'].' hours '
+            .$sign.$units['minute'].' minutes '
+            .$sign.$units['second'].' seconds '
+            .$sign.$units['fraction'].' microseconds'
         );
     }
 

@@ -241,8 +241,8 @@ final class DurationTest extends TestCase
                 'expected' => 'PT1H2M3.0004S',
             ],
             'negative chrono' => [
-                'chronometer' => '-12:28.5',
-                'expected' => 'PT12M28.5S',
+                'chronometer' => '-12:28',
+                'expected' => 'PT-12M-28S',
             ],
         ];
     }
@@ -282,11 +282,66 @@ final class DurationTest extends TestCase
             ],
             'negative chrono' => [
                 'chronometer' => '-12:28',
-                'expected' => 'PT-12H28M',
+                'expected' => 'PT-12H-28M',
             ],
             'negative chrono with seconds' => [
-                'chronometer' => '-00:00:28.5',
-                'expected' => 'PT28.5S',
+                'chronometer' => '-01:02:28',
+                'expected' => 'PT-1H-2M-28S',
+            ],
+        ];
+    }
+
+    /**
+     * A sign applies to the whole duration, not just the hour. It used to be
+     * lost when the hour was zero, and to negate only the hour otherwise.
+     */
+    #[DataProvider('signedDurationProvider')]
+    public function testSignedStringsApplySignToWholeDuration(string $method, string $input, string $reference, string $expected): void
+    {
+        $duration = Duration::$method($input);
+        $date = new \DateTimeImmutable($reference);
+
+        self::assertSame(
+            $expected,
+            $date->add($duration->dateInterval)->format('Y-m-d H:i:s.u')
+        );
+    }
+
+    /**
+     * @return iterable<string, array{method:string, input:string, reference:string, expected:string}>
+     */
+    public static function signedDurationProvider(): iterable
+    {
+        return [
+            'chrono negative minute and second without hour' => [
+                'method' => 'fromChronoString',
+                'input' => '-05:30',
+                'reference' => '2021-01-01 00:10:00.000000',
+                'expected' => '2021-01-01 00:04:30.000000',
+            ],
+            'chrono negative hour minute second' => [
+                'method' => 'fromChronoString',
+                'input' => '-1:05:30',
+                'reference' => '2021-01-01 02:00:00.000000',
+                'expected' => '2021-01-01 00:54:30.000000',
+            ],
+            'chrono negative fractional second' => [
+                'method' => 'fromChronoString',
+                'input' => '-12:28.5',
+                'reference' => '2021-01-01 00:20:00.000000',
+                'expected' => '2021-01-01 00:07:31.500000',
+            ],
+            'time negative with zero hour' => [
+                'method' => 'fromTimeString',
+                'input' => '-00:30',
+                'reference' => '2021-01-01 01:00:00.000000',
+                'expected' => '2021-01-01 00:30:00.000000',
+            ],
+            'time negative hour and minute' => [
+                'method' => 'fromTimeString',
+                'input' => '-01:30',
+                'reference' => '2021-01-01 05:00:00.000000',
+                'expected' => '2021-01-01 03:30:00.000000',
             ],
         ];
     }
