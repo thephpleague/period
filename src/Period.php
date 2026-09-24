@@ -22,6 +22,7 @@ use Deprecated;
 use Exception;
 use Generator;
 use JsonSerializable;
+use Time\Duration as TimeDuration;
 
 /**
  * An immutable value object class to manipulate DateTimeInterface interval.
@@ -182,9 +183,10 @@ final class Period implements JsonSerializable
         };
     }
 
-    private static function filterDuration(Period|Duration|DateInterval|string $duration): DateInterval
+    private static function filterDuration(Period|TimeDuration|Duration|DateInterval|string $duration): DateInterval
     {
         return match (true) {
+            $duration instanceof TimeDuration => Duration::fromNative($duration)->dateInterval,
             $duration instanceof Duration => $duration->dateInterval,
             $duration instanceof Period => $duration->dateInterval(),
             $duration instanceof DateInterval => $duration,
@@ -212,7 +214,7 @@ final class Period implements JsonSerializable
      */
     public static function after(
         DatePoint|DateTimeInterface|string $startDate,
-        Period|Duration|DateInterval|string $duration,
+        Period|Duration|TimeDuration|DateInterval|string $duration,
         Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         $startDate = self::filterDatePoint($startDate);
@@ -226,7 +228,7 @@ final class Period implements JsonSerializable
      */
     public static function around(
         DatePoint|DateTimeInterface|string $midpoint,
-        Period|Duration|DateInterval|string $duration,
+        Period|Duration|TimeDuration|DateInterval|string $duration,
         Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         $midpoint = self::filterDatePoint($midpoint);
@@ -240,7 +242,7 @@ final class Period implements JsonSerializable
      */
     public static function before(
         DatePoint|DateTimeInterface|string $endDate,
-        Period|Duration|DateInterval|string $duration,
+        Period|Duration|TimeDuration|DateInterval|string $duration,
         Bounds $bounds = Bounds::IncludeStartExcludeEnd
     ): self {
         $endDate = self::filterDatePoint($endDate);
@@ -423,7 +425,7 @@ final class Period implements JsonSerializable
      * </ul>
      *
      */
-    public function durationCompare(Period|Duration|DateInterval|string $duration): int
+    public function durationCompare(Period|Duration|TimeDuration|DateInterval|string $duration): int
     {
         return $this->startDate->add($this->dateInterval()) <=> $this->startDate->add(self::filterDuration($duration));
     }
@@ -432,7 +434,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is greater than the submitted one.
      *
      */
-    public function durationGreaterThan(Period|Duration|DateInterval|string $duration): bool
+    public function durationGreaterThan(Period|Duration|TimeDuration|DateInterval|string $duration): bool
     {
         return 1 === $this->durationCompare($duration);
     }
@@ -441,7 +443,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is greater than or equal to the submitted one.
      *
      */
-    public function durationGreaterThanOrEquals(Period|Duration|DateInterval|string $duration): bool
+    public function durationGreaterThanOrEquals(Period|Duration|TimeDuration|DateInterval|string $duration): bool
     {
         return 0 <= $this->durationCompare($duration);
     }
@@ -450,7 +452,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is equal to the submitted one.
      *
      */
-    public function durationEquals(Period|Duration|DateInterval|string $duration): bool
+    public function durationEquals(Period|Duration|TimeDuration|DateInterval|string $duration): bool
     {
         return 0 === $this->durationCompare($duration);
     }
@@ -459,7 +461,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is greater than or equal to the submitted one.
      *
      */
-    public function durationLessThanOrEquals(Period|Duration|DateInterval|string $duration): bool
+    public function durationLessThanOrEquals(Period|Duration|TimeDuration|DateInterval|string $duration): bool
     {
         return 0 >= $this->durationCompare($duration);
     }
@@ -468,7 +470,7 @@ final class Period implements JsonSerializable
      * Tells whether the current instance duration is less than the submitted one.
      *
      */
-    public function durationLessThan(Period|Duration|DateInterval|string $duration): bool
+    public function durationLessThan(Period|Duration|TimeDuration|DateInterval|string $duration): bool
     {
         return -1 === $this->durationCompare($duration);
     }
@@ -751,7 +753,7 @@ final class Period implements JsonSerializable
      *
      * @return DatePeriod<DateTimeImmutable>
      */
-    public function rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
+    public function rangeForward(Period|Duration|TimeDuration|DateInterval|string $timeDelta): DatePeriod
     {
         $duration = self::filterDuration($timeDelta);
 
@@ -777,7 +779,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<int,DateTimeImmutable>
      */
-    public function rangeBackwards(Period|Duration|DateInterval|string $timeDelta): Generator
+    public function rangeBackwards(Period|Duration|TimeDuration|DateInterval|string $timeDelta): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         [$endDate, $startDate, $compare] = match ($this->bounds) {
@@ -807,7 +809,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<int,Period>
      */
-    public function splitForward(Period|Duration|DateInterval|string $duration): Generator
+    public function splitForward(Period|Duration|TimeDuration|DateInterval|string $duration): Generator
     {
         $duration = self::filterDuration($duration);
         /** @var DateTimeImmutable $startDate */
@@ -834,7 +836,7 @@ final class Period implements JsonSerializable
      *
      * @return Generator<int,Period>
      */
-    public function splitBackwards(Period|Duration|DateInterval|string $duration): Generator
+    public function splitBackwards(Period|Duration|TimeDuration|DateInterval|string $duration): Generator
     {
         $endDate = $this->endDate;
         $duration = self::filterDuration($duration);
@@ -1086,7 +1088,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending date endpoint.
      */
-    public function withDurationAfterStart(Period|Duration|DateInterval|string $duration): self
+    public function withDurationAfterStart(Period|Duration|TimeDuration|DateInterval|string $duration): self
     {
         return $this->endingOn($this->startDate->add(self::filterDuration($duration)));
     }
@@ -1097,7 +1099,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting date endpoint.
      */
-    public function withDurationBeforeEnd(Period|Duration|DateInterval|string $duration): self
+    public function withDurationBeforeEnd(Period|Duration|TimeDuration|DateInterval|string $duration): self
     {
         return $this->startingOn($this->endDate->sub(self::filterDuration($duration)));
     }
@@ -1109,7 +1111,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified starting date endpoint.
      */
-    public function moveStartDate(Period|Duration|DateInterval|string $duration): self
+    public function moveStartDate(Period|Duration|TimeDuration|DateInterval|string $duration): self
     {
         return $this->startingOn($this->startDate->add(self::filterDuration($duration)));
     }
@@ -1121,7 +1123,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified ending date endpoint.
      */
-    public function moveEndDate(Period|Duration|DateInterval|string $duration): self
+    public function moveEndDate(Period|Duration|TimeDuration|DateInterval|string $duration): self
     {
         return $this->endingOn($this->endDate->add(self::filterDuration($duration)));
     }
@@ -1133,7 +1135,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new date endpoints.
      */
-    public function move(Period|Duration|DateInterval|string $duration): self
+    public function move(Period|Duration|TimeDuration|DateInterval|string $duration): self
     {
         $duration = self::filterDuration($duration);
 
@@ -1159,7 +1161,7 @@ final class Period implements JsonSerializable
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified new date endpoints.
      */
-    public function expand(Period|Duration|DateInterval|string $duration): self
+    public function expand(Period|Duration|TimeDuration|DateInterval|string $duration): self
     {
         $duration = self::filterDuration($duration);
 
@@ -1395,7 +1397,7 @@ final class Period implements JsonSerializable
      * @return DatePeriod<DateTimeImmutable>
      */
     #[Deprecated(since:'league/period:5.2.0', message: "use League\Perio\Period::rangeForward()")]
-    public function dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
+    public function dateRangeForward(Period|Duration|TimeDuration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
     {
         return new DatePeriod(
             $this->startDate,
@@ -1415,7 +1417,7 @@ final class Period implements JsonSerializable
      * @return Generator<int,DateTimeImmutable>
      */
     #[Deprecated(since:'league/period:5.2.0', message: "use League\Perio\Period::rangeBackwards()")]
-    public function dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator
+    public function dateRangeBackwards(Period|Duration|TimeDuration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator
     {
         $timeDelta = self::filterDuration($timeDelta);
         $date = $this->endDate;
