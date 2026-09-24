@@ -27,6 +27,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
+
 use function count;
 
 final class PeriodRelationTest extends PeriodTestCase

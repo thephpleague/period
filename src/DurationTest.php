@@ -48,6 +48,7 @@ final class DurationTest extends TestCase
     private function formatDuration(Duration $duration): string
     {
         $interval = $duration->dateInterval;
+        $sign = 1 === $interval->invert ? '-':'';
 
         $date = ['P'];
         if (0 !== $interval->y) {
@@ -80,19 +81,19 @@ final class DurationTest extends TestCase
                 $second = $interval->s - $interval->f;
             }
 
-            return $interval->format($dateFormat.('' === $timeFormat ? 'T' : $timeFormat))
+            return $sign.$interval->format($dateFormat.('' === $timeFormat ? 'T' : $timeFormat))
                 .rtrim(sprintf('%f', $second), '0').'S';
         }
 
         if (0 !== $interval->s) {
-            return $interval->format($dateFormat.$timeFormat.'%sS');
+            return $sign.$interval->format($dateFormat.$timeFormat.'%sS');
         }
 
         if (1 === count($time) && 1 === count($date)) {
             return 'PT0S';
         }
 
-        return $interval->format($dateFormat.$timeFormat);
+        return $sign.$interval->format($dateFormat.$timeFormat);
     }
 
     public function testInstantiationFromSetState(): void
@@ -242,7 +243,7 @@ final class DurationTest extends TestCase
             ],
             'negative chrono' => [
                 'chronometer' => '-12:28.5',
-                'expected' => 'PT12M28.5S',
+                'expected' => '-PT12M28.5S',
             ],
         ];
     }
@@ -282,11 +283,11 @@ final class DurationTest extends TestCase
             ],
             'negative chrono' => [
                 'chronometer' => '-12:28',
-                'expected' => 'PT-12H28M',
+                'expected' => '-PT12H28M',
             ],
             'negative chrono with seconds' => [
                 'chronometer' => '-00:00:28.5',
-                'expected' => 'PT28.5S',
+                'expected' => '-PT28.5S',
             ],
         ];
     }
