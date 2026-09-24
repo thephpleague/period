@@ -51,7 +51,7 @@
         "phpstan/phpstan-deprecation-rules": "^1.2.1",
         "phpstan/phpstan-phpunit": "^1.4.2",
         "phpstan/phpstan-strict-rules": "^1.6.2",
-        "phpunit/phpunit": "^10.5.63 || ^11.5.55 || ^12.5.23 || ^13.1.7",
+        "phpunit/phpunit": "^10.5.63 || ^11.5.55 || ^12.5.23",
         "symfony/var-dumper": "^6.4.15 || ^v7.4.8 || ^v8.0.8"
     },
     "autoload": {
