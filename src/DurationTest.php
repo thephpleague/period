@@ -24,6 +24,7 @@ namespace League\Period;
 
 use DateInterval;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -86,7 +87,7 @@ final class DurationTest extends TestCase
         }
 
         if (0 !== $interval->s) {
-            return $sign.$interval->format($dateFormat.$timeFormat.'%sS');
+            return $sign.$interval->format($dateFormat.('' === $timeFormat ? 'T' : '').$timeFormat.'%sS');
         }
 
         if (1 === count($time) && 1 === count($date)) {
@@ -157,7 +158,7 @@ final class DurationTest extends TestCase
             'negative seconds' => [
                 'seconds' => -3,
                 'fraction' => 2345,
-                'expected' => 'PT-3.002345S',
+                'expected' => '-PT3.002345S',
             ],
         ];
     }
@@ -352,6 +353,131 @@ final class DurationTest extends TestCase
                 'reference_date' => new DateTime('2019-04-01', new DateTimeZone('Europe/Brussels')),
                 'expected' => 'PT4H',
             ],
+        ];
+    }
+
+    /**
+     * A sign applies to the whole duration, not just the hour. It used to be
+     * lost when the hour was zero, and to negate only the hour otherwise.
+     *
+     * @param 'fromChronoString'|'fromTimeString' $method
+     * @param non-empty-string $input
+     * @param non-empty-string $reference
+     * @param non-empty-string $expected
+     */
+    #[DataProvider('signedDurationProvider')]
+    public function testSignedStringsApplySignToWholeDuration(
+        string $method,
+        string $input,
+        string $reference,
+        string $expected
+    ): void
+    {
+        $duration = Duration::$method($input); /* @phpstan-ignore-line */
+        $date = new DateTimeImmutable($reference);
+
+        self::assertSame($expected, $date->add($duration->dateInterval)->format('Y-m-d H:i:s.u'));
+    }
+
+    /**
+     * @return iterable<string, array{
+     *     method: 'fromChronoString'|'fromTimeString',
+     *     input: non-empty-string,
+     *     reference: non-empty-string,
+     *     expected: non-empty-string
+     * }>
+     */
+    public static function signedDurationProvider(): iterable
+    {
+        return [
+            'chrono negative minute and second without hour' => [
+                'method' => 'fromChronoString',
+                'input' => '-05:30',
+                'reference' => '2021-01-01 00:10:00.000000',
+                'expected' => '2021-01-01 00:04:30.000000',
+            ],
+            'chrono negative hour minute second' => [
+                'method' => 'fromChronoString',
+                'input' => '-1:05:30',
+                'reference' => '2021-01-01 02:00:00.000000',
+                'expected' => '2021-01-01 00:54:30.000000',
+            ],
+            'chrono negative fractional second' => [
+                'method' => 'fromChronoString',
+                'input' => '-12:28.5',
+                'reference' => '2021-01-01 00:20:00.000000',
+                'expected' => '2021-01-01 00:07:31.500000',
+            ],
+            'time negative with zero hour' => [
+                'method' => 'fromTimeString',
+                'input' => '-00:30',
+                'reference' => '2021-01-01 01:00:00.000000',
+                'expected' => '2021-01-01 00:30:00.000000',
+            ],
+            'time negative hour and minute' => [
+                'method' => 'fromTimeString',
+                'input' => '-01:30',
+                'reference' => '2021-01-01 05:00:00.000000',
+                'expected' => '2021-01-01 03:30:00.000000',
+            ],
+        ];
+    }
+
+    #[DataProvider('provide_native_durations')]
+    public function test_from_native(
+        \Time\Duration $native,
+        string $expected,
+    ): void {
+        self::assertEquals(
+            $expected,
+            $this->formatDuration(Duration::fromNative($native))
+        );
+    }
+
+    /**
+     * @throws \Time\TimeException
+     * @return iterable<non-empty-string, array{0: \Time\Duration, 1: non-empty-string}>
+     */
+    public static function provide_native_durations(): iterable
+    {
+        yield 'whole seconds' => [
+            \Time\Duration::fromSeconds(42, 0),
+            'PT42S',
+        ];
+
+        yield '499 nanoseconds rounds to zero microseconds' => [
+            \Time\Duration::fromSeconds(42, 499),
+            'PT42S',
+        ];
+
+        yield '500 nanoseconds rounds to one microsecond' => [
+            \Time\Duration::fromSeconds(42, 500),
+            'PT42S',
+        ];
+
+        yield '1499 nanoseconds rounds to one microsecond' => [
+            \Time\Duration::fromSeconds(42, 1_499),
+            'PT42.000001S',
+        ];
+
+        yield '1500 nanoseconds rounds to two microseconds' => [
+            \Time\Duration::fromSeconds(42, 1_500),
+            'PT42.000001S',
+        ];
+
+        yield '999499 nanoseconds rounds to 999 microseconds' => [
+            \Time\Duration::fromSeconds(42, 999_499),
+            'PT42.000999S',
+        ];
+
+        yield '999500 nanoseconds rounds to 1000 microseconds' => [
+            \Time\Duration::fromSeconds(42, 999_500),
+            'PT42.000999S',
+        ];
+
+        yield '999999999 nanoseconds rounds to 1000000 microseconds' => [
+            \Time\Duration::fromSeconds(42, 999_999_999),
+            'PT42.999999S',
         ];
     }
 }

@@ -19,6 +19,7 @@ use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
 use Throwable;
+use \Time\Duration as TimeDuration;
 
 use function preg_match;
 use function str_pad;
@@ -104,6 +105,20 @@ final class Duration
     }
 
     /**
+     * Returns a new instance from a \Time\Duration instance.
+     *
+     * @throws Exception
+     */
+    public static function fromNative(TimeDuration $duration): self
+    {
+        $dateInterval = new DateInterval('PT' . $duration->seconds . 'S');
+        $dateInterval->f = $duration->nanoseconds / 1_000_000_000;
+        $dateInterval->invert = $duration->negative ? 1 : 0;
+
+        return new self($dateInterval);
+    }
+
+    /**
      * Returns a new instance from a seconds.
      *
      * @throws InvalidArgumentException
@@ -114,9 +129,16 @@ final class Duration
             throw new InvalidArgumentException('The fraction should be a valid positive integer or zero.');
         }
 
+        $negative = 0;
+        if ($seconds < 0) {
+            $negative = 1;
+            $seconds = abs($seconds);
+        }
+
         $duration = new DateInterval('PT0S');
         $duration->s = $seconds;
         $duration->f = $fractions / 1_000_000;
+        $duration->invert = $negative;
 
         return new self($duration);
     }
@@ -182,7 +204,13 @@ final class Duration
     }
 
     /**
-     * @param array{hour: ?string, minute: ?string, second: ?string, fraction: ?string, sign: ?string} $units
+     * @param array{
+     *     hour?: ?string,
+     *     minute?: ?string,
+     *     second?: ?string,
+     *     fraction?: ?string,
+     *     sign?: ?string
+     * } $units
      */
     private static function fromUnits(array $units): self
     {
