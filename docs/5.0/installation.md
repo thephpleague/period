@@ -7,7 +7,7 @@ title: Installation
 
 ## System Requirements
 
-`Period` requires **PHP 8.1** but the latest stable version of PHP.
+`Period` requires **PHP 8.2** but the latest stable version of PHP.
 
 ## Composer
 

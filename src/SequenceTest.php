@@ -166,7 +166,7 @@ final class SequenceTest extends PeriodTestCase
             DatePoint::fromDateString('2012-06-12')->day()
         );
 
-        self::assertSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => strlen(get_class($event1)) - strlen(get_class($event2))));
+        self::assertSame($sequence, $sequence->sorted(fn (Period $event1, Period $event2): int => strlen($event1::class) - strlen($event2::class)));
     }
 
     public function testSortedReturnsNewInstance(): void

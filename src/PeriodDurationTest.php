@@ -326,12 +326,10 @@ final class PeriodDurationTest extends PeriodTestCase
             $list[] = $innerPeriod;
         }
 
-        $result = array_map(function (Period $range): array {
-            return [
-                'start' => $range->startDate->format('Y-m-d H:i:s'),
-                'end'   => $range->endDate->format('Y-m-d H:i:s'),
-            ];
-        }, $list);
+        $result = array_map(fn(Period $range): array => [
+            'start' => $range->startDate->format('Y-m-d H:i:s'),
+            'end'   => $range->endDate->format('Y-m-d H:i:s'),
+        ], $list);
 
         $expected = [
             [

@@ -2,6 +2,25 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [Next](https://github.com/thephpleague/period/compare/5.3.3...master) - TBD
+
+### Added
+
+- Support for `Time\Duration`
+
+
+### Fixed
+
+- Fix inconsistent behaviour in `Duration` named constructor  [#141](https://github.com/thephpleague/period/issues/141) 
+
+### Deprecated
+
+- None
+
+### Removed
+
+- `PHP8.1` support
+
 ## [5.3.3](https://github.com/thephpleague/period/compare/5.3.2...5.3.3) - 2025-10-17
 
 ### Added

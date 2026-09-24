@@ -5,11 +5,11 @@ on:
 jobs:
   linux_tests:
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.flags }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
+        php: ['8.2', '8.3', '8.4', '8.5']
         stability: [prefer-lowest, prefer-stable]
 
         include:
@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
