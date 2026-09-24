@@ -8,10 +8,12 @@ parameters:
     paths:
         - src
     ignoreErrors:
-        - '#^Generator expects value type array#'
-        - '#Attribute class Deprecated does not exist.#'
-        - '#^Fetching class constant#'
-        - '#has typehint with deprecated enum League\\Period\\InitialDatePresence#'
+        -
+            message: '#Loose comparison via "==" is not allowed#'
+            path: src
+        -
+            message: '#League\\Period\\InitialDatePresence#'
+            path: src
     bootstrapFiles:
         - vendor/autoload.php
 

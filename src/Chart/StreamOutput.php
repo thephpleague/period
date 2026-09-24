@@ -27,8 +27,6 @@ use const PHP_EOL;
 
 final class StreamOutput implements Output
 {
-    private const REGEXP_POSIX_PLACEHOLDER = '/(\s+)/msi';
-
     /** @var resource */
     private $stream;
 
@@ -87,12 +85,25 @@ final class StreamOutput implements Output
     {
         static $formatter;
         if (!$formatter instanceof Closure) {
-            $formatter = fn (array $matches): string => chr(27).'['.strtr(
-                (string) preg_replace(self::REGEXP_POSIX_PLACEHOLDER, ';', (string) $matches[1]),
-                array_reduce(Color::cases(), fn (array $carry, Color $color): array => [...$carry, ...[$color->value => $color->posix()]], [])
-            ).'m';
+            $formatter = function (array $matches): string {
+                if (!is_string($matches[1])) {
+                    return '';
+                }
+
+                $str = (string) preg_replace('/(?<placeholder>\s+)/msi', ';', $matches[1]);
+
+                return chr(27)
+                    .'['
+                    .strtr($str, array_reduce(
+                        Color::cases(),
+                        fn (array $carry, Color $color): array => [...$carry, ...[$color->value => $color->posix()]],
+                        []
+                    ))
+                    .'m';
+            };
         }
 
         return $formatter;
     }
+
 }

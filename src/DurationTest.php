@@ -49,7 +49,7 @@ final class DurationTest extends TestCase
     private function formatDuration(Duration $duration): string
     {
         $interval = $duration->dateInterval;
-        $sign = 1 === $interval->invert ? '-':'';
+        $sign = 1 === $interval->invert ? '-' : '';
 
         $date = ['P'];
         if (0 !== $interval->y) {
@@ -371,8 +371,7 @@ final class DurationTest extends TestCase
         string $input,
         string $reference,
         string $expected
-    ): void
-    {
+    ): void {
         $duration = Duration::$method($input); /* @phpstan-ignore-line */
         $date = new DateTimeImmutable($reference);
 

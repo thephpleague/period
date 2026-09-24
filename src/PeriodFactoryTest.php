@@ -85,7 +85,7 @@ final class PeriodFactoryTest extends PeriodTestCase
         $start = new DateTimeImmutable($startDate);
         $period = match (true) {
             $duration instanceof Period => Period::after($start, $duration->dateInterval()),
-            is_string($duration) => Period::after($start, DateInterval::createFromDateString($duration)), /* @phpstan-ignore-line */
+            is_string($duration) => Period::after($start, DateInterval::createFromDateString($duration)),
             !$duration instanceof DateInterval => Period::after($start, Duration::fromSeconds($duration)),
             default => Period::after($start, $duration),
         };
@@ -203,14 +203,14 @@ final class PeriodFactoryTest extends PeriodTestCase
     {
         $this->expectException(InvalidInterval::class);
 
-        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D')); /* @phpstan-ignore-line */
     }
 
     public function testFromRangeThrowsException(): void
     {
         $this->expectException(InvalidInterval::class);
 
-        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D'));
+        Period::fromRange(new DatePeriod('R4/2012-07-01T00:00:00Z/P7D')); /* @phpstan-ignore-line */
     }
 
     #[DataProvider('provideDatePeriodOptions')]
@@ -230,7 +230,7 @@ final class PeriodFactoryTest extends PeriodTestCase
     }
 
     /**
-     * @return iterable<string, array{option: int, expectedBounds: Bounds}>
+     * @return iterable<string, array{options: int, expectedBounds: Bounds}>
      */
     public static function provideDatePeriodOptions(): iterable
     {
