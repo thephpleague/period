@@ -24,6 +24,7 @@ namespace League\Period;
 
 use DateInterval;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -86,7 +87,6 @@ final class DurationTest extends TestCase
         }
 
         if (0 !== $interval->s) {
-            return $sign.$interval->format($dateFormat.$timeFormat.'%sS');
             return $sign.$interval->format($dateFormat.('' === $timeFormat ? 'T' : '').$timeFormat.'%sS');
         }
 
