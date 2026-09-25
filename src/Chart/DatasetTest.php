@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace League\Period\Chart;
 
-use ArrayIterator;
 use ArrayObject;
 use DateTime;
 use DateTimeImmutable;
@@ -164,11 +163,13 @@ final class DatasetTest extends TestCase
     {
         $items = new class () implements IteratorAggregate {
             /**
-             * @return ArrayIterator<array-key, Period>
+             * @return Iterator<array-key, Period>
              */
             public function getIterator(): Iterator
             {
-                return new ArrayIterator([Period::fromIso80000('!Y-m-d', '[2021-01-23, 2022-02-03]')]);
+                return yield from [
+                    Period::fromIso80000('!Y-m-d', '[2021-01-23, 2022-02-03]'),
+                ];
             }
         };
 
