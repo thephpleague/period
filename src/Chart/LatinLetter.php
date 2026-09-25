@@ -98,6 +98,8 @@ final class LatinLetter implements LabelGenerator
                     default => [$letterAscii, false],
                 };
 
+                assert($nextLetterAscii <= 255);
+
                 $nextLetter = chr($nextLetterAscii);
                 if ($increase && [] === $letters) {
                     $nextLetter .= $nextLetter;
