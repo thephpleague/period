@@ -2,6 +2,24 @@
 
 All notable changes to `Period` will be documented in this file
 
+## [Next](https://github.com/thephpleague/period/compare/5.4.0...master) - TBD
+
+### Added
+
+- None
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [5.4.0](https://github.com/thephpleague/period/compare/5.3.3...5.4.0) - 2026-09-24
 
 ### Added

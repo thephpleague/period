@@ -9,7 +9,7 @@ title: Overview
 [![Latest Version](https://img.shields.io/github/release/thephpleague/period.svg?style=flat-square)](https://github.com/thephpleague/period/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/thephpleague/period/blob/master/LICENSE)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/period.svg?style=flat-square)](https://packagist.org/packages/league/period)
-![php 8.1+](https://img.shields.io/badge/php-min%208.1.0-red.svg)
+![php 8.2+](https://img.shields.io/badge/php-min%208.2.0-red.svg)
 
 `Period` is PHP's missing time range API. this package cover all basic operations regarding time ranges.
 
