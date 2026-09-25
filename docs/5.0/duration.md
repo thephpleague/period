@@ -14,6 +14,15 @@ means to create a `DateInterval` instance.
 
 The `Duration::__construct` method is private, as such, to instantiate a new `Duration` object use one of the following named constructors:
 
+### Duration::fromNative
+
+~~~php
+public Duration::fromNative(\Time\Duration $duration): self
+~~~
+
+Returns a `Duration` instance from PHP's native  `\Time\Duration` object available since `PHP8.6`.
+Or via a polyfill.
+
 ### Duration::fromInterval
 
 ~~~php
@@ -75,8 +84,10 @@ All these methods converts their inputs into a `Duration` object or throws an ex
 
 ~~~php
 use League\Period\Duration;
+use Time\Duration as TimeDuration;
 
-Duration::fromDateInterval(new DateInterval('PT1H'));     // is equivalent to new Duration(new DateInterval('PT1H'))
+Duration::fromNative(TimeDuration::fromHours(1));   // is equivalent to new Duration(new DateInterval('PT1H'))
+Duration::fromDateInterval(new DateInterval('PT1H')); // is equivalent to new Duration(new DateInterval('PT1H'))
 Duration::fromDateString('1 DAY');                    // is equivalent to new Duration(DateInterval::createFromDateString('1 DAY'))
 Duration::fromSeconds(2018, 300_000);                 // is equivalent to new Duration(new DateInterval('PT2018.3S'))
 Duration::fromChronoString('12:30');                  // is equivalent to new Duration(new DateInterval('PT12M30S'))

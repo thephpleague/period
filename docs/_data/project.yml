@@ -6,8 +6,8 @@ repository: 'period'
 releases:
   current:
     version: '5.0'
-    requires: 'PHP >= 8.1'
-    latest: '5.3.2'
+    requires: 'PHP >= 8.2'
+    latest: '5.4.0'
     supported_until: 'TBD'
     documentation_link: '/5.0/'
   previous:

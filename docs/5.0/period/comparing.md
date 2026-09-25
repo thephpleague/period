@@ -81,7 +81,7 @@ All following methods results take into account the interval datepoints as well 
 ### Period::isBefore
 
 ~~~php
-public Period::isBefore(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
+public Period::isBefore(Period|DateTimeInterface $timeSlot): bool
 ~~~
 
 Tells whether the current `Period` object datetime continuum is entirely before the specified `$timeSlot`.
@@ -125,7 +125,7 @@ $alt->isDuring($period); //return true;
 ### Period::isAfter
 
 ~~~php
-public Period::isAfter(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
+public Period::isAfter(Period|DateTimeInterface $timeSlot): bool
 ~~~
 
 Tells whether the current `Period` object datetime continuum is entirely after the specified `$timeSlot`.
@@ -298,7 +298,7 @@ $alt->overlaps($other);  //return true
 ### Period::isStartedBy
 
 ~~~php
-public Period::isStartedBy(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
+public Period::isStartedBy(Period|DateTimeInterface $timeSlot): bool
 ~~~
 
 - Tells whether both `Period` objects starts at the same datepoint.
@@ -317,7 +317,7 @@ $period->isStartedBy($alt); //return true
 ### Period::isEndedBy
 
 ~~~php
-public Period::isEndedBy(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
+public Period::isEndedBy(Period|DateTimeInterface $timeSlot): bool
 ~~~
 
 - Tells whether both `Period` objects ends at the same datepoint.
@@ -357,7 +357,7 @@ $orig->equals($otherInclusif); //return false because the boundary are not the s
 ### Period::contains
 
 ~~~php
-public Period::contains(Period|DatePoint|DateTimeInterface|string $timeSlot): bool
+public Period::contains(Period|DateTimeInterface $timeSlot): bool
 ~~~
 
 - A `Period` contains a datepoint reference if this datepoint is present in its datetime continuum.

@@ -11,6 +11,7 @@ Whenever a duration is expected the following types are supported:
 - `Period`
 - `Duration`
 - a `string` parsable by `DateInterval::createFromDateString`
+- `\Time\Duration` since version `5.4`
 
 Unless explicitly restricted, whenever a datepoint is expected the following types are supported:
 
@@ -97,7 +98,7 @@ use League\Period\Period;
 
 $period = Period::fromDate('2012-04-01 08:30:25', '2013-09-04 12:35:21');
 $period->dateInterval();  // returns a DateInterval object
-$period->timeDuration();         // returns the duration in seconds
+$period->timeDuration();  // returns the duration in seconds
 ~~~
 
 ## Period properties
@@ -131,7 +132,7 @@ of smaller `Period` instances.
 ### Period::rangeForward and Period::rangeBackwards
 
 ~~~php
-public Period::rangeForward(Period|Duration|DateInterval|string $timeDelta): DatePeriod
+public Period::rangeForward(DateInterval $timeDelta): DatePeriod
 ~~~
 
 `Period::rangeForward` returns a `DatePeriod` instance using the `Period` datepoints and bounds with the given `$timeDelta`.
@@ -161,7 +162,7 @@ foreach (Period::fromYear(2012)->rangeForward('1 MONTH') as $datetime) {
 ~~~php
 use League\Period\InitialDatePresence;
 
-public Period::dateRangeForward(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
+public Period::dateRangeForward(DateInterval $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
 ~~~
 
 Returns a `DatePeriod` using the `Period` datepoints with the given `$timeDelta`.
@@ -205,7 +206,7 @@ foreach ($dateRange as $datetime) {
 ### Period::rangeBackwards
 
 ~~~php
-public Period::rangeBackwards(Period|Duration|DateInterval|string $timeDelta): Generator<DateTimeImmutable>
+public Period::rangeBackwards(DateInterval $timeDelta): Generator<DateTimeImmutable>
 ~~~
 
 `Period::rangeBackward` returns a `Generator` instance using the `Period` endpoints and bounds with the given `$timeDelta`.
@@ -233,7 +234,7 @@ foreach (Period::fromYear(2012)->rangeBackwards('1 MONTH') as $datetime) {
 ~~~php
 use League\Period\InitialDatePresence;
 
-public Period::dateRangeBackwards(Period|Duration|DateInterval|string $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator<DateTimeImmutable>
+public Period::dateRangeBackwards(DateInterval $timeDelta, InitialDatePresence $endDatePresence = InitialDatePresence::Included): Generator<DateTimeImmutable>
 ~~~
 
 Returns a `Generator` to allow iteration over the instance datepoints, recurring at regular intervals, backwards starting from the ending datepoint.
@@ -269,7 +270,7 @@ foreach ($dateRange as $datetime) {
 ### Period::splitForward
 
 ~~~php
-public Period::splitForward(Period|Duration|DateInterval|string $duration): Generator<Period>
+public Period::splitForward(DateInterval $duration): Generator<Period>
 ~~~
 
 This method splits a given `Period` object in smaller `Period` objects according to the given `$duration` starting from the object starting datepoint to its ending datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.
@@ -291,7 +292,7 @@ foreach (Period::fromYear(2012)->splitForward(new DateInterval('P1M')) as $perio
 ### Period::splitBackwards
 
 ~~~php
-public Period::splitBackwards(Period|Duration|DateInterval|string $duration): Generator<Period>
+public Period::splitBackwards(DateInterval $duration): Generator<Period>
 ~~~
 
 This method splits a given `Period` object in smaller `Period` objects according to the given `$duration` starting from the object ending datepoint to its starting datepoint. The result is returned as a `Generator` object. All returned objects must be contained or abutted to the parent `Period` object.

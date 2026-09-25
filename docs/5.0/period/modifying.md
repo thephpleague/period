@@ -15,6 +15,7 @@ Whenever a duration is expected the following types are supported:
 - `Period`
 - `Duration`
 - a `string` parsable by `DateInterval::createFromDateString`
+- `\Time\Duration` since version `5.4`
 
 Unless explicitly restricted, whenever a datepoint is expected the following types are supported:
 
@@ -48,7 +49,7 @@ $newInterval->toIso80000('Y-m-d'); // '[2014-03-01, 2014-04-01]'
 ### Period::startingOn
 
 ~~~php
-public Period::startingOn(DatePoint|DateTimeInterface|string $datepoint): Period
+public Period::startingOn(DateTimeInterface $datepoint): Period
 ~~~
 
 Returns a new `Period` object with `$datepoint` as the new **starting datepoint**.
@@ -66,7 +67,7 @@ $newInterval->startDate(); //returns DateTimeImmutable('2014-02-01');
 ### Period::endingOn
 
 ~~~php
-public Period::endingOn(DatePoint|DateTimeInterface|string $datepoint): Period
+public Period::endingOn(DateTimeInterface $datepoint): Period
 ~~~
 
 Returns a new `Period` object with `$datepoint` as the new **ending datepoint**.
@@ -86,7 +87,7 @@ $newInterval->endDate(); //returns DateTimeImmutable('2014-03-16');
 ### Period::withDurationAfterStart
 
 ~~~php
-public Period::withDurationAfterStart(Period|Duration|DateInterval|string $duration): Period
+public Period::withDurationAfterStart(DateInterval $duration): Period
 ~~~
 
 Returns a new `Period` object by updating its duration. Only the ending datepoint is updated.
@@ -104,7 +105,7 @@ $newInterval->endDate(); //returns DateTimeImmutable('2014-03-16');
 ### Period::withDurationBeforeEnd
 
 ~~~php
-public Period::withDurationBeforeEnd(Period|Duration|DateInterval|string $duration): Period
+public Period::withDurationBeforeEnd(DateInterval $duration): Period
 ~~~
 
 Returns a new `Period` object by updating its duration. Only the starting datepoint is updated.
@@ -122,7 +123,7 @@ $newInterval->startDate(); //returns DateTimeImmutable('2014-03-30');
 ### Period::move
 
 ~~~php
-public Period::move(Period|Duration|DateInterval|string $duration): Period
+public Period::move(DateInterval $duration): Period
 ~~~
 
 Returns a new `Period` object where the endpoints are moved forward or backward simultaneously by a given interval.
@@ -141,7 +142,7 @@ $newInterval->endDate();   //returns DateTimeImmutable('2014-05-01');
 ### Period::moveStartDate
 
 ~~~php
-public Period::moveStartDate(Period|Duration|DateInterval|string $duration): Period
+public Period::moveStartDate(DateInterval $duration): Period
 ~~~
 
 Returns a new `Period` object where the starting endpoint is moved forward or backward by a given interval.
@@ -160,7 +161,7 @@ $newInterval->endDate();     //returns DateTimeImmutable('2014-04-01');
 ### Period::moveEndDate
 
 ~~~php
-public Period::moveEndDate(Period|Duration|DateInterval|string $duration): Period
+public Period::moveEndDate(DateInterval $duration): Period
 ~~~
 
 Returns a new `Period` object where the ending endpoint is moved forward or backward by a given interval.
@@ -179,7 +180,7 @@ $newInterval->endDate();   //returns DateTimeImmutable('2014-05-01');
 ### Period::expand
 
 ~~~php
-public Period::expand(Period|Duration|DateInterval|string $duration): Period
+public Period::expand(DateInterval $duration): Period
 ~~~
 
 Returns a new `Period` object where the given interval is:

@@ -71,17 +71,17 @@ $day->toIso80000('Y-m-d H:i:s'); //return (1970-04-28 04:0:07, 1970-04-28 13:0:0
 ~~~php
 public static Period::after(
     DatePoint|DateTimeInterface|string $startDate, 
-    Period|Duration|DateInterval|string $duration, 
+    Time\Duration|Period|Duration|DateInterval|string $duration, 
     Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 public static Period::before(
     DatePoint|DateTimeInterface|string $endDate,
-    Period|Duration|DateInterval|string $duration,
+    Time\Duration|Period|Duration|DateInterval|string $duration,
     Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 public static Period::around(
     DatePoint|DateTimeInterface|string $midpoint,
-    Period|Duration|DateInterval|string $duration, 
+    Time\Duration|Period|Duration|DateInterval|string $duration, 
     Bounds $bounds = Bounds::IncludeStartExcludeEnd
 ): Period
 ~~~
