@@ -70,12 +70,7 @@ final class DatePoint
 
     public static function fromFormat(string $format, string $dateString): self
     {
-        try {
-            $date = DateTimeImmutable::createFromFormat($format, $dateString);
-        } catch (Exception $exception) {
-            throw InvalidInterval::dueToInvalidDateFormat($format, $dateString, $exception);
-        }
-
+        $date = DateTimeImmutable::createFromFormat($format, $dateString);
         if (false === $date) {
             throw InvalidInterval::dueToInvalidDateFormat($format, $dateString);
         }

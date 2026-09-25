@@ -18,9 +18,10 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
-use Throwable;
-use \Time\Duration as TimeDuration;
+use Time\Duration as TimeDuration;
 
+use function abs;
+use function date_interval_create_from_date_string;
 use function preg_match;
 use function str_pad;
 use function strlen;
@@ -111,7 +112,7 @@ final class Duration
      */
     public static function fromNative(TimeDuration $duration): self
     {
-        $dateInterval = new DateInterval('PT' . $duration->seconds . 'S');
+        $dateInterval = new DateInterval('PT'.$duration->seconds.'S');
         $dateInterval->f = $duration->nanoseconds / 1_000_000_000;
         $dateInterval->invert = $duration->negative ? 1 : 0;
 
@@ -190,15 +191,8 @@ final class Duration
      */
     public static function fromDateString(string $duration): self
     {
-        try {
-            $dateInterval = DateInterval::createFromDateString($duration);
-        } catch (Throwable $exception) {
-            throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.', 0, $exception);
-        }
-
-        if (false === $dateInterval) {
-            throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.');
-        }
+        $dateInterval = date_interval_create_from_date_string($duration);
+        false !== $dateInterval || throw new InvalidArgumentException('Unknown or bad format `'.$duration.'`.');
 
         return new self($dateInterval);
     }

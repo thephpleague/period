@@ -29,6 +29,11 @@ use function trim;
  */
 final class LatinLetter implements LabelGenerator
 {
+    private const ASCII_UPPERCASE_END = 91;
+    private const ASCII_LOWERCASE_END = 123;
+    private const ASCII_UPPERCASE_START = 65;
+    private const ASCII_LOWERCASE_START = 97;
+
     public readonly string $startLabel;
 
     public function __construct(string $startLabel)
@@ -69,14 +74,13 @@ final class LatinLetter implements LabelGenerator
     }
 
     /**
-     * Increments ASCII Letters like numbers in PHP.
+     * Increments ASCII letters like numbers in PHP.
      *
      * @see https://stackoverflow.com/questions/3567180/how-to-increment-letters-like-numbers-in-php/3567218
      */
     private static function increment(string $current): string
     {
-        static $asciiUpperCaseBounds = ['start' => 65, 'end' => 91];
-        static $asciiLowerCaseBounds = ['start' => 97, 'end' => 123];
+        assert((bool)preg_match('/\A[A-Za-z]+\z/', $current));
 
         $increase = true;
         $letters = str_split($current);
@@ -89,10 +93,12 @@ final class LatinLetter implements LabelGenerator
                 $letterAscii = ord($nextLetter) + 1;
 
                 [$nextLetterAscii, $increase] = match ($letterAscii) {
-                    $asciiUpperCaseBounds['end'] => [$asciiUpperCaseBounds['start'], true],
-                    $asciiLowerCaseBounds['end'] => [$asciiLowerCaseBounds['start'], true],
+                    self::ASCII_UPPERCASE_END => [self::ASCII_UPPERCASE_START, true],
+                    self::ASCII_LOWERCASE_END => [self::ASCII_LOWERCASE_START, true],
                     default => [$letterAscii, false],
                 };
+
+                assert($nextLetterAscii <= 255);
 
                 $nextLetter = chr($nextLetterAscii);
                 if ($increase && [] === $letters) {

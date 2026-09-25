@@ -91,9 +91,9 @@ final class Period implements JsonSerializable
 
     private static function resolveIso8601Date(string $startDate, string $endDate): string
     {
-        /** @var array<string> $startDateComponents */
+        /** @var list<string> $startDateComponents */
         $startDateComponents = preg_split('/\D/', $startDate);
-        /** @var array<string> $endDateComponents */
+        /** @var list<string> $endDateComponents */
         $endDateComponents = preg_split('/\D/', $endDate);
 
         $componentDiff = count($startDateComponents) - count($endDateComponents);
@@ -105,9 +105,9 @@ final class Period implements JsonSerializable
             return $endDate;
         }
 
-        /** @var array<string> $startDateDelimiters */
+        /** @var list<string> $startDateDelimiters */
         $startDateDelimiters = preg_split('/\d+/', $startDate);
-        /** @var array<string> $endDateDelimiters */
+        /** @var list<string> $endDateDelimiters */
         $endDateDelimiters = preg_split('/\d+/', $endDate);
         $res = array_slice($startDateDelimiters, count($startDateDelimiters) - count($endDateDelimiters));
         $res[0] = '';
@@ -251,29 +251,23 @@ final class Period implements JsonSerializable
     }
 
     /**
-     * @throws InvalidInterval If the PHP version is lower than PHP 8.2
+     * @param DatePeriod<DateTimeInterface, ?DateTimeInterface, null> $range
+     *
+     * @throws Exception
      */
     public static function fromRange(DatePeriod $range): self
     {
         $endDate = $range->getEndDate() ?? throw InvalidInterval::dueToInvalidDatePeriod();
 
-        if (property_exists(DatePeriod::class, 'include_end_date')) {
-            return new self(
-                self::filterDatePoint($range->getStartDate()),
-                self::filterDatePoint($endDate),
-                match (true) {
-                    true === $range->include_start_date && true === $range->include_end_date => Bounds::IncludeAll,
-                    true === $range->include_start_date && false === $range->include_end_date => Bounds::IncludeStartExcludeEnd,
-                    false === $range->include_start_date && true === $range->include_end_date => Bounds::ExcludeStartIncludeEnd,
-                    default => Bounds::ExcludeAll,
-                }
-            );
-        }
-
         return new self(
             self::filterDatePoint($range->getStartDate()),
             self::filterDatePoint($endDate),
-            $range->include_start_date ? Bounds::IncludeStartExcludeEnd : Bounds::ExcludeAll
+            match ([$range->include_start_date, $range->include_end_date]) {
+                [true, true] => Bounds::IncludeAll,
+                [false, false] => Bounds::ExcludeAll,
+                [true, false] => Bounds::IncludeStartExcludeEnd,
+                [false, true] => Bounds::ExcludeStartIncludeEnd,
+            },
         );
     }
 
@@ -751,25 +745,17 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      *
-     * @return DatePeriod<DateTimeImmutable>
+     * @return DatePeriod<DateTimeImmutable, DateTimeImmutable, null>
      */
     public function rangeForward(Period|Duration|TimeDuration|DateInterval|string $timeDelta): DatePeriod
     {
         $duration = self::filterDuration($timeDelta);
 
-        return match (defined('DatePeriod::INCLUDE_END_DATE')) {
-            true => match ($this->bounds) {
-                Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
-                Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
-                Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::INCLUDE_END_DATE),
-                Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE | DatePeriod::INCLUDE_END_DATE),
-            },
-            false => match ($this->bounds) {
-                Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
-                Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
-                Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate->add($duration)),
-                Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate->add($duration), DatePeriod::EXCLUDE_START_DATE),
-            },
+        return match ($this->bounds) {
+            Bounds::IncludeStartExcludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate),
+            Bounds::ExcludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE),
+            Bounds::IncludeAll => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::INCLUDE_END_DATE),
+            Bounds::ExcludeStartIncludeEnd => new DatePeriod($this->startDate, $duration, $this->endDate, DatePeriod::EXCLUDE_START_DATE | DatePeriod::INCLUDE_END_DATE),
         };
     }
 
@@ -1394,7 +1380,7 @@ final class Period implements JsonSerializable
      *
      * @see http://php.net/manual/en/dateperiod.construct.php
      *
-     * @return DatePeriod<DateTimeImmutable>
+     * @return DatePeriod<DateTimeImmutable, DateTimeImmutable, null>
      */
     #[Deprecated(since:'league/period:5.2.0', message: "use League\Perio\Period::rangeForward()")]
     public function dateRangeForward(Period|Duration|TimeDuration|DateInterval|string $timeDelta, InitialDatePresence $startDatePresence = InitialDatePresence::Included): DatePeriod
@@ -1434,6 +1420,8 @@ final class Period implements JsonSerializable
     /**
      * @deprecated since version 5.2.1
      * @see ::fromRange
+     *
+     * @param DatePeriod<DateTimeInterface, ?DateTimeInterface, int> $dateRange
      *
      * @throws InvalidInterval If no instance can be generated from a DatePeriod object
      */

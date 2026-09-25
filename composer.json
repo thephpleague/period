@@ -47,12 +47,12 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95.1",
-        "phpstan/phpstan": "^1.12.33",
-        "phpstan/phpstan-deprecation-rules": "^1.2.1",
-        "phpstan/phpstan-phpunit": "^1.4.2",
-        "phpstan/phpstan-strict-rules": "^1.6.2",
-        "phpunit/phpunit": "^11.5.55 || ^12.5.23",
-        "rector/rector": "^1.2",
+        "phpstan/phpstan": "^2.2.15",
+        "phpstan/phpstan-deprecation-rules": "^2.0.5",
+        "phpstan/phpstan-phpunit": "^2.0.18",
+        "phpstan/phpstan-strict-rules": "^2.0.12",
+        "phpunit/phpunit": "^11.5.55 || ^12.5.23 || ^13.3.4",
+        "rector/rector": "^2.6.7",
         "symfony/polyfill-time": "^1.42",
         "symfony/var-dumper": "^6.4.15 || ^v7.4.8 || ^v8.0.8"
     },
